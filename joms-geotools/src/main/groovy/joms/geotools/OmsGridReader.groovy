@@ -20,6 +20,15 @@ class OmsGridReader extends AbstractGridCoverage2DReader
 {
   OmsGridFormat format
 
+  def source
+  def hints
+
+  public OmsGridReader(def source, def hints)
+  {
+    this.source = source
+    this.hints = hints
+  }
+
   @Override
   Format getFormat()
   {
