@@ -9,7 +9,7 @@ import org.opengis.coverage.grid.GridCoverageWriter
 /**
  * Created by sbortman on 10/22/14.
  */
-class OmsFormat extends AbstractGridFormat
+class OmsGridFormat extends AbstractGridFormat
 {
   @Override
   AbstractGridCoverage2DReader getReader(Object source, Hints hints = null)

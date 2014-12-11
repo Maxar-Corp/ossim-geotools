@@ -1,23 +1,24 @@
 package joms.geotools
 
 import org.geotools.coverage.grid.GridCoverage2D
-import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader
+import org.geotools.coverage.grid.io.GridCoverage2DReader
+import org.geotools.coverageio.BaseGridCoverage2DReader
 import org.opengis.coverage.grid.Format
 import org.opengis.parameter.GeneralParameterValue
 
 /**
  * Created by sbortman on 10/22/14.
  */
-class OmsReader extends AbstractGridCoverage2DReader
+class OmsGridReader extends  BaseGridCoverage2DReader implements GridCoverage2DReader {
 {
-  OmsFormat format
+  OmsGridFormat format
 
   @Override
   Format getFormat()
   {
     if ( !format )
     {
-      format = new OmsFormat()
+      format = new OmsGridFormat()
     }
 
     return format
