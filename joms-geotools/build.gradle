@@ -1,17 +1,28 @@
 apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'application'
+apply plugin: "com.github.johnrengelman.shadow"
 //apply plugin: 'com.github.johnrengelman.shadow'
 
 version = '1.0-SNAPSHOT'
 
 buildscript {
-  repositories { jcenter() }
+  repositories { jcenter()
+    maven {
+      name 'Shadow'
+      url 'http://dl.bintray.com/content/johnrengelman/gradle-plugins'
+    }
+
+  }
   dependencies {
-    classpath 'com.github.jengelman.gradle.plugins:shadow:1.1.1'
+    classpath "com.github.jengelman.gradle.plugins:shadow:1.2.0"
   }
 }
-
+test {
+  testLogging {
+    events 'started', 'passed'
+  }
+}
 repositories {
   maven {
     url 'http://repo.boundlessgeo.com/main'
@@ -34,28 +45,68 @@ repositories {
 }
 
 dependencies {
+  testCompile group: 'junit', name: 'junit', version: '4.12'
   compile 'org.geoscript:geoscript-groovy:1.4.0'
   compile 'org.ossim:joms:1.8.19'
+  compile group: 'junit', name: 'junit', version: '4.12'
 }
 
 task listJars << {
   configurations.compile.each { File file -> println file.name }
 }
 
-/*
-task runScript( type: JavaExec ) {
-  description 'Run Groovy script'
+task createRunScript << {
 
-  main = "jetset.OmsTest"
-  classpath = sourceSets.main.runtimeClasspath
+  def file = new File("run.sh")
+  file.delete()
+  file << "java -cp build/libs/joms-geotools-1.0-SNAPSHOT.jar:${sourceSets.main.runtimeClasspath.join(":")} \$1"
+
 }
-*/
+
+sourceSets{
+  main{
+    java{
+      srcDir "src/main"
+    }
+    resources{
+      srcDir  "src/main/resources"
+    }
+  }
+  test{
+    groovy{
+      srcDir "test/groovy"
+    }
+  }
+ }
+
+task runScript( type: JavaExec ) {
+ // description 'Run Groovy script'
+
+ // main = "joms.geotools.test.OmsFactoryTest"
+ // classpath = sourceSets.main.runtimeClasspath
+}
+
+task runSpiTest( type:JavaExec){
+   description 'Run Groovy script'
+
+   main = "joms.geotools.test.GridFactorySpiTest"
+   classpath = sourceSets.main.runtimeClasspath
+
+}
+task runTest(dependsOn: [build]) << {
+  println 'running unit tests'
+}
 
 /*
-mainClassName = "jetset.Csv2Shp"
+mainClassName = "joms.geotools.test.OmsFactoryTest"
 
 shadowJar {
   mergeServiceFiles()
 }
 
+jar {
+  manifest {
+    attributes 'Main-Class': mainClassName
+  }
+}
 */
