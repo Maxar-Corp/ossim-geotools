@@ -6,6 +6,8 @@ import org.geotools.coverage.grid.io.imageio.GeoToolsWriteParams
 import org.geotools.factory.Hints
 import org.opengis.coverage.grid.GridCoverageWriter
 
+import joms.oms.DataInfo
+
 /**
  * Created by sbortman on 10/22/14.
  */
@@ -14,13 +16,13 @@ class OmsGridFormat extends AbstractGridFormat
   @Override
   AbstractGridCoverage2DReader getReader(Object source, Hints hints = null)
   {
-    return null
+    return new OmsGridReader(source, hints)
   }
 
   @Override
   boolean accepts(Object source, Hints hints)
   {
-    return false
+    return DataInfo.readInfo( source?.toString() ) != null
   }
 
   @Override
