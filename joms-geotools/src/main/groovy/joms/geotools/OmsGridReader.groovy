@@ -1,5 +1,6 @@
-package joms.geotools.test
+package joms.geotools
 
+import geoscript.geom.Bounds
 import joms.geotools.OmsGridFormat
 import org.geotools.coverage.grid.GridCoverage2D
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader
@@ -10,6 +11,7 @@ import org.opengis.coverage.grid.Format
 import org.opengis.parameter.GeneralParameterValue
 
 import javax.imageio.spi.ImageReaderSpi
+import java.awt.image.BufferedImage
 
 /**
  * Created by sbortman on 10/22/14.
