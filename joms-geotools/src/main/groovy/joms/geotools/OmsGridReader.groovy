@@ -1,5 +1,6 @@
-package joms.geotools
+package joms.geotools.test
 
+import joms.geotools.OmsGridFormat
 import org.geotools.coverage.grid.GridCoverage2D
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader
 import org.geotools.coverageio.BaseGridCoverage2DReader
