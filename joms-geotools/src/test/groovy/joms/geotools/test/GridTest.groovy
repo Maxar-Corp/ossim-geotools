@@ -46,6 +46,7 @@ class GridFactorySpiTest
     map.render("/tmp/foo.png" as File)
     //def img = map.renderToImage()
 
+    //println "IMAGE IS ============= ${img}"
     //ImageIO.write(img, "png", "/tmp/foo.png" as File)
     //assertEquals(img.width, width)
     //assertEquals(img.height, height)
