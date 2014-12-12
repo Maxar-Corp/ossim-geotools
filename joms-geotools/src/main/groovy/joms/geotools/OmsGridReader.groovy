@@ -190,7 +190,7 @@ class OmsGridReader extends AbstractGridCoverage2DReader
                     maxY),
             bands,
             null,
-            null
+            properties
             );
     //return coverageFactory.create(coverageName, image, crs,raster2Model, bands, null, properties);
 
