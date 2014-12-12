@@ -7,6 +7,9 @@ import org.geotools.coverage.grid.io.GridFormatFinder
 import org.geotools.map.GridReaderLayer
 import org.junit.*;
 import geoscript.render.Map as GeoScriptMap
+
+import javax.imageio.ImageIO
+
 import static org.junit.Assert.*
 
 class GridFactorySpiTest
@@ -21,25 +24,31 @@ class GridFactorySpiTest
   }
   @Test void testGeoscriptGetMap()
   {
-    def file = '/data/bmng/world.200408.A1.tif' as File
+    def file = '/data/earth.ntf' as File
     def gridFormat = Format.getFormat(file).gridFormat
     def gridReader = gridFormat.getReader(file)
+    println "READER ==== ${gridReader}"
     def layer = new GridReaderLayer(gridReader, new RasterSymbolizer().gtStyle)
-
-    def width = 512
+    println "LAYER: ${layer}"
+    def width = 1024
     def height = 512
     def map = new GeoScriptMap(
             width: width,
             height: height,
             proj: 'epsg:4326',
-            bounds: [-180, 0, -90, 90],
+            bounds: [-180,-90,180,90],
             layers: [layer]
     )
 
-    def img = map.renderToImage()
 
-    assertEquals(img.width, width)
-    assertEquals(img.height, height)
+    println "MAP: ${map}"
+
+    map.render("/tmp/foo.png" as File)
+    //def img = map.renderToImage()
+
+    //ImageIO.write(img, "png", "/tmp/foo.png" as File)
+    //assertEquals(img.width, width)
+    //assertEquals(img.height, height)
     map.close()
   }
 }
