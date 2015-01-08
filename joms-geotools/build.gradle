@@ -1,10 +1,12 @@
 apply plugin: 'groovy'
 apply plugin: 'idea'
+apply plugin: 'maven'
 apply plugin: 'application'
 apply plugin: "com.github.johnrengelman.shadow"
 //apply plugin: 'com.github.johnrengelman.shadow'
 
 version = '1.0-SNAPSHOT'
+
 
 buildscript {
   repositories { jcenter()
@@ -23,7 +25,23 @@ test {
     events 'started', 'passed'
   }
 }
+
+install {
+  repositories.mavenInstaller {
+    pom.groupId = "org.ossim"
+    // only necessary if artifact ID diverges from project name
+    // the latter defaults to project directory name and can be
+    // configured in settings.gradle
+    pom.artifactId = 'joms-geotools'
+    // shouldn't be needed as this is the default anyway
+    pom.packaging = 'jar'
+  }
+}
+
 repositories {
+  maven {
+    url 'http://repository.cloudera.com/artifactory/cloudera-repos/'
+  }
   maven {
     url 'http://repo.boundlessgeo.com/main'
   }
@@ -46,9 +64,27 @@ repositories {
 
 dependencies {
   testCompile group: 'junit', name: 'junit', version: '4.12'
+ // testCompile 'org.apache.hadoop:hadoop-hdfs:2.0.0-cdh4.2.0'
+  testCompile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.0'
+  testCompile 'org.apache.accumulo:accumulo-core:1.6.1'
+  testCompile 'com.github.davidmoten:geo:0.6.10'
+//  testCompile 'org.apache.hadoop:hadoop-hdfs:2.0.0'
+//  testCompile 'org.apache.hadoop:hadoop-client:2.0.0'
+//  testCompile 'org.apache.hadoop:hadoop-common:2.0.0'
+
+  testCompile 'org.ossim:joms:1.8.19'
   compile 'org.geoscript:geoscript-groovy:1.4.0'
   compile 'org.ossim:joms:1.8.19'
   compile group: 'junit', name: 'junit', version: '4.12'
+  compile 'org.apache.accumulo:accumulo-core:1.6.1'
+  compile 'com.github.davidmoten:geo:0.6.10'
+
+//  testCompile 'org.apache.hadoop:hadoop-hdfs:2.0.0-cdh4.2.0'
+  compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.0'
+
+//  compile 'org.apache.hadoop:hadoop-hdfs:2.0.0'
+//  compile 'org.apache.hadoop:hadoop-client:2.0.0'
+//  compile 'org.apache.hadoop:hadoop-common:2.0.0'
 }
 
 task listJars << {
@@ -79,6 +115,17 @@ sourceSets{
   }
  }
 
+
+tasks.withType(Test) {
+  // get System properties needed for tests
+  systemProperties = System.getProperties()
+  systemProperties['WORLD_IMAGE_FILE'] = "/data/earth.ntf"
+  //systemProperties = System.getProperties()
+  //systemProperties = System.properties
+  //println 'NUMBER_OF_PROCESSORS is ' +
+  //        systemProperties['NUMBER_OF_PROCESSORS'] // always returns 1
+}
+
 task runScript( type: JavaExec ) {
  // description 'Run Groovy script'
 
@@ -97,13 +144,12 @@ task runTest(dependsOn: [build]) << {
   println 'running unit tests'
 }
 
-/*
 mainClassName = "joms.geotools.test.OmsFactoryTest"
 
 shadowJar {
   mergeServiceFiles()
 }
-
+/*
 jar {
   manifest {
     attributes 'Main-Class': mainClassName
