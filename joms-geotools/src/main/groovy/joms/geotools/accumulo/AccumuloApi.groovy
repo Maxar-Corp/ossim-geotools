@@ -50,12 +50,11 @@ class AccumuloApi
     //conn = inst.getConnector("root", new PasswordToken("hadoop"));
     if(table)
     {
-      if(connector.tableOperations().exists(table))
+      if(!connector.tableOperations().exists(table))
       {
-        connector.tableOperations().delete(table)
+        connector.tableOperations().create(table);
       }
 
-      connector.tableOperations().create(table);
       def bwc = new BatchWriterConfig()
       batchWriter = connector.createBatchWriter(table, bwc);
    }
