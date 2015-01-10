@@ -5,7 +5,6 @@ import org.apache.accumulo.core.Constants
 import org.apache.accumulo.core.client.BatchScanner
 import org.apache.accumulo.core.client.Scanner
 import org.apache.accumulo.core.client.BatchWriterConfig
-import org.apache.accumulo.core.client.Instance
 import org.apache.accumulo.core.client.ZooKeeperInstance
 import org.apache.accumulo.core.client.security.tokens.PasswordToken
 import org.apache.accumulo.core.data.Key
@@ -57,9 +56,7 @@ class AccumuloApi
 
       def bwc = new BatchWriterConfig()
       batchWriter = connector.createBatchWriter(table, bwc);
-   }
-
-
+    }
 
     this
   }
@@ -180,60 +177,69 @@ class AccumuloApi
   {
     BatchScanner scanner = connector?.createBatchScanner(table, Constants.NO_AUTHS, 4);
 
-    // this will get all tiles with the row ID
-    //def range = new Range(hashString);
+    try{
+      // this will get all tiles with the row ID
+      //def range = new Range(hashString);
 
-    // this will get exact tile
-    def range = Range.exact(hashId, columnFamily, columnQualifier)
+      // this will get exact tile
+      def range = Range.exact(hashId, columnFamily, columnQualifier)
 
-    scanner?.setRanges([range] as Collection)
-    //scanner.setRange(range)
-    // lets get the exact ID
-  //  def imgVerify
-    Tile result
-    for (Map.Entry<Key,Value> entry : scanner)
+      scanner?.setRanges([range] as Collection)
+      //scanner.setRange(range)
+      // lets get the exact ID
+      //  def imgVerify
+      Tile result
+      for (Map.Entry<Key,Value> entry : scanner)
+      {
+        result = new Tile(image:ImageIO.read(new java.io.ByteArrayInputStream(entry.getValue().get())),
+                hashId:hashId)
+
+
+      }
+    }
+    catch(def e)
     {
-      result = new Tile(image:ImageIO.read(new java.io.ByteArrayInputStream(entry.getValue().get())),
-                        hashId:hashId)
-
-
-     // println "${imgVerify}";
-
+      e.printStackTrace()
     }
 
     scanner?.close()
 
     result
-   // imgVerify
   }
 
   def getTiles(def hashIdList, String columnFamily, String columnQualifier)
   {
-    BatchScanner scanner = connector.createBatchScanner(table, Constants.NO_AUTHS, 4);
-
-    // this will get all tiles with the row ID
-    //def range = new Range(hashString);
-    def ranges = []
-    hashIdList.each{hashId->
-      ranges << Range.exact(hashId, columnFamily, columnQualifier)
-    }
-
-    scanner.setRanges(ranges as Collection)
-
     def result = [:]
-    for (Map.Entry<Key,Value> entry : scanner)
-    {
-      Tile tile = new Tile()
-      tile.image = ImageIO.read(new java.io.ByteArrayInputStream(entry.getValue().get()))
-      tile.hashId = entry.getKey().row
-      if(tile.image)
+    BatchScanner scanner = connector?.createBatchScanner(table, Constants.NO_AUTHS, 4);
+    try{
+      // this will get all tiles with the row ID
+      //def range = new Range(hashString);
+      def ranges = []
+      hashIdList.each{hashId->
+        ranges << Range.exact(hashId, columnFamily, columnQualifier)
+      }
+
+      scanner?.setRanges(ranges as Collection)
+
+      for (Map.Entry<Key,Value> entry : scanner)
       {
-        result."${tile.hashId}"  = tile
+        Tile tile = new Tile()
+        tile.image = ImageIO.read(new java.io.ByteArrayInputStream(entry.getValue().get()))
+        tile.hashId = entry.getKey().row
+        if(tile.image)
+        {
+          result."${tile.hashId}"  = tile
+        }
+
       }
 
     }
+    catch(def e)
+    {
+      e.printStackTrace()
+    }
 
-    scanner.close()
+    scanner?.close()
 
     result
   }
