@@ -176,6 +176,7 @@ class AccumuloApi
   Tile getTile(String hashId, String columnFamily, String columnQualifier)
   {
     BatchScanner scanner = connector?.createBatchScanner(table, Constants.NO_AUTHS, 4);
+    Tile result
 
     try{
       // this will get all tiles with the row ID
@@ -188,7 +189,6 @@ class AccumuloApi
       //scanner.setRange(range)
       // lets get the exact ID
       //  def imgVerify
-      Tile result
       for (Map.Entry<Key,Value> entry : scanner)
       {
         result = new Tile(image:ImageIO.read(new java.io.ByteArrayInputStream(entry.getValue().get())),
