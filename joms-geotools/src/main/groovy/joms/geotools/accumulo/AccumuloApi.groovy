@@ -3,6 +3,7 @@ package joms.geotools.accumulo
 import joms.geotools.tileapi.Tile
 import org.apache.accumulo.core.Constants
 import org.apache.accumulo.core.client.BatchScanner
+import org.apache.accumulo.core.client.BatchWriter
 import org.apache.accumulo.core.client.Scanner
 import org.apache.accumulo.core.client.BatchWriterConfig
 import org.apache.accumulo.core.client.ZooKeeperInstance
@@ -26,11 +27,9 @@ class AccumuloApi
   String password
   String instanceName
   String zooServers
-  String table
   boolean automergeTiles = true
   private instance
   private connector
-  private batchWriter
 
   private def encodeToByteBuffer(BufferedImage bufferedImage, String type="tiff")
   {
@@ -38,7 +37,25 @@ class AccumuloApi
     ImageIO.write(bufferedImage, type, out)
     out.toByteArray()
   }
+  private BatchWriter createBatchWriter(String table)
+  {
+    def bwc = new BatchWriterConfig()
+    def batchWriter
+    try {
+      batchWriter = connector.createBatchWriter(table, bwc);
+    }
+    catch (def e)
+    {
 
+    }
+    batchWriter
+  }
+  private BatchScanner createBatchScanner(String table)
+  {
+    BatchScanner scanner = connector?.createBatchScanner(table, Constants.NO_AUTHS, 4);
+
+    scanner
+  }
   def initialize()
   {
     //String instanceName = "accumulo";
@@ -47,20 +64,15 @@ class AccumuloApi
     //Connector conn
     connector = instance.getConnector("root", new PasswordToken("root"));
     //conn = inst.getConnector("root", new PasswordToken("hadoop"));
-    if(table)
-    {
-      if(!connector.tableOperations().exists(table))
-      {
-        connector.tableOperations().create(table);
-      }
-
-      def bwc = new BatchWriterConfig()
-      batchWriter = connector.createBatchWriter(table, bwc);
-    }
 
     this
   }
 
+
+  def close()
+  {
+
+  }
   Scanner getRow(String rowId)
   {
     // Create a scanner
@@ -68,7 +80,17 @@ class AccumuloApi
     scanner.setRange(new Range(new Text(rowId)));
     scanner
   }
-  void deleteTable()
+  void createTable(String table)
+  {
+    if(table)
+    {
+      if(!connector.tableOperations().exists(table))
+      {
+        connector.tableOperations().create(table);
+      }
+    }
+  }
+  void deleteTable(String table)
   {
     if(table)
     {
@@ -86,22 +108,27 @@ class AccumuloApi
     //connector?.tableOperations().deleteRows(table, id, null)
   }
 
-  void deleteRow(Scanner scanner)
+  void deleteRow(String table, Scanner scanner)
   {
     Mutation deleter = null;
-    // iterate through the keys
-    for (Map.Entry<Key,Value> entry : scanner) {
-      // create a mutation for the row
-      if (deleter == null)
-        deleter = new Mutation(entry.getKey().getRow());
-      // the remove function adds the key with the delete flag set to true
-      deleter.putDelete(entry.getKey().getColumnFamily(), entry.getKey().getColumnQualifier());
+    def batchWriter = createBatchWriter(table);
+
+    try{
+      // iterate through the keys
+      for (Map.Entry<Key,Value> entry : scanner) {
+        // create a mutation for the row
+        if (deleter == null)
+          deleter = new Mutation(entry.getKey().getRow());
+        // the remove function adds the key with the delete flag set to true
+        deleter.putDelete(entry.getKey().getColumnFamily(), entry.getKey().getColumnQualifier());
+      }
+      batchWriter?.addMutation(deleter);
+      batchWriter?.flush();
     }
-    batchWriter?.addMutation(deleter);
-    batchWriter?.flush();
-  }
-  void close()
-  {
+    catch(def e)
+    {
+
+    }
     batchWriter?.close()
   }
   private void merge(BufferedImage src, BufferedImage dest)
@@ -113,12 +140,13 @@ class AccumuloApi
       g.dispose()
     }
   }
-  void writeTile(Tile tile, String columnFamily, String columnQualifier)
+  void writeTile(String table, Tile tile, String columnFamily, String columnQualifier)
   {
+    def bwc = new BatchWriterConfig()
     def tileToMerge
     if(automergeTiles)
     {
-      tileToMerge = getTile(tile.hashId, columnFamily, columnQualifier)
+      tileToMerge = getTile(table, tile.hashId, columnFamily, columnQualifier)
     }
 
     // Need to add merging support
@@ -132,10 +160,18 @@ class AccumuloApi
       imgResult = tileToMerge.image
     }
     m.put(columnFamily.bytes, columnQualifier.bytes, encodeToByteBuffer(imgResult));
-    batchWriter?.addMutation(m);
-    batchWriter?.flush()
+    def batchWriter = createBatchWriter(table);
+    try{
+      batchWriter?.addMutation(m);
+      batchWriter?.flush()
+    }
+    catch(def e)
+    {
+
+    }
+    batchWriter?.close()
   }
-  void writeTiles(def tileList, String columnFamily, String columnQualifier)
+  void writeTiles(String table, def tileList, String columnFamily, String columnQualifier)
   {
     def tilesToMergeList
     if(automergeTiles)
@@ -146,38 +182,44 @@ class AccumuloApi
       }
       if(hashIdList)
       {
-        tilesToMergeList = getTiles(hashIdList, columnFamily, columnQualifier)
+        tilesToMergeList = getTiles(table, hashIdList, columnFamily, columnQualifier)
       }
     }
     else
     {
-      tilesToWriteList = tileList
+      tilesToMergeList = tileList
     }
-    tileList.each{ tile->
-      // need to add merging support
-      //
-      def tileToMerge = tilesToMergeList?."${tile.hashId}"
-      def image       = tile.image
-      def row         =  new Text(tile.hashId)
-      Mutation m      = new Mutation(row);
-      if(tileToMerge)
-      {
-        merge(tile.image, tileToMerge.image)
-        image = tileToMerge.image
-      }
-      // output the
-      m.put(columnFamily.bytes, columnQualifier.bytes, encodeToByteBuffer(image));
+    def batchWriter
+    try {
+      batchWriter = createBatchWriter(table);
+      tileList.each { tile ->
+        // need to add merging support
+        //
+        def tileToMerge = tilesToMergeList?."${tile.hashId}"
+        def image = tile.image
+        def row = new Text(tile.hashId)
+        Mutation m = new Mutation(row);
+        if (tileToMerge) {
+          merge(tile.image, tileToMerge.image)
+          image = tileToMerge.image
+        }
+        // output the
+        m.put(columnFamily.bytes, columnQualifier.bytes, encodeToByteBuffer(image));
 
-      batchWriter?.addMutation(m);
+        batchWriter?.addMutation(m);
+      }
+      batchWriter?.flush()
     }
-    batchWriter?.flush()
+    catch(def e)
+    {
+      batchWriter?.close()
+    }
   }
 
-  Tile getTile(String hashId, String columnFamily, String columnQualifier)
+  Tile getTile(String table, String hashId, String columnFamily, String columnQualifier)
   {
-    BatchScanner scanner = connector?.createBatchScanner(table, Constants.NO_AUTHS, 4);
+    BatchScanner scanner =createBatchScanner(table);
     Tile result
-
     try{
       // this will get all tiles with the row ID
       //def range = new Range(hashString);
@@ -207,10 +249,10 @@ class AccumuloApi
     result
   }
 
-  def getTiles(def hashIdList, String columnFamily, String columnQualifier)
+  def getTiles(String table, def hashIdList, String columnFamily, String columnQualifier)
   {
     def result = [:]
-    BatchScanner scanner = connector?.createBatchScanner(table, Constants.NO_AUTHS, 4);
+    BatchScanner scanner =createBatchScanner(table);
     try{
       // this will get all tiles with the row ID
       //def range = new Range(hashString);
