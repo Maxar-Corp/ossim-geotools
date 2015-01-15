@@ -6,7 +6,7 @@ apply plugin: "com.github.johnrengelman.shadow"
 //apply plugin: 'com.github.johnrengelman.shadow'
 
 version = '1.0-SNAPSHOT'
-
+sourceCompatibility = '1.6'
 
 buildscript {
   repositories { jcenter()
