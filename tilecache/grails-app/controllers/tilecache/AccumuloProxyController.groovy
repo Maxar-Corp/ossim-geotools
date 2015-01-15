@@ -117,6 +117,22 @@ class AccumuloProxyController {
 //        render "Did the putTile"
     render ""
   }
+  def renameTable()
+  {
+    def oldTableName=params.oldTableName
+    def newTableName=params.newTableName
+
+    if(oldTableName&&newTableName)
+    {
+      accumuloProxyService.renameTable(oldTableName, newTableName)
+      render "newTableName:${newTableName}"
+    }
+    else
+    {
+
+    }
+    null
+  }
   def createTable()
   {
     def table = params.table

@@ -21,6 +21,10 @@ class AccumuloProxyService implements InitializingBean {
             zooServers:"${grailsApplication.config.accumulo.zooServers}")
     accumulo.initialize()
   }
+  def renameTable(String oldTableName, String newTableName)
+  {
+    accumulo.renameTable(oldTableName, String newTableName)
+  }
   def createTable(String table)
   {
     accumulo.createTable(table)
