@@ -80,6 +80,10 @@ class AccumuloApi
     scanner.setRange(new Range(new Text(rowId)));
     scanner
   }
+  void renameTable(String oldTableName, String newTableName)
+  {
+    connector.tableOperations().rename(oldTableName, newTableName)
+  }
   void createTable(String table)
   {
     if(table)
