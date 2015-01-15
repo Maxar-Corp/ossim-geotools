@@ -15,25 +15,25 @@ class AccumuloProxyController {
   {
 
   }
-  def getTile()
+  def getTile(AccumuloProxyGetTileCommand cmd)
   {
-   // println params
-    def hash     = params.hashId
-    def family   = params.family?:""
-    def qualifier = params.qualifier?:""
-    def table = params.table
-    def format=params.format?:"image/jpeg"
-    def writeType = format.split("/")[-1]
+    println cmd
+//    def hash     = params.hashId
+//    def family   = params.family?:""
+//    def qualifier = params.qualifier?:""
+//    def table = params.table
+//    def format=params.format?:"image/jpeg"
+    def writeType = cmd.format.split("/")[-1]
 
 
   //  println "______________________${format},${table},${hash},${family},${qualifier}_________________________"
 
-    def tile = accumuloProxyService.getTile(table, hash, family, qualifier)
+    def tile = accumuloProxyService.getTile(cmd.table, cmd.hashId, cmd.family, cmd.qualifier)
 
     if(tile)
     {
 //            println tile.image
-      response.contentType = format
+      response.contentType = cmd.format
       def ostream = new ByteArrayOutputStream()
 
       ImageIO.write( tile.image, writeType, ostream )

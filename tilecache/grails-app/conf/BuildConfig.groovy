@@ -34,6 +34,10 @@ grails.project.dependency.resolution = {
 
     repositories {
         inherits true // Whether to inherit repository definitions from plugins
+        mavenRepo "http://repo.grails.org/grails/plugins/"
+
+        mavenRepo "http://download.osgeo.org/webdav/geotools"
+        mavenRepo "http://www.hibernatespatial.org/repository"
 
         grailsPlugins()
         grailsHome()
@@ -55,10 +59,22 @@ grails.project.dependency.resolution = {
         compile( 'org.ossim:joms-geotools:1.0-SNAPSHOT' ) {
             excludes "slf4j-log4j12"
         }
+        compile(
+                'org.hibernatespatial:hibernate-spatial-postgis:1.1.1',
+                'org.hibernatespatial:hibernate-spatial:1.1.1',
+                'com.vividsolutions:jts:1.12',
+                //'postgresql:postgresql:9.1-901.jdbc4',
+                'org.postgresql:postgresql:9.3-1100-jdbc4',
+                'org.postgis:postgis-jdbc:1.5.2'
+
+        ) {
+            transitive = false
+        }
+       // runtime 'org.postgresql:postgresql:9.3-1100-jdbc4'
+
     }
 
     plugins {
-        // plugins for the build system only
         build ":tomcat:7.0.55"
 
         // plugins for the compile step
@@ -67,7 +83,8 @@ grails.project.dependency.resolution = {
         compile ":asset-pipeline:1.9.9"
 
         // plugins needed at runtime but not for compilation
-        runtime ":hibernate4:4.3.6.1" // or ":hibernate:3.6.10.18"
+       // runtime ":hibernate:3.6.10.18"
+        runtime ':hibernate4:4.3.6.1'
         runtime ":database-migration:1.4.0"
         runtime ":jquery:1.11.1"
 

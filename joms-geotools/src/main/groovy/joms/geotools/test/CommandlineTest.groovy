@@ -8,16 +8,16 @@ import org.geotools.map.GridReaderLayer
  * Created by gpotts on 12/15/14.
  */
 
-class CommandLineTest
+class CommandlineTest
 {
   static void main(String[] args)
   {
     def file = '/data/earth.ntf' as File
     def gridFormat = Format.getFormat(file).gridFormat
     def gridReader = gridFormat.getReader(file)
-    println "READER ==== ${gridReader}"
+    //println "READER ==== ${gridReader}"
     def layer = new GridReaderLayer(gridReader, new RasterSymbolizer().gtStyle)
-    println "LAYER: ${layer}"
+    //println "LAYER: ${layer}"
     def width = 512
     def height = 512
     def map = new Map(
