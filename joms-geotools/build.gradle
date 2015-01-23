@@ -157,10 +157,8 @@ mainClassName = "joms.geotools.test.OmsFactoryTest"
 shadowJar {
   mergeServiceFiles()
 }
-/*
 jar {
   manifest {
     attributes 'Main-Class': mainClassName
   }
 }
-*/
