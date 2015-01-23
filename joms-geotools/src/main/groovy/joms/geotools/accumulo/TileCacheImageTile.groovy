@@ -10,7 +10,9 @@ import geoscript.layer.ImageTile
 class TileCacheImageTile extends ImageTile
 {
   double res
-  String hashId
+  ImageTileKey key = new ImageTileKey()
+
+  //String hashId
   Polygon bounds
   Date modifiedDate=new Date()
   /**
@@ -46,27 +48,45 @@ class TileCacheImageTile extends ImageTile
   {
     super(z, x, y, data)
     this.bounds = bbox
+    this.key.rowId = getHashId()
   }
   TileCacheImageTile(double res, String hashId, Polygon bbox, long z, long x, long y, byte[] data)
   {
     super(z, x, y, data)
     this.bounds = bbox
     this.res = res
-    this.hashId = hashId
+    this.key.rowId = hashId
+  }
+  TileCacheImageTile(double res, Polygon bbox, long z, long x, long y, byte[] data)
+  {
+    super(z, x, y, data)
+    this.res = res
+    this.setBounds(bbox)
   }
   TileCacheImageTile(double res, String hashId, Polygon bbox, long z, long x, long y)
   {
     super(z, x, y)
     this.bounds = bbox
     this.res = res
-    this.hashId = hashId
+    this.key.rowId = hashId
+  }
+  TileCacheImageTile(byte[] data, ImageTileKey key)
+  {
+    super(0,0,0)
+    this.data = data
+    this.key = key
+  }
+  void setBounds(Polygon bounds)
+  {
+    this.bounds = bounds
+    this.key.rowId = getHashId()
   }
   String getHashId()
   {
-    String result = hashId
-    if(!hashId)
+    String result = key.rowId
+    if(!key.rowId)
     {
-      def center = bounds.centroid
+      def center = bounds?.centroid
       def hash = new GeoHash()
       result = hash.encodeHash(center.getY(), center.getX(), 20)
     }

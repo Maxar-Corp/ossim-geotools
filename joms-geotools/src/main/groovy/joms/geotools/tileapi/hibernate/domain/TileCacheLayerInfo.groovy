@@ -93,7 +93,7 @@ class TileCacheLayerInfo {
   {
     if(layerInfo.name != null)
     {
-      name = layerInfo
+      name = layerInfo.name
     }
     if(layerInfo.epsgCode !=null)
     {
@@ -110,6 +110,10 @@ class TileCacheLayerInfo {
     if(layerInfo.maxLevel != null)
     {
       maxLevel = layerInfo.maxLevel
+    }
+    if(layerInfo.tileStoreTable != null)
+    {
+      tileStoreTable = layerInfo.tileStoreTable
     }
   }
 

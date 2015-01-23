@@ -1,7 +1,10 @@
 package joms.geotools.tileapi.hibernate.controller
 
+import com.vividsolutions.jts.geom.Polygon
+import com.vividsolutions.jts.io.WKTReader
 import groovy.sql.Sql
 import joms.geotools.accumulo.AccumuloApi
+import joms.geotools.accumulo.ImageTileKey
 import joms.geotools.accumulo.TileCacheImageTile
 import joms.geotools.tileapi.hibernate.TileCacheHibernate
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
@@ -74,6 +77,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   TileCacheLayerInfo createOrUpdateLayer(TileCacheLayerInfo layerInfo)
   {
     TileCacheLayerInfo layer = layerInfoTableDAO.findByName(layerInfo.name)
+    println "LAYER============= ${layer} "
     if(layer)
     {
       layer.copyNonNullValues(layerInfo)
@@ -89,8 +93,9 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
       layerInfoTableDAO.save(layerInfo)
       createTileStore(layerInfo.tileStoreTable)
       accumuloApi.createTable(layerInfo.tileStoreTable)
+      layer = layerInfo
     }
-    layerInfo
+    layer
   }
 
   @Transactional
@@ -179,10 +184,11 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     }
     result
   }
-  @Transactional
-  void writeTile(TileCacheImageTile tile, String table) {
 
-    def result = sql.firstRow("select * from ${table} where hash_id = '${tile.hashId}'".toString())
+  @Transactional
+  void writeTile(String table, TileCacheImageTile tile) {
+
+    def result = sql.firstRow("select * from ${table} where hash_id = '${tile.key.hashId}'".toString())
 
     if (!result)
     {
@@ -197,21 +203,44 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
 
     if(tile.data)
     {
-      accumuloApi.writeTile(table, tile.data, tile.hashId,"","")
+      accumuloApi.writeTile(table, tile)
     }
   }
 
   @Transactional
-  def getMetaByHashId(String table, String hashId)
+  def getMetaByKey(String table, ImageTileKey key)
   {
-    sql.firstRow("select * from ${table} where hash_id = '${hashId}'".toString())
+    println "KEY ============ ${key.rowId}"
+    def row = sql.firstRow("select * from ${table} where hash_id = '${key.rowId}'".toString())
+    TileCacheTileTableTemplate result
+
+    result.bindRow(row)
   }
 
   @Transactional
-  def getImageByHashId(String table, String hashId)
+  def getTileByKey(String table, ImageTileKey key)//String hashId)
   {
-    def meta = sql.firstRow("select * from ${table} where hash_id = '${hashId}'".toString())
+    TileCacheImageTile result
+    def meta = sql.firstRow("select * from ${table} where hash_id = '${key.rowId}'".toString())
+    if(meta)
+    {
+      result        = accumuloApi.getTile(table, key)
+      if(result)
+      {
+        result.x      = meta.x?.toLong()
+        result.y      = meta.y?.toLong()
+        result.z      = meta.z?.toLong()
+        result.res    = meta.res?.toDouble()
+        if(meta.modified_date) result.modifiedDate = new Date(meta.modified_date.time)
+        result.bounds = new WKTReader().read(meta.bounds.toString())
+      }
+     }
 
-    // now query the tile bytes in accumulo
+    result
+  }
+  @Transactional
+  def getTileDataByKey(String table, ImageTileKey key)//String hashId)
+  {
+    accumuloApi.getTile(table, key)?.data
   }
 }

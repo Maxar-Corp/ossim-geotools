@@ -1,6 +1,7 @@
 package joms.geotools.test
 
 import com.vividsolutions.jts.geom.Polygon
+import joms.geotools.accumulo.ImageTileKey
 import joms.geotools.accumulo.TileCacheImageTile
 import joms.geotools.tileapi.BoundsUtil
 import joms.geotools.tileapi.hibernate.TileCacheHibernate
@@ -82,87 +83,6 @@ class GridFactorySpiTest
 
     result
   }
-  private def writeTile(def accumuloInfo, Envelope env, BufferedImage img, String column, String layer)
-  {
-    def result         = transformCenter(env, CRS.decode("EPSG:4326"))
-    def hashString     = GeoHash.encodeHash(result.y,result.x)
-    def currentTile    = getTile(accumuloInfo, env, column, layer)
-    def tiffByteBuffer = encodeToByteBuffer(img)
-
-    if(currentTile)
-    {
-      // we need to test a merge into the current tile or replace
-      //
-    }
-    def row =  new Text(hashString)
-    Mutation m = new Mutation(row);
-    // output the
-    m.put(column.bytes, layer.bytes, tiffByteBuffer);
-
-    accumuloInfo.batchWriter.addMutation(m);
-    accumuloInfo.batchWriter.flush()
-  }
-  private getTile(def accumuloInfo, Envelope env, String columnName, String layer)
-  {
-    def result = transformCenter(env, CRS.decode("EPSG:4326"))
-    def hashString = GeoHash.encodeHash(result.y,result.x)
-
-    BatchScanner scanner = accumuloInfo.connection.createBatchScanner(accumuloInfo.table,
-                                                            Constants.NO_AUTHS, 4);
-
-    // this will get all tiles with the row ID
-    //def range = new Range(hashString);
-
-    // this will get exact tile
-    def range = Range.exact(hashString, columnName, layer)
-
-    scanner.setRanges([range] as Collection)
-    //scanner.setRange(range)
-    // lets get the exact ID
-    def imgVerify
-    println "===========GET TILE============="
-    for (Entry<Key,Value> entry : scanner)
-    {
-      imgVerify = ImageIO.read(new java.io.ByteArrayInputStream(entry.getValue().get()))
-      println "${imgVerify}";
-
-    }
-
-    println "====================="
-    imgVerify
-  }
-  private testTimeStampQuery(def accumuloInfo, long t1, long t2)
-  {
-    /*
-    Text start=new Text(ByteBuffer.allocate(8).putLong(t1).array());
-    Text end=new Text(ByteBuffer.allocate(8).putLong(t2).array());
-
-    def range       = new Range(start, true, end, true);
-    Scanner scanner = accumuloInfo.connection.createScanner(accumuloInfo.table,
-            Constants.NO_AUTHS);
-    scanner.setRange(range);
-    println "============TIME QUERY!!!!!!============"
-    for (Entry<Key,Value> entry : scanner)
-    {
-      imgVerify = ImageIO.read(new java.io.ByteArrayInputStream(entry.getValue().get()))
-      println "${imgVerify}";
-    }
-
-    println "===========TIME QUERY!!!!!!=========="
-      */
-  }
-  private def initAccumulo()
-  {
-    String instanceName = "accumulo";
-    //String zooServers ="10.0.10.186"// "sandbox.hortonworks.com"
-    String zooServers = "accumulo-site.radiantblue.local"
-    Instance inst = new ZooKeeperInstance(instanceName, zooServers);
-    Connector conn
-    conn = inst.getConnector("root", new PasswordToken("root"));
-    //conn = inst.getConnector("root", new PasswordToken("hadoop"));
-
-    [connection:conn]
-  }
   private boolean compareImage(BufferedImage img1, BufferedImage img2)
   {
     def img1Buf = img1.data.dataBuffer
@@ -176,101 +96,6 @@ class GridFactorySpiTest
     }
 
     true
-  }
-  /*
-  @Test void testAccumulo()
-  {
-    def w = 32
-    def h = 32
-    String table = "test_table"
-    def accumuloInfo = initAccumulo();
-    accumuloInfo.table = table
-
-    assertNotNull(accumuloInfo.connection)
-    // lets first make sure the table doesn't exist
-    if(accumuloInfo.connection.tableOperations().exists(table))
-    {
-      accumuloInfo.connection.tableOperations().delete(table)
-    }
-
-    accumuloInfo.connection.tableOperations().create(table);
-
-    // Make Sure the table was created properly
-    assertEquals(accumuloInfo.connection.tableOperations().exists(table), true)
-
-    //long memBuf = 1000000L; // bytes to store before sending a batch
-    //long timeout = 1000L; // milliseconds to wait before sending
-    //int numThreads = 10;
-    def bwc = new BatchWriterConfig()
-    accumuloInfo.batchWriter = accumuloInfo.connection.createBatchWriter(accumuloInfo.table, bwc);
-
-    CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326");
-    def envelope = new Envelope2D(new DirectPosition2D(sourceCRS, -180.0,-90.0) ,
-                                  new DirectPosition2D(sourceCRS, 180.0, 90.0))
-    def imgVerify
-   // def hashString = GeoHash.encodeHash(0.0,0.0)
-    writeTile(accumuloInfo,
-            envelope,
-            createImage(w,h, new Color(0,0,0,0)),
-            "tile",
-            "bmng")
-    imgVerify = getTile(accumuloInfo,
-            envelope,
-            "tile",
-            "bmng")
-    assertNotNull(imgVerify)
-    assertTrue(compareImage(imgVerify,
-                            createImage(w,h, new Color(0,0,0,0))))
-    System.sleep(5000)
-    writeTile(accumuloInfo,
-            envelope,
-            createImage(w,h, new Color(255,0,0,0)),
-            "tile",
-            "bmng")
-    writeTile(accumuloInfo,
-            envelope,
-            createImage(w,h, new Color(255,0,0,0)),
-            "tile",
-            "bmng")
-    writeTile(accumuloInfo,
-            envelope,
-            createImage(w,h, new Color(255,0,0,0)),
-            "tile",
-            "bmng")
-    writeTile(accumuloInfo,
-            envelope,
-            createImage(w,h, new Color(255,0,0,0)),
-            "tile",
-            "bmng")
-    writeTile(accumuloInfo,
-            envelope,
-            createImage(w,h, new Color(255,0,0,0)),
-            "tile",
-            "bmng")
-
-    println "NOW TRYING A GET TILE!!!!!!!!!"
-    imgVerify = getTile(accumuloInfo,
-                            envelope,
-                            "tile",
-                            "bmng")
-    assertNotNull(imgVerify)
-    assertTrue(compareImage(imgVerify,
-            createImage(w,h, new Color(0,0,0,0))))
-
-    accumuloInfo.batchWriter.close()
-
-   // accumuloInfo.connection.tableOperations().delete(table)
-
-  }
-   */
-  private def hash(def bounds)
-  {
-    def midx, midy
-
-    midx = (bounds.minx + bounds.maxx)*0.5
-    midy = (bounds.miny + bounds.maxy)*0.5
-
-    GeoHash.encodeHash(midy, midx)
   }
   private void tiles(def level)
   {
@@ -381,30 +206,42 @@ class GridFactorySpiTest
 
     record.name = "BMNG"
     record.bounds = BoundsUtil.polygonFromBbox("-180,-90,180,90")
-    record = daoTileCacheService.createOrUpdateLayer(record)
+    def layer = daoTileCacheService.createOrUpdateLayer(record)
 
-    Polygon bounds = BoundsUtil.polygonFromBbox("-180,-90,0,90")
-    String hashId = GeoHash.encodeHash(bounds.centroid.y, bounds.centroid.x, 20)
-
-    println bounds.centroid.x
-
-    //double res, String hashId, Polygon bbox, long z, long x, long y
+    println "LAYER INFO ========== ${layer}"
+    println "LAYER NAME ========== ${layer.name}"
 
     def z = 0
     def x = 0
     def y = 0
-    TileCacheImageTile tile = new TileCacheImageTile(180.0/256.0,hashId, bounds, x,y,z)
+    Polygon bounds = BoundsUtil.polygonFromBbox("-180,-90,0,90")
+    TileCacheImageTile tile1 = new TileCacheImageTile(180.0/256.0, bounds, z,x,y)
+    TileCacheImageTile tile2 = new TileCacheImageTile(180.0/256.0, BoundsUtil.polygonFromBbox("0,-90,180,90"), z,1,y)
+    def image = new BufferedImage(256, 256, BufferedImage.TYPE_4BYTE_ABGR)
+    ByteArrayOutputStream out = new ByteArrayOutputStream()
+    ImageIO.write(image, "tiff", out)
+    tile1.data = out.toByteArray()
+    tile2.data = out.toByteArray()
+    tile1.modify()
+    tile2.modify()
 
-    tile.modify()
 
-    daoTileCacheService.writeTile(tile, record.tileStoreTable)
+    println "TABLE ============== ${layer.tileStoreTable}"
+    daoTileCacheService.writeTile(layer.tileStoreTable, tile1)
+    daoTileCacheService.writeTile(layer.tileStoreTable, tile2)
 
-
-    println "ROWS==================="
-    def ids = daoTileCacheService.getHashIdsWithinConstraint(record.tileStoreTable, [offset:1,maxRows:1000,intersects:BoundsUtil.polygonFromBbox("-180,-90,0,90")])
-    ids.each{hash->
-      println daoTileCacheService.getMetaByHashId(record.tileStoreTable, hash)
-    }
+    println "GET TILE=================== WITH KEY === ${tile1.key}"
+    println "GET TILE=================== WITH KEY === ${tile2.key}"
+    println daoTileCacheService.getTileByKey(layer.tileStoreTable, tile1.key)
+    println daoTileCacheService.getTileByKey(layer.tileStoreTable, tile2.key)
+   // def ids = daoTileCacheService.getHashIdsWithinConstraint(record.tileStoreTable, [offset:1,
+   //                                                                                  maxRows:1000,
+   //                                                                                  intersects:BoundsUtil.polygonFromBbox("-180,-90,0,90")])
+   // ImageTileKey key = new ImageTileKey()
+   // ids.each{hash->
+   //   key.rowId = hash
+   //   println daoTileCacheService.getMetaByKey(record.tileStoreTable, key)
+   // }
 
     //daoTileTemplate.findByHashId("tile0","Z00000000000000000000")
 

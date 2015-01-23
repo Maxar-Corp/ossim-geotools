@@ -1,6 +1,7 @@
 package joms.geotools.tileapi.hibernate.domain
 
 import com.vividsolutions.jts.geom.Polygon
+import com.vividsolutions.jts.io.WKTReader
 import groovy.transform.ToString
 import org.hibernate.annotations.Type
 
@@ -35,7 +36,7 @@ class TileCacheTileTableTemplate
   long y
 
   @Column(name="z")
-  int z
+  long z
 
 //  @Column(name="bounds", nullable=false, columnDefinition="Polygon")
 //  @Type(type="org.hibernate.spatial.GeometryType")
@@ -48,4 +49,19 @@ class TileCacheTileTableTemplate
   @Temporal(TemporalType.TIMESTAMP)
   Date modified_date;
 
+
+  void bind(def data)
+  {
+    this.hashId = data?.hashId
+    this.res = data.res
+    this.x = data.x
+    this.y = data.y
+    this.z = data.z
+
+    if(data.bounds instanceof String)
+    {
+      this.bounds = new WKTReader().read(data.bounds)
+    }
+
+  }
 }
