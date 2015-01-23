@@ -231,6 +231,8 @@ http://www.springframework.org/schema/context/spring-context.xsd">
                                                               """.toString()
 
 
+println sqlString
+
     try{
       Sql sql = getNewSqlInstance()
       sql.execute(sqlString.toString())
@@ -299,7 +301,7 @@ http://www.springframework.org/schema/context/spring-context.xsd">
       e.printStackTrace()
     }
 
-    //createIndex()
+    createIndex()
   }
   @Synchronized("contextLock")
   void initialize()

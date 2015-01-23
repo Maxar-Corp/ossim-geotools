@@ -184,16 +184,17 @@ class GridFactorySpiTest
     */
   }
 
+
   @Test void testAccumulo()
   {
     TileCacheHibernate hibernate = new TileCacheHibernate()
     hibernate.initialize([
-         //   driverClassName:"org.postgresql.Driver",
-         driverClassName:"org.postgis.DriverWrapper",
+         driverClassName:"org.postgresql.Driver",
+         //driverClassName:"org.postgis.DriverWrapper",
          username:"postgres",
          password:"postgres",
-        // url:"jdbc:postgresql:testdb"
-         url:"jdbc:postgresql_postGIS:testdb",
+         url:"jdbc:postgresql:raster-test",
+         //url:"jdbc:postgresql_postGIS:testdb",
          accumuloInstanceName:"accumulo",
          accumuloPassword:"root",
          accumuloUsername:"root",
