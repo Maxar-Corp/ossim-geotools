@@ -57,7 +57,9 @@ repositories {
   maven {
     url 'https://artifacts.unidata.ucar.edu/content/repositories/unidata/'
   }
-
+  maven {
+   url  'http://www.hibernatespatial.org/repository'
+  }
   mavenLocal()
   mavenCentral()
 }
@@ -78,10 +80,16 @@ dependencies {
   compile group: 'junit', name: 'junit', version: '4.12'
   compile 'org.apache.accumulo:accumulo-core:1.5.0'
   compile 'com.github.davidmoten:geo:0.6.10'
-
+  compile 'org.postgresql:postgresql:9.3-1100-jdbc4'
 //  testCompile 'org.apache.hadoop:hadoop-hdfs:2.0.0-cdh4.2.0'
   compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.5.0'
-
+  compile 'org.hibernate:hibernate-core:4.3.8.Final'
+  compile 'org.hibernate:hibernate-spatial:4.3'
+  compile 'org.springframework:spring-core:4.1.4.RELEASE'
+  compile 'org.springframework:spring-context:4.1.4.RELEASE'
+  compile 'org.springframework:spring-orm:4.1.4.RELEASE'
+  compile 'org.springframework:spring-tx:4.1.4.RELEASE'
+  compile 'javax.validation:validation-api:1.1.0.Final'
 //  compile 'org.apache.hadoop:hadoop-hdfs:2.0.0'
 //  compile 'org.apache.hadoop:hadoop-client:2.0.0'
 //  compile 'org.apache.hadoop:hadoop-common:2.0.0'

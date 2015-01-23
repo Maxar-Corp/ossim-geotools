@@ -1,32 +1,27 @@
 package joms.geotools.test
 
-import joms.geotools.accumulo.AccumuloApi
-import joms.geotools.tileapi.MutiResTiler
-import joms.geotools.tileapi.Tile
+import com.vividsolutions.jts.geom.Polygon
+import joms.geotools.accumulo.TileCacheImageTile
+import joms.geotools.tileapi.BoundsUtil
+import joms.geotools.tileapi.hibernate.TileCacheHibernate
+import joms.geotools.tileapi.hibernate.controller.TileCacheLayerInfoDAO
+import joms.geotools.tileapi.hibernate.controller.TileCacheServiceDAO
+import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
+import joms.geotools.tileapi.hibernate.domain.TileCacheTileTableTemplate
 import org.apache.accumulo.core.client.BatchScanner
 import org.geotools.geometry.DirectPosition2D
-import org.geotools.geometry.Envelope2D
 import org.geotools.referencing.CRS
 import org.opengis.geometry.Envelope
 import org.opengis.referencing.crs.CoordinateReferenceSystem
 import org.opengis.referencing.operation.MathTransform
 import java.awt.Color
 import java.awt.Graphics2D
-import java.awt.Point
-import java.awt.Transparency
-import java.awt.color.ColorSpace
 import java.awt.image.BufferedImage
-import java.awt.image.ComponentColorModel
-import java.awt.image.DataBuffer
-import java.awt.image.PixelInterleavedSampleModel
-import java.awt.image.Raster
 import java.util.Map.Entry;
 
 import com.github.davidmoten.geo.GeoHash
 import joms.geotools.OmsGridFactorySpi
-import joms.oms.ossimDataObjectStatus
 import org.apache.accumulo.core.Constants
-import org.apache.accumulo.core.client.BatchWriterConfig
 import org.apache.accumulo.core.client.Connector
 import org.apache.accumulo.core.client.Instance
 import org.apache.accumulo.core.client.ZooKeeperInstance
@@ -39,7 +34,6 @@ import org.apache.accumulo.core.data.Value
 import org.apache.hadoop.io.Text
 import org.geotools.coverage.grid.io.GridFormatFinder
 import org.junit.*
-import joms.oms.Chipper
 
 import javax.imageio.ImageIO
 
@@ -367,6 +361,100 @@ class GridFactorySpiTest
 
   @Test void testAccumulo()
   {
+    TileCacheHibernate hibernate = new TileCacheHibernate()
+    hibernate.initialize([
+         //   driverClassName:"org.postgresql.Driver",
+         driverClassName:"org.postgis.DriverWrapper",
+         username:"postgres",
+         password:"postgres",
+        // url:"jdbc:postgresql:testdb"
+         url:"jdbc:postgresql_postGIS:testdb",
+         accumuloInstanceName:"accumulo",
+         accumuloPassword:"root",
+         accumuloUsername:"root",
+         accumuloZooServers:"accumulo-site.radiantblue.local"
+    ])
+
+    TileCacheServiceDAO daoTileCacheService = hibernate.applicationContext.getBean("tileCacheServiceDAO");
+
+    def record = new TileCacheLayerInfo()
+
+    record.name = "BMNG"
+    record.bounds = BoundsUtil.polygonFromBbox("-180,-90,180,90")
+    record = daoTileCacheService.createOrUpdateLayer(record)
+
+    Polygon bounds = BoundsUtil.polygonFromBbox("-180,-90,0,90")
+    String hashId = GeoHash.encodeHash(bounds.centroid.y, bounds.centroid.x, 20)
+
+    println bounds.centroid.x
+
+    //double res, String hashId, Polygon bbox, long z, long x, long y
+
+    def z = 0
+    def x = 0
+    def y = 0
+    TileCacheImageTile tile = new TileCacheImageTile(180.0/256.0,hashId, bounds, x,y,z)
+
+    tile.modify()
+
+    daoTileCacheService.writeTile(tile, record.tileStoreTable)
+
+
+    println "ROWS==================="
+    def ids = daoTileCacheService.getHashIdsWithinConstraint(record.tileStoreTable, [offset:1,maxRows:1000,intersects:BoundsUtil.polygonFromBbox("-180,-90,0,90")])
+    ids.each{hash->
+      println daoTileCacheService.getMetaByHashId(record.tileStoreTable, hash)
+    }
+
+    //daoTileTemplate.findByHashId("tile0","Z00000000000000000000")
+
+
+    //def session = hibernate.openSession()
+    //session.saveOrUpdate(record)
+   // session.flush()
+
+    //Query q=session.getNamedQuery("findLayerInfoByName")
+    //        .setString("name", "My layer");
+
+    //q.list().each{
+    //  println "${it.class}= ${it.toString()}"
+    //}
+    //TileCacheLayerInfo.findByName
+
+   // session.close()
+
+   // println "SESSION ================== ${dao.session}"
+
+    //dao.test()
+    /*
+    Sql sql = Sql.newInstance(user:"postgres",
+                              password:"postgres",
+                              url:"jdbc:postgresql:tilecache-0.1-dev",
+                              driverClassName:"org.postgresql.Driver")
+
+    AccumuloApi accumulo =  new AccumuloApi(username:"root", password:"root",
+            instanceName:"accumulo",
+            zooServers:"accumulo-site.radiantblue.local"
+    )
+    accumulo.initialize()
+
+    TileCacheApi tileCacheApi = new TileCacheApi(accumulo:accumulo, sql:sql)
+    Layer layer = new Layer(name:"reference",
+            minLevel:0,
+            maxLevel:20,
+            epsgCode:"epsg:4326",
+            tileWidth: 256,
+            tileHeight:256,
+            bbox:"-180,-90,180,90")
+
+    println "Testing create layer!!!!!"
+    tileCacheApi.createLayer(layer)
+
+    println tileCacheApi.getLayers()
+    sql.close()
+    */
+
+  /*
     def table = "testAccumulo"
     AccumuloApi accumulo = new AccumuloApi(username:"root", password:"root",
                                            instanceName:"accumulo",
@@ -396,6 +484,12 @@ class GridFactorySpiTest
 
    // println tile.midPoint
    // println GeoHash.decodeHash(hash)
+*/
+
+
+
+
+
 
 /*
     CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326");
