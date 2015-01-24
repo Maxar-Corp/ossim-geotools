@@ -1,7 +1,12 @@
 package joms.geotools.tileapi.hibernate.controller
 
+import joms.geotools.tileapi.hibernate.HibernateUtility
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
+import joms.geotools.tileapi.hibernate.domain.TileCacheTileTableTemplate
+import org.hibernate.Criteria
 import org.hibernate.Query
+import org.hibernate.criterion.Order
+import org.hibernate.criterion.Restrictions
 import org.springframework.stereotype.Repository
 
 import javax.transaction.Transactional
@@ -32,5 +37,15 @@ class TileCacheLayerInfoDAO  extends DAOImpl<TileCacheLayerInfo> implements DAO<
     Query query = session.getNamedQuery("findAllLayerInfos")
 
     query.list
+  }
+
+  String sqlFromCriteria()
+  {
+    Criteria criteria = session.createCriteria(TileCacheTileTableTemplate.class)
+            .add( Restrictions.like("hashId", "Iz%") )
+            .addOrder( Order.desc("modifiedDate") )
+
+    HibernateUtility.toSql(session, criteria)
+
   }
 }

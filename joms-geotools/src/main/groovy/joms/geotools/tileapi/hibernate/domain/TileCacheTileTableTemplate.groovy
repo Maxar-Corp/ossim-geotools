@@ -46,7 +46,7 @@ class TileCacheTileTableTemplate
 
   @Column(name = "modified_date", columnDefinition = "timestamp with time zone not null")
   @Temporal(TemporalType.TIMESTAMP)
-  Date modified_date;
+  Date modifiedDate;
 
 
   void bind(def data)

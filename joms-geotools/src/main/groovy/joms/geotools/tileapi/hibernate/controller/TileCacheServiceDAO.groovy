@@ -6,6 +6,7 @@ import groovy.sql.Sql
 import joms.geotools.accumulo.AccumuloApi
 import joms.geotools.accumulo.ImageTileKey
 import joms.geotools.accumulo.TileCacheImageTile
+import joms.geotools.tileapi.DateUtil
 import joms.geotools.tileapi.hibernate.TileCacheHibernate
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
 import joms.geotools.tileapi.hibernate.domain.TileCacheTileTableTemplate
@@ -56,6 +57,15 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     sqlSession?.close()
   }
 
+  boolean tableExists(String table)
+  {
+    def result
+
+    result = sql.connection.metaData.getTables(null, null, table,null)
+
+
+    result?.first()
+  }
   @Transactional
   private void createTileStore(String target)
   {
@@ -93,6 +103,8 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   {
     String defaultTileStore = "omar_tilecache_${layerInfo.name.toLowerCase()}_tiles"
     TileCacheLayerInfo layer = layerInfoTableDAO.findByName(layerInfo.name)
+
+   println "TABLE ${defaultTileStore} Exists???? ${tableExists(defaultTileStore)}"
     if(layer)
     {
       layer.copyNonNullValues(layerInfo)
@@ -101,6 +113,10 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
       if(layerInfo.name == layer.name)
       {
         layerInfoTableDAO.update(layer)
+      }
+      if(layer.tileStoreTable&&!tableExists(layer.tileStoreTable))
+      {
+        createTileStore(layer.tileStoreTable)
       }
     }
     else
@@ -111,7 +127,10 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
       }
 
       layerInfoTableDAO.save(layerInfo)
-      createTileStore(layerInfo.tileStoreTable)
+      if(!tableExists(layerInfo.tileStoreTable))
+      {
+        createTileStore(layerInfo.tileStoreTable)
+      }
       accumuloApi.createTable(layerInfo.tileStoreTable)
       layer = layerInfo
     }
@@ -124,7 +143,10 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     TileCacheLayerInfo layer = layerInfoTableDAO.findByName(name)
     if(layer)
     {
-      sql.execute("DROP TABLE ${layer.tileStoreTable};".toString())
+      if(tableExists(layer.tileStoreTable))
+      {
+        sql.execute("DROP TABLE ${layer.tileStoreTable};".toString())
+      }
       accumuloApi.deleteTable(layer.tileStoreTable)
       layerInfoTableDAO.delete(layer)
     }
@@ -154,12 +176,23 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
       if(constraints.intersects)
       {
         if(whereClause) whereClause += conjunction
-        whereClause += "ST_Intersects(ST_GeometryFromText('${constraints.intersects}'),bounds)"
+        whereClause += "(ST_Intersects(ST_GeometryFromText('${constraints.intersects}'),bounds))"
       }
-      if(constraints.afterDate)
+      if(constraints.afterDate&&constraints.beforeDate)
       {
         if(whereClause) whereClause += conjunction
-        whereClause
+        whereClause += "(modified_date BETWEEN '${DateUtil.formatTimezone(constraints.afterDate)}' AND '${DateUtil.formatTimezone(constraints.beforeDate)}')"
+
+      }
+      else if(constraints.afterDate)
+      {
+        if(whereClause) whereClause += conjunction
+        whereClause += "(modified_date > '${DateUtil.formatTimezone(constraints.afterDate)}')"
+      }
+      else if(constraints.beforeDate)
+      {
+        if(whereClause) whereClause += conjunction
+        whereClause += "(modified_date < '${DateUtil.formatTimezone(constraints.beforeDate)}')"
       }
       result = whereClause?"where ${whereClause}":whereClause
     }
@@ -202,8 +235,25 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   }
 
   @Transactional
-  void writeTile(String table, TileCacheImageTile tile) {
+  long getTileCountWithinConstraint(TileCacheLayerInfo layer, HashMap constraints)
+  {
+    String table = layer.tileStoreTable
+    def count = 0
+    if(table)
+    {
+      def queryString = "select count(hash_id) as count from ${table} ${createWhereClause(constraints)}".toString()
+      def result = sql.firstRow(queryString)
 
+      count = result.count
+    }
+
+    count
+  }
+
+  @Transactional
+  void writeTile(TileCacheLayerInfo layer, TileCacheImageTile tile) {
+
+    String table = layer.tileStoreTable
     def result = sql.firstRow("select * from ${table} where hash_id = '${tile.key.hashId}'".toString())
 
     if (!result)
@@ -224,17 +274,19 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   }
 
   @Transactional
-  def getMetaByKey(String table, ImageTileKey key)
+  def getMetaByKey(TileCacheLayerInfo layer, ImageTileKey key)
   {
+    String table = layer.tileStoreTable
     def row = sql.firstRow("select * from ${table} where hash_id = '${key.rowId}'".toString())
-    TileCacheTileTableTemplate result
+    TileCacheTileTableTemplate result = new  TileCacheTileTableTemplate()
 
     result.bindRow(row)
   }
 
   @Transactional
-  def getTileByKey(String table, ImageTileKey key)//String hashId)
+  def getTileByKey(TileCacheLayerInfo layer, ImageTileKey key)
   {
+    String table = layer.tileStoreTable
     TileCacheImageTile result
     def meta = sql.firstRow("select * from ${table} where hash_id = '${key.rowId}'".toString())
     if(meta)
@@ -254,8 +306,8 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     result
   }
   @Transactional
-  def getTileDataByKey(String table, ImageTileKey key)//String hashId)
+  def getTileDataByKey(TileCacheLayerInfo layer, ImageTileKey key)
   {
-    accumuloApi.getTile(table, key)?.data
+    accumuloApi.getTile(layer.tileStoreTable, key)?.data
   }
 }

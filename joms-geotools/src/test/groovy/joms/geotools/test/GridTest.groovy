@@ -4,6 +4,7 @@ import com.vividsolutions.jts.geom.Polygon
 import joms.geotools.accumulo.ImageTileKey
 import joms.geotools.accumulo.TileCacheImageTile
 import joms.geotools.tileapi.BoundsUtil
+import joms.geotools.tileapi.hibernate.HibernateUtility
 import joms.geotools.tileapi.hibernate.TileCacheHibernate
 import joms.geotools.tileapi.hibernate.controller.TileCacheLayerInfoDAO
 import joms.geotools.tileapi.hibernate.controller.TileCacheServiceDAO
@@ -184,8 +185,28 @@ class GridFactorySpiTest
     */
   }
 
+  //@Test
+  void hibernateToSql()
+  {
+    TileCacheHibernate hibernate = new TileCacheHibernate()
+    hibernate.initialize([
+            driverClassName:"org.postgresql.Driver",
+            //driverClassName:"org.postgis.DriverWrapper",
+            username:"postgres",
+            password:"postgres",
+            url:"jdbc:postgresql:raster-test",
+            //url:"jdbc:postgresql_postGIS:testdb",
+            accumuloInstanceName:"accumulo",
+            accumuloPassword:"root",
+            accumuloUsername:"root",
+            accumuloZooServers:"accumulo-site.radiantblue.local"
+    ])
 
-  @Test void testAccumulo()
+    def layerInfoTableDAO = hibernate.applicationContext?.getBean("tileCacheLayerInfoDAO")
+//    println layerInfoTableDAO.sqlFromCriteria()
+  }
+  @Test
+  void testAccumulo()
   {
     TileCacheHibernate hibernate = new TileCacheHibernate()
     hibernate.initialize([
@@ -207,6 +228,8 @@ class GridFactorySpiTest
 
     record.name = "BMNG"
     record.bounds = BoundsUtil.polygonFromBbox("-180,-90,180,90")
+
+
     def layer = daoTileCacheService.createOrUpdateLayer(record)
 
     def z = 0
@@ -224,20 +247,21 @@ class GridFactorySpiTest
     tile2.modify()
 
 
-    daoTileCacheService.writeTile(layer.tileStoreTable, tile1)
-    daoTileCacheService.writeTile(layer.tileStoreTable, tile2)
+    daoTileCacheService.writeTile(layer, tile1)
+    daoTileCacheService.writeTile(layer, tile2)
 
-    tile1 = daoTileCacheService.getTileByKey(layer.tileStoreTable, tile1.key)
-    tile2 = daoTileCacheService.getTileByKey(layer.tileStoreTable, tile2.key)
+    tile1 = daoTileCacheService.getTileByKey(layer, tile1.key)
+    tile2 = daoTileCacheService.getTileByKey(layer, tile2.key)
 
     assertNotNull("Unable to retrieve saved tile1", tile1)
     assertNotNull("Unable to retrieve saved tile2", tile2)
 
+    long tileCount = daoTileCacheService.getTileCountWithinConstraint(layer, [:])
+    assertEquals(2,tileCount)
+
     layer = daoTileCacheService.getLayerInfoByName("BMNG")
 
     assertNotNull("BMNG layer was NULL", layer)
-    //layer.name = "BMNG_NEW"
-    //daoTileCacheService.createOrUpdateLayer(layer)
     daoTileCacheService.renameLayer("BMNG", "BMNG_NEW")
 
     layer = daoTileCacheService.getLayerInfoByName("BMNG_NEW")
@@ -249,7 +273,6 @@ class GridFactorySpiTest
     daoTileCacheService.deleteLayer("BMNG_NEW")
     layer = daoTileCacheService.getLayerInfoByName("BMNG_NEW")
     assertNull("BMNG_NEW exists.  Delete failed", layer)
-
 /*
     CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326");
     String table = "test_table"
