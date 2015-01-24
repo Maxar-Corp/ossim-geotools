@@ -209,9 +209,6 @@ class GridFactorySpiTest
     record.bounds = BoundsUtil.polygonFromBbox("-180,-90,180,90")
     def layer = daoTileCacheService.createOrUpdateLayer(record)
 
-    println "LAYER INFO ========== ${layer}"
-    println "LAYER NAME ========== ${layer.name}"
-
     def z = 0
     def x = 0
     def y = 0
@@ -227,107 +224,31 @@ class GridFactorySpiTest
     tile2.modify()
 
 
-    println "TABLE ============== ${layer.tileStoreTable}"
     daoTileCacheService.writeTile(layer.tileStoreTable, tile1)
     daoTileCacheService.writeTile(layer.tileStoreTable, tile2)
 
-    println "GET TILE=================== WITH KEY === ${tile1.key}"
-    println "GET TILE=================== WITH KEY === ${tile2.key}"
-    println daoTileCacheService.getTileByKey(layer.tileStoreTable, tile1.key)
-    println daoTileCacheService.getTileByKey(layer.tileStoreTable, tile2.key)
-   // def ids = daoTileCacheService.getHashIdsWithinConstraint(record.tileStoreTable, [offset:1,
-   //                                                                                  maxRows:1000,
-   //                                                                                  intersects:BoundsUtil.polygonFromBbox("-180,-90,0,90")])
-   // ImageTileKey key = new ImageTileKey()
-   // ids.each{hash->
-   //   key.rowId = hash
-   //   println daoTileCacheService.getMetaByKey(record.tileStoreTable, key)
-   // }
+    tile1 = daoTileCacheService.getTileByKey(layer.tileStoreTable, tile1.key)
+    tile2 = daoTileCacheService.getTileByKey(layer.tileStoreTable, tile2.key)
 
-    //daoTileTemplate.findByHashId("tile0","Z00000000000000000000")
+    assertNotNull("Unable to retrieve saved tile1", tile1)
+    assertNotNull("Unable to retrieve saved tile2", tile2)
 
+    layer = daoTileCacheService.getLayerInfoByName("BMNG")
 
-    //def session = hibernate.openSession()
-    //session.saveOrUpdate(record)
-   // session.flush()
+    assertNotNull("BMNG layer was NULL", layer)
+    //layer.name = "BMNG_NEW"
+    //daoTileCacheService.createOrUpdateLayer(layer)
+    daoTileCacheService.renameLayer("BMNG", "BMNG_NEW")
 
-    //Query q=session.getNamedQuery("findLayerInfoByName")
-    //        .setString("name", "My layer");
+    layer = daoTileCacheService.getLayerInfoByName("BMNG_NEW")
+    assertNotNull("BMNG_NEW doesn't exist.  Rename failed", layer)
 
-    //q.list().each{
-    //  println "${it.class}= ${it.toString()}"
-    //}
-    //TileCacheLayerInfo.findByName
+    layer = daoTileCacheService.getLayerInfoByName("BMNG")
+    assertNull("BMNG exists.  Rename failed", layer)
 
-   // session.close()
-
-   // println "SESSION ================== ${dao.session}"
-
-    //dao.test()
-    /*
-    Sql sql = Sql.newInstance(user:"postgres",
-                              password:"postgres",
-                              url:"jdbc:postgresql:tilecache-0.1-dev",
-                              driverClassName:"org.postgresql.Driver")
-
-    AccumuloApi accumulo =  new AccumuloApi(username:"root", password:"root",
-            instanceName:"accumulo",
-            zooServers:"accumulo-site.radiantblue.local"
-    )
-    accumulo.initialize()
-
-    TileCacheApi tileCacheApi = new TileCacheApi(accumulo:accumulo, sql:sql)
-    Layer layer = new Layer(name:"reference",
-            minLevel:0,
-            maxLevel:20,
-            epsgCode:"epsg:4326",
-            tileWidth: 256,
-            tileHeight:256,
-            bbox:"-180,-90,180,90")
-
-    println "Testing create layer!!!!!"
-    tileCacheApi.createLayer(layer)
-
-    println tileCacheApi.getLayers()
-    sql.close()
-    */
-
-  /*
-    def table = "testAccumulo"
-    AccumuloApi accumulo = new AccumuloApi(username:"root", password:"root",
-                                           instanceName:"accumulo",
-                                           zooServers:"accumulo-site.radiantblue.local"
-                                          )
-
-    accumulo.initialize()
-    accumulo.createTable(table)
-
-    def buffer = createImage(256,256)
-    def leftHash =  GeoHash.encodeHash(0.0,-90.0,20)
-    def rightHash = GeoHash.encodeHash(0.0,90.0,20)
-
-    println "Left: ${leftHash}, Right: ${rightHash}"
-    def tiles = [new Tile(hashId:leftHash, image:buffer),
-                 new Tile(hashId:rightHash, image:buffer)]
-
-    accumulo.writeTiles(table, tiles, "", "")
-   // accumulo.deleteRow(leftHash as String)
-   // accumulo.deleteRow(rightHash as String)
-    def returnTiles = accumulo.getTiles(table, [leftHash,
-                                         rightHash], "","")
-    accumulo.writeTile(table, tiles[0], "", "")
-
-    println returnTiles
-    accumulo.close()
-
-   // println tile.midPoint
-   // println GeoHash.decodeHash(hash)
-*/
-
-
-
-
-
+    daoTileCacheService.deleteLayer("BMNG_NEW")
+    layer = daoTileCacheService.getLayerInfoByName("BMNG_NEW")
+    assertNull("BMNG_NEW exists.  Delete failed", layer)
 
 /*
     CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326");

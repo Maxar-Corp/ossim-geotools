@@ -27,7 +27,6 @@ class AccumuloApi implements InitializingBean
   String password
   String instanceName
   String zooServers
-  boolean automergeTiles = true
   private instance
   private connector
 
@@ -78,11 +77,12 @@ class AccumuloApi implements InitializingBean
   {
 
   }
-  Scanner getRow(String rowId)
+  Scanner getRow(String table, ImageTileKey key)
   {
     // Create a scanner
     Scanner scanner = connector.createScanner(table, Constants.NO_AUTHS);
-    scanner.setRange(new Range(new Text(rowId)));
+    Range range = new Range(new Text(key.rowId))
+    scanner.setRange(range);
     scanner
   }
   void renameTable(String oldTableName, String newTableName)
@@ -110,14 +110,12 @@ class AccumuloApi implements InitializingBean
     }
   }
 
-  void deleteRow(String rowId)
+  void deleteRow(String table, ImageTileKey key)
   {
-    deleteRow(getRow(rowId))
-    //def id = new Text(rowId)
-    //connector?.tableOperations().deleteRows(table, id, null)
+    deleteRow(getRow(table, key))
   }
 
-  void deleteRow(String table, Scanner scanner)
+  void deleteRow(Scanner scanner)
   {
     Mutation deleter = null;
     def batchWriter = createBatchWriter(table);
@@ -140,37 +138,21 @@ class AccumuloApi implements InitializingBean
     }
     batchWriter?.close()
   }
-  private void merge(BufferedImage src, BufferedImage dest)
-  {
-    if(src&&dest)
-    {
-      Graphics g = dest.getGraphics()
-      g.drawImage(src, 0, 0, null)
-      g.dispose()
-    }
-  }
+//  private void merge(BufferedImage src, BufferedImage dest)
+//  {
+//    if(src&&dest)
+//    {
+//      Graphics g = dest.getGraphics()
+//      g.drawImage(src, 0, 0, null)
+//      g.dispose()
+//    }
+//  }
   void writeTile(String table, byte[] tile, ImageTileKey key)//String hashId, String columnFamily, String columnQualifier)
   {
     def bwc = new BatchWriterConfig()
-    def tileToMerge
-    if(automergeTiles)
-    {
-      tileToMerge = getTile(table, key)
-    }
-
-    // Need to add merging support
-    //
     def row    = new Text(key.rowId)
     Mutation m = new Mutation(row);
     def imgResult = tile//.image
-    if(tileToMerge?.image)
-    {
-//      def buf = tileToMerge.getAsBufferedImage()
-
-//      merge(tile.image, tileToMerge.image)
-      //     imgResult = tileToMerge.image
-    }
-    // m.put(columnFamily.bytes, columnQualifier.bytes, encodeToByteBuffer(imgResult));
     m.put(key.family?.bytes, key.qualifier?.bytes, imgResult);
     def batchWriter = createBatchWriter(table);
     try{
@@ -187,76 +169,18 @@ class AccumuloApi implements InitializingBean
   void writeTile(String table, TileCacheImageTile tile)//Tile tile, String columnFamily, String columnQualifier)
   {
     writeTile(table, tile.data, tile.key)
-    /*
-    def bwc = new BatchWriterConfig()
-    def tileToMerge
-    if(automergeTiles)
-    {
-      tileToMerge = getTile(table, tile.hashId, columnFamily, columnQualifier)
-    }
-
-    // Need to add merging support
-    //
-    def row    = new Text(tile.hashId)
-    Mutation m = new Mutation(row);
-    def imgResult = tile.image
-    if(tileToMerge?.image)
-    {
-  //    merge(tile.image, tileToMerge.image)
-  //    imgResult = tileToMerge.image
-    }
-    m.put(columnFamily.bytes, columnQualifier.bytes, imgResult);
-    def batchWriter = createBatchWriter(table);
-    try{
-      batchWriter?.addMutation(m);
-      batchWriter?.flush()
-    }
-    catch(def e)
-    {
-
-    }
-    batchWriter?.close()
-    */
   }
   void writeTiles(String table, TileCacheImageTile[] tileList)throws Exception//, String columnFamily, String columnQualifier)
   {
-  /*
-    def tilesToMergeList
-    if(automergeTiles)
-    {
-      def keyList = [] as ImageTileKey[]
-      tileList.each{it->
-        keyList<<it.key
-      }
-      if(keyList)
-      {
-        tilesToMergeList = getTiles(table, keyList)
-      }
-    }
-    else
-    {
-      // tilesToMergeList = tileList
-    }
-    */
     def batchWriter
     try {
       batchWriter = createBatchWriter(table);
       tileList.each { tile ->
-        // need to add merging support
-        //
-//        def tileToMerge = tilesToMergeList?."${tile.hashId}"
         def image = tile.data
         def row = new Text(tile.key.rowId)
         Mutation m = new Mutation(row);
-//        if (tileToMerge) {
-       //   merge(tile.image, tileToMerge.image)
-       //   image = tileToMerge.image
-//        }
-        // output the
         m.put(tile.key.family.bytes, tile.key.qualifier.bytes, tile.data);
-
         batchWriter?.addMutation(m);
-
       }
       batchWriter?.flush()
     }
@@ -272,16 +196,9 @@ class AccumuloApi implements InitializingBean
     BatchScanner scanner =createBatchScanner(table);
     TileCacheImageTile result
     try{
-      // this will get all tiles with the row ID
-      //def range = new Range(hashString);
-
-      // this will get exact tile
       def range = Range.exact(key.rowId, key.family, key.qualifier)
 
       scanner?.setRanges([range] as Collection)
-      //scanner.setRange(range)
-      // lets get the exact ID
-      //  def imgVerify
       for (Map.Entry<Key,Value> entry : scanner)
       {
         key.visibility = entry.key.columnVisibility
@@ -316,7 +233,6 @@ class AccumuloApi implements InitializingBean
       {
         TileCacheImageTile tile = new TileCacheImageTile()
         tile.data = entry.getValue().get() as byte[]
-        //tile.image = ImageIO.read(new java.io.ByteArrayInputStream(entry.getValue().get()))
         tile.key = new ImageTileKey(rowId:entry.getKey().row,
                 family:entry.key.columnFamily,
                 qualifier:entry.key.columnQualifier,

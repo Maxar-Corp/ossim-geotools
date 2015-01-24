@@ -184,12 +184,17 @@ http://www.springframework.org/schema/context/spring-context.xsd">
   }
   private void createTableFunction()
   {
-    String sqlString = """CREATE OR REPLACE FUNCTION create_table_if_not_exists(t_name text) RETURNS VOID AS
+    String sqlString = """CREATE OR REPLACE FUNCTION create_table_if_not_exists(table_name text, stmt text) RETURNS VOID AS
             \$\$
             BEGIN
-                CREATE TABLE my_table_name(my_column INT);
-            EXCEPTION WHEN duplicate_table THEN
-                -- Do nothing
+              IF NOT EXISTS (
+                  SELECT *
+                  FROM   pg_catalog.pg_tables
+                  WHERE    tablename  = table_name
+                  )
+              THEN
+                 EXECUTE stmt;
+              END IF;
             END;
             \$\$
             LANGUAGE plpgsql;"""
@@ -229,9 +234,6 @@ http://www.springframework.org/schema/context/spring-context.xsd">
                                                               \$\$
                                                               LANGUAGE plpgsql VOLATILE;
                                                               """.toString()
-
-
-println sqlString
 
     try{
       Sql sql = getNewSqlInstance()

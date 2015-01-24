@@ -57,37 +57,57 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   }
 
   @Transactional
-  void createTileStore(String target)
+  private void createTileStore(String target)
   {
    // def tempSession = sessionFactory.openSession()
    // Sql sql = new Sql(tempSession.connection())
      //create_table_if_not_exists
-    //
+    //CREATE TABLE ${target} as select * from tile_cache_tile_table_template with no data;
+    String createStmt =  "CREATE TABLE ${target} as select * from tile_cache_tile_table_template with no data;"
+//
     String sqlString = """
-        CREATE TABLE ${target} as select * from tile_cache_tile_table_template with no data;
+        SELECT create_table_if_not_exists('${target}','${createStmt}');
         SELECT create_index_if_not_exists('${target}', 'bounds_idx', 'USING GIST(bounds)');
         SELECT create_index_if_not_exists('${target}', 'hash_id_idx', '(hash_id)');
         SELECT create_index_if_not_exists('${target}', 'res_idx', '(res)');
     """.toString()
     sql.execute(sqlString)
-   // sql.close()
-   // tempSession.close()
+  }
+
+  @Transactional renameLayer(String oldName, String newName)
+  {
+    TileCacheLayerInfo layer = layerInfoTableDAO.findByName(oldName)
+    if(layer)
+    {
+      def oldTileStore = layer.tileStoreTable
+      String defaultTileStore = "omar_tilecache_${newName.toLowerCase()}_tiles"
+      layer.tileStoreTable = defaultTileStore
+      layer.name = newName
+      layerInfoTableDAO.update(layer)
+      sql.execute("ALTER TABLE ${oldTileStore} RENAME TO ${defaultTileStore}".toString());
+      accumuloApi.renameTable(oldTileStore, defaultTileStore)
+    }
   }
   @Transactional
   TileCacheLayerInfo createOrUpdateLayer(TileCacheLayerInfo layerInfo)
   {
+    String defaultTileStore = "omar_tilecache_${layerInfo.name.toLowerCase()}_tiles"
     TileCacheLayerInfo layer = layerInfoTableDAO.findByName(layerInfo.name)
-    println "LAYER============= ${layer} "
     if(layer)
     {
       layer.copyNonNullValues(layerInfo)
-      layerInfoTableDAO.update(layer)
+
+      // rename not supported here
+      if(layerInfo.name == layer.name)
+      {
+        layerInfoTableDAO.update(layer)
+      }
     }
     else
     {
       if(!layerInfo.tileStoreTable)
       {
-        layerInfo.tileStoreTable = "omar_tilecache_${layerInfo.name.toLowerCase()}_tiles"
+        layerInfo.tileStoreTable = defaultTileStore
       }
 
       layerInfoTableDAO.save(layerInfo)
@@ -99,19 +119,15 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   }
 
   @Transactional
-  TileCacheLayerInfo changeLayerName(String oldName, String newName)
-  {
-    TileCacheLayerInfo layer = layerInfoTableDAO.findByName(oldName)
-    if(layer)
-    {
-      layer.name = newName
-      layerInfoTableDAO.update(layer)
-    }
-  }
-  @Transactional
   void deleteLayer(String name)
   {
-
+    TileCacheLayerInfo layer = layerInfoTableDAO.findByName(name)
+    if(layer)
+    {
+      sql.execute("DROP TABLE ${layer.tileStoreTable};".toString())
+      accumuloApi.deleteTable(layer.tileStoreTable)
+      layerInfoTableDAO.delete(layer)
+    }
   }
 
   @Transactional
@@ -210,7 +226,6 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   @Transactional
   def getMetaByKey(String table, ImageTileKey key)
   {
-    println "KEY ============ ${key.rowId}"
     def row = sql.firstRow("select * from ${table} where hash_id = '${key.rowId}'".toString())
     TileCacheTileTableTemplate result
 

@@ -41,7 +41,6 @@ class TileCacheTileTableTemplate
 //  @Column(name="bounds", nullable=false, columnDefinition="Polygon")
 //  @Type(type="org.hibernate.spatial.GeometryType")
   @Column(name="bounds", columnDefinition="Geometry", nullable=false)
-  //@Type(type = "org.hibernatespatial.GeometryUserType")
   @Type(type="org.hibernate.spatial.GeometryType")
   Polygon bounds
 
