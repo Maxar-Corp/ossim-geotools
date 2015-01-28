@@ -101,7 +101,7 @@ class TileCacheHibernate {
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 
-  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+  http://www.springframework.org/schema/beans/spring-beans.xsd
 
 http://www.springframework.org/schema/context
 http://www.springframework.org/schema/context/spring-context.xsd">
@@ -121,7 +121,16 @@ http://www.springframework.org/schema/context/spring-context.xsd">
             xmlns:util="http://www.springframework.org/schema/util"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:tx="http://www.springframework.org/schema/tx"
-            xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://grails.org/schema/gorm http://grails.org/schema/gorm/gorm.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
+            xsi:schemaLocation="http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://grails.org/schema/gorm
+            http://grails.org/schema/gorm/gorm.xsd
+            http://www.springframework.org/schema/util
+            http://www.springframework.org/schema/util/spring-util.xsd
+            http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx.xsd"
                  >
 
           <bean id="accumuloApi" class="joms.geotools.tileapi.accumulo.AccumuloApi" destroy-method="close">
@@ -290,6 +299,8 @@ http://www.springframework.org/schema/context/spring-context.xsd">
     def springConfig = getSpringConfiguration()
     try{
       applicationContext = new GenericXmlApplicationContext()
+      applicationContext.setValidating(false);
+
       applicationContext.load(new ByteArrayResource(hibProperties.getBytes()));
       applicationContext.load(new ByteArrayResource(springConfig.getBytes()))
       //applicationContext.load("classpath:hibernate-config.xml");

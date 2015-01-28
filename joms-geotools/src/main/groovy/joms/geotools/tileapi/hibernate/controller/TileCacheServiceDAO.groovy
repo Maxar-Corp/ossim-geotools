@@ -297,6 +297,21 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
         if(whereClause) whereClause += conjunction
         whereClause += "(modified_date < '${DateUtil.formatTimezone(constraints.beforeDate)}')"
       }
+      else if(constraints.z)
+      {
+        if(whereClause) whereClause += conjunction
+        whereClause += "(z = ${cosntraints.z})"
+      }
+      else if(constraints.x)
+      {
+        if(whereClause) whereClause += conjunction
+        whereClause += "(x = ${cosntraints.x})"
+      }
+      else if(constraints.y)
+      {
+        if(whereClause) whereClause += conjunction
+        whereClause += "(y = ${cosntraints.y})"
+      }
       result = whereClause?"where ${whereClause}":whereClause
     }
 
@@ -307,7 +322,9 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
    * afterDate: Date
    * beforeDate: Date
    * betweenDate:[Date, Date]
-   *
+   * z:
+   * x:
+   * y:
    * If you want polygon intersects
    * intersect:<jts Polygon object>
    *

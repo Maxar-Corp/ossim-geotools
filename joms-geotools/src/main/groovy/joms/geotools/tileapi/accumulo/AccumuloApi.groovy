@@ -214,7 +214,7 @@ class AccumuloApi implements InitializingBean
     result
   }
 
-  def getTiles(String table, ImageTileKey[] keyList, String columnFamily, String columnQualifier)
+  def getTiles(String table, ImageTileKey[] keyList)
   {
     def result = [:]
     BatchScanner scanner =createBatchScanner(table);

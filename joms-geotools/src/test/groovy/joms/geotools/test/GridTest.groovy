@@ -1,6 +1,5 @@
 package joms.geotools.test
 
-import geoscript.geom.Bounds
 import geoscript.proj.Projection
 import joms.geotools.tileapi.accumulo.AccumuloTileGenerator
 import joms.geotools.tileapi.hibernate.TileCacheHibernate
@@ -15,7 +14,6 @@ import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 
-import joms.geotools.OmsGridFactorySpi
 import org.geotools.coverage.grid.io.GridFormatFinder
 import org.junit.*
 
@@ -27,15 +25,6 @@ class GridFactorySpiTest
 {
   private final String worldInputFile = System.properties["WORLD_IMAGE_FILE"]
 
-  @Test void testAvailableFormatList()
-  {
-    println this.properties
-    def result = GridFormatFinder.availableFormats.find {
-      it instanceof OmsGridFactorySpi
-    }
-
-    assertNotNull(result)
-  }
   private def createImage(int w, int h, Color c = new Color(0,0,0,0))
   {
     def anImage = new BufferedImage ( w, h, BufferedImage.TYPE_4BYTE_ABGR );
@@ -193,7 +182,6 @@ class GridFactorySpiTest
     TileCacheHibernate hibernate = new TileCacheHibernate()
     hibernate.initialize([
          driverClassName:"org.postgresql.Driver",
-         //driverClassName:"org.postgis.DriverWrapper",
          username:"postgres",
          password:"postgres",
          url:"jdbc:postgresql:raster-test",
@@ -225,6 +213,8 @@ class GridFactorySpiTest
       generator.verbose = true
       generator.generate()
     }
+
+    //daoTileCacheService.getHashIdsWithinConstraint()
   //  daoTileCacheService.deleteLayer("BMNG")
 /*
     layer = daoTileCacheService.createOrUpdateLayer(
