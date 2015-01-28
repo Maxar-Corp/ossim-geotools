@@ -236,7 +236,7 @@ class AccumuloApi implements InitializingBean
                 family:entry.key.columnFamily,
                 qualifier:entry.key.columnQualifier,
                 visibility:entry.key.columnVisibility,
-                timeStamp:entry.key.timestamp)
+                timestamp:entry.key.timestamp)
         if(tile.data)
         {
           result."${tile.hashId}"  = tile
