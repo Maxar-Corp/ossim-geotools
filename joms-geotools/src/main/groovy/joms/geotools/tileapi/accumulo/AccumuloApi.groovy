@@ -1,4 +1,4 @@
-package joms.geotools.accumulo
+package joms.geotools.tileapi.accumulo
 
 import org.apache.accumulo.core.Constants
 import org.apache.accumulo.core.client.BatchScanner
@@ -15,7 +15,6 @@ import org.apache.hadoop.io.Text
 import org.springframework.beans.factory.InitializingBean
 
 import javax.imageio.ImageIO
-import java.awt.Graphics
 import java.awt.image.BufferedImage
 
 /**

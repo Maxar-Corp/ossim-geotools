@@ -1,4 +1,4 @@
-package joms.geotools.accumulo
+package joms.geotools.tileapi.accumulo
 
 import groovy.transform.ToString
 

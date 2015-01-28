@@ -4,6 +4,7 @@ dataSource {
   driverClassName = "org.postgresql.Driver"
   username = "postgres"
   password = "postgres"
+  dialect = "org.hibernate.spatial.dialect.postgis.PostgisDialect"
 }
 
 hibernate {
@@ -20,7 +21,7 @@ environments {
   development {
     dataSource {
       dbCreate = "create-drop" // one of 'create', 'create-drop', 'update', 'validate', ''
-      url = "jdbc:postgresql:tilecache-${appVersion}-dev"
+      url = "jdbc:postgresql://localhost:5432/tilecache-${appVersion}-dev"
     }
   }
   test {

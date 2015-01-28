@@ -1,22 +1,28 @@
 package joms.geotools.tileapi.hibernate.controller
 
-import com.vividsolutions.jts.geom.Polygon
+import com.vividsolutions.jts.geom.Envelope
+import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.io.WKTReader
+import geoscript.geom.Bounds
+import geoscript.layer.Pyramid
+import geoscript.proj.Projection
 import groovy.sql.Sql
-import joms.geotools.accumulo.AccumuloApi
-import joms.geotools.accumulo.ImageTileKey
-import joms.geotools.accumulo.TileCacheImageTile
+import joms.geotools.tileapi.OssimImageTileRenderer
+import joms.geotools.tileapi.accumulo.AccumuloApi
+import joms.geotools.tileapi.accumulo.AccumuloPyramid
+import joms.geotools.tileapi.accumulo.AccumuloTileLayer
+import joms.geotools.tileapi.accumulo.ImageTileKey
+import joms.geotools.tileapi.accumulo.TileCacheImageTile
 import joms.geotools.tileapi.DateUtil
-import joms.geotools.tileapi.hibernate.TileCacheHibernate
+import joms.geotools.tileapi.accumulo.AccumuloTileGenerator
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
 import joms.geotools.tileapi.hibernate.domain.TileCacheTileTableTemplate
-import org.hibernate.Query
+import joms.oms.TileCacheSupport
 import org.hibernate.SessionFactory
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.DisposableBean
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Autowired
-import joms.geotools.tileapi.hibernate.controller.TileCacheLayerInfoDAO
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 
@@ -66,6 +72,102 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
 
     result?.first()
   }
+
+  AccumuloTileLayer newGeoscriptTileLayer(TileCacheLayerInfo layerInfo)
+  {
+    AccumuloTileLayer result
+    if(layerInfo)
+    {
+     // Envelope env = layerInfo.bounds.envelopeInternal
+      Bounds b = new Projection(layerInfo.epsgCode).bounds
+      //new Bounds(env.minX, env.minY, env.maxX, env.maxY)
+   //   if(layerInfo.epsgCode.toLowerCase().trim() == "epsg:4326")
+   //   {
+      def pyramid = new AccumuloPyramid(bounds:b,
+                                        proj:new Projection(layerInfo.epsgCode),
+                                        origin: Pyramid.Origin.TOP_LEFT,
+                                        tileWidth: layerInfo.tileWidth,
+                                        tileHeight: layerInfo.tileHeight
+                                        )
+      pyramid.initializeGrids(layerInfo.minLevel, layerInfo.maxLevel)
+      result = new AccumuloTileLayer(tileCacheService:this,
+              layerInfo:layerInfo,
+              bounds:b,
+              proj:new Projection(layerInfo.epsgCode),
+              name:layerInfo.name,
+              pyramid:pyramid)
+    //  }
+    }
+
+    result
+  }
+  AccumuloTileLayer newGeoscriptTileLayer(String layerName)
+  {
+    newGeoscriptTileLayer(getLayerInfoByName(layerName))
+  }
+  AccumuloTileGenerator[] getTileGenerators(TileCacheLayerInfo layer, String input)
+  {
+
+    TileCacheSupport tileCacheSupport = new TileCacheSupport(256,256,"EPSG:4326")
+
+    def result = []
+
+    //println "TRYING TO OPEN IMAGE ${input}"
+    //println "LAYER ==== ${layer}"
+    try{
+      if(layer&&tileCacheSupport.openImage(input))
+      {
+        //println "HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        int entry = 0
+        int numberOfEntries = tileCacheSupport.getNumberOfEntries()
+
+        //println "N ENTRIES ==== ${numberOfEntries}"
+        //println resolutions
+        for(entry=0;entry<numberOfEntries;++entry)
+        {
+
+          int[] minLevel = [0] as int[]
+          int[] maxLevel = [0] as int[]
+          int numberOfResolutionLevels = tileCacheSupport.getNumberOfResolutionLevels(entry)
+          double gsd = tileCacheSupport.getDegreesPerPixel(entry)
+          joms.oms.Envelope envelope = tileCacheSupport.getEnvelope(entry)
+          Bounds bounds = new Bounds(envelope.minX, envelope.minY, envelope.maxX, envelope.maxY)
+
+         // println "LAYER BOUNDS ===================== ${new Bounds(layer.bounds.envelopeInternal)}"
+          AccumuloTileLayer tileLayer = newGeoscriptTileLayer(layer)
+          double[] resolutions = tileLayer.pyramid.grids*.yResolution as double[]
+
+          def intersections = tileLayer.pyramid.findIntersections(tileCacheSupport, entry)
+
+          if(intersections)
+          {
+            OssimImageTileRenderer tileRenderer = new OssimImageTileRenderer(input, entry,[:])
+            AccumuloTileGenerator generator = new AccumuloTileGenerator(verbose:false,
+                    tileLayer:tileLayer,
+                    tileRenderer:tileRenderer,
+                    startZoom:intersections.minLevel,
+                    endZoom:intersections.maxLevel,
+                    bounds:bounds)
+            result << generator
+          }
+        }
+      }
+    }
+    catch(def e)
+    {
+      e.printStackTrace()
+    }
+
+    tileCacheSupport.delete()
+    tileCacheSupport = null
+    result as AccumuloTileGenerator[]
+  }
+
+  AccumuloTileGenerator[] getTileGenerators(String layer, String input)
+  {
+    getTileGenerators(getLayerInfoByName(layer), input)
+  }
+
   @Transactional
   private void createTileStore(String target)
   {
@@ -98,13 +200,14 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
       accumuloApi.renameTable(oldTileStore, defaultTileStore)
     }
   }
+
   @Transactional
   TileCacheLayerInfo createOrUpdateLayer(TileCacheLayerInfo layerInfo)
   {
     String defaultTileStore = "omar_tilecache_${layerInfo.name.toLowerCase()}_tiles"
     TileCacheLayerInfo layer = layerInfoTableDAO.findByName(layerInfo.name)
 
-   println "TABLE ${defaultTileStore} Exists???? ${tableExists(defaultTileStore)}"
+   //println "TABLE ${defaultTileStore} Exists???? ${tableExists(defaultTileStore)}"
     if(layer)
     {
       layer.copyNonNullValues(layerInfo)
@@ -260,7 +363,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     {
       sql.executeInsert """insert into ${table} (hash_id,res,x,y,z,modified_date, bounds) values ('${tile.hashId}', ${tile.res},
                             ${tile.x}, ${tile.y},
-                            ${tile.z}, '${tile.modifiedDate}', ST_GeometryFromText('${tile.bounds.toString()}'))""".toString()
+                            ${tile.z}, '${tile.modifiedDate}', ST_GeometryFromText('${tile.bounds.polygon.g.toString()}'))""".toString()
     }
     else
     {
@@ -299,7 +402,8 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
         result.z      = meta.z?.toLong()
         result.res    = meta.res?.toDouble()
         if(meta.modified_date) result.modifiedDate = new Date(meta.modified_date.time)
-        result.bounds = new WKTReader().read(meta.bounds.toString())
+        Geometry wktResult = new WKTReader().read(meta.bounds.toString())
+        result.bounds = new Bounds(wktResult.envelopeInternal)//new WKTReader().read(meta.bounds.toString())
       }
      }
 

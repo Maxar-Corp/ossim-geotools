@@ -106,10 +106,11 @@ class TileCacheHibernate {
 http://www.springframework.org/schema/context
 http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:component-scan base-package="joms.geotools.tileapi.hibernate.controllers" />
+    <context:component-scan base-package="joms.geotools.tileapi.hibernate,joms.geotools.tileapi.accumulo" />
     <context:annotation-config />
-          <bean name="tileCacheLayerInfoDAO" class="joms.geotools.tileapi.hibernate.controller.TileCacheLayerInfoDAO" />
-          <bean name="tileCacheServiceDAO" class="joms.geotools.tileapi.hibernate.controller.TileCacheServiceDAO" />
+    <bean name="tileCacheLayerInfoDAO" class="joms.geotools.tileapi.hibernate.controller.TileCacheLayerInfoDAO" />
+    <bean name="tileCacheServiceDAO" class="joms.geotools.tileapi.hibernate.controller.TileCacheServiceDAO" />
+    <bean name="accumuloTileLayer" class="joms.geotools.tileapi.accumulo.AccumuloTileLayer" />
 </beans>
 """
   }
@@ -123,7 +124,7 @@ http://www.springframework.org/schema/context/spring-context.xsd">
             xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://grails.org/schema/gorm http://grails.org/schema/gorm/gorm.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd"
                  >
 
-          <bean id="accumuloApi" class="joms.geotools.accumulo.AccumuloApi" destroy-method="close">
+          <bean id="accumuloApi" class="joms.geotools.tileapi.accumulo.AccumuloApi" destroy-method="close">
               <property name="username" value="${map.accumuloUsername?:'root'}"/>
               <property name="password" value="${map.accumuloPassword?:'root'}"/>
               <property name="instanceName" value="${map.accumuloInstanceName?:'accumulo'}"/>

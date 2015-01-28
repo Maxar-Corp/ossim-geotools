@@ -134,27 +134,14 @@ tasks.withType(Test) {
   //        systemProperties['NUMBER_OF_PROCESSORS'] // always returns 1
 }
 
-task runScript( type: JavaExec ) {
- // description 'Run Groovy script'
-
- // main = "joms.geotools.test.OmsFactoryTest"
- // classpath = sourceSets.main.runtimeClasspath
-}
-
-task runSpiTest( type:JavaExec){
-   description 'Run Groovy script'
-
-   main = "joms.geotools.test.GridFactorySpiTest"
-   classpath = sourceSets.main.runtimeClasspath
-
-}
 task runTest(dependsOn: [build]) << {
   println 'running unit tests'
 }
 
-mainClassName = "joms.geotools.test.OmsFactoryTest"
+mainClassName = "joms.geotools.tileapi.app.TileCacheApp"
 
 shadowJar {
+  zip64 true
   mergeServiceFiles()
 }
 jar {

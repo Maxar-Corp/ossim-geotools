@@ -49,6 +49,7 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
         mavenRepo 'http://repository.cloudera.com/artifactory/cloudera-repos/'
+        mavenRepo 'http://www.hibernatespatial.org/repository'
     }
 
     dependencies {
@@ -70,8 +71,14 @@ grails.project.dependency.resolution = {
         ) {
             transitive = false
         }
-       // runtime 'org.postgresql:postgresql:9.3-1100-jdbc4'
-
+        runtime 'org.postgresql:postgresql:9.3-1100-jdbc4'
+        runtime 'org.ossim:joms-geotools:1.0-SNAPSHOT'
+        compile 'org.hibernate:hibernate-spatial:4.3'
+        compile 'org.hibernate:hibernate-core:4.3.8.Final'
+        compile 'org.postgresql:postgresql:9.3-1100-jdbc4'
+      //  compile 'org.springframework:spring-core:4.1.4.RELEASE'
+      //  compile 'org.springframework:spring-context:4.1.4.RELEASE'
+      //  compile 'org.springframework:spring-orm:4.1.4.RELEASE'
     }
 
     plugins {

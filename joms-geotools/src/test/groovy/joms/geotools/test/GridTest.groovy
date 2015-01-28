@@ -1,16 +1,11 @@
 package joms.geotools.test
 
-import com.vividsolutions.jts.geom.Polygon
-import joms.geotools.accumulo.ImageTileKey
-import joms.geotools.accumulo.TileCacheImageTile
-import joms.geotools.tileapi.BoundsUtil
-import joms.geotools.tileapi.hibernate.HibernateUtility
+import geoscript.geom.Bounds
+import geoscript.proj.Projection
+import joms.geotools.tileapi.accumulo.AccumuloTileGenerator
 import joms.geotools.tileapi.hibernate.TileCacheHibernate
-import joms.geotools.tileapi.hibernate.controller.TileCacheLayerInfoDAO
 import joms.geotools.tileapi.hibernate.controller.TileCacheServiceDAO
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
-import joms.geotools.tileapi.hibernate.domain.TileCacheTileTableTemplate
-import org.apache.accumulo.core.client.BatchScanner
 import org.geotools.geometry.DirectPosition2D
 import org.geotools.referencing.CRS
 import org.opengis.geometry.Envelope
@@ -19,21 +14,8 @@ import org.opengis.referencing.operation.MathTransform
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.image.BufferedImage
-import java.util.Map.Entry;
 
-import com.github.davidmoten.geo.GeoHash
 import joms.geotools.OmsGridFactorySpi
-import org.apache.accumulo.core.Constants
-import org.apache.accumulo.core.client.Connector
-import org.apache.accumulo.core.client.Instance
-import org.apache.accumulo.core.client.ZooKeeperInstance
-import org.apache.accumulo.core.client.security.tokens.PasswordToken
-import org.apache.accumulo.core.data.Mutation
-import org.apache.accumulo.core.data.Range
-
-import org.apache.accumulo.core.data.Key;
-import org.apache.accumulo.core.data.Value
-import org.apache.hadoop.io.Text
 import org.geotools.coverage.grid.io.GridFormatFinder
 import org.junit.*
 
@@ -224,168 +206,50 @@ class GridFactorySpiTest
 
     TileCacheServiceDAO daoTileCacheService = hibernate.applicationContext.getBean("tileCacheServiceDAO");
 
-    def record = new TileCacheLayerInfo()
-
-    record.name = "BMNG"
-    record.bounds = BoundsUtil.polygonFromBbox("-180,-90,180,90")
-
-
-    def layer = daoTileCacheService.createOrUpdateLayer(record)
-
-    def z = 0
-    def x = 0
-    def y = 0
-    Polygon bounds = BoundsUtil.polygonFromBbox("-180,-90,0,90")
-    TileCacheImageTile tile1 = new TileCacheImageTile(180.0/256.0, bounds, z,x,y)
-    TileCacheImageTile tile2 = new TileCacheImageTile(180.0/256.0, BoundsUtil.polygonFromBbox("0,-90,180,90"), z,1,y)
-    def image = new BufferedImage(256, 256, BufferedImage.TYPE_4BYTE_ABGR)
-    ByteArrayOutputStream out = new ByteArrayOutputStream()
-    ImageIO.write(image, "tiff", out)
-    tile1.data = out.toByteArray()
-    tile2.data = out.toByteArray()
-    tile1.modify()
-    tile2.modify()
+    TileCacheLayerInfo layer = daoTileCacheService.createOrUpdateLayer(
+            new TileCacheLayerInfo(name:"BMNG",
+            bounds: new Projection("EPSG:4326").bounds.polygon.g,
+            epsgCode: "EPSG:4326",
+            tileHeight:256,
+            tileWidth:256,
+            minLevel:0,
+            maxLevel:24)
+    )
 
 
-    daoTileCacheService.writeTile(layer, tile1)
-    daoTileCacheService.writeTile(layer, tile2)
+    AccumuloTileGenerator[] generators = daoTileCacheService.getTileGenerators("BMNG", "/data/earth2.tif")
+    // generators = daoTileCacheService.getTileGenerators("BMNG","/data/agc_test/2cmv/input1.tif")
+    // generators = daoTileCacheService.getTileGenerators("BMNG","/mnt/data1/agc/Fort_Irwin_Buckeye/FortIrwin_NTC_200905/Orthos/Block01/CompleteMrSid8bit/FortIrwin_NTC_200905_Complete.sid")
 
-    tile1 = daoTileCacheService.getTileByKey(layer, tile1.key)
-    tile2 = daoTileCacheService.getTileByKey(layer, tile2.key)
-
-    assertNotNull("Unable to retrieve saved tile1", tile1)
-    assertNotNull("Unable to retrieve saved tile2", tile2)
-
-    long tileCount = daoTileCacheService.getTileCountWithinConstraint(layer, [:])
-    assertEquals(2,tileCount)
-
-    layer = daoTileCacheService.getLayerInfoByName("BMNG")
-
-    assertNotNull("BMNG layer was NULL", layer)
-    daoTileCacheService.renameLayer("BMNG", "BMNG_NEW")
-
-    layer = daoTileCacheService.getLayerInfoByName("BMNG_NEW")
-    assertNotNull("BMNG_NEW doesn't exist.  Rename failed", layer)
-
-    layer = daoTileCacheService.getLayerInfoByName("BMNG")
-    assertNull("BMNG exists.  Rename failed", layer)
-
-    daoTileCacheService.deleteLayer("BMNG_NEW")
-    layer = daoTileCacheService.getLayerInfoByName("BMNG_NEW")
-    assertNull("BMNG_NEW exists.  Delete failed", layer)
+    generators.each{generator->
+      generator.verbose = true
+      generator.generate()
+    }
+  //  daoTileCacheService.deleteLayer("BMNG")
 /*
-    CoordinateReferenceSystem sourceCRS = CRS.decode("EPSG:4326");
-    String table = "test_table"
-    def accumuloInfo = initAccumulo();
-    accumuloInfo.table = table
-    if(accumuloInfo.connection.tableOperations().exists(table))
-    {
-      accumuloInfo.connection.tableOperations().delete(table)
+    layer = daoTileCacheService.createOrUpdateLayer(
+            new TileCacheLayerInfo(name:"BMNG_3857",
+                    bounds: new Projection("EPSG:3857").bounds.polygon.g,
+                    epsgCode: "EPSG:3857",
+                    tileHeight:256,
+                    tileWidth:256,
+                    minLevel:0,
+                    maxLevel:10)
+    )
+    generators = daoTileCacheService.getTileGenerators("BMNG_3857", "/data/earth2.tif")
+    generators.each{generator->
+      generator.verbose = true
+      generator.generate()
     }
-
-    accumuloInfo.connection.tableOperations().create(table);
-    def bwc = new BatchWriterConfig()
-    accumuloInfo.batchWriter = accumuloInfo.connection.createBatchWriter(accumuloInfo.table, bwc);
-
-    def tiler = new MutiResTiler()
-
-    def w = 256
-    def h = 256
-    tiler.epsgCode           = "EPSG:4326"
-    tiler.minx               = -180.0
-    tiler.miny               = -90.0
-    tiler.maxx               = 180
-    tiler.maxy               = 90
-
-    tiler.initializeFromFile("/data/earth2.tif")
-
-    def tile
-    def chipperOptionsMap = [
-            //cut_wms_bbox:"${minx},${miny},${maxx},${maxy}" as String,
-            cut_height: "${h}" as String,
-            cut_width: "${w}" as String,
-            //'hist-op': 'auto-minmax',
-           // 'hist-op': meta.histogramOperationType,
-            operation: 'ortho',
-            scale_2_8_bit: 'true',
-            'srs': "EPSG:4326",
-            three_band_out: 'true',
-            resampler_filter: "bilinear"
-    ]
-    while((tile = tiler.nextTile())!= null)
-    {
-      def envelope = new Envelope2D(new DirectPosition2D(sourceCRS, tile.minx,tile.miny) ,
-              new DirectPosition2D(sourceCRS, tile.maxx, tile.maxy))
-      def chipper = new Chipper()
-      def mid = tile.midPoint
-      def hashString = GeoHash.encodeHash(mid.y, mid.x)
-      chipperOptionsMap.cut_wms_bbox = "${tile.minx},${tile.miny},${tile.maxx},${tile.maxy}".toString()
-      chipperOptionsMap."image${0}.file"  = tile.files
-      chipperOptionsMap."image${0}.entry"  = tile.entries
-
-      println chipperOptionsMap
-      if(chipper.initialize(chipperOptionsMap)) {
-        println "initialized"
-        def resultArray = []
-
-        def sampleModel = new PixelInterleavedSampleModel(
-                DataBuffer.TYPE_BYTE,
-                w,             // width
-                h,            // height
-                4,                 // pixelStride
-                w * 4,  // scanlineStride
-                (0..<4) as int[] // band offsets
-        )
-        def dataBuffer = sampleModel.createDataBuffer()
-        def chipperResult = chipper.getChip(dataBuffer.data, true)
-        switch (chipperResult) {
-          case ossimDataObjectStatus.OSSIM_FULL.swigValue:
-          case ossimDataObjectStatus.OSSIM_PARTIAL.swigValue:
-            println "GOT DATA!!!!!!!"
-            try {
-              def cs = ColorSpace.getInstance(ColorSpace.CS_sRGB)
-
-              def colorModel = new ComponentColorModel(cs, null,
-                      true, false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE)
-
-              def raster = Raster.createRaster(sampleModel, dataBuffer, new Point(0, 0))
-              def image = new BufferedImage(colorModel, raster, false, null)
-
-              writeTile(accumuloInfo,
-                      envelope,
-                      createImage(w,h, new Color(255,0,0,0)),
-                      "tile",
-                      "bmng".toString())
-
-              println image
-            }
-            catch (e) {
-              e.printStackTrace()
-              //	resultArray << null
-            }
-            break
-          default:
-            println "BAD VALUE"
-            break
-        //Object[] outputRow = RowDataUtil.addRowData(row,
-        //		                                          data.outputRowMeta.size()-(resultArray.size()),
-        //		                                          resultArray as Object []);
-
-        //   println chipperOptionsMap
-        //putRow(data.outputRowMeta, outputRow);
-        }
-      }
-
-
-    }
-  //  tiles(0)
-  //  tiles(1)
-  //  tiles(2)
-  //  tiles(3)
-    //recurse([minx:0,maxx:180,miny:-90,maxy:90], level)
-    accumuloInfo.batchWriter.close()
-
 */
+
+
+   // daoTileCacheService.deleteLayer("BMNG")
+   // AccumuloTileLayer tileLayer = daoTileCacheService.newGeoscriptTileLayer("BMNG")
+
+   // TileGenerator generator = new TileGenerator(verbose:true)
+   // generator.generate(tileLayer, new OssimImageTileRenderer(), 0,2,null)
+
   }
   /*
   @Test void testImageOpen()
