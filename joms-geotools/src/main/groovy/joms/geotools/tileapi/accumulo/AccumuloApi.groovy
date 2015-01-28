@@ -230,7 +230,7 @@ class AccumuloApi implements InitializingBean
 
       for (Map.Entry<Key,Value> entry : scanner)
       {
-        TileCacheImageTile tile = new TileCacheImageTile()
+        TileCacheImageTile tile = new TileCacheImageTile(0,0,0)
         tile.data = entry.getValue().get() as byte[]
         tile.key = new ImageTileKey(rowId:entry.getKey().row,
                 family:entry.key.columnFamily,
