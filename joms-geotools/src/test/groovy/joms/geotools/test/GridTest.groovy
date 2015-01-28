@@ -214,7 +214,10 @@ class GridFactorySpiTest
       generator.generate()
     }
 
-    //daoTileCacheService.getHashIdsWithinConstraint()
+    def hashIds = daoTileCacheService.getHashIdsWithinConstraint(layer, [bounds:new Projection("EPSG:4326").bounds,
+                                                           z:1])
+
+    println hashIds
   //  daoTileCacheService.deleteLayer("BMNG")
 /*
     layer = daoTileCacheService.createOrUpdateLayer(

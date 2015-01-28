@@ -300,17 +300,17 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
       else if(constraints.z)
       {
         if(whereClause) whereClause += conjunction
-        whereClause += "(z = ${cosntraints.z})"
+        whereClause += "(z = ${constraints.z})"
       }
       else if(constraints.x)
       {
         if(whereClause) whereClause += conjunction
-        whereClause += "(x = ${cosntraints.x})"
+        whereClause += "(x = ${constraints.x})"
       }
       else if(constraints.y)
       {
         if(whereClause) whereClause += conjunction
-        whereClause += "(y = ${cosntraints.y})"
+        whereClause += "(y = ${constraints.y})"
       }
       result = whereClause?"where ${whereClause}":whereClause
     }
@@ -334,10 +334,10 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
    * @param constraints can
    */
   @Transactional
-  def getHashIdsWithinConstraint(String table, HashMap constraints)
+  def getHashIdsWithinConstraint(TileCacheLayerInfo layer, HashMap constraints)
   {
     def result = []
-    def queryString = "select hash_id from ${table} ${createWhereClause(constraints)}".toString()
+    def queryString = "select hash_id from ${layer.tileStoreTable} ${createWhereClause(constraints)}".toString()
 
     if(constraints.offset&&constraints.maxRows)
     {
