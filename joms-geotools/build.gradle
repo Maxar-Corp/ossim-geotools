@@ -103,7 +103,7 @@ task createRunScript << {
 
   def file = new File("run.sh")
   file.delete()
-  file << "java -cp build/libs/joms-geotools-1.0-SNAPSHOT.jar:${sourceSets.main.runtimeClasspath.join(":")} \$1"
+  file << "java -cp build/libs/joms-geotools-1.0-SNAPSHOT.jar:${sourceSets.main.runtimeClasspath.join(":")} \$*"
 
 }
 
@@ -139,10 +139,14 @@ task runTest(dependsOn: [build]) << {
 }
 
 mainClassName = "joms.geotools.tileapi.app.TileCacheApp"
+import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
 
 shadowJar {
   zip64 true
   mergeServiceFiles()
+  mergeGroovyExtensionModules()
+  mergeServiceFiles('META-INF/spring.schema')
+  mergeServiceFiles('META-INF/spring.handlers')
 }
 jar {
   manifest {
