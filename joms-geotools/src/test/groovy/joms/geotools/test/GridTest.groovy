@@ -205,19 +205,23 @@ class GridFactorySpiTest
     )
 
 
-    AccumuloTileGenerator[] generators = daoTileCacheService.getTileGenerators("BMNG", "/data/earth2.tif")
+  //  AccumuloTileGenerator[] generators = daoTileCacheService.getTileGenerators("BMNG", "/data/earth2.tif")
     // generators = daoTileCacheService.getTileGenerators("BMNG","/data/agc_test/2cmv/input1.tif")
     // generators = daoTileCacheService.getTileGenerators("BMNG","/mnt/data1/agc/Fort_Irwin_Buckeye/FortIrwin_NTC_200905/Orthos/Block01/CompleteMrSid8bit/FortIrwin_NTC_200905_Complete.sid")
 
-    generators.each{generator->
-      generator.verbose = true
-      generator.generate()
-    }
+  //  generators.each{generator->
+  //    generator.verbose = true
+  //    generator.generate()
+  //  }
 
     def hashIds = daoTileCacheService.getHashIdsWithinConstraint(layer, [bounds:new Projection("EPSG:4326").bounds,
-                                                           z:1])
+                                                                         z:1])
+    def tiles = daoTileCacheService.getTilesWithinConstraint(layer, [bounds:new Projection("EPSG:4326").bounds,
+                                                                         z:1])
 
-    println hashIds
+    //println h
+    //ashIds
+    //println tiles
   //  daoTileCacheService.deleteLayer("BMNG")
 /*
     layer = daoTileCacheService.createOrUpdateLayer(

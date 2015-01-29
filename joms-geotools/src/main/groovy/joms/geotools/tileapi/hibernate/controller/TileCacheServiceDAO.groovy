@@ -353,6 +353,53 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     }
     result
   }
+  @Transactional
+  def getTilesWithinConstraint(TileCacheLayerInfo layer, HashMap constraints)
+  {
+    def result = []
+    def queryString = "select * from ${layer.tileStoreTable} ${createWhereClause(constraints)}".toString()
+    def metaRows = [:]
+    def hashIds = []
+
+    if(constraints.offset&&constraints.maxRows)
+    {
+      sql.eachRow(queryString, constraints.offset, constraints.maxRows){row->
+        metaRows."${row.hash_id}" = new TileCacheTileTableTemplate().bindSql(row)
+        hashIds << new ImageTileKey(rowId:row.hash_id)
+      }
+    }
+    else
+    {
+      sql.eachRow(queryString){row->
+        metaRows."${row.hash_id}" = new TileCacheTileTableTemplate().bindSql(row)
+        hashIds << new ImageTileKey(rowId:row.hash_id)
+      }
+    }
+
+    if(hashIds)
+    {
+
+      def tiles        = accumuloApi.getTiles(layer.tileStoreTable, hashIds as ImageTileKey[])
+      tiles.each{k,v->
+
+        TileCacheImageTile tile = v as  TileCacheImageTile
+        def row = metaRows."${k}"
+        if(row)
+        {
+          tile.x      = row.x
+          tile.y      = row.y
+          tile.z      = row.z
+          tile.res    = row.res
+          if(metaRows.modified_date) tile.modifiedDate = row.modifiedDate
+          tile.bounds = new Bounds(row.bounds.envelopeInternal)//new WKTReader().read(meta.bounds.toString())
+
+          result << tile
+        }
+      }
+
+    }
+    result
+  }
 
   @Transactional
   long getTileCountWithinConstraint(TileCacheLayerInfo layer, HashMap constraints)

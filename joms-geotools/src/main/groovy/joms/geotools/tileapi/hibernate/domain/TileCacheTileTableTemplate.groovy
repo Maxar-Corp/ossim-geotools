@@ -49,7 +49,7 @@ class TileCacheTileTableTemplate
   Date modifiedDate;
 
 
-  void bind(def data)
+  def bind(def data)
   {
     this.hashId = data?.hashId
     this.res = data.res
@@ -62,5 +62,21 @@ class TileCacheTileTableTemplate
       this.bounds = new WKTReader().read(data.bounds)
     }
 
+    this
+  }
+  def bindSql(def data)
+  {
+    this.hashId = data?.hash_id;
+    this.res    = data?.res;
+    this.x      = data?.x;
+    this.y      = data?.y;
+    this.z      = data?.z
+    if(data.bounds)
+    {
+      this.bounds = new WKTReader().read(data.bounds.toString())
+    }
+    this.modifiedDate = new Date(data?.modified_date?.time)
+
+    this
   }
 }
