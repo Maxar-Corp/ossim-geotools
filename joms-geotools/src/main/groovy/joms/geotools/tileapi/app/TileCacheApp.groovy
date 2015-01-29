@@ -30,6 +30,11 @@ class TileCacheApp
     if (!options) {
       return
     }
+    // Show usage text when -h or --help option is used.
+    if (options.help) {
+      cli.usage()
+      return
+    }
     if(options.'db-config-template')
     {
       def config =
@@ -58,18 +63,12 @@ class TileCacheApp
       println "Need to specify config XML for the databases"
       return
     }
-    // Show usage text when -h or --help option is used.
-    if (options.help) {
-      cli.usage()
-      return
-    }
     File dbConfig = new File(options.'db-config')
     def rootNode = new XmlSlurper().parse(dbConfig)
     if(dbConfig.exists())
     {
       if(rootNode)
       {
-        println "******************************"
         def hibernateOptions = [
                 driverClassName:rootNode.postgres.driverClassName,
                 username:rootNode.postgres.username,
