@@ -138,6 +138,7 @@ class TileCacheApp
     tileCacheAppConfig.tileWidth = options."tile-width"?:""
     tileCacheAppConfig.deleteLayer = options."delete-layer"
     tileCacheAppConfig.getLayerInfo = options."get-layer-info"
+    tileCacheAppConfig.listLayers = options."list-layers"
 
     if(tileCacheAppConfig.minLevel) tileCacheAppConfig.minLevel =  tileCacheAppConfig.minLevel.toInteger()
     if(tileCacheAppConfig.maxLevel) tileCacheAppConfig.maxLevel =  tileCacheAppConfig.maxLevel.toInteger()
@@ -157,6 +158,12 @@ class TileCacheApp
     else if(tileCacheAppConfig.deleteLayer)
     {
       tileCacheAppConfig.layerName = tileCacheAppConfig.deleteLayer
+    }
+    else if(tileCacheAppConfig.listLayers)
+    {
+      tileCacheAppConfig.tileCacheServiceDao.listAllLayers().each{layer->
+        println layer.name
+      }
     }
     else if(options."create-layer")
     {
