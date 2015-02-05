@@ -66,7 +66,7 @@ class TileCacheApp
     if (!options||options?.help) {
       cli.usage()
 
-      prinltn "Examples:"
+      println "Examples:"
       println "   Creating Layer: java -cp ./build/libs/joms-geotools-1.0-SNAPSHOT-all.jar joms.geotools.tileapi.app.TileCacheApp --db-config ./tilecache-app-config.xml --create-layer reference --min-level 0 --max-level 24 --epsg-code EPSG:4326"
       println "   Ingesting data: java -cp ./build/libs/joms-geotools-1.0-SNAPSHOT-all.jar joms.geotools.tileapi.app.TileCacheApp --db-config ./tilecache-app-config.xml --threads 4  --ingest --layer-name reference <files>"
       return false
