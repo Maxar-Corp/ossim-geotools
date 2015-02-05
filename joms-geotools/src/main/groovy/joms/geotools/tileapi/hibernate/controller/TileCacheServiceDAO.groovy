@@ -103,12 +103,12 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   }
   AccumuloTileLayer newGeoscriptTileLayer(String layerName)
   {
-    newGeoscriptTileLayer(getLayerInfoByName(layerName))
+    newGeoscriptTileLayer(getLayerInfoBygetTileName(layerName))
   }
-  AccumuloTileGenerator[] getTileGenerators(TileCacheLayerInfo layer, String input)
+  AccumuloTileGenerator[] getTileGenerators(TileCacheLayerInfo layer, String input, def clipOptions=[:])
   {
 
-    TileCacheSupport tileCacheSupport = new TileCacheSupport(256,256,"EPSG:4326")
+    TileCacheSupport tileCacheSupport = new TileCacheSupport()
 
     def result = []
 
@@ -137,7 +137,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
           AccumuloTileLayer tileLayer = newGeoscriptTileLayer(layer)
           double[] resolutions = tileLayer.pyramid.grids*.yResolution as double[]
 
-          def intersections = tileLayer.pyramid.findIntersections(tileCacheSupport, entry)
+          def intersections = tileLayer.pyramid.findIntersections(tileCacheSupport, entry, clipOptions)
 
           if(intersections)
           {
@@ -163,9 +163,9 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     result as AccumuloTileGenerator[]
   }
 
-  AccumuloTileGenerator[] getTileGenerators(String layer, String input)
+  AccumuloTileGenerator[] getTileGenerators(String layer, String input, def clipOptions=[:])
   {
-    getTileGenerators(getLayerInfoByName(layer), input)
+    getTileGenerators(getLayerInfoByName(layer), input, clipOptions)
   }
 
   @Transactional
@@ -241,6 +241,25 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   }
 
   @Transactional
+  TileCacheLayerInfo createOrUpdateLayer(String name,
+              Bounds bounds = new Projection("EPSG:4326").bounds,
+              String epsgCode="EPSG:4326",
+              int tileWidth=256,
+              int tileHeight=256,
+              int minLevel=0,
+              int maxLevel=24)
+  {
+    createOrUpdateLayer(new TileCacheLayerInfo(name:name,
+            bounds:bounds.polygon.g,
+            epsgCode: epsgCode?:"EPSG:${bounds.proj.epsg}",
+            tileHeight:tileHeight,
+            tileWidth:tileWidth,
+            minLevel:minLevel,
+            maxLevel:maxLevel)
+    )
+  }
+
+  @Transactional
   void deleteLayer(String name)
   {
     TileCacheLayerInfo layer = layerInfoTableDAO.findByName(name)
@@ -297,24 +316,23 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
         if(whereClause) whereClause += conjunction
         whereClause += "(modified_date < '${DateUtil.formatTimezone(constraints.beforeDate)}')"
       }
-      else if(constraints.z)
+      if(constraints.z!=null)
       {
         if(whereClause) whereClause += conjunction
         whereClause += "(z = ${constraints.z})"
       }
-      else if(constraints.x)
+      if(constraints.x!=null)
       {
         if(whereClause) whereClause += conjunction
         whereClause += "(x = ${constraints.x})"
       }
-      else if(constraints.y)
+      if(constraints.y!=null)
       {
         if(whereClause) whereClause += conjunction
         whereClause += "(y = ${constraints.y})"
       }
       result = whereClause?"where ${whereClause}":whereClause
     }
-
     result
   }
   /**
@@ -354,13 +372,15 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     result
   }
   @Transactional
-  def getTilesWithinConstraint(TileCacheLayerInfo layer, HashMap constraints)
+  def getTilesWithinConstraint(TileCacheLayerInfo layer, HashMap constraints=[:])
   {
+
     def result = []
-    def queryString = "select * from ${layer.tileStoreTable} ${createWhereClause(constraints)}".toString()
+    def queryString = "select * from ${layer?.tileStoreTable} ${createWhereClause(constraints)}".toString()
     def metaRows = [:]
     def hashIds = []
 
+    if(!layer) return result
     if(constraints.offset&&constraints.maxRows)
     {
       sql.eachRow(queryString, constraints.offset, constraints.maxRows){row->
@@ -400,11 +420,16 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     }
     result
   }
+  @Transactional
+  long getTilesWithinContraints(String layerName, HashMap constraints=[:])
+  {
+    getTilesWithinConstraint(getLayerInfoByName(layerName), constraints)
+  }
 
   @Transactional
-  long getTileCountWithinConstraint(TileCacheLayerInfo layer, HashMap constraints)
+  long getTileCountWithinConstraint(TileCacheLayerInfo layer, HashMap constraints=[:])
   {
-    String table = layer.tileStoreTable
+    String table = layer?.tileStoreTable
     def count = 0
     if(table)
     {
@@ -415,6 +440,12 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     }
 
     count
+  }
+
+  @Transactional
+  long getTileCountWithinConstraint(String layerName, HashMap constraints=[:])
+  {
+    getTileCountWithinConstraint(getLayerInfoByName(layerName), constraints)
   }
 
   @Transactional

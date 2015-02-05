@@ -1,10 +1,13 @@
 package joms.geotools.test
 
+import geoscript.geom.Bounds
 import geoscript.proj.Projection
 import joms.geotools.tileapi.accumulo.AccumuloTileGenerator
+import joms.geotools.tileapi.accumulo.AccumuloTileLayer
 import joms.geotools.tileapi.hibernate.TileCacheHibernate
 import joms.geotools.tileapi.hibernate.controller.TileCacheServiceDAO
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
+import joms.oms.TileCacheSupport
 import org.geotools.geometry.DirectPosition2D
 import org.geotools.referencing.CRS
 import org.opengis.geometry.Envelope
@@ -203,21 +206,39 @@ class GridFactorySpiTest
             minLevel:0,
             maxLevel:24)
     )
+    TileCacheSupport tileCacheSupport = new TileCacheSupport()
+    tileCacheSupport.openImage("/Volumes/DataDrive/data/earth2.tif")
+
+    int numberOfResolutionLevels = tileCacheSupport.getNumberOfResolutionLevels(0)
+    double gsd = tileCacheSupport.getDegreesPerPixel(0)
+    joms.oms.Envelope envelope = tileCacheSupport.getEnvelope(0)
+    Bounds bounds = new Bounds(envelope.minX, envelope.minY, envelope.maxX, envelope.maxY)
+
+    // println "LAYER BOUNDS ===================== ${new Bounds(layer.bounds.envelopeInternal)}"
+    //AccumuloTileLayer tileLayer = daoTileCacheService.newGeoscriptTileLayer(layer)
+    //double[] resolutions = tileLayer.pyramid.grids*.yResolution as double[]
+
+   // def intersections = tileLayer.pyramid.findIntersections(tileCacheSupport, 0,
 
 
-  //  AccumuloTileGenerator[] generators = daoTileCacheService.getTileGenerators("BMNG", "/data/earth2.tif")
+    //println intersections
+
+      AccumuloTileGenerator[] generators = daoTileCacheService.getTileGenerators("BMNG",
+              "/data/earth2.tif",
+              [minLevel:1,epsgCode:"EPSG:4326",bbox:"-10,-10,10,10"])
+
     // generators = daoTileCacheService.getTileGenerators("BMNG","/data/agc_test/2cmv/input1.tif")
     // generators = daoTileCacheService.getTileGenerators("BMNG","/mnt/data1/agc/Fort_Irwin_Buckeye/FortIrwin_NTC_200905/Orthos/Block01/CompleteMrSid8bit/FortIrwin_NTC_200905_Complete.sid")
 
-  //  generators.each{generator->
-  //    generator.verbose = true
-  //    generator.generate()
-  //  }
+    generators.each{generator->
+      generator.verbose = true
+      generator.generate()
+    }
 
-    def hashIds = daoTileCacheService.getHashIdsWithinConstraint(layer, [bounds:new Projection("EPSG:4326").bounds,
-                                                                         z:1])
-    def tiles = daoTileCacheService.getTilesWithinConstraint(layer, [bounds:new Projection("EPSG:4326").bounds,
-                                                                         z:1])
+ //   def hashIds = daoTileCacheService.getHashIdsWithinConstraint(layer, [intersects:new Projection("EPSG:4326").bounds,
+  //                                                                       z:1])
+  //  def tiles = daoTileCacheService.getTilesWithinConstraint(layer, [intersects:new Projection("EPSG:4326").bounds,
+  //                                                                       z:1])
 
     //println h
     //ashIds

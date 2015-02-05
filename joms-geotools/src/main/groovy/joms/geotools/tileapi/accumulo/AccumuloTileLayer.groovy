@@ -58,7 +58,7 @@ class AccumuloTileLayer extends TileLayer<ImageTile>
       TileCacheImageTile lookupTile = tileCacheService?.getTileByKey(layerInfo, result.key)
       if(lookupTile)
       {
-        println "GOT TILE FROM ACCUMULO"
+        //println "GOT TILE FROM ACCUMULO"
         result = lookupTile
       }
     }

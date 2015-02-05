@@ -20,8 +20,9 @@ hibernate {
 environments {
   development {
     dataSource {
-      dbCreate = "create-drop" // one of 'create', 'create-drop', 'update', 'validate', ''
-      url = "jdbc:postgresql://localhost:5432/tilecache-${appVersion}-dev"
+      dbCreate = "update" // one of 'create', 'create-drop', 'update', 'validate', ''
+      //url = "jdbc:postgresql://localhost:5432/tilecache-${appVersion}-dev"
+      url = "jdbc:postgresql://localhost:5432/raster-test"
     }
   }
   test {

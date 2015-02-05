@@ -12,12 +12,35 @@ import joms.oms.TileCacheSupport
 class AccumuloPyramid extends Pyramid
 {
 
- // if(tileCacheSupport.findBestResolutionsGeographic(entry, minLevel, maxLevel,
- // resolutions, resolutions.length))
-
-  def findIntersections(TileCacheSupport tileCacheSupport, int entry)
+  /**
+   * Options can be supplied to shrink the clip region further.  So if your image covers
+   * several levels you can clip to a particular level and region
+   *
+   *
+   * minLevel:<minimum level>
+   * maxLevel:<maximum level>
+   * bbox: minx, miny, maxx, maxy
+   * epsgCode: EPSG:4326
+   *
+   * bbox specifies a clip region.  This will be intersected with the pyramid of the
+   * tile cache and intersected with the valid bounds of the image
+   *
+   * epsgCode specifies the projection the bbox is defined in
+   * minLevel is the min level you wish to  clip to
+   * maxLevel is the max level to clip
+   *
+   * @param tileCacheSupport This is a bridge to the OSSIM library for opening and assessing imagery.
+   *        This is used to get a clipped bounds and gsd range
+   * @param entry The entry within the image.  We support multi entry image sets
+   * @param options Supplies override parameters to clip the levels
+   *
+   * @return a hashmap that contains the clipped bounds that include the minLevel, maxLevel
+   *         and the clipped geospatial bbox not tile aligned
+   */
+  def findIntersections(TileCacheSupport tileCacheSupport, int entry, def options=[:])
   {
     def result = [:]
+    // for tiling we only support square projections
     double[] resolutions = grids*.yResolution as double[]
     int[] levels = grids*.z as double[]
 
@@ -25,7 +48,41 @@ class AccumuloPyramid extends Pyramid
     println levels
 
     int nRlevels = tileCacheSupport.getNumberOfResolutionLevels(entry)
+    def ossimEnvelope = tileCacheSupport.getEnvelope(entry)
+    def clippedBounds
+    if(ossimEnvelope)
+    {
+      def geoScriptBounds = new Bounds(ossimEnvelope.minX, ossimEnvelope.minY,
+                                        ossimEnvelope.maxX, ossimEnvelope.maxY)
+      geoScriptBounds.proj = new Projection("EPSG:4326")
+      def reprojectedBounds = geoScriptBounds.reproject(this.proj)
 
+
+      clippedBounds = this.bounds.intersection(reprojectedBounds)
+
+      if(((clippedBounds.width>0.0)&&(clippedBounds.height > 0.0))!=true)
+      {
+        clippedBounds = null
+      }
+
+      // now clip to the passed in bbox constraint
+      //
+      if(options.bbox &&options.epsgCode&&clippedBounds)
+      {
+        def bboxArray = options.bbox.split(",")
+        if(bboxArray.size() == 4)
+        {
+          def bboxBounds = new Bounds(bboxArray[0].toDouble(), bboxArray[1].toDouble(),
+                  bboxArray[2].toDouble(), bboxArray[3].toDouble(), new Projection(options.epsgCode))
+          if(bboxBounds.proj)
+          {
+            clippedBounds = bboxBounds.reproject(this.proj).intersection(clippedBounds)
+          }
+        }
+      }
+    }
+    ossimEnvelope?.delete()
+    ossimEnvelope = null
     if(nRlevels>0)
     {
       // first we will find the number of decimation for the image to be within a single tile
@@ -70,7 +127,7 @@ class AccumuloPyramid extends Pyramid
 
       // if we are outside the res levels then we do not intersect
       //
-      if((highestRes > resolutions[0])||(lowestRes<resolutions[-1]))
+      if(!clippedBounds&&(highestRes > resolutions[0])||(lowestRes<resolutions[-1]))
       {
         result = [:]
       }
@@ -91,9 +148,37 @@ class AccumuloPyramid extends Pyramid
             break
           }
         }
+        def resultMinLevel = minLevel + levels[0]
+        def resultMaxLevel = maxLevel + levels[0]
+
+        def optionsMinLevel = (options.minLevel!=null)?options.minLevel:resultMinLevel
+        def optionsMaxLevel = (options.maxLevel!=null)?options.maxLevel:resultMaxLevel
+
+        if((options.minLevel!=null)||(options.maxLevel!=null))
+        {
+          if((optionsMinLevel > resultMaxLevel)||(optionsMaxLevel < resultMinLevel))
+          {
+            resultMinLevel = 9999
+            resultMaxLevel = -1
+          }
+          else
+          {
+            if(optionsMaxLevel < resultMaxLevel)
+            {
+              resultMaxLevel = optionsMaxLevel
+            }
+            if(optionsMinLevel > resultMinLevel)
+            {
+              resultMinLevel = optionsMinLevel
+            }
+          }
+        }
+        if(resultMinLevel <= resultMaxLevel)
+        {
           // we are 0 based but the resolutions were grabbed from the startLevel
           // so let's shift our result to the start level
-        result = [minLevel: minLevel+levels[0], maxLevel: maxLevel+levels[0]]
+          result = [clippedBounds: clippedBounds, minLevel: resultMinLevel, maxLevel: resultMaxLevel]
+        }
       }
     }
     result
@@ -117,20 +202,6 @@ class AccumuloPyramid extends Pyramid
           numberTilesAtRes0 = 2
         }
       }
-//      else // assume in meters
-//      {
-//
-//      }
-      //Bounds bounds = new Bounds(-180.0,-90.0,180.0,90.0)
-      //Projection proj = new Projection("EPSG:4326")
-      //AccumuloPyramid p = new AccumuloPyramid(
-      //        proj: proj,
-      //        bounds: bounds,
-      //        origin: Pyramid.Origin.TOP_LEFT,
-      //        tileWidth: tileWidth,
-      //        tileHeight: tileHeight
-      //)
-
       int n = 0
       this.grids = (minLevel..maxLevel).collect { long z ->
         n = 2**z
@@ -142,31 +213,5 @@ class AccumuloPyramid extends Pyramid
 
     }
   }
-/*
 
-  static Pyramid createWorldGeographicPyramid(int minLevel=0,
-                                              int maxLevel=24,
-                                              int tileWidth=256,
-                                              int tileHeight=256)
-  {
-    Bounds bounds = new Bounds(-180.0,-90.0,180.0,90.0)
-    Projection proj = new Projection("EPSG:4326")
-    AccumuloPyramid p = new AccumuloPyramid(
-            proj: proj,
-            bounds: bounds,
-            origin: Pyramid.Origin.TOP_LEFT,
-            tileWidth: tileWidth,
-            tileHeight: tileHeight
-    )
-    int n = 0
-    p.grids = (minLevel..maxLevel).collect { long z ->
-      n = 2**z
-      double res = 180.0/n
-      new Grid(z,2*n,n,res/tileWidth,res/tileWidth)
-      // http://wiki.openstreetmap.org/wiki/Zoom_levels
-      //  double res = 156412.0 / n
-    }
-    p
-  }
-  */
 }

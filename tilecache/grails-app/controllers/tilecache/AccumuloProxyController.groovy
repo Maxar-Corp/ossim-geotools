@@ -5,18 +5,22 @@ import com.vividsolutions.jts.geom.GeometryFactory
 import com.vividsolutions.jts.io.WKTReader
 import geoscript.geom.Bounds
 import geoscript.proj.Projection
+import geoscript.render.Map
+import geoscript.style.RasterSymbolizer
 import grails.converters.JSON
 import groovy.sql.Sql
 import org.apache.avro.util.ByteBufferInputStream
 import org.apache.commons.codec.binary.Base64
+import org.apache.commons.collections.map.CaseInsensitiveMap
 import org.geotools.factory.Hints
+import org.geotools.gce.imagemosaic.jdbc.ImageMosaicJDBCFormat
+import org.geotools.map.GridReaderLayer
 import org.geotools.referencing.CRS
 import org.opengis.referencing.crs.CoordinateReferenceSystem
 
 import javax.imageio.ImageIO
 import java.util.zip.GZIPOutputStream
 import java.util.zip.ZipOutputStream
-
 class AccumuloProxyController {
   def accumuloProxyService
 
@@ -24,227 +28,215 @@ class AccumuloProxyController {
   {
 
   }
-  def getTile(AccumuloProxyGetTileCommand cmd)
-  {
-    println cmd
-//    def hash     = params.hashId
-//    def family   = params.family?:""
-//    def qualifier = params.qualifier?:""
-//    def table = params.table
-//    def format=params.format?:"image/jpeg"
-    def writeType = cmd.format.split("/")[-1]
-
-
-  //  println "______________________${format},${table},${hash},${family},${qualifier}_________________________"
-
-    def tile = accumuloProxyService.getTile(cmd.table, cmd.hashId, cmd.family, cmd.qualifier)
-
-    if(tile)
+  def wmts(){
+    // need to support case insensitive data bindings
+    def cmd = new AccumuloProxyWmtsCommand()
+    CaseInsensitiveMap mapping = new CaseInsensitiveMap(params)
+    bindData(cmd, mapping)
+    if(cmd.validate())
     {
-//            println tile.image
-      response.contentType = cmd.format
-      def ostream = new ByteArrayOutputStream()
-
-      ImageIO.write( tile.getAsBufferedImage(), writeType, ostream )
-      // ImageIO.write( tile.image, "tiff", response.outputStream )
-
-      def bytes = ostream.toByteArray()
-
-    //  println "LENGTH ======== ${bytes.length}"
-      response.contentLength = bytes.size()
-      response.outputStream << bytes
-    //  println "DONE"
-
-    }
-
-  }
-  def getTiles()
-  {
-    def base64     = new Base64()
-    def hashIds    = params.hashIds
-    def family     = params.family?:""
-    def qualifier  = params.qualifier?:""
-    def table      = params.table
-    def format     = params.format?:"image/jpeg"
-    def compress   = params.compress?params.compress.toBoolean():true
-    def writeType  = format.split("/")[-1]
-    def hashIdList = hashIds.split(",")
-    def result = []
-    hashIdList.each{hashId->
-      def tile = accumuloProxyService.getTile(table, hashId, family, qualifier)
-      if(tile)
+      if(cmd.request.toLowerCase() == "gettile")
       {
-        def ostream = new ByteArrayOutputStream()
-
-        ImageIO.write( tile.getAsBufferedImage(), writeType, ostream )
-        def bytes = ostream.toByteArray()
-        result << [hashId:"${hashId}".toString(), image:base64.encodeToString(bytes)]
+        accumuloProxyService.getTile(cmd, response)
       }
-    }
-    def resultString = (result as JSON).toString()
-
-    if(compress)
-    {
-      response.contentType = "application/x-gzip"
+      response.outputStream.close()
     }
     else
     {
-      response.contentType = "application/json"
-    }
-
-    if(compress)
-    {
-      // ByteArrayOutputStream out = new ByteArrayOutputStream();
-      GZIPOutputStream gzip = new GZIPOutputStream(response.outputStream) //out);
-      gzip.write(resultString.getBytes());
-      gzip.close();
-    }
-    else
-    {
-       response.outputStream.write(resultString.bytes)
-    }
-  //  println "SIZE == ${out.toByteArray().length}"
-   // render (result as JSON).toString()
-  }
-  def putTile()
-  {
-   // println "***************${params}****************"
-    def hash     = params.hashId
-    def family   = params.family
-    def qualifier = params.qualifier
-    def table = params.table
-
-    println "BYTE LENGTH ===== ${request.inputStream.bytes.length}"
-
-
-    //def img = ImageIO.read(request.inputStream)
-    //println "IMAGE ======================= ${img}"
-
-    //    println "hash: ${hash} , family:${family}, qualifier:${qualifier}, image:${img}"
-    accumuloProxyService.writeTile(table, hash, img, family, qualifier)
-//        println "DONE WRITING!!"
-
-//        render "Did the putTile"
-    render ""
-  }
-  def renameTable()
-  {
-    def oldTableName=params.oldTableName
-    def newTableName=params.newTableName
-
-    if(oldTableName&&newTableName)
-    {
-      accumuloProxyService.renameTable(oldTableName, newTableName)
-      render "newTableName:${newTableName}"
-    }
-    else
-    {
-
+      render ""
     }
     null
   }
-  def createTable()
-  {
-    def table = params.table
+  def wms(){
 
-    accumuloProxyService.createTable(table)
+    // need to support case insensitive data bindings
+    def cmd = new AccumuloProxyWmsCommand()
+    CaseInsensitiveMap mapping = new CaseInsensitiveMap(params)
+    bindData(cmd, mapping)
 
-    render "table:${table}"
+    if(cmd.validate())
+    {
+      if(cmd.request.toLowerCase() == "getmap")
+      {
+        def tileAccessUrl = createLink(absolute: true, controller:"accumuloProxy", action:"tileAccess");
+        //println tileAccessUrl
+        accumuloProxyService.getMap(cmd,tileAccessUrl, response)
+        response.outputStream.close()
+      }
+    }
+    else
+    {
+
+      render "${cmd.errors}"
+    }
+
+    null
   }
-  def deleteTable()
+  def wfs()
   {
-    def table = params.table
+    def cmd = new AccumuloProxyWfsCommand()
+    CaseInsensitiveMap mapping = new CaseInsensitiveMap(params)
+    bindData(cmd, mapping)
+    if(cmd.validate())
+    {
+      switch(cmd.request.toLowerCase())
+      {
+        case "getfeature":
+          def result = accumuloProxyService.wfsGetFeature(cmd, response)
+          if ( params.callback )
+          {
+            result = "${params.callback}(${result});";
+          }
 
-    accumuloProxyService.deleteTable(table)
+          // println output
+          response.outputStream.write(result.bytes)
 
-    render "table:${table}"
+
+          break
+        case "getcapabilities":
+          break
+        case "DescribeFeatureType":
+          break
+        default:
+          break
+      }
+     // response.outputStream.close()
+    }
+    else
+    {
+      render "${cmd.errors}"
+    }
+    response.outputStream.close()
+    null
   }
+
+  /*
+def getTiles()
+{
+
+  render ""
+  def base64     = new Base64()
+  def hashIds    = params.hashIds
+  def family     = params.family?:""
+  def qualifier  = params.qualifier?:""
+  def table      = params.table
+  def format     = params.format?:"image/jpeg"
+  def compress   = params.compress?params.compress.toBoolean():true
+  def writeType  = format.split("/")[-1]
+  def hashIdList = hashIds.split(",")
+  def result = []
+  hashIdList.each{hashId->
+    def tile = accumuloProxyService.getTile(table, hashId, family, qualifier)
+    if(tile)
+    {
+      def ostream = new ByteArrayOutputStream()
+
+      ImageIO.write( tile.getAsBufferedImage(), writeType, ostream )
+      def bytes = ostream.toByteArray()
+      result << [hashId:"${hashId}".toString(), image:base64.encodeToString(bytes)]
+    }
+  }
+  def resultString = (result as JSON).toString()
+
+  if(compress)
+  {
+    response.contentType = "application/x-gzip"
+  }
+  else
+  {
+    response.contentType = "application/json"
+  }
+
+  if(compress)
+  {
+    // ByteArrayOutputStream out = new ByteArrayOutputStream();
+    GZIPOutputStream gzip = new GZIPOutputStream(response.outputStream) //out);
+    gzip.write(resultString.getBytes());
+    gzip.close();
+  }
+  else
+  {
+     response.outputStream.write(resultString.bytes)
+  }
+//  println "SIZE == ${out.toByteArray().length}"
+ // render (result as JSON).toString()
+  }
+*/
+
+  /*
+def putTile()
+{
+ // println "***************${params}****************"
+  def hash     = params.hashId
+  def family   = params.family
+  def qualifier = params.qualifier
+  def table = params.table
+
+  println "BYTE LENGTH ===== ${request.inputStream.bytes.length}"
+
+
+  //def img = ImageIO.read(request.inputStream)
+  //println "IMAGE ======================= ${img}"
+
+  //    println "hash: ${hash} , family:${family}, qualifier:${qualifier}, image:${img}"
+  accumuloProxyService.writeTile(table, hash, img, family, qualifier)
+//        println "DONE WRITING!!"
+
+//        render "Did the putTile"
+  render ""
+    render ""
+  }
+  */
 
   def createLayer(AccumuloProxyCreateLayerCommand cmd)
   {
     println cmd
     println cmd.clip
     accumuloProxyService.createLayer(cmd)
-/*
-    def name       = params.name
-    def epsgCode   = params.epsgCode
-    def bbox       = params.bbox
-    def clip       = params.clip
-    def minLevel   = params.minLevel?:"0"
-    def maxLevel   = params.maxLevel?:"20"
-    def tileWidth  = params.tileWidth?:"256"
-    def tileHeight = params.tileHeight?:"256"
-    def geometryFactory = new GeometryFactory()
-
-    if(name&&epsgCode)
-    {
-      def clipGeom
-      if(clip)
-      {
-        clipGeom = new WKTReader().read(clip)
-      }
-      else if(bbox)
-      {
-        def minMaxValues = bbox.split(",")
-        if(minMaxValues.length == 4)
-        {
-          double minx = minMaxValues[0].trim().toDouble()
-          double miny = minMaxValues[1].trim().toDouble()
-          double maxx = minMaxValues[2].trim().toDouble()
-          double maxy = minMaxValues[3].trim().toDouble()
-
-          def envelope = new Envelope(minx,maxx,miny,maxy)
-          clipGeom =geometryFactory.toGeometry(envelope)
-        }
-      }
-      else if(epsgCode)
-      {
-        Projection proj = new Projection("epsg:4326" )
-        Bounds bounds = proj.bounds
-
-        //println bounds
-        clipGeom = bounds.geometry
-      }
-
-
-      if(clipGeom)
-      {
-        // we will guarantee that the geometry is an upright envelop
-        // and then recreate the geometry from the envelope to define the clip.
-        // we will also grid align the clip rect by shifting the envelop to 0 and verify
-        // the width is divisible by the grid of the projector
-        Envelope envelope = clipGeom.envelopeInternal
-
-        double minx = envelope.minX
-        double maxx = envelope.maxX
-        double miny = envelope.minY
-        double maxy = envelope.maxY
-
-        params.clip = clipGeom
-
-        println "minx: ${minx}, miny:${miny}, maxx:${maxx}, maxy:${maxy}"
-      }
-
-      //accumuloProxyService.createLayer(params)
-    //  TileCacheLayerInfo info = new TileCacheLayerInfo(name:"NEW_LAYER")
-    //  println info.validate()
-      //TileCacheLayerInfo.withTransaction {
-    //    info.save(flush:true)
-      //}
-    //  println info
-      //def newLayerInfo = new TileCacheLayerInfo(name:name, epsgCode:epsgCode)
-    }
-
-  */
-
-  //  accumuloProxyService.createLayer(command)
-
-
 
     render "createLayer"
+  }
+  def renameLayer(){
+    if(params.oldName&&params.newName)
+    {
+      accumuloProxyService.renameLayer(params.oldName, params.newName)
+    }
   }
   def updateLayer()
   {
 
   }
+
+  def getLayers()
+  {
+    def cmd = new AccumuloProxyWmtsCommand()
+    CaseInsensitiveMap mapping = new CaseInsensitiveMap(params)
+    bindData(cmd, mapping)
+    if(cmd.validate())
+    {
+      accumuloProxyService.getLayers(cmd, response)
+
+    }
+    else
+    {
+      render ""
+    }
+
+    render ""
+    null
+  }
+  def tileAccess(){
+    def xmlString = accumuloProxyService.tileAccess(params)
+    response.contentType = "application/xml"
+    response.outputStream.write(xmlString.bytes)
+    response.outputStream.close()
+    null
+  }
+
+//  def testAccess(){
+//
+//    render ""
+//    null
+//  }
+
 }

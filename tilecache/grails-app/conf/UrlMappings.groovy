@@ -6,6 +6,10 @@ class UrlMappings {
     }
     "/accumuloProxy/getTiles/$id?"(action:"getTiles", controller:"accumuloProxy"){
     }
+    "/accumuloProxy/wms/$id?"(action:"wms", controller:"accumuloProxy"){
+    }
+    "/accumuloProxy/wmts/$id?"(action:"wmts", controller:"accumuloProxy"){
+    }
     "/$controller/$action?/$id?(.$format)?"{
       constraints {
         // apply constraints here

@@ -43,7 +43,7 @@ import javax.validation.constraints.Pattern
         @NamedQuery(name="findLayerInfoByName", query="from TileCacheLayerInfo layer where layer.name = :name"),
         @NamedQuery(name="findAllLayerInfos", query="from TileCacheLayerInfo")
 ])
-@ToString
+@ToString(includeNames = true)
 class TileCacheLayerInfo {
   @Id
   @SequenceGenerator(name="tile_cache_layer_info_sequence",sequenceName="tile_cache_layer_info_id_seq")

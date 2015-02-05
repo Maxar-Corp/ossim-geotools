@@ -19,12 +19,12 @@ class AccumuloProxyCreateLayerCommand {
 
   // this is the EPSG code for the Layer definition
   // all tiles will adhere to this code
-  String epsgCode = "epsg:4326"
+  String epsgCode = "EPSG:4326"
 
   String bbox  ="-180,-90,180,90"
 
   Integer minLevel = 0
-  Integer maxLevel = 20
+  Integer maxLevel = 24
 
   // we will have a square GSD.  So if the tile width and height
   // are equal and the EPSG is geographic then at level 0 we will have 2

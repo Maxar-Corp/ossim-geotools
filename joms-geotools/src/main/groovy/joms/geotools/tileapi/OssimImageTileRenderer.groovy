@@ -39,6 +39,7 @@ class OssimImageTileRenderer implements TileRenderer
                          int entry,
                          HashMap chipperOptions)
   {
+    println "ADDING ${inputImage} at entry ${entry}"
     chipperOptionsMap."image0.file" = inputImage
     chipperOptionsMap."image0.entry" = "${entry}".toString()
 
@@ -76,9 +77,9 @@ class OssimImageTileRenderer implements TileRenderer
                        srs:"EPSG:${b.proj.epsg}".toString()
                        ]
 
-      println cutOption
+    //  println cutOption
       def chipperResult = chipper.getChip(dataBuffer.data, true, cutOption )
-      println chipperResult
+      //println chipperResult
       switch(chipperResult)
       {
         case ossimDataObjectStatus.OSSIM_FULL.swigValue:

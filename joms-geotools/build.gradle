@@ -39,6 +39,7 @@ install {
 }
 
 repositories {
+  mavenLocal()
   maven {
     url 'http://repository.cloudera.com/artifactory/cloudera-repos/'
   }
@@ -60,7 +61,6 @@ repositories {
   maven {
    url  'http://www.hibernatespatial.org/repository'
   }
-  mavenLocal()
   mavenCentral()
 }
 
@@ -75,6 +75,7 @@ dependencies {
 //  testCompile 'org.apache.hadoop:hadoop-common:2.0.0'
 
   testCompile 'org.ossim:joms:1.8.19'
+  compile 'org.codehaus.gpars:gpars:1.2.1'
   compile 'org.geoscript:geoscript-groovy:1.4.0'
   compile 'org.ossim:joms:1.8.19'
   compile group: 'junit', name: 'junit', version: '4.12'
