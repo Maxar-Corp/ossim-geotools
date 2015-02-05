@@ -1,0 +1,16 @@
+
+<tilecache-config>
+  <postgres>
+    <driverClassName>org.postgresql.Driver</driverClassName>
+    <url>jdbc:postgresql://tilecache-database:5432/tilecache</url>
+    <password>postgres</password>
+    <username>postgres</username>
+  </postgres>
+  <accumulo>
+    <instanceName>accumulo</instanceName>
+    <password>root</password>
+    <username>root</username>
+    <zooServers>accumulo-site.radiantblue.local</zooServers>
+  </accumulo>
+</tilecache-config>
+
