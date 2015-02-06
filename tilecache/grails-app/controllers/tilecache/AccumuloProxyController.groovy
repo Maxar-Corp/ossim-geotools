@@ -85,6 +85,7 @@ class AccumuloProxyController {
           def result = accumuloProxyService.wfsGetFeature(cmd, response)
           if ( params.callback )
           {
+            response.contentType="application/json"
             result = "${params.callback}(${result});";
           }
 
