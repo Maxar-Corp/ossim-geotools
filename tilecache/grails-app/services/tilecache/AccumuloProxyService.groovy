@@ -110,28 +110,37 @@ class AccumuloProxyService implements InitializingBean {
   }
   def getMap(AccumuloProxyWmsCommand cmd, String tileAccessUrl, HttpServletResponse  response)
   {
+    def map
     def layers = []
-    def gridFormat= new ImageMosaicJDBCFormat()//GridFormatFinder.findFormat(new URL("http://localhost:8080/tilecache/accumuloProxy/tileAccess?layer=BMNG"))
 
-    cmd.layers.split(",").each{ layer->
-      def gridReader = gridFormat.getReader(new URL("${tileAccessUrl}?layer=${layer}") )
-      def mosaic = new GridReaderLayer( gridReader, new RasterSymbolizer().gtStyle )
+    try{
+      def gridFormat= new ImageMosaicJDBCFormat()//GridFormatFinder.findFormat(new URL("http://localhost:8080/tilecache/accumuloProxy/tileAccess?layer=BMNG"))
+      cmd.layers.split(",").each{ layer->
+        def gridReader = gridFormat.getReader(new URL("${tileAccessUrl}?layer=${layer}") )
+        def mosaic = new GridReaderLayer( gridReader, new RasterSymbolizer().gtStyle )
 
-      layers << mosaic
+        layers << mosaic
+      }
+
+      response.contentType = cmd.format
+      map = new Map(
+              width: cmd.width,
+              height: cmd.height,
+              proj: cmd.srs,
+              type: cmd.format.split('/')[-1],
+              bounds:cmd.bbox.split(",").collect(){it.toDouble()} as Bounds, // [-180, -90, 180, 90] as Bounds,
+             // backgroundColor:cmd.bgcolor,
+              layers: layers
+      )
+      map.render(response.outputStream)
     }
+    catch(def e)
+    {
+      // really need to write exception to stream
 
-    response.contentType = cmd.format
-    def map = new Map(
-            width: cmd.width,
-            height: cmd.height,
-            proj: cmd.srs,
-            type: cmd.format.split('/')[-1],
-            bounds:cmd.bbox.split(",").collect(){it.toDouble()} as Bounds, // [-180, -90, 180, 90] as Bounds,
-            backgroundColor:cmd.bgcolor,
-            layers: layers
-    )
-    map.render(response.outputStream)
-    map.close()
+       e.printStackTrace()
+    }
+    map?.close()
   }
   /**
    *
@@ -248,7 +257,7 @@ class AccumuloProxyService implements InitializingBean {
     if(typenameLowerCase=="layers")
     {
       // application/javascript if callback is available
-      response.contentType = "text/json"
+      response.contentType = "application/json"
       def layers = daoTileCacheService.listAllLayers()
       def result = [type:"FeatureCollection", features:[]]
       layers.each{layer->

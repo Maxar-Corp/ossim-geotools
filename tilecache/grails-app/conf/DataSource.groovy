@@ -1,5 +1,6 @@
 dataSource {
   pooled = true
+  //maxActive = 100
   jmxExport = true
   driverClassName = "org.postgresql.Driver"
   username = "postgres"

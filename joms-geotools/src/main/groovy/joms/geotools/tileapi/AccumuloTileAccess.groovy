@@ -127,7 +127,34 @@ class AccumuloTileAccess extends JDBCAccessCustom
             lowerCorner.coordinate[1],
             upperCorner.coordinate[0],
             upperCorner.coordinate[1])
-   // println "BOUNDS TO QUERY === ${bounds}"
+
+  //  println   "BOUNDS CONSTRAINTS: ${[intersects:bounds.polygon.g, z:zoomLevel]}"
+    def tilesMeta = daoTileCacheService.getTilesMetaWithinContraints(tileCacheLayerInfo,
+    [intersects:bounds.polygon.g,
+      z:zoomLevel
+    ])
+
+   // println "META ===== ${tilesMeta}"
+    tilesMeta.each{tileMeta->
+      def tile = daoTileCacheService.getTileByMeta(tileCacheLayerInfo, tileMeta)
+     // println "Tile = ${tile}"
+      if(tile)
+      {
+        def img = ImageIO.read( new ByteArrayInputStream( tile.data as byte[] ) )
+        def genv = new GeneralEnvelope( imageLevelInfo.srsId )
+
+        genv.setRange( 0, tile.bounds.minX, tile.bounds.maxX )
+        genv.setRange( 1, tile.bounds.minY, tile.bounds.maxY )
+
+        def tqElem = new TileQueueElement( tileCacheLayerInfo.name, img, genv )
+
+        tileQueue.add( tqElem );
+      }
+    }
+    tileQueue.add( TileQueueElement.ENDELEMENT )
+
+    // println "BOUNDS TO QUERY === ${bounds}"
+/*
     def tiles = daoTileCacheService.getTilesWithinConstraint(tileCacheLayerInfo,
             [intersects:bounds.polygon.g,
              z:zoomLevel])
@@ -146,5 +173,6 @@ class AccumuloTileAccess extends JDBCAccessCustom
     }
     tileQueue.add( TileQueueElement.ENDELEMENT )
     //println "TOTAL TIME === ${(System.currentTimeMillis()-startTime)/1000.0}"
+  */
   }
 }

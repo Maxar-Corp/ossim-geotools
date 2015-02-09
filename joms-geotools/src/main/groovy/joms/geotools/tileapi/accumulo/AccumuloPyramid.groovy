@@ -1,5 +1,7 @@
 package joms.geotools.tileapi.accumulo
 
+import com.vividsolutions.jts.geom.Geometry
+import com.vividsolutions.jts.geom.Polygon
 import geoscript.geom.Bounds
 import geoscript.layer.Grid
 import geoscript.layer.Pyramid
@@ -12,6 +14,7 @@ import joms.oms.TileCacheSupport
 class AccumuloPyramid extends Pyramid
 {
 
+  Bounds clippedBounds
   /**
    * Options can be supplied to shrink the clip region further.  So if your image covers
    * several levels you can clip to a particular level and region
@@ -48,26 +51,46 @@ class AccumuloPyramid extends Pyramid
     println levels
 
     int nRlevels = tileCacheSupport.getNumberOfResolutionLevels(entry)
+    // get the bounds of the input image
     def ossimEnvelope = tileCacheSupport.getEnvelope(entry)
-    def clippedBounds
+    def clipBounds
+    def latLonClipBounds
+
     if(ossimEnvelope)
     {
-      def geoScriptBounds = new Bounds(ossimEnvelope.minX, ossimEnvelope.minY,
+      // Lets take the ossimEnvelope of the passed in image and transform
+      // to this pyramids projection.  We will then intersect it with this
+      // pyramids bounds and use that for the tile set clipping.
+      //
+      def geographicProj = new Projection("EPSG:4326")
+
+      // transform the bounds of the input image
+      def inputImageBounds = new Bounds(ossimEnvelope.minX, ossimEnvelope.minY,
                                         ossimEnvelope.maxX, ossimEnvelope.maxY)
-      geoScriptBounds.proj = new Projection("EPSG:4326")
-      def reprojectedBounds = geoScriptBounds.reproject(this.proj)
+
+      inputImageBounds.proj =  geographicProj
+
+      // create a reprojected bounds defined in the projection of this pyramid
+      def reprojectedImageBounds = inputImageBounds.reproject(this.proj)
+
+      //def geoScriptGeom = inputImageBounds.geometry
+
+      // transform the points
+    //  def reprojectedGeom = inputImageBounds.proj.transform(geoScriptGeom,geographicProj)
+
+      clipBounds = this.clippedBounds.intersection(reprojectedImageBounds)
 
 
-      clippedBounds = this.bounds.intersection(reprojectedBounds)
+      latLonClipBounds = this.proj.transform(clipBounds.geometry, geographicProj)
 
-      if(((clippedBounds.width>0.0)&&(clippedBounds.height > 0.0))!=true)
+      if(((clipBounds.width>0.0)&&(clipBounds.height > 0.0))!=true)
       {
-        clippedBounds = null
+        clipBounds = null
       }
 
       // now clip to the passed in bbox constraint
       //
-      if(options.bbox &&options.epsgCode&&clippedBounds)
+      if(options.bbox &&options.epsgCode&&clipBounds)
       {
         def bboxArray = options.bbox.split(",")
         if(bboxArray.size() == 4)
@@ -76,7 +99,7 @@ class AccumuloPyramid extends Pyramid
                   bboxArray[2].toDouble(), bboxArray[3].toDouble(), new Projection(options.epsgCode))
           if(bboxBounds.proj)
           {
-            clippedBounds = bboxBounds.reproject(this.proj).intersection(clippedBounds)
+            clipBounds = bboxBounds.reproject(this.proj).intersection(clipBounds)
           }
         }
       }
@@ -127,7 +150,7 @@ class AccumuloPyramid extends Pyramid
 
       // if we are outside the res levels then we do not intersect
       //
-      if(!clippedBounds&&(highestRes > resolutions[0])||(lowestRes<resolutions[-1]))
+      if(!clipBounds&&(highestRes > resolutions[0])||(lowestRes<resolutions[-1]))
       {
         result = [:]
       }
@@ -177,7 +200,8 @@ class AccumuloPyramid extends Pyramid
         {
           // we are 0 based but the resolutions were grabbed from the startLevel
           // so let's shift our result to the start level
-          result = [clippedBounds: clippedBounds, minLevel: resultMinLevel, maxLevel: resultMaxLevel]
+          result = [clippedGeometryLatLon:latLonClipBounds, clippedBounds: clipBounds, minLevel: resultMinLevel, maxLevel: resultMaxLevel]
+          println "CLAMPED RESULT: ${result}"
         }
       }
     }

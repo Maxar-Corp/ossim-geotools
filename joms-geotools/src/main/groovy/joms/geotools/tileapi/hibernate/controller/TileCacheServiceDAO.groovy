@@ -79,11 +79,13 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     if(layerInfo)
     {
      // Envelope env = layerInfo.bounds.envelopeInternal
-      Bounds b = new Projection(layerInfo.epsgCode).bounds
+      Bounds b          = new Projection(layerInfo.epsgCode).bounds
+      Bounds clipBounds = new Bounds(layerInfo.bounds.envelopeInternal)
       //new Bounds(env.minX, env.minY, env.maxX, env.maxY)
    //   if(layerInfo.epsgCode.toLowerCase().trim() == "epsg:4326")
    //   {
       def pyramid = new AccumuloPyramid(bounds:b,
+                                        clippedBounds:new Bounds(layerInfo.bounds.envelopeInternal),
                                         proj:new Projection(layerInfo.epsgCode),
                                         origin: Pyramid.Origin.TOP_LEFT,
                                         tileWidth: layerInfo.tileWidth,
@@ -141,7 +143,13 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
 
           if(intersections)
           {
-            OssimImageTileRenderer tileRenderer = new OssimImageTileRenderer(input, entry,[:])
+            // for the poly cutter in ossim it is a list of tuples
+            // of the form ((<lat>,<lon>),......(<lat>,<lon>))
+            def clipPolyLatLonKeyWord = intersections.clippedGeometryLatLon.points.collect{"(${it.y},${it.x})"}.join(",")
+            OssimImageTileRenderer tileRenderer = new OssimImageTileRenderer(input, entry,
+                    [cut_width:layer.tileWidth.toString(),
+                     cut_height:layer.tileHeight.toString(),
+                     clip_poly_lat_lon:"(${clipPolyLatLonKeyWord})".toString()])
             AccumuloTileGenerator generator = new AccumuloTileGenerator(verbose:false,
                     tileLayer:tileLayer,
                     tileRenderer:tileRenderer,
@@ -333,6 +341,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
       }
       result = whereClause?"where ${whereClause}":whereClause
     }
+   // println "WHERE CLAUSE = ${result}"
     result
   }
   /**
@@ -427,6 +436,36 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   }
 
   @Transactional
+  def getTilesMetaWithinContraints(TileCacheLayerInfo layer, HashMap constraints=[:])
+  {
+    def result = []
+    def queryString = "select * from ${layer?.tileStoreTable} ${createWhereClause(constraints)}".toString()
+    def metaRows = [:]
+    def hashIds = []
+
+    if(!layer) return result
+    if(constraints.offset&&constraints.maxRows)
+    {
+      sql.eachRow(queryString, constraints.offset, constraints.maxRows){row->
+        result << new TileCacheTileTableTemplate().bindSql(row)
+      }
+    }
+    else
+    {
+      sql.eachRow(queryString){row->
+        result << new TileCacheTileTableTemplate().bindSql(row)
+      }
+    }
+
+    result
+  }
+  @Transactional
+  def getTilesMetaWithinContraints(String layerName, HashMap constraints=[:])
+  {
+    getTilesMetaWithinContraints(getLayerInfoByName(layerName), constraints)
+  }
+
+  @Transactional
   long getTileCountWithinConstraint(TileCacheLayerInfo layer, HashMap constraints=[:])
   {
     String table = layer?.tileStoreTable
@@ -479,6 +518,31 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     TileCacheTileTableTemplate result = new  TileCacheTileTableTemplate()
 
     result.bindRow(row)
+  }
+
+  @Transactional
+  def getTileByMeta(TileCacheLayerInfo layer, def meta)
+  {
+    ImageTileKey key = new ImageTileKey([rowId:meta.hashId])
+
+    TileCacheImageTile tile = accumuloApi.getTile(layer.tileStoreTable, key) as TileCacheImageTile
+
+    if(meta)
+    {
+      tile.x      = meta.x
+      tile.y      = meta.y
+      tile.z      = meta.z
+      tile.res    = meta.res
+      if(meta.modifiedDate) tile.modifiedDate = meta.modifiedDate
+      tile.bounds = new Bounds(meta?.bounds?.envelopeInternal)//new WKTReader().read(meta.bounds.toString())
+
+    }
+    else
+    {
+      tile = null
+    }
+
+    tile
   }
 
   @Transactional

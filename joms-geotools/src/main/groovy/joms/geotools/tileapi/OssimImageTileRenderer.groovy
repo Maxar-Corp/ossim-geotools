@@ -31,18 +31,52 @@ class OssimImageTileRenderer implements TileRenderer
           three_band_out: 'true',
           resampler_filter: "lanczos"
   ]
-
   Chipper chipper
   def dataBuffer
   def sampleModel
+  def tileWidth = 256
+  def tileHeight = 256
   OssimImageTileRenderer(String inputImage,
                          int entry,
                          HashMap chipperOptions)
   {
-    println "ADDING ${inputImage} at entry ${entry}"
     chipperOptionsMap."image0.file" = inputImage
     chipperOptionsMap."image0.entry" = "${entry}".toString()
+   // chipperOptionsMap.clip_wms_bbox_ll = chipperOptions.clip_wms_bbox_ll
+    if(chipperOptions.cut_width)
+    {
+      chipperOptionsMap.cut_width = chipperOptions.cut_width
+    }
+    if(chipperOptions.clip_poly_lat_lon)
+    {
+      chipperOptionsMap.clip_poly_lat_lon = chipperOptions.clip_poly_lat_lon
+    }
+    if(chipperOptions.clip_wms_bbox_ll)
+    {
+      chipperOptionsMap.clip_wms_bbox_ll = chipperOptions.clip_wms_bbox_ll
+    }
+    if(chipperOptions.cut_height)
+    {
+      chipperOptionsMap.cut_height = chipperOptions.cut_height
+    }
+    if(chipperOptionsMap.cut_width instanceof String)
+    {
+       tileWidth = chipperOptionsMap.cut_width.toInteger()
+    }
+    else
+    {
+      tileWidth = chipperOptionsMap.cut_width
+    }
+    if(chipperOptionsMap.cut_height instanceof String)
+    {
+      tileHeight = chipperOptionsMap.cut_height.toInteger()
+    }
+    else
+    {
+      tileHeight = chipperOptionsMap.cut_height
+    }
 
+    println "CHIPS: ${tileWidth}, ${tileHeight}"
   }
   void destroy(){
     chipper?.delete()
@@ -60,10 +94,10 @@ class OssimImageTileRenderer implements TileRenderer
     }
     sampleModel = new PixelInterleavedSampleModel(
             DataBuffer.TYPE_BYTE,
-            256,             // width
-            256,            // height
+            tileWidth,             // width
+            tileHeight,            // height
             4,                 // pixelStride
-            256 * 4,  // scanlineStride
+            tileWidth * 4,  // scanlineStride
             ( 0..<4 ) as int[] // band offsets
     )
     dataBuffer    = sampleModel.createDataBuffer()
@@ -90,8 +124,9 @@ class OssimImageTileRenderer implements TileRenderer
                     true, false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE)
 
             def raster = Raster.createRaster(sampleModel, dataBuffer, new Point(0, 0))
-            def image = new BufferedImage(colorModel, raster, false, null)
+            def image = new BufferedImage(colorModel, raster, false, null)//BufferedImage.TYPE_4BYTE_ABGR)
 
+            //println image
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()
             ImageIO.write(image, "tiff", outputStream)
 

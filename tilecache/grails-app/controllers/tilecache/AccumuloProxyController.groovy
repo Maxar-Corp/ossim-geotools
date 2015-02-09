@@ -51,9 +51,11 @@ class AccumuloProxyController {
 
     // need to support case insensitive data bindings
     def cmd = new AccumuloProxyWmsCommand()
+
     CaseInsensitiveMap mapping = new CaseInsensitiveMap(params)
     bindData(cmd, mapping)
 
+   // println cmd
     if(cmd.validate())
     {
       if(cmd.request.toLowerCase() == "getmap")
@@ -74,6 +76,10 @@ class AccumuloProxyController {
   }
   def wfs()
   {
+    response.setHeader("Access-Control-Allow-Origin", "*");
+    response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+    response.setHeader("Access-Control-Max-Age", "3600");
+    response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
     def cmd = new AccumuloProxyWfsCommand()
     CaseInsensitiveMap mapping = new CaseInsensitiveMap(params)
     bindData(cmd, mapping)
@@ -85,10 +91,9 @@ class AccumuloProxyController {
           def result = accumuloProxyService.wfsGetFeature(cmd, response)
           if ( params.callback )
           {
-            response.contentType="application/json"
             result = "${params.callback}(${result});";
           }
-
+          // allow cross domain
           // println output
           response.outputStream.write(result.bytes)
 
