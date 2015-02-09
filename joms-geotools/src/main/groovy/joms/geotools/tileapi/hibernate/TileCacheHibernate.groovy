@@ -1,6 +1,7 @@
 package joms.geotools.tileapi.hibernate
 
 import groovy.sql.Sql
+import joms.oms.ossimInit
 import org.apache.commons.dbcp.BasicDataSource
 import org.geotools.factory.Hints
 import org.hibernate.SQLQuery
@@ -11,6 +12,7 @@ import org.hibernate.SessionFactory
 import org.springframework.context.support.GenericXmlApplicationContext
 import groovy.transform.Synchronized
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import joms.oms.Init
 
 @EnableTransactionManagement
 class TileCacheHibernate {
@@ -295,6 +297,7 @@ http://www.springframework.org/schema/context/spring-context.xsd">
     {
       return
     }
+    Init.instance().initialize()
     def hibProperties = getHibernatePropertiesFromMap(map)
     def springConfig = getSpringConfiguration()
     try{
@@ -326,6 +329,7 @@ http://www.springframework.org/schema/context/spring-context.xsd">
       return
     }
     try{
+      Init.instance().initialize()
       applicationContext = new GenericXmlApplicationContext()
       applicationContext.load("omar-hibernate-config.xml");
       applicationContext.refresh();

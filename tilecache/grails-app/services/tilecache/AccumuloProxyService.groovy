@@ -38,7 +38,7 @@ class AccumuloProxyService implements InitializingBean {
   def dataSourceUnproxied
 
   def layerReaderCache = [:]
-
+  static def id = 0
   void afterPropertiesSet() throws Exception {
     Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE)
 
@@ -108,11 +108,18 @@ class AccumuloProxyService implements InitializingBean {
       // exception output
     }
   }
+  synchronized
+  private nextId()
+  {
+    ++id
+  }
   def getMap(AccumuloProxyWmsCommand cmd, String tileAccessUrl, HttpServletResponse  response)
   {
-    def map
+    //def tempId = nextId()
+    Map map
     def layers = []
 
+   // println "GetMap ${tempId}"
     try{
       def gridFormat= new ImageMosaicJDBCFormat()//GridFormatFinder.findFormat(new URL("http://localhost:8080/tilecache/accumuloProxy/tileAccess?layer=BMNG"))
       cmd.layers.split(",").each{ layer->
@@ -123,6 +130,12 @@ class AccumuloProxyService implements InitializingBean {
       }
 
       response.contentType = cmd.format
+      //def img = ImageIO.read("/Volumes/DataDrive/data/earth2.tif" as File)
+     // BufferedImage dest = img.getSubimage(0, 0, cmd.width, cmd.height);
+
+     // ImageIO.write(dest, cmd.format.split('/')[-1],response.outputStream)
+      //img = null
+
       map = new Map(
               width: cmd.width,
               height: cmd.height,
@@ -133,14 +146,17 @@ class AccumuloProxyService implements InitializingBean {
               layers: layers
       )
       map.render(response.outputStream)
+//      map?.close()
     }
     catch(def e)
     {
       // really need to write exception to stream
 
-       e.printStackTrace()
+//      e.printStackTrace()
     }
     map?.close()
+   // println "Done GetMap ${tempId}"
+
   }
   /**
    *

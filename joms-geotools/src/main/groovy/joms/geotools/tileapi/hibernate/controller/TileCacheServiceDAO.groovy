@@ -119,7 +119,6 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     try{
       if(layer&&tileCacheSupport.openImage(input))
       {
-        //println "HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         int entry = 0
         int numberOfEntries = tileCacheSupport.getNumberOfEntries()
 
@@ -135,7 +134,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
           joms.oms.Envelope envelope = tileCacheSupport.getEnvelope(entry)
           Bounds bounds = new Bounds(envelope.minX, envelope.minY, envelope.maxX, envelope.maxY)
 
-         // println "LAYER BOUNDS ===================== ${new Bounds(layer.bounds.envelopeInternal)}"
+          println "LAYER BOUNDS ===================== ${new Bounds(layer.bounds.envelopeInternal)}"
           AccumuloTileLayer tileLayer = newGeoscriptTileLayer(layer)
           double[] resolutions = tileLayer.pyramid.grids*.yResolution as double[]
 
@@ -456,7 +455,6 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
         result << new TileCacheTileTableTemplate().bindSql(row)
       }
     }
-
     result
   }
   @Transactional
@@ -565,6 +563,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
         result.bounds = new Bounds(wktResult.envelopeInternal)//new WKTReader().read(meta.bounds.toString())
       }
      }
+
 
     result
   }

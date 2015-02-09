@@ -30,6 +30,7 @@ class AccumuloTileGenerator {
     (startZoom..endZoom).each {zoom ->
       long tileCount = 0
       if (verbose) println "Zoom Level ${zoom}"
+      println "Zoom Level ${zoom}"
       long startTime = System.nanoTime()
       def tiles
       if(bounds)
@@ -57,11 +58,12 @@ class AccumuloTileGenerator {
         //
         if(t.data&&data)
         {
-           BufferedImage originalData = ImageIO.read(new ByteArrayInputStream(data))
-           BufferedImage newData      = ImageIO.read(new ByteArrayInputStream(t.data))
+           BufferedImage newData = ImageIO.read(new ByteArrayInputStream(data))
+           BufferedImage originalData = ImageIO.read(new ByteArrayInputStream(t.data))
 
           if(originalData&&newData)
           {
+            println "SUPPOSE TO BE MERGING"
             Graphics g = originalData.graphics;
             g.drawImage(newData, 0, 0, null);
 
@@ -78,12 +80,13 @@ class AccumuloTileGenerator {
         t.data = data
         tileLayer.put(t)
       }
-      if (verbose)
-      {
+      //if (verbose)
+      //{
         double endTime = System.nanoTime() - startTime
         int numberOfTiles = tileCount//tileLayer.pyramid.grid(zoom).size
         println "   Generating ${numberOfTiles} tile${numberOfTiles > 1 ? 's':''} took ${endTime / 1000000000.0} seconds"
-      }
+      //}
+
     }
     tileRenderer.destroy()
   }

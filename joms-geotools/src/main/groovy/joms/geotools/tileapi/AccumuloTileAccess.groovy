@@ -64,6 +64,7 @@ class AccumuloTileAccess extends JDBCAccessCustom
 
     def parsedStream = new XmlSlurper().parse(xmlStream)
 
+//    println "HIBERNATE INIT BEING CALLED!!!!!!!!!!!!!!!!!!!!!!!!"
     TileCacheHibernate hibernate = new TileCacheHibernate()
     hibernate.initialize([
             driverClassName:this.config.driverClassName,//"org.postgresql.Driver",
@@ -134,6 +135,7 @@ class AccumuloTileAccess extends JDBCAccessCustom
       z:zoomLevel
     ])
 
+    //println "TILES TO RENDER: ${tilesMeta.size()}"
    // println "META ===== ${tilesMeta}"
     tilesMeta.each{tileMeta->
       def tile = daoTileCacheService.getTileByMeta(tileCacheLayerInfo, tileMeta)
@@ -174,5 +176,7 @@ class AccumuloTileAccess extends JDBCAccessCustom
     tileQueue.add( TileQueueElement.ENDELEMENT )
     //println "TOTAL TIME === ${(System.currentTimeMillis()-startTime)/1000.0}"
   */
+   // println "TOTAL TIME === ${(System.currentTimeMillis()-startTime)/1000.0}"
+
   }
 }

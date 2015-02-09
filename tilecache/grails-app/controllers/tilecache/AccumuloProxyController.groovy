@@ -12,11 +12,13 @@ import groovy.sql.Sql
 import org.apache.avro.util.ByteBufferInputStream
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.collections.map.CaseInsensitiveMap
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 import org.geotools.factory.Hints
 import org.geotools.gce.imagemosaic.jdbc.ImageMosaicJDBCFormat
 import org.geotools.map.GridReaderLayer
 import org.geotools.referencing.CRS
 import org.opengis.referencing.crs.CoordinateReferenceSystem
+import org.springframework.web.context.request.RequestContextHolder
 
 import javax.imageio.ImageIO
 import java.util.zip.GZIPOutputStream
@@ -48,28 +50,40 @@ class AccumuloProxyController {
     null
   }
   def wms(){
+    GrailsWebRequest webRequest =
+            (GrailsWebRequest) RequestContextHolder.currentRequestAttributes()
+    webRequest.setRenderView(false)
 
-    // need to support case insensitive data bindings
-    def cmd = new AccumuloProxyWmsCommand()
+    def cmd
+    try{
+      // need to support case insensitive data bindings
+      cmd = new AccumuloProxyWmsCommand()
 
-    CaseInsensitiveMap mapping = new CaseInsensitiveMap(params)
-    bindData(cmd, mapping)
+      CaseInsensitiveMap mapping = new CaseInsensitiveMap(params)
+      bindData(cmd, mapping)
+      println cmd
 
-   // println cmd
-    if(cmd.validate())
-    {
-      if(cmd.request.toLowerCase() == "getmap")
+      if(cmd.validate())
       {
-        def tileAccessUrl = createLink(absolute: true, controller:"accumuloProxy", action:"tileAccess");
-        //println tileAccessUrl
-        accumuloProxyService.getMap(cmd,tileAccessUrl, response)
-        response.outputStream.close()
+        if(cmd.request.toLowerCase() == "getmap")
+        {
+          def tileAccessUrl = createLink(absolute: true, controller:"accumuloProxy", action:"tileAccess");
+          //println tileAccessUrl
+          accumuloProxyService.getMap(cmd,tileAccessUrl, response)
+          response.outputStream.close()
+        }
+      }
+      else
+      {
+        render "${cmd.errors}"
       }
     }
-    else
+    catch(def e)
     {
+     // println "---------------------------------------------------------"
+     // response.outputStream.close()
 
-      render "${cmd.errors}"
+      //render e.toString()
     }
 
     null

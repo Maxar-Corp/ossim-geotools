@@ -27,5 +27,11 @@ class AccumuloProxyWmsCommand
     service(nullable: true)
     transparent(nullable: true)
     bgcolor(nullable: true)
+    width(nullable:false,  validator: { val, obj, errors ->
+      if((val == null) ||(val<1)) errors.reject("width","bad value for width")
+    })
+    height(nullable:false,  validator: { val, obj, errors ->
+      if((val == null) ||(val<1)) errors.reject("height","bad value for height")
+    })
   }
 }
