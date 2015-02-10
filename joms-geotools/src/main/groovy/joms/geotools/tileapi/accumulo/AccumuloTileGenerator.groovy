@@ -63,7 +63,6 @@ class AccumuloTileGenerator {
 
           if(originalData&&newData)
           {
-            println "SUPPOSE TO BE MERGING"
             Graphics g = originalData.graphics;
             g.drawImage(newData, 0, 0, null);
 
