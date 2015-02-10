@@ -382,7 +382,6 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   @Transactional
   def getTilesWithinConstraint(TileCacheLayerInfo layer, HashMap constraints=[:])
   {
-
     def result = []
     def queryString = "select * from ${layer?.tileStoreTable} ${createWhereClause(constraints)}".toString()
     def metaRows = [:]
@@ -403,7 +402,6 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
         hashIds << new ImageTileKey(rowId:row.hash_id)
       }
     }
-
     if(hashIds)
     {
 
