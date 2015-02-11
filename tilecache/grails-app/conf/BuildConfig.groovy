@@ -36,7 +36,7 @@ grails.project.dependency.resolution = {
       mavenLocal()
 
       inherits true // Whether to inherit repository definitions from plugins
-        mavenRepo 'http://repo.hortonworks.com/content/repositories/releases/'
+       // mavenRepo 'http://repo.hortonworks.com/content/repositories/releases/'
         mavenRepo "http://repo.grails.org/grails/plugins/"
 
         mavenRepo "http://download.osgeo.org/webdav/geotools"
