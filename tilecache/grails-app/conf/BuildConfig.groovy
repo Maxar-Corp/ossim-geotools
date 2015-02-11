@@ -33,7 +33,10 @@ grails.project.dependency.resolution = {
     legacyResolve false // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
 
     repositories {
-        inherits true // Whether to inherit repository definitions from plugins
+      mavenLocal()
+
+      inherits true // Whether to inherit repository definitions from plugins
+        mavenRepo 'http://repo.hortonworks.com/content/repositories/releases/'
         mavenRepo "http://repo.grails.org/grails/plugins/"
 
         mavenRepo "http://download.osgeo.org/webdav/geotools"
@@ -41,14 +44,14 @@ grails.project.dependency.resolution = {
 
         grailsPlugins()
         grailsHome()
-        mavenLocal()
         grailsCentral()
         mavenCentral()
         // uncomment these (or add new ones) to enable remote dependency resolution from public Maven repositories
         //mavenRepo "http://repository.codehaus.org"
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
-        mavenRepo 'http://repository.cloudera.com/artifactory/cloudera-repos/'
+       // mavenRepo 'http://repository.cloudera.com/artifactory/cloudera-repos/'
+
         mavenRepo 'http://www.hibernatespatial.org/repository'
     }
 
@@ -72,7 +75,7 @@ grails.project.dependency.resolution = {
             transitive = false
         }
         runtime 'org.postgresql:postgresql:9.3-1100-jdbc4'
-        runtime 'org.ossim:joms-geotools:1.0-SNAPSHOT'
+        compile 'org.ossim:joms-geotools:1.0-SNAPSHOT'
         compile 'org.hibernate:hibernate-spatial:4.3'
         compile 'org.hibernate:hibernate-core:4.3.8.Final'
         compile 'org.postgresql:postgresql:9.3-1100-jdbc4'

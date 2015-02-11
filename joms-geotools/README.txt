@@ -3,7 +3,7 @@ Command line examples.  If you are in this directory and built the tools then he
 
 Generate DB config template:
 ______________________________
-java -cp ./build/libs/joms-geotools-1.0-SNAPSHOT-all.jar joms.geotools.tileapi.app.TileCacheApp  --db-config-template
+java -cp ./build/libs/joms-geotools-1.0-SNAPSHOT-all.jar joms.geotools.tileapi.app.TileCacheApp  --db-config-template >tilecache-app-config.xml
 
 
 This will give you a keywordlist that looks something like this please output to a file and modify for your distributions:
