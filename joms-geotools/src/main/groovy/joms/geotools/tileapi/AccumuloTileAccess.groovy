@@ -115,8 +115,7 @@ class AccumuloTileAccess extends JDBCAccessCustom
                          LinkedBlockingQueue<TileQueueElement> tileQueue, GridCoverageFactory gridCoverageFactory)
           throws IOException
   {
-    //println 'startTileDecoders'
-
+    println 'startTileDecoders'
 
     def startTime = System.currentTimeMillis()
     def zoomLevel = this.levelInfos.reverse().indexOf( imageLevelInfo )
@@ -129,7 +128,7 @@ class AccumuloTileAccess extends JDBCAccessCustom
             upperCorner.coordinate[0],
             upperCorner.coordinate[1])
 
-  //  println   "BOUNDS CONSTRAINTS: ${[intersects:bounds.polygon.g, z:zoomLevel]}"
+  //  println   "BOUNDS CONSTRAINTS: ${[intersects:bounds.polygon.g, z:zoomLevel]}"*
     def tilesMeta = daoTileCacheService.getTilesMetaWithinContraints(tileCacheLayerInfo,
     [intersects:bounds.polygon.g,
       z:zoomLevel
@@ -151,12 +150,13 @@ class AccumuloTileAccess extends JDBCAccessCustom
         def tqElem = new TileQueueElement( tileCacheLayerInfo.name, img, genv )
 
         tileQueue.add( tqElem );
+        img=null
       }
     }
     tileQueue.add( TileQueueElement.ENDELEMENT )
-
     // println "BOUNDS TO QUERY === ${bounds}"
-/*
+
+    /*
     def tiles = daoTileCacheService.getTilesWithinConstraint(tileCacheLayerInfo,
             [intersects:bounds.polygon.g,
              z:zoomLevel])
@@ -174,8 +174,9 @@ class AccumuloTileAccess extends JDBCAccessCustom
       tileQueue.add( tqElem );
     }
     tileQueue.add( TileQueueElement.ENDELEMENT )
-    //println "TOTAL TIME === ${(System.currentTimeMillis()-startTime)/1000.0}"
-  */
+    */
+    println "TOTAL TIME === ${(System.currentTimeMillis()-startTime)/1000.0}"
+
    // println "TOTAL TIME === ${(System.currentTimeMillis()-startTime)/1000.0}"
 
   }

@@ -26,6 +26,8 @@ import javax.imageio.ImageIO
 import javax.media.jai.JAI
 import javax.servlet.http.HttpServletResponse
 import java.awt.image.BufferedImage
+import java.util.concurrent.LinkedBlockingQueue
+import java.util.zip.GZIPOutputStream
 
 @Transactional
 class AccumuloProxyService implements InitializingBean {
@@ -36,6 +38,7 @@ class AccumuloProxyService implements InitializingBean {
   TileCacheServiceDAO daoTileCacheService
   def dataSourceProps
   def dataSourceUnproxied
+  LinkedBlockingQueue getMapBlockingQueue
 
   def layerReaderCache = [:]
   static def id = 0
@@ -57,6 +60,8 @@ class AccumuloProxyService implements InitializingBean {
     ])
     daoTileCacheService = hibernate.applicationContext.getBean("tileCacheServiceDAO");
 
+    getMapBlockingQueue = new LinkedBlockingQueue(4)
+    (0..<4).each{getMapBlockingQueue.put(0)}
 
    // println "DATA SOURCE ===== ${dataSource}"
    // println "DATA SOURCE UNPROXIED ===== ${dataSourceUnproxied}"
@@ -116,9 +121,10 @@ class AccumuloProxyService implements InitializingBean {
   def getMap(AccumuloProxyWmsCommand cmd, String tileAccessUrl, HttpServletResponse  response)
   {
     //def tempId = nextId()
+    def result
     Map map
     def layers = []
-
+    def element = getMapBlockingQueue.take()
    // println "GetMap ${tempId}"
     try{
       def gridFormat= new ImageMosaicJDBCFormat()//GridFormatFinder.findFormat(new URL("http://localhost:8080/tilecache/accumuloProxy/tileAccess?layer=BMNG"))
@@ -145,17 +151,30 @@ class AccumuloProxyService implements InitializingBean {
              // backgroundColor:cmd.bgcolor,
               layers: layers
       )
-      map.render(response.outputStream)
-//      map?.close()
+      result = new ByteArrayOutputStream()
+
+     // def gzipped = new GZIPOutputStream(result)
+    //  OutputStreamWriter writer=new OutputStreamWriter(gzipped);
+      map.render(result)
+      //gzipped.finish();
+      //writer.close();
+
     }
     catch(def e)
     {
       // really need to write exception to stream
 
-//      e.printStackTrace()
+     // e.printStackTrace()
     }
-    map?.close()
-   // println "Done GetMap ${tempId}"
+    finally{
+     // map?.layers.each{it.dispose()}
+      map?.close()
+      getMapBlockingQueue.put(element)
+    }
+     //println result.toByteArray().size()
+
+    result
+    // println "Done GetMap ${tempId}"
 
   }
   /**

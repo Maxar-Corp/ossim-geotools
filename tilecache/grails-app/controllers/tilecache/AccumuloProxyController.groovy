@@ -31,10 +31,13 @@ class AccumuloProxyController {
 
   }
   def wmts(){
+
     // need to support case insensitive data bindings
     def cmd = new AccumuloProxyWmtsCommand()
     CaseInsensitiveMap mapping = new CaseInsensitiveMap(params)
     bindData(cmd, mapping)
+
+    println cmd
     if(cmd.validate())
     {
       if(cmd.request.toLowerCase() == "gettile")
@@ -69,8 +72,16 @@ class AccumuloProxyController {
         {
           def tileAccessUrl = createLink(absolute: true, controller:"accumuloProxy", action:"tileAccess");
           //println tileAccessUrl
-          accumuloProxyService.getMap(cmd,tileAccessUrl, response)
-          response.outputStream.close()
+         ByteArrayOutputStream byteStream=accumuloProxyService.getMap(cmd,tileAccessUrl, response)
+          def bytes = byteStream.toByteArray()
+         // println bytes.size()
+         if(bytes.size() > 0)
+         {
+           render contentType: cmd.format , file: bytes
+         //  render contentType: "application/x-gzip", file: bytes
+        //    response.outputStream << bytes
+         }
+         //response.outputStream.close()
         }
       }
       else
@@ -80,7 +91,8 @@ class AccumuloProxyController {
     }
     catch(def e)
     {
-     // println "---------------------------------------------------------"
+      println "---------------------------------------------------------"
+      e.printStackTrace()
      // response.outputStream.close()
 
       //render e.toString()
