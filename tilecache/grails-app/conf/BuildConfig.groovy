@@ -9,99 +9,89 @@ grails.project.source.level = 1.6
 
 grails.project.fork = [
     // configure settings for compilation JVM, note that if you alter the Groovy version forked compilation is required
-    //  compile: [maxMemory: 256, minMemory: 64, debug: false, maxPerm: 256, daemon:true],
+    //  compile: [maxMemory: 256, minMemory: 256, debug: false, maxPerm: 256, daemon:true],
 
     // configure settings for the test-app JVM, uses the daemon by default
-    test: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, daemon:true],
+    test   : [maxMemory: 1024, minMemory: 256, debug: false, maxPerm: 256, daemon: true],
     // configure settings for the run-app JVM
-    run: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, forkReserve:false],
+    run    : [maxMemory: 1024, minMemory: 256, debug: false, maxPerm: 256, forkReserve: false],
     // configure settings for the run-war JVM
-    war: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, forkReserve:false],
+    war    : [maxMemory: 1024, minMemory: 256, debug: false, maxPerm: 256, forkReserve: false],
     // configure settings for the Console UI JVM
-    console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
+    console: [maxMemory: 1024, minMemory: 256, debug: false, maxPerm: 256]
 ]
 
 grails.project.dependency.resolver = "maven" // or ivy
 grails.project.dependency.resolution = {
-    // inherit Grails' default dependencies
-    inherits("global") {
-        // specify dependency exclusions here; for example, uncomment this to disable ehcache:
-        // excludes 'ehcache'
+  // inherit Grails' default dependencies
+  inherits( "global" ) {
+    // specify dependency exclusions here; for example, uncomment this to disable ehcache:
+    // excludes 'ehcache'
+  }
+  log "error" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+  checksums true // Whether to verify checksums on resolve
+  legacyResolve false
+  // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
+
+  repositories {
+    mavenLocal()
+
+    inherits true // Whether to inherit repository definitions from plugins
+    mavenRepo 'http://repo.hortonworks.com/content/repositories/releases/'
+    //mavenRepo 'http://repository.cloudera.com/artifactory/cloudera-repos/'
+
+    mavenRepo "http://repo.grails.org/grails/plugins/"
+
+    mavenRepo "http://download.osgeo.org/webdav/geotools"
+    mavenRepo "http://www.hibernatespatial.org/repository"
+
+    grailsPlugins()
+    grailsHome()
+    grailsCentral()
+    mavenCentral()
+    // uncomment these (or add new ones) to enable remote dependency resolution from public Maven repositories
+    //mavenRepo "http://repository.codehaus.org"
+    //mavenRepo "http://download.java.net/maven/2/"
+    //mavenRepo "http://repository.jboss.com/maven2/"
+    // mavenRepo 'http://repository.cloudera.com/artifactory/cloudera-repos/'
+
+    mavenRepo 'http://www.hibernatespatial.org/repository'
+  }
+
+  dependencies {
+    // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
+    // runtime 'mysql:mysql-connector-java:5.1.29'
+    // runtime 'org.postgresql:postgresql:9.3-1101-jdbc41'
+    test "org.grails:grails-datastore-test-support:1.0.2-grails-2.4"
+    compile( 'org.ossim:joms-geotools:1.0-SNAPSHOT' ) {
+      excludes 'slf4j-log4j12', 'ehcache'
     }
-    log "error" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
-    checksums true // Whether to verify checksums on resolve
-    legacyResolve false // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
+    runtime 'org.postgresql:postgresql:9.3-1100-jdbc4'
+    compile 'org.hibernate:hibernate-spatial:4.3'
+    //compile 'org.hibernate:hibernate-core:4.3.8.Final'
+    //  compile 'org.springframework:spring-core:4.1.4.RELEASE'
+    //  compile 'org.springframework:spring-context:4.1.4.RELEASE'
+    //  compile 'org.springframework:spring-orm:4.1.4.RELEASE'
+  }
 
-    repositories {
-      mavenLocal()
+  plugins {
+    build ":tomcat:7.0.55"
 
-      inherits true // Whether to inherit repository definitions from plugins
-       // mavenRepo 'http://repo.hortonworks.com/content/repositories/releases/'
-        mavenRepo "http://repo.grails.org/grails/plugins/"
+    // plugins for the compile step
+    compile ":scaffolding:2.1.2"
+    compile ':cache:1.1.8'
+    compile ":asset-pipeline:2.1.1"
 
-        mavenRepo "http://download.osgeo.org/webdav/geotools"
-        mavenRepo "http://www.hibernatespatial.org/repository"
+    // plugins needed at runtime but not for compilation
+    // runtime ":hibernate:3.6.10.18"
+    runtime ':hibernate4:4.3.6.1'
+    runtime ":database-migration:1.4.0"
+    runtime ":jquery:1.11.1"
 
-        grailsPlugins()
-        grailsHome()
-        grailsCentral()
-        mavenCentral()
-        // uncomment these (or add new ones) to enable remote dependency resolution from public Maven repositories
-        //mavenRepo "http://repository.codehaus.org"
-        //mavenRepo "http://download.java.net/maven/2/"
-        //mavenRepo "http://repository.jboss.com/maven2/"
-       // mavenRepo 'http://repository.cloudera.com/artifactory/cloudera-repos/'
-
-        mavenRepo 'http://www.hibernatespatial.org/repository'
-    }
-
-    dependencies {
-        // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
-        // runtime 'mysql:mysql-connector-java:5.1.29'
-        // runtime 'org.postgresql:postgresql:9.3-1101-jdbc41'
-        test "org.grails:grails-datastore-test-support:1.0.2-grails-2.4"
-        compile( 'org.ossim:joms-geotools:1.0-SNAPSHOT' ) {
-            excludes "slf4j-log4j12"
-        }
-        compile(
-                'org.hibernatespatial:hibernate-spatial-postgis:1.1.1',
-                'org.hibernatespatial:hibernate-spatial:1.1.1',
-                'com.vividsolutions:jts:1.12',
-                //'postgresql:postgresql:9.1-901.jdbc4',
-                'org.postgresql:postgresql:9.3-1100-jdbc4',
-                'org.postgis:postgis-jdbc:1.5.2'
-
-        ) {
-            transitive = false
-        }
-        runtime 'org.postgresql:postgresql:9.3-1100-jdbc4'
-        compile 'org.ossim:joms-geotools:1.0-SNAPSHOT'
-        compile 'org.hibernate:hibernate-spatial:4.3'
-        compile 'org.hibernate:hibernate-core:4.3.8.Final'
-        compile 'org.postgresql:postgresql:9.3-1100-jdbc4'
-      //  compile 'org.springframework:spring-core:4.1.4.RELEASE'
-      //  compile 'org.springframework:spring-context:4.1.4.RELEASE'
-      //  compile 'org.springframework:spring-orm:4.1.4.RELEASE'
-    }
-
-    plugins {
-        build ":tomcat:7.0.55"
-
-        // plugins for the compile step
-        compile ":scaffolding:2.1.2"
-        compile ':cache:1.1.8'
-        compile ":asset-pipeline:1.9.9"
-
-        // plugins needed at runtime but not for compilation
-       // runtime ":hibernate:3.6.10.18"
-        runtime ':hibernate4:4.3.6.1'
-        runtime ":database-migration:1.4.0"
-        runtime ":jquery:1.11.1"
-
-        // Uncomment these to enable additional asset-pipeline capabilities
-        //compile ":sass-asset-pipeline:1.9.0"
-        //compile ":less-asset-pipeline:1.10.0"
-        //compile ":coffee-asset-pipeline:1.8.0"
-        //compile ":handlebars-asset-pipeline:1.3.0.3"
-    }
+    // Uncomment these to enable additional asset-pipeline capabilities
+    //compile ":sass-asset-pipeline:1.9.0"
+    //compile ":less-asset-pipeline:1.10.0"
+    //compile ":coffee-asset-pipeline:1.8.0"
+    //compile ":handlebars-asset-pipeline:1.3.0.3"
+  }
 }
