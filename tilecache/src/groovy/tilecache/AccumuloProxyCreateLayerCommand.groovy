@@ -12,8 +12,9 @@ import groovy.transform.ToString
  * Created by gpotts on 1/16/15.
  */
 @Validateable
-@ToString(includeNames = true)
-class AccumuloProxyCreateLayerCommand {
+@ToString( includeNames = true )
+class AccumuloProxyCreateLayerCommand
+{
   //
   String name
 
@@ -21,7 +22,7 @@ class AccumuloProxyCreateLayerCommand {
   // all tiles will adhere to this code
   String epsgCode = "EPSG:4326"
 
-  String bbox  ="-180,-90,180,90"
+  String bbox = "-180,-90,180,90"
 
   Integer minLevel = 0
   Integer maxLevel = 24
@@ -33,34 +34,32 @@ class AccumuloProxyCreateLayerCommand {
   Integer tileWidth = 256
   Integer tileHeight = 256
 
-  Integer getTileWidth(){
-    return tileWidth.toInteger()
-  }
   String getTilesTableName()
   {
     "omar_tilecache_${name.toLowerCase()}_tiles".toString()
   }
 
-  Polygon getClip(){
+  Polygon getClip()
+  {
     def geometryFactory = new GeometryFactory()
     def clipGeom
-    if(bbox)
+    if ( bbox )
     {
-      def minMaxValues = bbox.split(",")
-      if(minMaxValues.length == 4)
+      def minMaxValues = bbox.split( "," )
+      if ( minMaxValues.length == 4 )
       {
         double minx = minMaxValues[0].trim().toDouble()
         double miny = minMaxValues[1].trim().toDouble()
         double maxx = minMaxValues[2].trim().toDouble()
         double maxy = minMaxValues[3].trim().toDouble()
 
-        def envelope = new Envelope(minx,maxx,miny,maxy)
-        clipGeom =geometryFactory.toGeometry(envelope)
+        def envelope = new Envelope( minx, maxx, miny, maxy )
+        clipGeom = geometryFactory.toGeometry( envelope )
       }
     }
-    else if(epsgCode)
+    else if ( epsgCode )
     {
-      Projection proj = new Projection(epsgCode)
+      Projection proj = new Projection( epsgCode )
       Bounds bounds = proj.bounds
 
       //println bounds
@@ -69,4 +68,29 @@ class AccumuloProxyCreateLayerCommand {
 
     clipGeom
   }
+
+  static def fixParamNames(def params)
+  {
+    //println params
+
+    def names = ( AccumuloProxyCreateLayerCommand.metaClass.properties*.name ).sort() - ['class', 'constraints', 'errors']
+
+    def newParams = params.inject( [:] ) { a, b ->
+      def propName = names.find { it.equalsIgnoreCase( b.key ) && b.value != null }
+      if ( propName )
+      {
+        //println "${propName}=${b.value}"
+        a[propName] = b.value
+      }
+      else
+      {
+        a[b.key] = b.value
+      }
+      a
+    }
+
+    params.clear()
+    params.putAll( newParams )
+  }
+
 }

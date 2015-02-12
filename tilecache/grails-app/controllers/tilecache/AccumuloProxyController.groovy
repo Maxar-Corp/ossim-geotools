@@ -1,48 +1,29 @@
 package tilecache
 
-import com.vividsolutions.jts.geom.Envelope
-import com.vividsolutions.jts.geom.GeometryFactory
-import com.vividsolutions.jts.io.WKTReader
-import geoscript.geom.Bounds
-import geoscript.proj.Projection
-import geoscript.render.Map
-import geoscript.style.RasterSymbolizer
-import grails.converters.JSON
-import groovy.sql.Sql
-import org.apache.avro.util.ByteBufferInputStream
-import org.apache.commons.codec.binary.Base64
 import org.apache.commons.collections.map.CaseInsensitiveMap
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
-import org.geotools.factory.Hints
-import org.geotools.gce.imagemosaic.jdbc.ImageMosaicJDBCFormat
-import org.geotools.map.GridReaderLayer
-import org.geotools.referencing.CRS
-import org.opengis.referencing.crs.CoordinateReferenceSystem
 import org.springframework.web.context.request.RequestContextHolder
 
-import javax.imageio.ImageIO
-import java.util.zip.GZIPOutputStream
-import java.util.zip.ZipOutputStream
-class AccumuloProxyController {
+class AccumuloProxyController
+{
   def accumuloProxyService
 
   def index()
   {
 
   }
-  def wmts(){
+
+  def wmts(AccumuloProxyWmtsCommand cmd)
+  {
 
     // need to support case insensitive data bindings
-    def cmd = new AccumuloProxyWmtsCommand()
-    CaseInsensitiveMap mapping = new CaseInsensitiveMap(params)
-    bindData(cmd, mapping)
-
     println cmd
-    if(cmd.validate())
+
+    if ( cmd.validate() )
     {
-      if(cmd.request.toLowerCase() == "gettile")
+      if ( cmd.request.toLowerCase() == "gettile" )
       {
-        accumuloProxyService.getTile(cmd, response)
+        accumuloProxyService.getTile( cmd, response )
       }
       response.outputStream.close()
     }
@@ -52,36 +33,34 @@ class AccumuloProxyController {
     }
     null
   }
-  def wms(){
+
+  def wms(AccumuloProxyWmsCommand cmd)
+  {
     GrailsWebRequest webRequest =
-            (GrailsWebRequest) RequestContextHolder.currentRequestAttributes()
-    webRequest.setRenderView(false)
+        (GrailsWebRequest)RequestContextHolder.currentRequestAttributes()
+    webRequest.setRenderView( false )
 
-    def cmd
-    try{
+    try
+    {
       // need to support case insensitive data bindings
-      cmd = new AccumuloProxyWmsCommand()
-
-      CaseInsensitiveMap mapping = new CaseInsensitiveMap(params)
-      bindData(cmd, mapping)
       println cmd
 
-      if(cmd.validate())
+      if ( cmd.validate() )
       {
-        if(cmd.request.toLowerCase() == "getmap")
+        if ( cmd.request.toLowerCase() == "getmap" )
         {
-          def tileAccessUrl = createLink(absolute: true, controller:"accumuloProxy", action:"tileAccess");
+          def tileAccessUrl = createLink( absolute: true, controller: "accumuloProxy", action: "tileAccess" );
           //println tileAccessUrl
-         ByteArrayOutputStream byteStream=accumuloProxyService.getMap(cmd,tileAccessUrl, response)
+          ByteArrayOutputStream byteStream = accumuloProxyService.getMap( cmd, tileAccessUrl, response )
           def bytes = byteStream.toByteArray()
-         // println bytes.size()
-         if(bytes.size() > 0)
-         {
-           render contentType: cmd.format , file: bytes
-         //  render contentType: "application/x-gzip", file: bytes
-        //    response.outputStream << bytes
-         }
-         //response.outputStream.close()
+          // println bytes.size()
+          if ( bytes.size() > 0 )
+          {
+            render contentType: cmd.format, file: bytes
+            //  render contentType: "application/x-gzip", file: bytes
+            //    response.outputStream << bytes
+          }
+          //response.outputStream.close()
         }
       }
       else
@@ -89,50 +68,51 @@ class AccumuloProxyController {
         render "${cmd.errors}"
       }
     }
-    catch(def e)
+    catch ( def e )
     {
       println "---------------------------------------------------------"
       e.printStackTrace()
-     // response.outputStream.close()
+      // response.outputStream.close()
 
       //render e.toString()
     }
 
     null
   }
+
   def wfs()
   {
-    response.setHeader("Access-Control-Allow-Origin", "*");
-    response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-    response.setHeader("Access-Control-Max-Age", "3600");
-    response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+    response.setHeader( "Access-Control-Allow-Origin", "*" );
+    response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
+    response.setHeader( "Access-Control-Max-Age", "3600" );
+    response.setHeader( "Access-Control-Allow-Headers", "x-requested-with" );
     def cmd = new AccumuloProxyWfsCommand()
-    CaseInsensitiveMap mapping = new CaseInsensitiveMap(params)
-    bindData(cmd, mapping)
-    if(cmd.validate())
+    CaseInsensitiveMap mapping = new CaseInsensitiveMap( params )
+    bindData( cmd, mapping )
+    if ( cmd.validate() )
     {
-      switch(cmd.request.toLowerCase())
+      switch ( cmd.request.toLowerCase() )
       {
-        case "getfeature":
-          def result = accumuloProxyService.wfsGetFeature(cmd, response)
-          if ( params.callback )
-          {
-            result = "${params.callback}(${result});";
-          }
-          // allow cross domain
-          // println output
-          response.outputStream.write(result.bytes)
+      case "getfeature":
+        def result = accumuloProxyService.wfsGetFeature( cmd, response )
+        if ( params.callback )
+        {
+          result = "${params.callback}(${result});";
+        }
+        // allow cross domain
+        // println output
+        response.outputStream.write( result.bytes )
 
 
-          break
-        case "getcapabilities":
-          break
-        case "DescribeFeatureType":
-          break
-        default:
-          break
+        break
+      case "getcapabilities":
+        break
+      case "DescribeFeatureType":
+        break
+      default:
+        break
       }
-     // response.outputStream.close()
+      // response.outputStream.close()
     }
     else
     {
@@ -224,29 +204,29 @@ def putTile()
   {
     println cmd
     println cmd.clip
-    accumuloProxyService.createLayer(cmd)
+    accumuloProxyService.createLayer( cmd )
 
     render "createLayer"
   }
-  def renameLayer(){
-    if(params.oldName&&params.newName)
+
+  def renameLayer()
+  {
+    if ( params.oldName && params.newName )
     {
-      accumuloProxyService.renameLayer(params.oldName, params.newName)
+      accumuloProxyService.renameLayer( params.oldName, params.newName )
     }
   }
+
   def updateLayer()
   {
 
   }
 
-  def getLayers()
+  def getLayers(AccumuloProxyGetLayersCommand cmd)
   {
-    def cmd = new AccumuloProxyWmtsCommand()
-    CaseInsensitiveMap mapping = new CaseInsensitiveMap(params)
-    bindData(cmd, mapping)
-    if(cmd.validate())
+    if ( cmd.validate() )
     {
-      accumuloProxyService.getLayers(cmd, response)
+      accumuloProxyService.getLayers( cmd, response )
 
     }
     else
@@ -257,10 +237,12 @@ def putTile()
     render ""
     null
   }
-  def tileAccess(){
-    def xmlString = accumuloProxyService.tileAccess(params)
+
+  def tileAccess()
+  {
+    def xmlString = accumuloProxyService.tileAccess( params )
     response.contentType = "application/xml"
-    response.outputStream.write(xmlString.bytes)
+    response.outputStream.write( xmlString.bytes )
     response.outputStream.close()
     null
   }

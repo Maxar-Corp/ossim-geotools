@@ -1,19 +1,13 @@
 package tilecache
 
-import com.vividsolutions.jts.geom.Envelope
-import com.vividsolutions.jts.geom.GeometryFactory
-import com.vividsolutions.jts.io.WKTReader
 import geoscript.geom.Bounds
 import geoscript.proj.Projection
 import geoscript.render.Map
 import geoscript.style.RasterSymbolizer
-import geoscript.workspace.Workspace
 import grails.converters.JSON
 import grails.transaction.Transactional
 import groovy.json.JsonSlurper
-import groovy.sql.Sql
 import groovy.xml.StreamingMarkupBuilder
-import joms.geotools.tileapi.accumulo.TileCacheImageTile
 import joms.geotools.tileapi.hibernate.TileCacheHibernate
 import joms.geotools.tileapi.hibernate.controller.TileCacheServiceDAO
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
@@ -27,81 +21,82 @@ import javax.media.jai.JAI
 import javax.servlet.http.HttpServletResponse
 import java.awt.image.BufferedImage
 import java.util.concurrent.LinkedBlockingQueue
-import java.util.zip.GZIPOutputStream
 
 @Transactional
-class AccumuloProxyService implements InitializingBean {
+class AccumuloProxyService implements InitializingBean
+{
 
-  def dataSource
   def grailsApplication
   TileCacheHibernate hibernate
   TileCacheServiceDAO daoTileCacheService
   def dataSourceProps
-  def dataSourceUnproxied
   LinkedBlockingQueue getMapBlockingQueue
 
   def layerReaderCache = [:]
   static def id = 0
-  void afterPropertiesSet() throws Exception {
-    Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE)
+
+  void afterPropertiesSet() throws Exception
+  {
+    Hints.putSystemDefault( Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE )
 
     hibernate = new TileCacheHibernate()
-    dataSourceProps= grailsApplication.config.dataSource.toProperties()
-    hibernate.initialize([
-            dbCreate:dataSourceProps.dbCreate,
-            driverClassName:dataSourceProps.driverClassName,
-            username:dataSourceProps.username,
-            password:dataSourceProps.password,
-            url:dataSourceProps.url,
-            accumuloInstanceName:grailsApplication.config.accumulo.instance,
-            accumuloPassword:grailsApplication.config.accumulo.password,
-            accumuloUsername:grailsApplication.config.accumulo.username,
-            accumuloZooServers:grailsApplication.config.accumulo.zooServers
-    ])
-    daoTileCacheService = hibernate.applicationContext.getBean("tileCacheServiceDAO");
+    dataSourceProps = grailsApplication.config.dataSource.toProperties()
+    hibernate.initialize( [
+        dbCreate            : dataSourceProps.dbCreate,
+        driverClassName     : dataSourceProps.driverClassName,
+        username            : dataSourceProps.username,
+        password            : dataSourceProps.password,
+        url                 : dataSourceProps.url,
+        accumuloInstanceName: grailsApplication.config.accumulo.instance,
+        accumuloPassword    : grailsApplication.config.accumulo.password,
+        accumuloUsername    : grailsApplication.config.accumulo.username,
+        accumuloZooServers  : grailsApplication.config.accumulo.zooServers
+    ] )
+    daoTileCacheService = hibernate.applicationContext.getBean( "tileCacheServiceDAO" );
 
-    getMapBlockingQueue = new LinkedBlockingQueue(4)
-    (0..<4).each{getMapBlockingQueue.put(0)}
+    getMapBlockingQueue = new LinkedBlockingQueue( 4 )
+    ( 0..<4 ).each { getMapBlockingQueue.put( 0 ) }
 
-   // println "DATA SOURCE ===== ${dataSource}"
-   // println "DATA SOURCE UNPROXIED ===== ${dataSourceUnproxied}"
+    // println "DATA SOURCE ===== ${dataSource}"
+    // println "DATA SOURCE UNPROXIED ===== ${dataSourceUnproxied}"
   }
+
   def getTile(AccumuloProxyWmtsCommand cmd, HttpServletResponse response)
   {
-    def x = cmd.tilecol
-    def y = cmd.tilerow
-    def z = cmd.tilematrix.toInteger()
+    def x = cmd.tileCol
+    def y = cmd.tileRow
+    def z = cmd.tileMatrix.toInteger()
 
-    def layer = daoTileCacheService.getLayerInfoByName(cmd.layer)
-    if(layer)
+    def layer = daoTileCacheService.getLayerInfoByName( cmd.layer )
+    if ( layer )
     {
-      def tiles = daoTileCacheService.getTilesWithinConstraint(layer, [x:x,y:y,z:z])
+      def tiles = daoTileCacheService.getTilesWithinConstraint( layer, [x: x, y: y, z: z] )
 
-      if(tiles)
+      if ( tiles )
       {
-        def formatType = cmd.format.split("/")[-1].toLowerCase()
-        def inputStream =  new ByteArrayInputStream(tiles[0].data)
-        BufferedImage image = ImageIO.read(inputStream)
+        def formatType = cmd.format.split( "/" )[-1].toLowerCase()
+        def inputStream = new ByteArrayInputStream( tiles[0].data )
+        BufferedImage image = ImageIO.read( inputStream )
         def outputImage = image
-        if(image)
+        if ( image )
         {
-          switch(formatType)
+          switch ( formatType )
           {
-            case "jpeg":
-            case "jpg":
-              if(image.raster.numBands > 3)
-              {
-                outputImage = JAI.create("BandSelect", image, [0,1,2] as int[])
-              }
-              break;
-            default:
-              //outputImage = image
-              break
+          case "jpeg":
+          case "jpg":
+            if ( image.raster.numBands > 3 )
+            {
+              outputImage = JAI.create( "BandSelect", image, [0, 1, 2] as int[] )
+            }
+            break;
+          default:
+            //outputImage = image
+            break
           }
         }
 
         response.contentType = cmd.format
-        ImageIO.write(outputImage,formatType, response.outputStream)
+        ImageIO.write( outputImage, formatType, response.outputStream )
       }
       else
       {
@@ -113,23 +108,19 @@ class AccumuloProxyService implements InitializingBean {
       // exception output
     }
   }
-  synchronized
-  private nextId()
+
+  def getMap(AccumuloProxyWmsCommand cmd, String tileAccessUrl, HttpServletResponse response)
   {
-    ++id
-  }
-  def getMap(AccumuloProxyWmsCommand cmd, String tileAccessUrl, HttpServletResponse  response)
-  {
-    //def tempId = nextId()
     def result
     Map map
     def layers = []
     def element = getMapBlockingQueue.take()
-   // println "GetMap ${tempId}"
-    try{
-      def gridFormat= new ImageMosaicJDBCFormat()//GridFormatFinder.findFormat(new URL("http://localhost:8080/tilecache/accumuloProxy/tileAccess?layer=BMNG"))
-      cmd.layers.split(",").each{ layer->
-        def gridReader = gridFormat.getReader(new URL("${tileAccessUrl}?layer=${layer}") )
+    try
+    {
+      def gridFormat = new ImageMosaicJDBCFormat()
+//GridFormatFinder.findFormat(new URL("http://localhost:8080/tilecache/accumuloProxy/tileAccess?layer=BMNG"))
+      cmd.layers.split( "," ).each { layer ->
+        def gridReader = gridFormat.getReader( new URL( "${tileAccessUrl}?layer=${layer}" ) )
         def mosaic = new GridReaderLayer( gridReader, new RasterSymbolizer().gtStyle )
 
         layers << mosaic
@@ -137,41 +128,42 @@ class AccumuloProxyService implements InitializingBean {
 
       response.contentType = cmd.format
       //def img = ImageIO.read("/Volumes/DataDrive/data/earth2.tif" as File)
-     // BufferedImage dest = img.getSubimage(0, 0, cmd.width, cmd.height);
+      // BufferedImage dest = img.getSubimage(0, 0, cmd.width, cmd.height);
 
-     // ImageIO.write(dest, cmd.format.split('/')[-1],response.outputStream)
+      // ImageIO.write(dest, cmd.format.split('/')[-1],response.outputStream)
       //img = null
 
       map = new Map(
-              width: cmd.width,
-              height: cmd.height,
-              proj: cmd.srs,
-              type: cmd.format.split('/')[-1],
-              bounds:cmd.bbox.split(",").collect(){it.toDouble()} as Bounds, // [-180, -90, 180, 90] as Bounds,
-             // backgroundColor:cmd.bgcolor,
-              layers: layers
+          width: cmd.width,
+          height: cmd.height,
+          proj: cmd.srs,
+          type: cmd.format.split( '/' )[-1],
+          bounds: cmd.bbox.split( "," ).collect() { it.toDouble() } as Bounds, // [-180, -90, 180, 90] as Bounds,
+          // backgroundColor:cmd.bgcolor,
+          layers: layers
       )
       result = new ByteArrayOutputStream()
 
-     // def gzipped = new GZIPOutputStream(result)
-    //  OutputStreamWriter writer=new OutputStreamWriter(gzipped);
-      map.render(result)
+      // def gzipped = new GZIPOutputStream(result)
+      //  OutputStreamWriter writer=new OutputStreamWriter(gzipped);
+      map.render( result )
       //gzipped.finish();
       //writer.close();
 
     }
-    catch(def e)
+    catch ( def e )
     {
       // really need to write exception to stream
 
-     // e.printStackTrace()
+      // e.printStackTrace()
     }
-    finally{
-     // map?.layers.each{it.dispose()}
+    finally
+    {
+      // map?.layers.each{it.dispose()}
       map?.close()
-      getMapBlockingQueue.put(element)
+      getMapBlockingQueue.put( element )
     }
-     //println result.toByteArray().size()
+    //println result.toByteArray().size()
 
     result
     // println "Done GetMap ${tempId}"
@@ -193,46 +185,49 @@ class AccumuloProxyService implements InitializingBean {
   def createLayer(def params)
   {
     def result
-    if(!daoTileCacheService.getLayerInfoByName(params.name))
+    if ( !daoTileCacheService.getLayerInfoByName( params.name ) )
     {
       result = daoTileCacheService.createOrUpdateLayer(
-              new TileCacheLayerInfo(name:params.name,
-                      bounds: new Projection(params.epsgCode).bounds.polygon.g,
-                      epsgCode: params.epsgCode,
-                      tileHeight:params.tileHeight,
-                      tileWidth:params.tileWidth,
-                      minLevel:params.minLevel,
-                      maxLevel:params.maxLevel)
+          new TileCacheLayerInfo( name: params.name,
+              bounds: new Projection( params.epsgCode ).bounds.polygon.g,
+              epsgCode: params.epsgCode,
+              tileHeight: params.tileHeight,
+              tileWidth: params.tileWidth,
+              minLevel: params.minLevel,
+              maxLevel: params.maxLevel )
       )
     }
 
     result
   }
+
   def getLayers()
   {
-    daoTileCacheService.listAllLayers().each{
+    daoTileCacheService.listAllLayers().each {
 
     }
   }
+
   def renameLayer(String oldName, String newName)
   {
-    daoTileCacheService.renameLayer(oldName, newName)
+    daoTileCacheService.renameLayer( oldName, newName )
   }
+
   def tileAccess(def params)
   {
     def result = ""
 
-    if(params.layer)
+    if ( params.layer )
     {
 
-      TileCacheLayerInfo layerInfo = daoTileCacheService.getLayerInfoByName(params.layer)
+      TileCacheLayerInfo layerInfo = daoTileCacheService.getLayerInfoByName( params.layer )
 
-      if(layerInfo)
+      if ( layerInfo )
       {
         def masterTableName = 'tile_cache_layer_info'
         def layerName = layerInfo.name
         def tileAccessClass = grailsApplication.config.accumulo.tileAccessClass
-     //   def tileAccessClass = 'tilecache.AccumuloTileAccess'
+        //   def tileAccessClass = 'tilecache.AccumuloTileAccess'
 
         def x = {
           mkp.xmlDeclaration()
@@ -252,10 +247,10 @@ class AccumuloProxyService implements InitializingBean {
               maxActive( value: 10 )
               maxIdle( value: 0 )
 
-              accumuloPassword( value:"${grailsApplication.config.accumulo.password}")
-              accumuloUsername( value:"${grailsApplication.config.accumulo.username}")
-              accumuloInstanceName( value:"${grailsApplication.config.accumulo.instance}")
-              accumuloZooServers( value:"${grailsApplication.config.accumulo.zooServers}")
+              accumuloPassword( value: "${grailsApplication.config.accumulo.password}" )
+              accumuloUsername( value: "${grailsApplication.config.accumulo.username}" )
+              accumuloInstanceName( value: "${grailsApplication.config.accumulo.instance}" )
+              accumuloZooServers( value: "${grailsApplication.config.accumulo.zooServers}" )
             }
             mapping {
               masterTable( name: masterTableName ) {
@@ -269,7 +264,7 @@ class AccumuloProxyService implements InitializingBean {
               spatialTable {
                 keyAttributeName( name: 'hash_id' )
                 geomAttributeName( name: 'bounds' )
-             }
+              }
 
             }
           }
@@ -283,33 +278,34 @@ class AccumuloProxyService implements InitializingBean {
 
     result
   }
+
   def wfsGetFeature(AccumuloProxyWfsCommand cmd, HttpServletResponse response)
   {
     def returnResult
-    def typename = cmd.typename.split(":")[-1]
+    def typename = cmd.typeName.split( ":" )[-1]
     def typenameLowerCase = typename.toLowerCase()
-   //println typename
-    if(typenameLowerCase=="layers")
+    //println typeName
+    if ( typenameLowerCase == "layers" )
     {
       // application/javascript if callback is available
       response.contentType = "application/json"
       def layers = daoTileCacheService.listAllLayers()
-      def result = [type:"FeatureCollection", features:[]]
-      layers.each{layer->
-        def jsonPoly = new org.geotools.geojson.geom.GeometryJSON().toString(layer.bounds)
-        def obj = new JsonSlurper().parseText(jsonPoly) as HashMap
-        def layerInfo = [type:"Feature", geometry:obj]
-        layerInfo.properties = [name:layer.name,
-                                id:layer.id,
-                                tile_store_table:layer.tileStoreTable,
-                                epsg_code: layer.epsgCode,
-                                min_level:layer.minLevel,
-                                max_level:layer.maxLevel,
-                                tile_width:layer.tileWidth,
-                                tile_height:layer.tileHeight]
+      def result = [type: "FeatureCollection", features: []]
+      layers.each { layer ->
+        def jsonPoly = new org.geotools.geojson.geom.GeometryJSON().toString( layer.bounds )
+        def obj = new JsonSlurper().parseText( jsonPoly ) as HashMap
+        def layerInfo = [type: "Feature", geometry: obj]
+        layerInfo.properties = [name            : layer.name,
+                                id              : layer.id,
+                                tile_store_table: layer.tileStoreTable,
+                                epsg_code       : layer.epsgCode,
+                                min_level       : layer.minLevel,
+                                max_level       : layer.maxLevel,
+                                tile_width      : layer.tileWidth,
+                                tile_height     : layer.tileHeight]
         result.features << layerInfo
       }
-      returnResult = (result as JSON).toString()
+      returnResult = ( result as JSON ).toString()
 
     }
     else
@@ -317,20 +313,21 @@ class AccumuloProxyService implements InitializingBean {
     }
     returnResult
   }
+
   def getLayers(AccumuloProxyGetLayersCommand cmd, HttpServletResponse response)
   {
-    if(params.format)
+    if ( params.format )
     {
-      switch(params.format.toLowerCase())
+      switch ( params.format.toLowerCase() )
       {
-        case "json":
-          def layers = daoTileCacheService.listAllLayers()
-          layers.each{layer->
+      case "json":
+        def layers = daoTileCacheService.listAllLayers()
+        layers.each { layer ->
 
-          }
-          break
-        default:
-          break
+        }
+        break
+      default:
+        break
       }
     }
 
