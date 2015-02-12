@@ -8,7 +8,7 @@ import groovy.transform.ToString
  */
 @Validateable
 @ToString( includeNames = true )
-class AccumuloProxyWmsCommand
+class AccumuloProxyWmsCommand  implements CaseInsensitiveBind
 {
   String service
   String version
@@ -40,29 +40,4 @@ class AccumuloProxyWmsCommand
       }
     } )
   }
-
-  static def fixParamNames(def params)
-  {
-    //println params
-
-    def names = ( AccumuloProxyWmsCommand.metaClass.properties*.name ).sort() - ['class', 'constraints', 'errors']
-
-    def newParams = params.inject( [:] ) { a, b ->
-      def propName = names.find { it.equalsIgnoreCase( b.key ) && b.value != null }
-      if ( propName )
-      {
-        //println "${propName}=${b.value}"
-        a[propName] = b.value
-      }
-      else
-      {
-        a[b.key] = b.value
-      }
-      a
-    }
-
-    params.clear()
-    params.putAll( newParams )
-  }
-
 }
