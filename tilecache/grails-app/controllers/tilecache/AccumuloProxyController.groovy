@@ -1,6 +1,5 @@
 package tilecache
 
-import org.apache.commons.collections.map.CaseInsensitiveMap
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.web.context.request.RequestContextHolder
 
@@ -80,15 +79,13 @@ class AccumuloProxyController
     null
   }
 
-  def wfs()
+  def wfs(AccumuloProxyWfsCommand cmd)
   {
     response.setHeader( "Access-Control-Allow-Origin", "*" );
     response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
     response.setHeader( "Access-Control-Max-Age", "3600" );
     response.setHeader( "Access-Control-Allow-Headers", "x-requested-with" );
-    def cmd = new AccumuloProxyWfsCommand()
-    CaseInsensitiveMap mapping = new CaseInsensitiveMap( params )
-    bindData( cmd, mapping )
+
     if ( cmd.validate() )
     {
       switch ( cmd.request.toLowerCase() )
