@@ -1,8 +1,5 @@
 package tilecache
 
-import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
-import org.springframework.web.context.request.RequestContextHolder
-
 class AccumuloProxyController
 {
   def accumuloProxyService
@@ -22,23 +19,20 @@ class AccumuloProxyController
     {
       if ( cmd.request.toLowerCase() == "gettile" )
       {
-        accumuloProxyService.getTile( cmd, response )
+
+        def tile = accumuloProxyService.getTile( cmd )
+
+        render contentType: tile.contentType, file: tile.buffer
       }
-      response.outputStream.close()
     }
     else
     {
       render ""
     }
-    null
   }
 
   def wms(AccumuloProxyWmsCommand cmd)
   {
-    GrailsWebRequest webRequest =
-        (GrailsWebRequest)RequestContextHolder.currentRequestAttributes()
-    webRequest.setRenderView( false )
-
     try
     {
       // need to support case insensitive data bindings
@@ -48,18 +42,16 @@ class AccumuloProxyController
       {
         if ( cmd.request.toLowerCase() == "getmap" )
         {
-          def tileAccessUrl = createLink( absolute: true, controller: "accumuloProxy", action: "tileAccess" );
+          def tileAccessUrl = createLink( absolute: true, controller: "accumuloProxy", action: "tileAccess" ) as String
+
           //println tileAccessUrl
-          ByteArrayOutputStream byteStream = accumuloProxyService.getMap( cmd, tileAccessUrl, response )
-          def bytes = byteStream.toByteArray()
+          def results = accumuloProxyService.getMap( cmd, tileAccessUrl )
+
           // println bytes.size()
-          if ( bytes.size() > 0 )
+          if ( results.buffer.size() > 0 )
           {
-            render contentType: cmd.format, file: bytes
-            //  render contentType: "application/x-gzip", file: bytes
-            //    response.outputStream << bytes
+            render contentType: results.contentType, file: results.buffer
           }
-          //response.outputStream.close()
         }
       }
       else
@@ -75,8 +67,6 @@ class AccumuloProxyController
 
       //render e.toString()
     }
-
-    null
   }
 
   def wfs(AccumuloProxyWfsCommand cmd)
@@ -91,16 +81,14 @@ class AccumuloProxyController
       switch ( cmd.request.toLowerCase() )
       {
       case "getfeature":
-        def result = accumuloProxyService.wfsGetFeature( cmd, response )
+        def result = accumuloProxyService.wfsGetFeature( cmd )
         if ( params.callback )
         {
           result = "${params.callback}(${result});";
         }
         // allow cross domain
         // println output
-        response.outputStream.write( result.bytes )
-
-
+        render contentType: result.contentType, file: result.buffer
         break
       case "getcapabilities":
         break
@@ -115,8 +103,6 @@ class AccumuloProxyController
     {
       render "${cmd.errors}"
     }
-    response.outputStream.close()
-    null
   }
 
   /*
@@ -206,12 +192,9 @@ def putTile()
     render "createLayer"
   }
 
-  def renameLayer()
+  def renameLayer(String oldName, String newName)
   {
-    if ( params.oldName && params.newName )
-    {
-      accumuloProxyService.renameLayer( params.oldName, params.newName )
-    }
+    accumuloProxyService.renameLayer( oldName, newName )
   }
 
   def updateLayer()
@@ -223,25 +206,21 @@ def putTile()
   {
     if ( cmd.validate() )
     {
-      accumuloProxyService.getLayers( cmd, response )
+      def results = accumuloProxyService.getLayers( cmd )
 
+      render contentType: results.contentType, file: results.buffer
     }
     else
     {
       render ""
     }
-
-    render ""
-    null
   }
 
   def tileAccess()
   {
     def xmlString = accumuloProxyService.tileAccess( params )
-    response.contentType = "application/xml"
-    response.outputStream.write( xmlString.bytes )
-    response.outputStream.close()
-    null
+
+    render contentType: 'application/xml', file: xmlString.bytes
   }
 
 //  def testAccess(){

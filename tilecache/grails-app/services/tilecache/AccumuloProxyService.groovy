@@ -13,6 +13,7 @@ import joms.geotools.tileapi.hibernate.controller.TileCacheServiceDAO
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
 import org.geotools.factory.Hints
 import org.geotools.gce.imagemosaic.jdbc.ImageMosaicJDBCFormat
+import org.geotools.geojson.geom.GeometryJSON
 import org.geotools.map.GridReaderLayer
 import org.springframework.beans.factory.InitializingBean
 
@@ -61,11 +62,14 @@ class AccumuloProxyService implements InitializingBean
     // println "DATA SOURCE UNPROXIED ===== ${dataSourceUnproxied}"
   }
 
-  def getTile(AccumuloProxyWmtsCommand cmd, HttpServletResponse response)
+  def getTile(AccumuloProxyWmtsCommand cmd)
   {
     def x = cmd.tileCol
     def y = cmd.tileRow
     def z = cmd.tileMatrix.toInteger()
+
+    def ostream = new ByteArrayOutputStream()
+    def contentType = cmd.format
 
     def layer = daoTileCacheService.getLayerInfoByName( cmd.layer )
     if ( layer )
@@ -95,8 +99,7 @@ class AccumuloProxyService implements InitializingBean
           }
         }
 
-        response.contentType = cmd.format
-        ImageIO.write( outputImage, formatType, response.outputStream )
+        ImageIO.write( outputImage, formatType, ostream )
       }
       else
       {
@@ -107,14 +110,18 @@ class AccumuloProxyService implements InitializingBean
     {
       // exception output
     }
+
+    [contentType: contentType, buffer: ostream.toByteArray()]
   }
 
-  def getMap(AccumuloProxyWmsCommand cmd, String tileAccessUrl, HttpServletResponse response)
+  def getMap(AccumuloProxyWmsCommand cmd, String tileAccessUrl)
   {
-    def result
     Map map
     def layers = []
     def element = getMapBlockingQueue.take()
+    def contentType = cmd.format
+    def result = new ByteArrayOutputStream()
+
     try
     {
       def gridFormat = new ImageMosaicJDBCFormat()
@@ -126,7 +133,6 @@ class AccumuloProxyService implements InitializingBean
         layers << mosaic
       }
 
-      response.contentType = cmd.format
       //def img = ImageIO.read("/Volumes/DataDrive/data/earth2.tif" as File)
       // BufferedImage dest = img.getSubimage(0, 0, cmd.width, cmd.height);
 
@@ -142,7 +148,6 @@ class AccumuloProxyService implements InitializingBean
           // backgroundColor:cmd.bgcolor,
           layers: layers
       )
-      result = new ByteArrayOutputStream()
 
       // def gzipped = new GZIPOutputStream(result)
       //  OutputStreamWriter writer=new OutputStreamWriter(gzipped);
@@ -165,7 +170,7 @@ class AccumuloProxyService implements InitializingBean
     }
     //println result.toByteArray().size()
 
-    result
+    [contentType: contentType, buffer: result.toByteArray()]
     // println "Done GetMap ${tempId}"
 
   }
@@ -279,12 +284,13 @@ class AccumuloProxyService implements InitializingBean
     result
   }
 
-  def wfsGetFeature(AccumuloProxyWfsCommand cmd, HttpServletResponse response)
+  def wfsGetFeature(AccumuloProxyWfsCommand cmd)
   {
-    def returnResult
     def typename = cmd.typeName.split( ":" )[-1]
     def typenameLowerCase = typename.toLowerCase()
     //println typeName
+    def response = [:]
+
     if ( typenameLowerCase == "layers" )
     {
       // application/javascript if callback is available
@@ -292,7 +298,7 @@ class AccumuloProxyService implements InitializingBean
       def layers = daoTileCacheService.listAllLayers()
       def result = [type: "FeatureCollection", features: []]
       layers.each { layer ->
-        def jsonPoly = new org.geotools.geojson.geom.GeometryJSON().toString( layer.bounds )
+        def jsonPoly = new GeometryJSON().toString( layer.bounds )
         def obj = new JsonSlurper().parseText( jsonPoly ) as HashMap
         def layerInfo = [type: "Feature", geometry: obj]
         layerInfo.properties = [name            : layer.name,
@@ -305,32 +311,35 @@ class AccumuloProxyService implements InitializingBean
                                 tile_height     : layer.tileHeight]
         result.features << layerInfo
       }
-      returnResult = ( result as JSON ).toString()
+      response.buffer = ( result as JSON ).toString()?.bytes
 
     }
-    else
-    {
-    }
-    returnResult
+//    else
+//    {
+//    }
+    response
   }
 
-  def getLayers(AccumuloProxyGetLayersCommand cmd, HttpServletResponse response)
+  def getLayers(AccumuloProxyGetLayersCommand cmd)
   {
-    if ( params.format )
+    def response = [:]
+    if ( cmd.format )
     {
-      switch ( params.format.toLowerCase() )
+      switch ( cmd.format.toLowerCase() )
       {
       case "json":
         def layers = daoTileCacheService.listAllLayers()
         layers.each { layer ->
 
         }
+        response.contentType = 'application/json'
+        response.buffer = []
         break
       default:
         break
       }
     }
-
+    response
   }
 
 }
