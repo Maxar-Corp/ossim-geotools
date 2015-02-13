@@ -42,8 +42,8 @@ install {
 repositories {
   mavenLocal()
   maven {
-    // url 'http://repository.cloudera.com/artifactory/cloudera-repos/'
-    url 'http://repo.hortonworks.com/content/repositories/releases/'
+     url 'http://repository.cloudera.com/artifactory/cloudera-repos/'
+    //url 'http://repo.hortonworks.com/content/repositories/releases/'
   }
   maven {
     url 'http://repo.boundlessgeo.com/main'
@@ -83,11 +83,13 @@ dependencies {
   compile 'org.geotools:gt-imagemosaic-jdbc:12.0'
   compile 'org.geoscript:geoscript-groovy:1.4.0'
   compile 'org.ossim:joms:1.8.19'
-  compile 'org.apache.accumulo:accumulo-core:1.6.1.2.2.0.0-2041'
+  //compile 'org.apache.accumulo:accumulo-core:1.6.1.2.2.0.0-2041'
+  compile 'org.apache.accumulo:accumulo-core:1.6.1'
   compile 'com.github.davidmoten:geo:0.6.10'
   compile 'org.postgresql:postgresql:9.3-1100-jdbc4'
   //compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.5.0'
-  compile 'org.apache.hadoop:hadoop-client:2.6.0.2.2.0.0-2041'
+  compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.1'
+ // compile 'org.apache.hadoop:hadoop-client:2.6.0.2.2.0.0-2041'
 
   compile 'org.hibernate:hibernate-core:4.3.8.Final'
   compile 'org.hibernate:hibernate-spatial:4.3'
