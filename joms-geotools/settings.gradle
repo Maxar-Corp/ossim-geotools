@@ -1,2 +1,3 @@
 rootProject.name = 'joms-geotools'
+include ':common', ':app'
 

@@ -1,72 +1,87 @@
-apply plugin: 'groovy'
-apply plugin: 'idea'
-apply plugin: 'maven'
-apply plugin: 'application'
-apply plugin: "com.github.johnrengelman.shadow"
-//apply plugin: 'com.github.johnrengelman.shadow'
+allprojects {
+  //Put instructions for all projects
+  apply plugin: 'java'
+  apply plugin: 'groovy'
+  apply plugin: 'idea'
+  apply plugin: 'maven'
 
-version = '1.0-SNAPSHOT'
-sourceCompatibility = '1.6'
+  sourceCompatibility = 1.6
+  version = '1.0-SNAPSHOT'
+  repositories {
+    mavenLocal()
+    maven {
+       url 'http://repository.cloudera.com/artifactory/cloudera-repos/'
+      //url 'http://repo.hortonworks.com/content/repositories/releases/'
+    }
+    maven {
+      url 'http://repo.boundlessgeo.com/main'
+    }
+    maven {
+      url 'http://download.osgeo.org/webdav/geotools'
+    }
+    maven {
+      url 'maven2-repository.dev.java.net'
+    }
+    maven {
+      url 'http://maven.geo-solutions.it'
+    }
+    maven {
+      url 'https://artifacts.unidata.ucar.edu/content/repositories/unidata/'
+    }
+    maven {
+     url  'http://www.hibernatespatial.org/repository'
+    }
+    mavenCentral()
+  }
+}
 
 buildscript {
-  repositories { 
+  repositories {
     jcenter()
     maven {
       name 'Shadow'
       url 'http://dl.bintray.com/content/johnrengelman/gradle-plugins'
     }
-
   }
   dependencies {
     classpath "com.github.jengelman.gradle.plugins:shadow:1.2.0"
   }
 }
-test {
-  testLogging {
-    events 'started', 'passed'
+
+
+subprojects {
+  //Put instructions for each sub project
+
+  install {
+    repositories.mavenInstaller {
+      pom.groupId = "tilecache"
+      // only necessary if artifact ID diverges from project name
+      // the latter defaults to project directory name and can be
+      // configured in settings.gradle
+      // shouldn't be needed as this is the default anyway
+      pom.packaging = 'jar'
+    }
+  }
+
+
+  dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
   }
 }
 
-install {
-  repositories.mavenInstaller {
-    pom.groupId = "org.ossim"
-    // only necessary if artifact ID diverges from project name
-    // the latter defaults to project directory name and can be
-    // configured in settings.gradle
-    pom.artifactId = 'joms-geotools'
-    // shouldn't be needed as this is the default anyway
-    pom.packaging = 'jar'
-  }
-}
+//project( ':api' ) {
+//  install {
+//    repositories.mavenInstaller {
+//      pom.artifactId = 'api'
+//    }
+//  }
+//}
 
-repositories {
-  mavenLocal()
-  maven {
-     url 'http://repository.cloudera.com/artifactory/cloudera-repos/'
-    //url 'http://repo.hortonworks.com/content/repositories/releases/'
-  }
-  maven {
-    url 'http://repo.boundlessgeo.com/main'
-  }
-  maven {
-    url 'http://download.osgeo.org/webdav/geotools'
-  }
-  maven {
-    url 'maven2-repository.dev.java.net'
-  }
-  maven {
-    url 'http://maven.geo-solutions.it'
-  }
-  maven {
-    url 'https://artifacts.unidata.ucar.edu/content/repositories/unidata/'
-  }
-  maven {
-   url  'http://www.hibernatespatial.org/repository'
-  }
-  mavenCentral()
-}
-
-dependencies {
+//Common Project specific stuff
+project( ':common' ) {
+  dependencies {
+ //   compile project( ':api' )
+    compile 'org.codehaus.groovy:groovy-all:2.4.0'
   testCompile group: 'junit', name: 'junit', version: '4.12'
  // testCompile 'org.apache.hadoop:hadoop-hdfs:2.0.0-cdh4.2.0'
  // testCompile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.5.0'
@@ -101,63 +116,46 @@ dependencies {
 //  compile 'org.apache.hadoop:hadoop-hdfs:2.0.0'
 //  compile 'org.apache.hadoop:hadoop-client:2.0.0'
 //  compile 'org.apache.hadoop:hadoop-common:2.0.0'
-}
+ 
 
-task listJars << {
-  configurations.compile.each { File file -> println file.name }
-}
+  }
 
-task createRunScript << {
-
-  def file = new File("run.sh")
-  file.delete()
-  file << "java -cp build/libs/joms-geotools-1.0-SNAPSHOT.jar:${sourceSets.main.runtimeClasspath.join(":")} \$*"
-
-}
-
-sourceSets{
-  main{
-    java{
-      srcDir "src/main"
-    }
-    resources{
-      srcDir  "src/main/resources"
+  install {
+    repositories.mavenInstaller {
+      pom.artifactId = 'joms-geotools-common'
     }
   }
-  test{
-    groovy{
-      srcDir "test/groovy"
+
+}
+
+//App Project specific stuff
+project( ':app' ) {
+  apply plugin: "com.github.johnrengelman.shadow"
+
+  dependencies {
+    compile project( ':common' )
+  }
+
+  install {
+    repositories.mavenInstaller {
+      pom.artifactId = 'joms-geotools-app'
     }
   }
- }
 
-
-tasks.withType(Test) {
-  // get System properties needed for tests
-  systemProperties = System.getProperties()
-  systemProperties['WORLD_IMAGE_FILE'] = "/data/earth.ntf"
-  //systemProperties = System.getProperties()
-  //systemProperties = System.properties
-  //println 'NUMBER_OF_PROCESSORS is ' +
-  //        systemProperties['NUMBER_OF_PROCESSORS'] // always returns 1
-}
-
-task runTest(dependsOn: [build]) << {
-  println 'running unit tests'
-}
-
-mainClassName = "joms.geotools.tileapi.app.TileCacheApp"
-import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
-
-shadowJar {
-  zip64 true
-  mergeServiceFiles()
-  mergeGroovyExtensionModules()
-  mergeServiceFiles('META-INF/spring.schema')
-  mergeServiceFiles('META-INF/spring.handlers')
-}
-jar {
-  manifest {
-    attributes 'Main-Class': mainClassName
+  shadowJar {
+    zip64 true
+    mergeServiceFiles()
+    mergeGroovyExtensionModules()
+    mergeServiceFiles('META-INF/spring.schema')
+    mergeServiceFiles('META-INF/spring.handlers')
   }
+  jar {
+    manifest {
+      attributes 'Main-Class': "joms.geotools.tileapi.app.TileCacheApp"
+    }
+  }
+
 }
+
+
+
