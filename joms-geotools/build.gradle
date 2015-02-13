@@ -54,7 +54,7 @@ subprojects {
 
   install {
     repositories.mavenInstaller {
-      pom.groupId = "tilecache"
+      pom.groupId = "org.ossim"
       // only necessary if artifact ID diverges from project name
       // the latter defaults to project directory name and can be
       // configured in settings.gradle
@@ -72,7 +72,7 @@ subprojects {
 //project( ':api' ) {
 //  install {
 //    repositories.mavenInstaller {
-//      pom.artifactId = 'api'
+//      pom.artifactId = 'joms-geotools-api'
 //    }
 //  }
 //}
