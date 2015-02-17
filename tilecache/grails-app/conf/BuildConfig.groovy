@@ -7,6 +7,12 @@ grails.project.target.level = 1.6
 grails.project.source.level = 1.6
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
+enum AccumuloTarget {
+  CDH4, HDP, GDAC
+}
+
+accumuloTarget = AccumuloTarget.HDP
+
 grails.project.fork = [
     // configure settings for compilation JVM, note that if you alter the Groovy version forked compilation is required
     //  compile: [maxMemory: 256, minMemory: 256, debug: false, maxPerm: 256, daemon:true],
@@ -37,8 +43,19 @@ grails.project.dependency.resolution = {
     mavenLocal()
 
     inherits true // Whether to inherit repository definitions from plugins
-    //mavenRepo 'http://repo.hortonworks.com/content/repositories/releases/'
-    mavenRepo 'http://repository.cloudera.com/artifactory/cloudera-repos/'
+
+
+    switch ( accumuloTarget )
+    {
+    case AccumuloTarget.HDP:
+      mavenRepo 'http://repo.hortonworks.com/content/repositories/releases/'
+      break
+    case AccumuloTarget.CDH4:
+      mavenRepo 'http://repository.cloudera.com/artifactory/cloudera-repos/'
+      break
+    case AccumuloTarget.GDAC:
+      break
+    }
 
     mavenRepo "http://repo.grails.org/grails/plugins/"
 
