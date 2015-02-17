@@ -1,3 +1,9 @@
+enum AccumuloTarget {
+  CDH4, HDP, GDAC
+}
+
+def accumuloTarget = AccumuloTarget.HDP
+
 allprojects {
   //Put instructions for all projects
   apply plugin: 'java'
@@ -5,14 +11,25 @@ allprojects {
   apply plugin: 'idea'
   apply plugin: 'maven'
 
+
   sourceCompatibility = 1.6
   version = '1.0-SNAPSHOT'
+
   repositories {
     mavenLocal()
     maven {
-       url 'http://repository.cloudera.com/artifactory/cloudera-repos/'
-      // url 'http://repo.hortonworks.com/content/repositories/releases/'
-     // url 'https://proxy.missionfocus.com/nexus/content/groups/public'
+      switch ( accumuloTarget )
+      {
+      case AccumuloTarget.CDH4:
+        url 'http://repository.cloudera.com/artifactory/cloudera-repos/'
+        break
+      case AccumuloTarget.HDP:
+        url 'http://repo.hortonworks.com/content/repositories/releases/'
+        break
+      case AccumuloTarget.GDAC:
+        url 'https://proxy.missionfocus.com/nexus/content/groups/public'
+        break
+      }
     }
     maven {
       url 'http://repo.boundlessgeo.com/main'
@@ -30,7 +47,7 @@ allprojects {
       url 'https://artifacts.unidata.ucar.edu/content/repositories/unidata/'
     }
     maven {
-     url  'http://www.hibernatespatial.org/repository'
+      url 'http://www.hibernatespatial.org/repository'
     }
     mavenCentral()
   }
@@ -81,47 +98,55 @@ subprojects {
 //Common Project specific stuff
 project( ':common' ) {
   dependencies {
- //   compile project( ':api' )
+    //   compile project( ':api' )
     compile 'org.codehaus.groovy:groovy-all:2.4.0'
-  testCompile group: 'junit', name: 'junit', version: '4.12'
- // testCompile 'org.apache.hadoop:hadoop-hdfs:2.0.0-cdh4.2.0'
- // testCompile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.5.0'
- // testCompile 'org.apache.hadoop:hadoop-client:2.6.0.2.2.0.0-998'
- // testCompile 'org.apache.accumulo:accumulo-core:1.5.0'
- // testCompile 'com.github.davidmoten:geo:0.6.10'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    // testCompile 'org.apache.hadoop:hadoop-hdfs:2.0.0-cdh4.2.0'
+    // testCompile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.5.0'
+    // testCompile 'org.apache.hadoop:hadoop-client:2.6.0.2.2.0.0-998'
+    // testCompile 'org.apache.accumulo:accumulo-core:1.5.0'
+    // testCompile 'com.github.davidmoten:geo:0.6.10'
 //  testCompile 'org.apache.hadoop:hadoop-hdfs:2.0.0'
 //  testCompile 'org.apache.hadoop:hadoop-client:2.0.0'
 //  testCompile 'org.apache.hadoop:hadoop-common:2.0.0'
 
 //  testCompile 'org.ossim:joms:1.8.19'
-  compile 'org.mortbay.jetty:jetty:6.1.26'
-  compile 'org.codehaus.gpars:gpars:1.2.1'
-  compile 'org.geotools:gt-imagemosaic-jdbc:12.0'
-  compile 'org.geoscript:geoscript-groovy:1.4.0'
-  compile 'org.ossim:joms:1.8.19'
- // compile 'org.apache.accumulo:accumulo-core:1.6.1.2.2.0.0-2041'
+    compile 'org.mortbay.jetty:jetty:6.1.26'
+    compile 'org.codehaus.gpars:gpars:1.2.1'
+    compile 'org.geotools:gt-imagemosaic-jdbc:12.0'
+    compile 'org.geoscript:geoscript-groovy:1.4.0'
+    compile 'org.ossim:joms:1.8.19'
 
-  // GDAC DEP
-  //  compile 'org.imintel:semapp-java-client:0.26.0'
-  compile 'org.apache.accumulo:accumulo-core:1.6.1'
-  compile 'com.github.davidmoten:geo:0.6.10'
-  compile 'org.postgresql:postgresql:9.3-1100-jdbc4'
-  //compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.5.0'
-  compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.1'
- // compile 'org.apache.hadoop:hadoop-client:2.6.0.2.2.0.0-2041'
+    // GDAC DEP
+    compile 'com.github.davidmoten:geo:0.6.10'
+    compile 'org.postgresql:postgresql:9.3-1100-jdbc4'
+    //compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.5.0'
+    compile 'org.apache.hadoop:hadoop-client:2.6.0.2.2.0.0-2041'
 
-  compile 'org.hibernate:hibernate-core:4.3.8.Final'
-  compile 'org.hibernate:hibernate-spatial:4.3'
-  compile 'org.springframework:spring-core:4.1.4.RELEASE'
-  compile 'org.springframework:spring-context:4.1.4.RELEASE'
-  compile 'org.springframework:spring-orm:4.1.4.RELEASE'
-  compile 'org.springframework:spring-tx:4.1.4.RELEASE'
-  compile 'javax.validation:validation-api:1.1.0.Final'
+    compile 'org.hibernate:hibernate-core:4.3.8.Final'
+    compile 'org.hibernate:hibernate-spatial:4.3'
+    compile 'org.springframework:spring-core:4.1.4.RELEASE'
+    compile 'org.springframework:spring-context:4.1.4.RELEASE'
+    compile 'org.springframework:spring-orm:4.1.4.RELEASE'
+    compile 'org.springframework:spring-tx:4.1.4.RELEASE'
+    compile 'javax.validation:validation-api:1.1.0.Final'
 //  compile 'org.apache.hadoop:hadoop-hdfs:2.0.0'
 //  compile 'org.apache.hadoop:hadoop-client:2.0.0'
 //  compile 'org.apache.hadoop:hadoop-common:2.0.0'
- 
 
+    switch ( accumuloTarget )
+    {
+    case AccumuloTarget.CDH4:
+      compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.1'
+      break
+    case AccumuloTarget.HDP:
+      compile 'org.apache.accumulo:accumulo-core:1.6.1.2.2.0.0-2041'
+      break
+    case AccumuloTarget.GDAC:
+      compile 'org.imintel:semapp-java-client:0.26.0'
+      compile 'org.apache.accumulo:accumulo-core:1.6.1'
+      break
+    }
   }
 
   install {
@@ -152,8 +177,8 @@ project( ':app' ) {
     //minimizeJar true
     mergeServiceFiles()
     mergeGroovyExtensionModules()
-    mergeServiceFiles('META-INF/spring.schema')
-    mergeServiceFiles('META-INF/spring.handlers')
+    mergeServiceFiles( 'META-INF/spring.schema' )
+    mergeServiceFiles( 'META-INF/spring.handlers' )
   }
   jar {
     manifest {
