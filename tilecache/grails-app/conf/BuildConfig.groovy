@@ -54,6 +54,7 @@ grails.project.dependency.resolution = {
       mavenRepo 'http://repository.cloudera.com/artifactory/cloudera-repos/'
       break
     case AccumuloTarget.GDAC:
+      url 'https://proxy.missionfocus.com/nexus/content/groups/public'
       break
     }
 
