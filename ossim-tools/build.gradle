@@ -130,15 +130,6 @@ subprojects {
   }
 }
 
-//project( ':api' ) {
-//  install {
-//    repositories.mavenInstaller {
-//      pom.artifactId = 'joms-geotools-api'
-//    }
-//  }
-//}
-
-
 
 project( ':kettle-libs' ) {
   apply plugin: "com.github.johnrengelman.shadow"
