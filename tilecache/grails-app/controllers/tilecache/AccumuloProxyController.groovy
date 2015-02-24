@@ -1,5 +1,8 @@
 package tilecache
 
+import geoscript.layer.GeoPackage
+import grails.converters.JSON
+
 class AccumuloProxyController
 {
   def accumuloProxyService
@@ -11,6 +14,13 @@ class AccumuloProxyController
 
   def wmts(AccumuloProxyWmtsCommand cmd)
   {
+    GeoPackage pkg
+
+    def tileLayer = accumuloProxyService.daoTileCacheService.newGeoscriptTileLayer("bmng")
+
+    render ""
+
+    return null
 
     // need to support case insensitive data bindings
     println cmd
@@ -68,7 +78,20 @@ class AccumuloProxyController
       //render e.toString()
     }
   }
+  def actualBounds(){
+    println params
 
+    response.setHeader( "Access-Control-Allow-Origin", "*" );
+    response.setHeader( "Access-Control-Allow-Origin", "*" );
+    response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
+    response.setHeader( "Access-Control-Max-Age", "3600" );
+    response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
+
+    def bounds = accumuloProxyService.getActualBounds(params)
+
+    println bounds
+    render contentType: "application/json", (bounds as JSON).toString()
+  }
   def wfs(AccumuloProxyWfsCommand cmd)
   {
     response.setHeader( "Access-Control-Allow-Origin", "*" );
@@ -216,12 +239,14 @@ def putTile()
     }
   }
 
+
   def tileAccess()
   {
     def xmlString = accumuloProxyService.tileAccess( params )
 
     render contentType: 'application/xml', file: xmlString.bytes
   }
+
 
 //  def testAccess(){
 //

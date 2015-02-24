@@ -1,10 +1,20 @@
 package joms.geotools.tileapi.app
 
 import geoscript.geom.Bounds
+import geoscript.layer.GeoPackage
+import geoscript.layer.Grid
+import geoscript.layer.ImageTile
+import geoscript.layer.Pyramid
+import geoscript.layer.Tile
 import geoscript.proj.Projection
+import joms.geotools.tileapi.TileLayerExport
 import joms.geotools.tileapi.accumulo.AccumuloTileGenerator
+import joms.geotools.tileapi.accumulo.AccumuloTileLayer
 import joms.geotools.tileapi.hibernate.TileCacheHibernate
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
+
+import javax.imageio.ImageIO
+import javax.media.jai.JAI
 
 import static groovyx.gpars.GParsPool.withPool
 /**
@@ -53,6 +63,7 @@ class TileCacheApp
       _ longOpt: 'get-tile-count', args:1, argName:"getTileCount", 'Will return the total tile count for the given layer. --get-tile-count <layer-name>'
       _ longOpt: 'list-layers', argName:"listLayers", 'Will list all layer information'
       _ longOpt: 'get-layer-info', args:1, argName:"getLayerInfo", 'Will get all layer information.  Must pass in a layer name'
+      _ longOpt: 'export-layer', args:1, argName:"exportLayer", 'Will export a layer'
     }
 
     cli
@@ -67,8 +78,8 @@ class TileCacheApp
       cli.usage()
 
       println "Examples:"
-      println "   Creating Layer: java -cp ./build/libs/joms-geotools-1.0-SNAPSHOT-all.jar joms.geotools.tileapi.app.TileCacheApp --db-config ./tilecache-app-config.xml --create-layer reference --min-level 0 --max-level 24 --epsg-code EPSG:4326"
-      println "   Ingesting data: java -cp ./build/libs/joms-geotools-1.0-SNAPSHOT-all.jar joms.geotools.tileapi.app.TileCacheApp --db-config ./tilecache-app-config.xml --threads 4  --ingest --layer-name reference <files>"
+      println "   Creating Layer: java -cp ./build/libs/ossim-app-1.0-SNAPSHOT-all.jar joms.geotools.tileapi.app.TileCacheApp --db-config ./tilecache-app-config.xml --create-layer reference --min-level 0 --max-level 24 --epsg-code EPSG:4326"
+      println "   Ingesting data: java -cp ./build/libs/ossim-app-1.0-SNAPSHOT-all.jar joms.geotools.tileapi.app.TileCacheApp --db-config ./tilecache-app-config.xml --threads 4  --ingest --layer-name reference <files>"
       return false
     }
     if(options.'db-config-template')
@@ -139,6 +150,7 @@ class TileCacheApp
     tileCacheAppConfig.deleteLayer = options."delete-layer"
     tileCacheAppConfig.getLayerInfo = options."get-layer-info"
     tileCacheAppConfig.listLayers = options."list-layers"
+    tileCacheAppConfig.exportLayer = options."export-layer"
 
     if(tileCacheAppConfig.minLevel) tileCacheAppConfig.minLevel =  tileCacheAppConfig.minLevel.toInteger()
     if(tileCacheAppConfig.maxLevel) tileCacheAppConfig.maxLevel =  tileCacheAppConfig.maxLevel.toInteger()
@@ -199,6 +211,42 @@ class TileCacheApp
       tileCacheAppConfig.tileWidth = tileCacheAppConfig.tileWidth?:256
       tileCacheAppConfig.tileHeight = tileCacheAppConfig.tileHeight?:256
     }
+    else if(options."export-layer")
+    {
+      TileCacheLayerInfo layerInfo = tileCacheAppConfig.tileCacheServiceDao.getLayerInfoByName(tileCacheAppConfig.exportLayer)
+      AccumuloTileLayer layer = tileCacheAppConfig.tileCacheServiceDao.newGeoscriptTileLayer(layerInfo)
+      TileLayerExport tileLayerExport = new TileLayerExport(layer:layer)
+      def layerBoundInfo = tileCacheAppConfig.tileCacheServiceDao.getActualLayerBounds(layerInfo)
+      println layerBoundInfo
+      Projection proj = new Projection("EPSG:4326")
+      //Bounds cutBounds = new Bounds(-100, -45, 100, 45, new Projection("EPSG:4326"))
+
+      def file = "/tmp/foo.gpkg" as File
+      GeoPackage pkg
+      if(!file.exists())
+      {
+        pkg = new GeoPackage(file, tileCacheAppConfig.exportLayer, layer.pyramid)
+      }
+      else
+      {
+        pkg = new GeoPackage(file, tileCacheAppConfig.exportLayer)
+      }
+      pkg.proj = layer.proj
+      def grids = []
+      pkg.pyramid.grids.each{grid->
+        if((grid.z >= layerBoundInfo.minLevel)&&(grid.z <=layerBoundInfo.maxLevel))
+        {
+          grids << grid
+        }
+
+      }
+
+       pkg.pyramid.setGrids(grids)
+      tileLayerExport.exportTiles(pkg, [//cutBounds: cutBounds.geometry,
+                                        format:"png"
+                                        ]
+                                  )
+    }
     // vonert bounds to a geoscript bounds with EPSG code
     if(tileCacheAppConfig?.bounds)
     {
@@ -240,21 +288,30 @@ class TileCacheApp
       if(tileCacheAppConfig.getLayerInfo)
       {
         TileCacheLayerInfo layer = tileCacheAppConfig.tileCacheServiceDao.getLayerInfoByName(tileCacheAppConfig.getLayerInfo)
-        def layerInfo =[
-                name:layer.name,
-                epsgCode:layer.epsgCode,
-                Bounds:new Bounds(layer.bounds.envelopeInternal),
-                minLevel:layer.minLevel,
-                maxLevel:layer.maxLevel,
-                tileHeight:layer.tileHeight,
-                tileWidth:layer.tileWidth,
-                tileStoreTable:layer.tileStoreTable,
-        ]
-        def geoscriptTileLayer = tileCacheAppConfig.tileCacheServiceDao.newGeoscriptTileLayer(layer)
-        println layerInfo
+        if(layer)
+        {
+          def layerInfo =[
+                  name:layer.name,
+                  epsgCode:layer.epsgCode,
+                  Bounds:new Bounds(layer.bounds.envelopeInternal),
+                  minLevel:layer.minLevel,
+                  maxLevel:layer.maxLevel,
+                  tileHeight:layer.tileHeight,
+                  tileWidth:layer.tileWidth,
+                  tileStoreTable:layer.tileStoreTable,
+          ]
+          def geoscriptTileLayer = tileCacheAppConfig.tileCacheServiceDao.newGeoscriptTileLayer(layer)
+          println layerInfo
 
-        println "Grids: total tiles ${tileCacheAppConfig.tileCacheServiceDao.getTileCountWithinConstraint(layer)}"
-        geoscriptTileLayer?.pyramid?.grids.each{grid-> println "${grid} : Number of Tiles = ${tileCacheAppConfig.tileCacheServiceDao.getTileCountWithinConstraint(layer,[z:grid.z])}"}
+          println "Grids: total tiles ${tileCacheAppConfig.tileCacheServiceDao.getTileCountWithinConstraint(layer)}"
+          geoscriptTileLayer?.pyramid?.grids.each{grid-> println "${grid} : Number of Tiles = ${tileCacheAppConfig.tileCacheServiceDao.getTileCountWithinConstraint(layer,[z:grid.z])}"}
+
+          println "Actual Bounds: ${tileCacheAppConfig.tileCacheServiceDao.getActualLayerBounds(layer)}"
+        }
+        else
+        {
+          println "Layer ${tileCacheAppConfig.getLayerInfo} not found!"
+        }
       }
       if(tileCacheAppConfig.getTileCount)
       {

@@ -11,7 +11,7 @@ enum AccumuloTarget {
   CDH4, HDP, GDAC
 }
 
-accumuloTarget = AccumuloTarget.HDP
+accumuloTarget = AccumuloTarget.CDH4
 
 grails.project.fork = [
     // configure settings for compilation JVM, note that if you alter the Groovy version forked compilation is required
@@ -54,7 +54,7 @@ grails.project.dependency.resolution = {
       mavenRepo 'http://repository.cloudera.com/artifactory/cloudera-repos/'
       break
     case AccumuloTarget.GDAC:
-      url 'https://proxy.missionfocus.com/nexus/content/groups/public'
+      mavenRepo 'https://proxy.missionfocus.com/nexus/content/groups/public'
       break
     }
 
@@ -74,6 +74,7 @@ grails.project.dependency.resolution = {
     // mavenRepo 'http://repository.cloudera.com/artifactory/cloudera-repos/'
 
     mavenRepo 'http://www.hibernatespatial.org/repository'
+    mavenRepo 'http://www.terracotta.org/download/reflector/releases'
   }
 
   dependencies {
@@ -84,8 +85,12 @@ grails.project.dependency.resolution = {
     compile( 'org.ossim:joms-geotools-common:1.0-SNAPSHOT' ) {
       excludes 'slf4j-log4j12', 'ehcache'
     }
+    runtime 'org.geotools:gt-imagemosaic-jdbc:12.2'
     runtime 'org.postgresql:postgresql:9.3-1100-jdbc4'
-    compile 'org.hibernate:hibernate-spatial:4.3'
+
+    //compile 'net.sf.ehcache:ehcache:2.8.2'
+    // runtime "net.sf.ehcache:ehcache:2.6.0"
+    // compile 'org.hibernate:hibernate-spatial:4.3'
     //compile 'org.hibernate:hibernate-core:4.3.8.Final'
     //  compile 'org.springframework:spring-core:4.1.4.RELEASE'
     //  compile 'org.springframework:spring-context:4.1.4.RELEASE'
@@ -101,8 +106,8 @@ grails.project.dependency.resolution = {
     compile ":asset-pipeline:2.1.1"
 
     // plugins needed at runtime but not for compilation
-    // runtime ":hibernate:3.6.10.18"
-    runtime ':hibernate4:4.3.6.1'
+     runtime ":hibernate:3.6.10.18"
+   // runtime ':hibernate4:4.3.6.1'
     runtime ":database-migration:1.4.0"
     runtime ":jquery:1.11.1"
 

@@ -74,6 +74,20 @@ class TileCacheFilters
 
       }
     }
+    productExport(uri:'/product/export'){
+      before = {
+        //println "before: ${params}"
+        ProductExportCommand.fixParamNames( params )
+        //println "after: ${params}"
+      }
+      after = { Map model ->
+
+      }
+      afterView = { Exception e ->
+
+      }
+
+    }
 
   }
 }

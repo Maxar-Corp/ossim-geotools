@@ -198,17 +198,18 @@ class GridFactorySpiTest
     TileCacheServiceDAO daoTileCacheService = hibernate.applicationContext.getBean("tileCacheServiceDAO");
 
     TileCacheLayerInfo layer = daoTileCacheService.createOrUpdateLayer(
-            new TileCacheLayerInfo(name:"BMNG",
+            new TileCacheLayerInfo(name:"bmng",
             bounds: new Projection("EPSG:4326").bounds.polygon.g,
             epsgCode: "EPSG:4326",
             tileHeight:256,
             tileWidth:256,
             minLevel:0,
-            maxLevel:24)
+            maxLevel:4)
     )
     TileCacheSupport tileCacheSupport = new TileCacheSupport()
     tileCacheSupport.openImage("/Volumes/DataDrive/data/earth2.tif")
 
+    def tempLayer = daoTileCacheService.getLayerInfoByName("bmng")
     int numberOfResolutionLevels = tileCacheSupport.getNumberOfResolutionLevels(0)
     double gsd = tileCacheSupport.getDegreesPerPixel(0)
     joms.oms.Envelope envelope = tileCacheSupport.getEnvelope(0)
@@ -230,10 +231,10 @@ class GridFactorySpiTest
     // generators = daoTileCacheService.getTileGenerators("BMNG","/data/agc_test/2cmv/input1.tif")
     // generators = daoTileCacheService.getTileGenerators("BMNG","/mnt/data1/agc/Fort_Irwin_Buckeye/FortIrwin_NTC_200905/Orthos/Block01/CompleteMrSid8bit/FortIrwin_NTC_200905_Complete.sid")
 
-    generators.each{generator->
-      generator.verbose = true
-      generator.generate()
-    }
+   // generators.each{generator->
+   //   generator.verbose = true
+   //   generator.generate()
+   // }
 
  //   def hashIds = daoTileCacheService.getHashIdsWithinConstraint(layer, [intersects:new Projection("EPSG:4326").bounds,
   //                                                                       z:1])

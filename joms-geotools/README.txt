@@ -1,12 +1,18 @@
+Building
+___________________________________________________________________
+-  Make sure you build groovy-swt and install.
+
+- Full build: 
+gradle clean build common-libs:install kettle-libs:install kettle-plugins:install app:install app:shadowJar -x test
 
 Command line examples.  If you are in this directory and built the tools then here are some examples of creating layers and ingesting data
 
 Generate DB config template:
 ______________________________
-java -cp ./app/build/libs/joms-geotools-app-all-1.0-SNAPSHOT-all.jar joms.geotools.tileapi.app.TileCacheApp  --db-config-template >tilecache-app-config.xml
+java -cp ./app/build/libs/ossim-app-all-1.0-SNAPSHOT-all.jar joms.geotools.tileapi.app.TileCacheApp --db-config-template > ./tilecache-app-config.xml
 
 
-This will give you a keywordlist that looks something like this please output to a file and modify for your distributions:
+This will give you a XML in the file tilecache-app-config.xml.  Please modify for your distribution.  The file initially will look something like:
 
 
 <tilecache-config>

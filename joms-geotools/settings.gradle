@@ -1,3 +1,3 @@
 rootProject.name = 'joms-geotools'
-include ':common', ':app'
+include ':common-libs', ':kettle-libs',':kettle-plugins', ':app'
 

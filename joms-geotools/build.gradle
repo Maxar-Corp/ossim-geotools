@@ -2,8 +2,9 @@ enum AccumuloTarget {
   CDH4, HDP, GDAC
 }
 
-def accumuloTarget = AccumuloTarget.HDP
+def accumuloTarget = AccumuloTarget.CDH4
 
+def JOMS_VERSION = "1.8.19"
 allprojects {
   //Put instructions for all projects
   apply plugin: 'java'
@@ -31,6 +32,9 @@ allprojects {
         break
       }
     }
+    maven{
+      url 'http://dev.mapfish.org/maven/repository'
+    }
     maven {
       url 'http://repo.boundlessgeo.com/main'
     }
@@ -52,6 +56,45 @@ allprojects {
     mavenCentral()
   }
 }
+
+task copyToKettle << {
+
+  File file = System.getenv("KETTLE_HOME") as File
+
+  File destinationLib    = new File(file, "libext/ossim")
+  File destinationPlugin = new File(file, "plugins/radiantblue")
+  if(file.exists())
+  {
+    if(destinationLib.exists())
+    {
+      if(!destinationPlugin.exists())
+      {
+        destinationPlugin.mkdir()
+      }
+      File kettleLib    = "${projectDir}/kettle-libs/build/libs/ossim-kettle-libs-${allprojects.version[0]}.jar" as File
+      File kettlePlugin = "${projectDir}/kettle-plugins/build/libs/ossim-kettle-plugins-${allprojects.version[0]}.jar" as File
+      File commonLibs   = "${projectDir}/common-libs/build/libs/ossim-common-libs-${allprojects.version[0]}.jar" as File
+
+      if(kettleLib.exists())
+      {
+        println "Copying: ${kettleLib}"
+        ant.copy(file: kettleLib.toString(), todir: destinationLib.toString())
+      }
+      if(kettlePlugin.exists())
+      {
+        println "Copying: ${kettlePlugin}"
+        ant.copy(file: kettlePlugin.toString(), todir: destinationPlugin.toString())
+      }
+      if(commonLibs.exists())
+      {
+        println "Copying: ${commonLibs}"
+        ant.copy(file: commonLibs.toString(), todir: destinationPlugin.toString())
+      }
+    }
+  }
+  //configurations.compile.each { File file -> "cp ${file.absoluteFile} ${outDir}".execute()  }
+}
+
 
 buildscript {
   repositories {
@@ -95,26 +138,159 @@ subprojects {
 //  }
 //}
 
-//Common Project specific stuff
-project( ':common' ) {
-  dependencies {
-    //   compile project( ':api' )
+
+
+project( ':kettle-libs' ) {
+  apply plugin: "com.github.johnrengelman.shadow"
+  repositories {
+    maven {
+      url 'http://repository.pentaho.org/artifactory/repo/'
+    }
+  }
+  jar {
+    baseName = "ossim-kettle-libs"
+  }
+  task copyJars << {
+    File outputDir = "${projectDir}/kettle-libs-jars" as File
+    if(!outputDir.exists()) outDir.mkdir()
+    configurations.compile.each { File file -> "cp ${file.absoluteFile} ${outDir}".execute()  }
+  }
+//  task copyJars << {
+//    configurations.compile.each { File file -> println file.absoluteFile }
+//  }
+  dependencies{
+    compile 'pentaho-kettle:kettle-core:5.1.2.1'
+    compile 'pentaho-kettle:kettle-engine:5.1.2.1'
+    compile 'pentaho-kettle:kettle-ui-swt:5.1.2.1'
+    compile 'pentaho:pentaho-hadoop-shims-api:5.1.2.0-101'
     compile 'org.codehaus.groovy:groovy-all:2.4.0'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'org.geoscript:geoscript-groovy:1.4.0'
+    compile 'org.hibernate:hibernate-core:3.6.10.Final'
+    compile 'org.postgresql:postgresql:9.3-1100-jdbc4'
+    compile 'org.hibernate:hibernate-core:3.6.10.Final'
+    compile 'org.hibernatespatial:hibernate-spatial-postgis:1.1.1'
+    compile 'org.hibernatespatial:hibernate-spatial:1.1.1'
+    runtime 'org.postgis:postgis-jdbc:1.5.2'
+
+    //compile 'org.hibernate:hibernate-core:4.3.8.Final'
+   // compile 'org.hibernate:hibernate-spatial:4.3'
+    compile 'org.springframework:spring-core:4.1.4.RELEASE'
+    compile 'org.springframework:spring-context:4.1.4.RELEASE'
+    compile 'org.springframework:spring-orm:4.1.4.RELEASE'
+    compile 'org.springframework:spring-tx:4.1.4.RELEASE'
+    compile 'org.springframework:spring-beans:4.1.4.RELEASE'
+    compile 'javax.validation:validation-api:1.1.0.Final'
+    compile 'org.hibernate:hibernate-validator:4.3.2.Final'
+    compile "org.ossim:joms:${JOMS_VERSION}"
+    compile 'com.rabbitmq:rabbitmq-client:1.3.0'
+    compile 'org.springframework.amqp:spring-rabbit:1.4.3.RELEASE'
+    compile group: 'groovy-swt', name:'groovy-swt', version: '0.8', classifier: "without-swt"
+
+    switch ( accumuloTarget )
+    {
+      case AccumuloTarget.CDH4:
+        compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.1'
+        compile 'org.apache.accumulo:accumulo-core:1.6.1'
+        compile 'pentaho:pentaho-hadoop-shims-cdh42-mapred:5.0.1-stable'
+        break
+      case AccumuloTarget.HDP:
+        compile 'org.apache.accumulo:accumulo-core:1.6.1.2.2.0.0-2041'
+        compile 'org.apache.hadoop:hadoop-client:2.6.0.2.2.0.0-2041'
+        break
+      case AccumuloTarget.GDAC:
+        compile 'org.imintel:semapp-java-client:0.26.0'
+        compile 'org.apache.accumulo:accumulo-core:1.6.1'
+        break
+    }
+
+  }
+  install {
+    repositories.mavenInstaller {
+      pom.artifactId = 'ossim-kettle-libs'
+    }
+  }
+  shadowJar {
+    zip64 true
+    baseName "ossim-kettle-libs-all"
+    //exclude "META-INF/services/javax.imageio.spi.*"
+    //minimizeJar true
+    mergeServiceFiles{
+      // exclude "META-INF/services/javax.imageio.spi.*"
+    }
+    mergeGroovyExtensionModules()
+    mergeServiceFiles( 'META-INF/spring.schema' )
+    mergeServiceFiles( 'META-INF/spring.handlers' )
+    dependencies {
+      exclude(dependency('javax.media:jai_core:1.1.3'))
+      exclude(dependency('javax.media:jai_codec:1.1.3'))
+      exclude(dependency('javax.media:jai_imageio:1.1'))
+      exclude(dependency('org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.1'))
+      exclude(dependency('pentaho:pentaho-hadoop-shims-api:5.2.1.1-210'))
+      exclude(dependency('pentaho-kettle:kettle-core:5.2.1.1-210'))
+      exclude(dependency('pentaho-kettle:kettle-engine:5.2.1.1-210'))
+      exclude(dependency('pentaho-kettle:kettle-ui-swt:5.2.1.1-210'))
+      exclude(dependency('pentaho:pentaho-hadoop-shims-cdh42-mapred:5.0.1-stable'))
+    }
+  }
+}
+
+project( ':kettle-plugins' ) {
+  repositories {
+    maven {
+      url 'http://repository.pentaho.org/artifactory/repo/'
+    }
+  }
+  jar{
+    baseName = "ossim-kettle-plugins"
+    sourceSets {
+      main {
+        resources {
+          srcDir 'src/main/groovy'
+          include '**/*.png'
+          include '**/*.properties'
+        }
+      }
+    }
+  }
+  dependencies{
+    compile project(":kettle-libs")
+  }
+  install {
+    repositories.mavenInstaller {
+      pom.artifactId = 'ossim-kettle-plugins'
+    }
+  }
+}
+
+
+//Common Project specific stuff
+project( ':common-libs' ) {
+  dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.4.0'
     compile 'org.mortbay.jetty:jetty:6.1.26'
     compile 'org.codehaus.gpars:gpars:1.2.1'
-    compile 'org.geotools:gt-imagemosaic-jdbc:12.0'
+    compile 'org.geotools:gt-imagemosaic-jdbc:12.2'
     compile 'org.geoscript:geoscript-groovy:1.4.0'
-    compile 'org.ossim:joms:1.8.19'
+    compile "org.ossim:joms:${JOMS_VERSION}"
     compile 'com.github.davidmoten:geo:0.6.10'
     compile 'org.postgresql:postgresql:9.3-1100-jdbc4'
-    compile 'org.hibernate:hibernate-core:4.3.8.Final'
-    compile 'org.hibernate:hibernate-spatial:4.3'
+    compile 'org.hibernate:hibernate-core:3.6.10.Final'
+    compile 'org.hibernatespatial:hibernate-spatial-postgis:1.1.1'
+    compile 'org.hibernatespatial:hibernate-spatial:1.1.1'
+    runtime 'org.postgis:postgis-jdbc:1.5.2'
+
+    //compile 'org.hibernate:hibernate-core:4.3.8.Final'
+   // compile 'org.hibernate:hibernate-spatial:4.3'
     compile 'org.springframework:spring-core:4.1.4.RELEASE'
     compile 'org.springframework:spring-context:4.1.4.RELEASE'
     compile 'org.springframework:spring-orm:4.1.4.RELEASE'
     compile 'org.springframework:spring-tx:4.1.4.RELEASE'
     compile 'javax.validation:validation-api:1.1.0.Final'
+    compile 'org.hibernate:hibernate-validator:4.3.2.Final'
+
+    compile 'javax.media:jai_core:1.1.3'
+    compile 'javax.media:jai_codec:1.1.3'
+    compile 'javax.media:jai_imageio:1.1'
 
     switch ( accumuloTarget )
     {
@@ -128,13 +304,17 @@ project( ':common' ) {
       break
     case AccumuloTarget.GDAC:
       compile 'org.imintel:semapp-java-client:0.26.0'
+      compile 'org.apache.accumulo:accumulo-core:1.6.1'
       break
     }
+  }
+  jar {
+    baseName = "ossim-common-libs"
   }
 
   install {
     repositories.mavenInstaller {
-      pom.artifactId = 'joms-geotools-common'
+      pom.artifactId = 'ossim-common-libs'
     }
   }
 
@@ -145,30 +325,35 @@ project( ':app' ) {
   apply plugin: "com.github.johnrengelman.shadow"
 
   dependencies {
-    compile project( ':common' )
+    compile project( ':common-libs' )
   }
 
   install {
     repositories.mavenInstaller {
-      pom.artifactId = 'joms-geotools-app'
+      pom.artifactId = 'ossim-app'
     }
+  }
+  jar {
+    baseName = "ossim-app"
   }
 
   shadowJar {
     zip64 true
-    baseName "joms-geotools-app-all"
+    baseName "ossim-app-all"
+    //exclude "META-INF/services/javax.imageio.spi.*"
     //minimizeJar true
-    mergeServiceFiles()
+    mergeServiceFiles{
+     // exclude "META-INF/services/javax.imageio.spi.*"
+    }
     mergeGroovyExtensionModules()
     mergeServiceFiles( 'META-INF/spring.schema' )
     mergeServiceFiles( 'META-INF/spring.handlers' )
-  }
-  jar {
-    manifest {
-      attributes 'Main-Class': "joms.geotools.tileapi.app.TileCacheApp"
+    dependencies {
+      exclude(dependency('javax.media:jai_core:1.1.3'))
+      exclude(dependency('javax.media:jai_codec:1.1.3'))
+      exclude(dependency('javax.media:jai_imageio:1.1'))
     }
   }
-
 }
 
 

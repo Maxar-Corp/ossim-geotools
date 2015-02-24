@@ -284,6 +284,16 @@ class AccumuloProxyService implements InitializingBean
     result
   }
 
+  def getActualBounds(def params){
+    def constraints = [:]
+
+    if(params.aoi)
+    {
+      constraints.intersects = "${params.aoi}"
+    }
+
+    daoTileCacheService.getActualLayerBounds(params?.name, constraints)
+  }
   def wfsGetFeature(AccumuloProxyWfsCommand cmd)
   {
     def typename = cmd.typeName.split( ":" )[-1]
@@ -293,6 +303,7 @@ class AccumuloProxyService implements InitializingBean
 
     if ( typenameLowerCase == "layers" )
     {
+
       // application/javascript if callback is available
       response.contentType = "application/json"
       def layers = daoTileCacheService.listAllLayers()
