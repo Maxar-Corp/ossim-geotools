@@ -5,6 +5,11 @@ ___________________________________________________________________
 - Full build: 
 gradle clean build common-libs:install kettle-libs:install kettle-plugins:install app:install app:shadowJar -x test
 
+Copy to kettle distribution:
+
+gradle clean build common-libs:install kettle-libs:install kettle-plugins:install app:install app:shadowJar copyToKettle -x test
+
+
 Command line examples.  If you are in this directory and built the tools then here are some examples of creating layers and ingesting data
 
 Generate DB config template:

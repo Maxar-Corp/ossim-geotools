@@ -150,6 +150,7 @@ project( ':kettle-libs' ) {
 //    configurations.compile.each { File file -> println file.absoluteFile }
 //  }
   dependencies{
+    compile project( ':common-libs' )
     compile 'pentaho-kettle:kettle-core:5.1.2.1'
     compile 'pentaho-kettle:kettle-engine:5.1.2.1'
     compile 'pentaho-kettle:kettle-ui-swt:5.1.2.1'
@@ -173,8 +174,6 @@ project( ':kettle-libs' ) {
     compile 'javax.validation:validation-api:1.1.0.Final'
     compile 'org.hibernate:hibernate-validator:4.3.2.Final'
     compile "org.ossim:joms:${JOMS_VERSION}"
-    compile 'com.rabbitmq:rabbitmq-client:1.3.0'
-    compile 'org.springframework.amqp:spring-rabbit:1.4.3.RELEASE'
     compile group: 'groovy-swt', name:'groovy-swt', version: '0.8', classifier: "without-swt"
 
     switch ( accumuloTarget )
@@ -278,6 +277,8 @@ project( ':common-libs' ) {
     compile 'org.springframework:spring-tx:4.1.4.RELEASE'
     compile 'javax.validation:validation-api:1.1.0.Final'
     compile 'org.hibernate:hibernate-validator:4.3.2.Final'
+    compile 'org.springframework.amqp:spring-rabbit:1.4.3.RELEASE'
+    compile 'org.springframework.amqp:spring-amqp:1.4.3.RELEASE'
 
     compile 'javax.media:jai_core:1.1.3'
     compile 'javax.media:jai_codec:1.1.3'
