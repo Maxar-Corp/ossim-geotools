@@ -190,10 +190,13 @@ project( ':kettle-libs' ) {
       case AccumuloTarget.HDP:
         compile 'org.apache.accumulo:accumulo-core:1.6.1.2.2.0.0-2041'
         compile 'org.apache.hadoop:hadoop-client:2.6.0.2.2.0.0-2041'
+        compile 'pentaho:pentaho-hadoop-shims-hdp20-mapred:5.2-SNAPSHOT'
+
         break
       case AccumuloTarget.GDAC:
         compile 'org.imintel:semapp-java-client:0.26.0'
         compile 'org.apache.accumulo:accumulo-core:1.6.1'
+        compile 'pentaho:pentaho-hadoop-shims-mapr21-mapred:5.2-SNAPSHOT'
         break
     }
 
