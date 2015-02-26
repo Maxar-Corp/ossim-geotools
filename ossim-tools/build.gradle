@@ -137,6 +137,7 @@ subprojects {
 project( ':kettle-libs' ) {
   apply plugin: "com.github.johnrengelman.shadow"
   repositories {
+    jcenter()
     maven {
       url 'http://repository.pentaho.org/artifactory/repo/'
     }
