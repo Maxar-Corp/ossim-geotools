@@ -1,8 +1,8 @@
 enum AccumuloTarget {
-  CDH4, HDP, GDAC
+  CDH4, CDH5, HDP, GDAC
 }
 
-def accumuloTarget = AccumuloTarget.HDP
+def accumuloTarget = AccumuloTarget.CDH5
 
 def JOMS_VERSION = "1.8.19"
 allprojects {
@@ -21,7 +21,8 @@ allprojects {
     maven {
       switch ( accumuloTarget )
       {
-      case AccumuloTarget.CDH4:
+        case AccumuloTarget.CDH4:
+        case AccumuloTarget.CDH5:
         url 'http://repository.cloudera.com/artifactory/cloudera-repos/'
         break
       case AccumuloTarget.HDP:
@@ -188,6 +189,11 @@ project( ':kettle-libs' ) {
         compile 'org.apache.accumulo:accumulo-core:1.6.1'
         compile 'pentaho:pentaho-hadoop-shims-cdh42-mapred:5.0.1-stable'
         break
+      case AccumuloTarget.CDH5:
+        compile 'org.apache.hadoop:hadoop-client:2.5.0-cdh5.2.4'
+        compile 'org.apache.accumulo:accumulo-core:1.6.1'
+        compile 'pentaho:pentaho-hadoop-shims-cdh51-mapred:5.2.0.1-218'
+        break
       case AccumuloTarget.HDP:
         compile 'org.apache.accumulo:accumulo-core:1.6.1.2.2.0.0-2041'
         compile 'org.apache.hadoop:hadoop-client:2.6.0.2.2.0.0-2041'
@@ -296,6 +302,10 @@ project( ':common-libs' ) {
     {
     case AccumuloTarget.CDH4:
       compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.1'
+      compile 'org.apache.accumulo:accumulo-core:1.6.1'
+        break
+    case AccumuloTarget.CDH5:
+      compile 'org.apache.hadoop:hadoop-client:2.5.0-cdh5.2.4'
       compile 'org.apache.accumulo:accumulo-core:1.6.1'
       break
     case AccumuloTarget.HDP:
