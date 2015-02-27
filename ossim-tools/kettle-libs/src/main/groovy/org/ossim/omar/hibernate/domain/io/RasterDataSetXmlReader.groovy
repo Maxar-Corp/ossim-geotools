@@ -7,7 +7,6 @@ class RasterDataSetXmlReader
 {
   static def initRasterDataSet(def node, def dataSet, XmlIoHints hints)
   {
-    println "init raster dataset----------"
     def allocatedDataset = false
     def rasterDataSet  = dataSet
     // if a dataSet is passed in let's make sure that the children are
@@ -24,18 +23,15 @@ class RasterDataSetXmlReader
     for ( def rasterFileNode in node.fileObjects.RasterFile )
     {
       def rasterFile = RasterFileXmlReader.initRasterFile( rasterFileNode, hints);
-      println "raster file === ${rasterFile}"
       if(rasterFile.type.toLowerCase() == "main") mainFile = rasterFile.name
       def foundFile = rasterDataSet.rasterFiles.find{file->file.name==rasterFile.name}
       if(!foundFile)
       {
         rasterFile.rasterDataSet = rasterDataSet
-        println "ADDING RASTER FILE ==== ${rasterFile}"
         rasterDataSet.rasterFiles << rasterFile
       }
       else
       {
-        println "FOUND ONE ALREADY THERE!!!"
         foundFile.name   = rasterFile.name
         foundFile.type   = rasterFile.type
         foundFile.format = rasterFile.format
@@ -55,7 +51,6 @@ class RasterDataSetXmlReader
       {			
         if(!foundEntry)
         {
-          println "************* RASTER ENTRY**************"
           println rasterEntry
           rasterEntry.rasterDataSet   = rasterDataSet
           rasterDataSet.rasterEntries << rasterEntry
