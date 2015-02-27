@@ -2,7 +2,7 @@ enum AccumuloTarget {
   CDH4, HDP, GDAC
 }
 
-def accumuloTarget = AccumuloTarget.CDH4
+def accumuloTarget = AccumuloTarget.HDP
 
 def JOMS_VERSION = "1.8.19"
 allprojects {
@@ -32,9 +32,6 @@ allprojects {
         break
       }
     }
-    maven{
-      url 'http://dev.mapfish.org/maven/repository'
-    }
     maven {
       url 'http://repo.boundlessgeo.com/main'
     }
@@ -53,10 +50,13 @@ allprojects {
     maven {
       url 'http://www.hibernatespatial.org/repository'
     }
+    mavenCentral()
+    maven{
+      url 'http://dev.mapfish.org/maven/repository'
+    }
     // this is our local repository for goovy-swt
     maven {  url "${rootDir}/../groovy-swt/src/repository" }
 
-    mavenCentral()
   }
 }
 
@@ -137,6 +137,8 @@ subprojects {
 project( ':kettle-libs' ) {
   apply plugin: "com.github.johnrengelman.shadow"
   repositories {
+    jcenter()
+    mavenCentral()
     maven {
       url 'http://repository.pentaho.org/artifactory/repo/'
     }
