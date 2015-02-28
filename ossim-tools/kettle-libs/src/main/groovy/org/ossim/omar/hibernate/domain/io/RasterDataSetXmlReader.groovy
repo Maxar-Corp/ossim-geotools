@@ -51,7 +51,6 @@ class RasterDataSetXmlReader
       {			
         if(!foundEntry)
         {
-          println rasterEntry
           rasterEntry.rasterDataSet   = rasterDataSet
           rasterDataSet.rasterEntries << rasterEntry
         }
