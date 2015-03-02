@@ -33,6 +33,7 @@ class AccumuloTileGenerator {
       println "Zoom Level ${zoom}"
       long startTime = System.nanoTime()
       def tiles
+     // println "BOUNDS ===================== ${bounds}"
       if(bounds)
       {
         tiles=tileLayer.tiles(bounds, zoom)
@@ -42,7 +43,7 @@ class AccumuloTileGenerator {
         tiles = tileLayer.tiles(zoom)
       }
 
-
+      println "NUMBER OF TILES =========== ${tiles.size}"
       tiles.eachWithIndex { Tile t, int i ->
         ++tileCount
         if (verbose) println "   ${i}). ${t}"

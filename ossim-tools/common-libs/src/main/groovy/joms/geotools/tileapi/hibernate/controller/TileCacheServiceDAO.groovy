@@ -134,7 +134,6 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
           joms.oms.Envelope envelope = tileCacheSupport.getEnvelope(entry)
           Bounds bounds = new Bounds(envelope.minX, envelope.minY, envelope.maxX, envelope.maxY)
 
-          println "LAYER BOUNDS ===================== ${new Bounds(layer.bounds.envelopeInternal)}"
           AccumuloTileLayer tileLayer = newGeoscriptTileLayer(layer)
           double[] resolutions = tileLayer.pyramid.grids*.yResolution as double[]
 
@@ -154,7 +153,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
                     tileRenderer:tileRenderer,
                     startZoom:intersections.minLevel,
                     endZoom:intersections.maxLevel,
-                    bounds:bounds)
+                    bounds:intersections.clippedBounds)//bounds)
             result << generator
           }
         }

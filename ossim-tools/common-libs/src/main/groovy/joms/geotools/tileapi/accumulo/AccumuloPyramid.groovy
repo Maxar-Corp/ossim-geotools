@@ -47,8 +47,8 @@ class AccumuloPyramid extends Pyramid
     double[] resolutions = grids*.yResolution as double[]
     int[] levels = grids*.z as double[]
 
-    println resolutions
-    println levels
+   // println resolutions
+   // println levels
 
     int nRlevels = tileCacheSupport.getNumberOfResolutionLevels(entry)
     // get the bounds of the input image
@@ -112,17 +112,17 @@ class AccumuloPyramid extends Pyramid
       //
       double highestRes
       double lowestRes
-      println "EPSG ====== ${this.proj.epsg}"
+      //println "EPSG ====== ${this.proj.epsg}"
       if (this.proj.epsg == 4326) {
         highestRes = tileCacheSupport.getDegreesPerPixel(entry, 0)
       } else {
         highestRes = tileCacheSupport.getMetersPerPixel(entry, 0)
       }
-      println "highestRes ====== ${highestRes}"
+      //println "highestRes ====== ${highestRes}"
       int tileSize = Math.max(this.tileWidth, this.tileHeight);
       int largestSize = Math.max(tileCacheSupport.getWidth(entry),
               tileCacheSupport.getHeight(entry));
-      println "LARGEST SIZE === ${largestSize}"
+      //println "LARGEST SIZE === ${largestSize}"
       int maxDecimationLevels = 0;
       if (largestSize > tileSize) {
         int testSize = largestSize;
@@ -136,7 +136,7 @@ class AccumuloPyramid extends Pyramid
       // resolution at that decimation
       //
       lowestRes = highestRes * (1 << maxDecimationLevels);
-      println "lowestRes res === ${lowestRes}"
+      //println "lowestRes res === ${lowestRes}"
 
       // now we have the full res of the image gsd and the corsest res of the image within the
       // decimation range.

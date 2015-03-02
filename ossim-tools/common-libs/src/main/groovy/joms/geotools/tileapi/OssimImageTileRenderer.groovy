@@ -42,6 +42,7 @@ class OssimImageTileRenderer implements TileRenderer
   {
     chipperOptionsMap."image0.file" = inputImage
     chipperOptionsMap."image0.entry" = "${entry}".toString()
+    //println "CHIPPER OPTIONS ============== ${chipperOptions}"
    // chipperOptionsMap.clip_wms_bbox_ll = chipperOptions.clip_wms_bbox_ll
     if(chipperOptions.cut_width)
     {
@@ -76,7 +77,7 @@ class OssimImageTileRenderer implements TileRenderer
       tileHeight = chipperOptionsMap.cut_height
     }
 
-    println "CHIPS: ${tileWidth}, ${tileHeight}"
+    //println "CHIPS: ${tileWidth}, ${tileHeight}"
   }
   void destroy(){
     chipper?.delete()
@@ -111,7 +112,7 @@ class OssimImageTileRenderer implements TileRenderer
                        srs:"EPSG:${b.proj.epsg}".toString()
                        ]
 
-    //  println cutOption
+      //println "CUT OPTION ================== ${cutOption}"
       def chipperResult = chipper.getChip(dataBuffer.data, true, cutOption )
       //println chipperResult
       switch(chipperResult)
