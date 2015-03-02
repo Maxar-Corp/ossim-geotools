@@ -11,7 +11,7 @@ enum AccumuloTarget {
   CDH4, HDP, GDAC
 }
 
-accumuloTarget = AccumuloTarget.CDH4
+accumuloTarget = AccumuloTarget.HDP
 
 grails.project.fork = [
     // configure settings for compilation JVM, note that if you alter the Groovy version forked compilation is required
@@ -60,6 +60,8 @@ grails.project.dependency.resolution = {
 
     mavenRepo "http://repo.grails.org/grails/plugins/"
 
+    
+    mavenRepo "http://repo.boundlessgeo.com/main"
     mavenRepo "http://download.osgeo.org/webdav/geotools"
     mavenRepo "http://www.hibernatespatial.org/repository"
 
