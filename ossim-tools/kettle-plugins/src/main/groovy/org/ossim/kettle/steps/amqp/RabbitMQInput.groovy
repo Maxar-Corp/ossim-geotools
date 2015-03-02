@@ -202,7 +202,7 @@ class RabbitMQInput extends BaseStep implements StepInterface
  				if(monitoringEnabled) freeQueue.put(value)
  				//println "NO MESSAGE!!!!"
  			}
-      def blockSizeMet = meta.stopAfterNMessages<=0
+      def blockSizeMet = false
 
       if(meta.stopAfterNMessages > 0) blockSizeMet = ((linesRead%meta.stopAfterNMessages)==0)
 
