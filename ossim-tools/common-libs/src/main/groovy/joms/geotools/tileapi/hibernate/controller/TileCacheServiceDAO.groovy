@@ -129,6 +129,8 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
 
           int[] minLevel = [0] as int[]
           int[] maxLevel = [0] as int[]
+          boolean needToStretch = tileCacheSupport.getBitDepth(entry) > 8
+          //println "NEED TO STRETCH============ ${needToStretch}"
           int numberOfResolutionLevels = tileCacheSupport.getNumberOfResolutionLevels(entry)
           double gsd = tileCacheSupport.getDegreesPerPixel(entry)
           joms.oms.Envelope envelope = tileCacheSupport.getEnvelope(entry)
@@ -147,6 +149,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
             OssimImageTileRenderer tileRenderer = new OssimImageTileRenderer(input, entry,
                     [cut_width:layer.tileWidth.toString(),
                      cut_height:layer.tileHeight.toString(),
+                     hist_op:needToStretch?"auto-minmax":"none",
                      clip_poly_lat_lon:"(${clipPolyLatLonKeyWord})".toString()])
             AccumuloTileGenerator generator = new AccumuloTileGenerator(verbose:false,
                     tileLayer:tileLayer,
