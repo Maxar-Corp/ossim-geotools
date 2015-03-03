@@ -24,7 +24,7 @@ class OssimImageTileRenderer implements TileRenderer
          // cut_wms_bbox:"-180,-90,180,90" as String,
           cut_height: "256",
           cut_width: "256",
-          'hist-op': "none",
+          'histo_op': "none",
           operation: 'ortho',
           scale_2_8_bit: 'true',
           'srs': "EPSG:4326",
@@ -77,6 +77,10 @@ class OssimImageTileRenderer implements TileRenderer
       tileHeight = chipperOptionsMap.cut_height
     }
 
+    if(chipperOptions.histo_op)
+    {
+      chipperOptionsMap.histo_op = chipperOptions.histo_op
+    }
     //println "CHIPS: ${tileWidth}, ${tileHeight}"
   }
   void destroy(){
@@ -112,7 +116,7 @@ class OssimImageTileRenderer implements TileRenderer
                        srs:"EPSG:${b.proj.epsg}".toString()
                        ]
 
-      //println "CUT OPTION ================== ${cutOption}"
+     // println "CUT OPTION ================== ${cutOption}"
       def chipperResult = chipper.getChip(dataBuffer.data, true, cutOption )
       //println chipperResult
       switch(chipperResult)
