@@ -2,7 +2,7 @@ package tilecache
 
 import geoscript.geom.Bounds
 import geoscript.proj.Projection
-import geoscript.render.Map
+import geoscript.render.Map as GeoScriptMap
 import geoscript.style.RasterSymbolizer
 import grails.converters.JSON
 import grails.transaction.Transactional
@@ -21,6 +21,8 @@ import javax.imageio.ImageIO
 import javax.media.jai.JAI
 import javax.servlet.http.HttpServletResponse
 import java.awt.image.BufferedImage
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
 import java.util.concurrent.LinkedBlockingQueue
 
 @Transactional
@@ -32,6 +34,7 @@ class AccumuloProxyService implements InitializingBean
   TileCacheServiceDAO daoTileCacheService
   def dataSourceProps
   LinkedBlockingQueue getMapBlockingQueue
+  ConcurrentHashMap layerCache = new ConcurrentHashMap()
 
   def layerReaderCache = [:]
   static def id = 0
@@ -55,8 +58,8 @@ class AccumuloProxyService implements InitializingBean
     ] )
     daoTileCacheService = hibernate.applicationContext.getBean( "tileCacheServiceDAO" );
 
-    getMapBlockingQueue = new LinkedBlockingQueue( 4 )
-    ( 0..<4 ).each { getMapBlockingQueue.put( 0 ) }
+    getMapBlockingQueue = new LinkedBlockingQueue( 10 )
+    ( 0..<10 ).each { getMapBlockingQueue.put( 0 ) }
 
     // println "DATA SOURCE ===== ${dataSource}"
     // println "DATA SOURCE UNPROXIED ===== ${dataSourceUnproxied}"
@@ -116,21 +119,32 @@ class AccumuloProxyService implements InitializingBean
 
   def getMap(AccumuloProxyWmsCommand cmd, String tileAccessUrl)
   {
-    Map map
+    def startTime = System.currentTimeMillis()
+    GeoScriptMap map
     def layers = []
     def element = getMapBlockingQueue.take()
     def contentType = cmd.format
     def result = new ByteArrayOutputStream()
 
+//println "_______________________________"
+//println cmd
+//println "_______________________________"
     try
     {
       def gridFormat = new ImageMosaicJDBCFormat()
 //GridFormatFinder.findFormat(new URL("http://localhost:8080/tilecache/accumuloProxy/tileAccess?layer=BMNG"))
       cmd.layers.split( "," ).each { layer ->
-        def gridReader = gridFormat.getReader( new URL( "${tileAccessUrl}?layer=${layer}" ) )
-        def mosaic = new GridReaderLayer( gridReader, new RasterSymbolizer().gtStyle )
+     //   def gridReader = gridFormat.getReader( new URL( "${tileAccessUrl}?layer=${layer}" ) )
+     //   def mosaic = new GridReaderLayer( gridReader, new RasterSymbolizer().gtStyle )
 
-        layers << mosaic
+        def l = layerCache.get(layer)
+        if(!l)
+        {
+          l = daoTileCacheService.newGeoscriptTileLayer(layer)
+          layerCache.put(layer, l)
+        }
+       // println l
+        if(l) layers << l
       }
 
       //def img = ImageIO.read("/Volumes/DataDrive/data/earth2.tif" as File)
@@ -139,7 +153,7 @@ class AccumuloProxyService implements InitializingBean
       // ImageIO.write(dest, cmd.format.split('/')[-1],response.outputStream)
       //img = null
 
-      map = new Map(
+      map = new GeoScriptMap(
           width: cmd.width,
           height: cmd.height,
           proj: cmd.srs,
@@ -160,7 +174,7 @@ class AccumuloProxyService implements InitializingBean
     {
       // really need to write exception to stream
 
-      // e.printStackTrace()
+      e.printStackTrace()
     }
     finally
     {
@@ -168,6 +182,7 @@ class AccumuloProxyService implements InitializingBean
       map?.close()
       getMapBlockingQueue.put( element )
     }
+   // println "Time: ${(System.currentTimeMillis()-startTime)/1000} seconds"
     //println result.toByteArray().size()
 
     [contentType: contentType, buffer: result.toByteArray()]
