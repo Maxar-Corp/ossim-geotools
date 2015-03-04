@@ -20,6 +20,14 @@ class TileCacheMessage implements Message
 
     result
   }
+  void setId(String id)
+  {
+    this.jobId = id
+  }
+  String getId()
+  {
+    this.jobId
+  }
   void setJobId(String jobId)
   {
     this.jobId = jobId
@@ -67,14 +75,10 @@ class TileCacheMessage implements Message
 
     jsonBuilder.toString()
   }
-  def fromJsonString(String jsonString) throws Exception
+  def fromJson(Object jsonString) throws Exception
   {
-
     archiveParams = new ArchiveParams()
     tileCacheParams = new TileCacheParams()
-
-    def slurper   = new JsonSlurper()
-    def jsonObj   = slurper.parseText(jsonString)
     if(jsonObj.type != type) throw new Exception("Message not of type TileCacheMessage")
     jobId  = jsonObj.jobId?:null
     jobDir = jsonObj.jobDir?:null
@@ -110,5 +114,13 @@ class TileCacheMessage implements Message
 
     }
     this
+  }
+
+  def fromJsonString(String jsonString) throws Exception
+  {
+    def slurper = new JsonSlurper()
+    def jsonObj = slurper.parseText(jsonString)
+
+    fromJson(jsonObj)
   }
 }
