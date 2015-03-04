@@ -2,8 +2,9 @@ Building
 ___________________________________________________________________
 -  Make sure you build groovy-swt and install.
 
-- Full build: 
-gradle clean build common-libs:install kettle-libs:install kettle-plugins:install app:install app:shadowJar -x test
+- Full build:  hadoopDist property can be cdh4,cdh5,hdp22,gdac 
+
+gradle -DhadoopDist=cdh4 clean build common-libs:install kettle-libs:install kettle-plugins:install app:install app:shadowJar -x test
 
 Copy to kettle distribution:
 
