@@ -14,44 +14,55 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho-kettle/kettle-core/5.1.2.1/89e6d5972a6f14d99059d6d01192ec68ff44c7cb/kettle-core-5.1.2.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho-kettle/kettle-core/5.3.0.0-213/1ea2c84261b88115f3fa41326baebbe833befad5/kettle-core-5.3.0.0-213.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho-kettle/kettle-core/5.1.2.1/479919364650f14f4a62338d6d030a1ee233d660/kettle-core-5.1.2.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho-kettle/kettle-core/5.3.0.0-213/81eaa8f6076a4b4856147b5cbcb17f9ad3fe3149/kettle-core-5.3.0.0-213-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho-kettle/kettle-engine/5.1.2.1/13ed7f140f1be2c18492fdc9a499e501c1a37565/kettle-engine-5.1.2.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho-kettle/kettle-engine/5.3.0.0-213/7ef48162d56e4b5efa940c732d5030d381b19907/kettle-engine-5.3.0.0-213.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho-kettle/kettle-engine/5.1.2.1/7dff57fdd666f8a6e368a09e9e843b5c9002305a/kettle-engine-5.1.2.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho-kettle/kettle-engine/5.3.0.0-213/510e695c044185d8ccf440038d03c60c87fa9147/kettle-engine-5.3.0.0-213-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho-kettle/kettle-ui-swt/5.1.2.1/798c412efde0a227e3416e3cf70963f29de9687a/kettle-ui-swt-5.1.2.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho-kettle/kettle-ui-swt/5.3.0.0-213/2278cd95e0b6978040877fe454af03c48b762ba7/kettle-ui-swt-5.3.0.0-213.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho-kettle/kettle-ui-swt/5.1.2.1/f4b4506ce02a4298d075cef7e6445b54b21cf08b/kettle-ui-swt-5.1.2.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho-kettle/kettle-ui-swt/5.3.0.0-213/ef8f4f6935d6651d4307b6f1f1c52ce23cd326f/kettle-ui-swt-5.3.0.0-213-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-hadoop-shims-api/5.1.2.0-101/b8a99a3edda138ec50b81c3ddae751e7d6492592/pentaho-hadoop-shims-api-5.1.2.0-101.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-hadoop-shims-api/5.3.0.0-213/62846b02897215cd1577e744dc10641d31f886f6/pentaho-hadoop-shims-api-5.3.0.0-213.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-hadoop-shims-api/5.1.2.0-101/ee67d99650e3de8d7227effc8ea7244084bf8fb5/pentaho-hadoop-shims-api-5.1.2.0-101-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-hadoop-shims-api/5.3.0.0-213/70923ab8b50eb788367050cfa8f6273516b95ba3/pentaho-hadoop-shims-api-5.3.0.0-213-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-hadoop-shims-cdh47-mapred/5.2.0.0-209/40ed7670eefb4d7b00e8570e044f67df6777b56a/pentaho-hadoop-shims-cdh47-mapred-5.2.0.0-209.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-hadoop-shims-cdh47-mapred/5.2.0.0-209/87976f5e56556cd7999991fd3bddd366eb3bc317/pentaho-hadoop-shims-cdh47-mapred-5.2.0.0-209-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -114,28 +125,34 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-core/4.1.4.RELEASE/spring-core-4.1.4.RELEASE.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-core/4.1.4.RELEASE/8df582421867cf7298658e00cd2e9e460b697b05/spring-core-4.1.4.RELEASE.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-core/4.1.4.RELEASE/810ad0d4bed3289a8866bbeddc15dda8bfcecaa4/spring-core-4.1.4.RELEASE-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-context/4.1.4.RELEASE/spring-context-4.1.4.RELEASE.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-context/4.1.4.RELEASE/5c66d0962e89ee577627a526b6b299a5337072be/spring-context-4.1.4.RELEASE.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-context/4.1.4.RELEASE/894ad0520422abc18e8e7bdd7cea85516e8c34dc/spring-context-4.1.4.RELEASE-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-orm/4.1.4.RELEASE/spring-orm-4.1.4.RELEASE.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-orm/4.1.4.RELEASE/ed472f38daecf6a994ff1dc0355e1bd10acdcda2/spring-orm-4.1.4.RELEASE.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-orm/4.1.4.RELEASE/9da827a4a728213e7bb9c0878a0f29cb0c7c50ee/spring-orm-4.1.4.RELEASE-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -152,10 +169,12 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/springframework/spring-beans/4.1.4.RELEASE/spring-beans-4.1.4.RELEASE.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-beans/4.1.4.RELEASE/b4f08e061c28636c0d434a74554c958457602b3/spring-beans-4.1.4.RELEASE.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-beans/4.1.4.RELEASE/611db4087ae493ed71de9c4cc5f207cad60ee57f/spring-beans-4.1.4.RELEASE-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -206,17 +225,6 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-hadoop-shims-cdh42-mapred/5.0.1-stable/12781ea14e3979734bcbe2b4fcfed0c7d529e4f/pentaho-hadoop-shims-cdh42-mapred-5.0.1-stable.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-hadoop-shims-cdh42-mapred/5.0.1-stable/fb925f84af3106cb2de264e121e944b352db2d25/pentaho-hadoop-shims-cdh42-mapred-5.0.1-stable-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/jetty/6.1.26/jetty-6.1.26.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -256,25 +264,31 @@
           <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-beanutils/commons-beanutils/1.8.0/c651d5103c649c12b20d53731643e5fffceb536/commons-beanutils-1.8.0.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-beanutils/commons-beanutils/1.8.0/2818502bbb50bbcbd3f57e92a2bfe4d496f37688/commons-beanutils-1.8.0-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-collections/commons-collections/3.2.1/761ea405b9b37ced573d2df0d1e3a4e0f9edc668/commons-collections-3.2.1.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-collections/commons-collections/3.2.1/fa095ef874374e5b2a11f8b06c26a5d68c7cb3a4/commons-collections-3.2.1-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/commons-lang/commons-lang/2.6/commons-lang-2.6.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-lang/commons-lang/2.6/ce1edb914c94ebc388f086c6827e8bdeec71ac2/commons-lang-2.6.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-lang/commons-lang/2.6/67313d715fbf0ea4fd0bdb69217fb77f807a8ce5/commons-lang-2.6-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -309,11 +323,11 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/metastore/5.1.2.1/377ec357d2caa94d99b6ce0660349a6a27469808/metastore-5.1.2.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/metastore/5.3.0.0-213/f353f93293a6a8af0910ac1aecff63065f986d0a/metastore-5.3.0.0-213.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/metastore/5.1.2.1/b6ef1b7c63b34fba71390015fa1612576e871be5/metastore-5.1.2.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/metastore/5.3.0.0-213/20664e65dfdf513dd28385f3d7a4b2ec5dfed79d/metastore-5.3.0.0-213-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -413,55 +427,55 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho-kettle/kettle-dbdialog/5.1.2.1/d976e23e61898c1d428ed2f1392bc7a6561e29f1/kettle-dbdialog-5.1.2.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho-kettle/kettle-dbdialog/5.3.0.0-213/e27e0632caf058a5847ef2188ac74455659069cf/kettle-dbdialog-5.3.0.0-213.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho-kettle/kettle-dbdialog/5.1.2.1/342f20449c5b4358d4fb9ad187dacfa5d7725b7b/kettle-dbdialog-5.1.2.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho-kettle/kettle-dbdialog/5.3.0.0-213/b61d3bce3260fbe9572310dd68fd9392ffa1f74/kettle-dbdialog-5.3.0.0-213-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-vfs-browser/5.1.2.1/e9fa2c8ade8a1f7c5cd97e6a8d9555cb1380b394/pentaho-vfs-browser-5.1.2.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-vfs-browser/5.3.0.0-213/8c4ca76af95a234ac64793a6d322a6d18e1c4790/pentaho-vfs-browser-5.3.0.0-213.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-vfs-browser/5.1.2.1/d84c604f71347eb47744417aa86e5eda530bcaed/pentaho-vfs-browser-5.1.2.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-vfs-browser/5.3.0.0-213/304aa904194156b89495cf56acc9d7ceb66303a/pentaho-vfs-browser-5.3.0.0-213-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-xul-core/5.1.2.1/ec4afdb1aac3ed00afb400828d8a8fc60cb0ab4f/pentaho-xul-core-5.1.2.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-xul-core/5.3.0.0-213/b38ecf12edca504a9fd146f5e9a3bf9a391a0731/pentaho-xul-core-5.3.0.0-213.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-xul-core/5.1.2.1/763f477ec90f2a0613003cbe461660e2ddc8985c/pentaho-xul-core-5.1.2.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-xul-core/5.3.0.0-213/84b76802cfaf925d8665af9fae1966817ea7a8b3/pentaho-xul-core-5.3.0.0-213-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-xul-swt/5.1.2.1/a6667009e8c41bc88768a8053c73b809ab65134/pentaho-xul-swt-5.1.2.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-xul-swt/5.3.0.0-213/e78bcd299e85e24d9169f0e5a24f65bf0766fc53/pentaho-xul-swt-5.3.0.0-213.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-xul-swt/5.1.2.1/ef4b4a90ac4ae0744acefae4d113784cb9f48ef3/pentaho-xul-swt-5.1.2.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-xul-swt/5.3.0.0-213/cee2749242ea72fb4f90d3d8387e164666f9f411/pentaho-xul-swt-5.3.0.0-213-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-xul-swing/5.1.2.1/cc7c668c56535a33dd68d3599182f3ddf2e77bf8/pentaho-xul-swing-5.1.2.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-xul-swing/5.3.0.0-213/52d5c41c4507f5bfa60b0c0b07f07825c3ca178b/pentaho-xul-swing-5.3.0.0-213.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-xul-swing/5.1.2.1/6051cf30e6c77e546bcbe27754ca186fa6c8560b/pentaho-xul-swing-5.1.2.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-xul-swing/5.3.0.0-213/fce51cbe31adb1a39a64ad77640d8ae4af0d7733/pentaho-xul-swing-5.3.0.0-213-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -477,7 +491,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/jfree/jfreechart/1.0.13/ae5eeebf6920b16eef92f112ac74e3b6d06887ae/jfreechart-1.0.13.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/jfree/jfreechart/1.0.13/8ceb15028cf9b99c25c88775ab292faa27d3030a/jfreechart-1.0.13.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -495,7 +509,128 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-main/12.2/gt-main-12.2.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-hdfs-vfs/5.2.0.0-209/3c3d56cca9a3e9c00a93cc8788635e3a2685f818/pentaho-hdfs-vfs-5.2.0.0-209.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-hdfs-vfs/5.2.0.0-209/f1cb53c3d4e6e608d140bae5657bfe51ab7cd821/pentaho-hdfs-vfs-5.2.0.0-209-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-jdbc/0.10.0-cdh4.7.0/4c5ab682ce3a04c3500c57641c361e57dd30c16e/hive-jdbc-0.10.0-cdh4.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-jdbc/0.10.0-cdh4.7.0/6d2650dfa855894a9ace891711feff74e1e72129/hive-jdbc-0.10.0-cdh4.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-common/0.10.0-cdh4.7.0/591350834e656f9f4c587c7631222279fa9f7393/hive-common-0.10.0-cdh4.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-common/0.10.0-cdh4.7.0/d393180c77c1bc688811eea5bc9c99e214141484/hive-common-0.10.0-cdh4.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-builtins/0.10.0-cdh4.7.0/337e934e7d2f8453528c6d09653bc2aa862ebd64/hive-builtins-0.10.0-cdh4.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-builtins/0.10.0-cdh4.7.0/be2d109563d398a208de5620f96e490a2017251f/hive-builtins-0.10.0-cdh4.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-exec/0.10.0-cdh4.7.0/2703da0dadde0106632aa8dd74d9dad4c5c14d1b/hive-exec-0.10.0-cdh4.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-exec/0.10.0-cdh4.7.0/757bf8b3fdf6fb207de6e886124da7d2fdbdc78e/hive-exec-0.10.0-cdh4.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-service/0.10.0-cdh4.7.0/49b6483b1ec8cef04d1cc1cf081e14fbf78f8b46/hive-service-0.10.0-cdh4.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-service/0.10.0-cdh4.7.0/84921f07798095123bcb73dff031ddc13eaa0890/hive-service-0.10.0-cdh4.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-serde/0.10.0-cdh4.7.0/26fbea1c30b73b977e96e7894e2c7adccc3a9c08/hive-serde-0.10.0-cdh4.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-serde/0.10.0-cdh4.7.0/7dee146c090741bfd13a55c899d980314316026a/hive-serde-0.10.0-cdh4.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-metastore/0.10.0-cdh4.7.0/e7f01008eb4776b47fed60717a54b41b65a4687e/hive-metastore-0.10.0-cdh4.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-metastore/0.10.0-cdh4.7.0/f89aaa4d1d94820080bb2c4730e1bcaaf090fb60/hive-metastore-0.10.0-cdh4.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.sqoop/sqoop/1.4.3-cdh4.7.0/c77d6972edcc546f17f455038a1cbdbc70382d34/sqoop-1.4.3-cdh4.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.sqoop/sqoop/1.4.3-cdh4.7.0/4f234b4ee7ff39fea4e395a123803a839600d872/sqoop-1.4.3-cdh4.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.pig/pig/0.11.0-cdh4.7.0/c81e4cfc224d1a2f2a1e780c6791c055cf1c49e/pig-0.11.0-cdh4.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.pig/pig/0.11.0-cdh4.7.0/1ded2d9c5af6a56d0fb19f066cc957e0f54bb356/pig-0.11.0-cdh4.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/dk.brics.automaton/automaton/1.11-8/6ebfa65eb431ff4b715a23be7a750cbc4cc96d0f/automaton-1.11-8.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/dk.brics.automaton/automaton/1.11-8/6bc89a2a9c9c5524aa275b572c0fd3699ff7a5be/automaton-1.11-8-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-main/12.0/gt-main-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -504,7 +639,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-epsg-hsql/12.2/gt-epsg-hsql-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-epsg-hsql/12.0/gt-epsg-hsql-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -513,7 +648,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-render/12.2/gt-render-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-render/12.0/gt-render-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -522,7 +657,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-shapefile/12.2/gt-shapefile-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-shapefile/12.0/gt-shapefile-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -531,7 +666,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/jdbc/gt-jdbc-postgis/12.2/gt-jdbc-postgis-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/jdbc/gt-jdbc-postgis/12.0/gt-jdbc-postgis-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -540,7 +675,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/jdbc/gt-jdbc-h2/12.2/gt-jdbc-h2-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/jdbc/gt-jdbc-h2/12.0/gt-jdbc-h2-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -549,7 +684,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/jdbc/gt-jdbc-mysql/12.2/gt-jdbc-mysql-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/jdbc/gt-jdbc-mysql/12.0/gt-jdbc-mysql-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -558,7 +693,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/jdbc/gt-jdbc-spatialite/12.2/gt-jdbc-spatialite-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/jdbc/gt-jdbc-spatialite/12.0/gt-jdbc-spatialite-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -567,7 +702,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/xsd/gt-xsd-wfs/12.2/gt-xsd-wfs-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/xsd/gt-xsd-wfs/12.0/gt-xsd-wfs-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -576,7 +711,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-wfs/12.2/gt-wfs-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-wfs/12.0/gt-wfs-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -585,7 +720,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-charts/12.2/gt-charts-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-charts/12.0/gt-charts-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -594,7 +729,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-brewer/12.2/gt-brewer-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-brewer/12.0/gt-brewer-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -603,7 +738,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-svg/12.2/gt-svg-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-svg/12.0/gt-svg-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -612,7 +747,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-property/12.2/gt-property-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-property/12.0/gt-property-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -621,7 +756,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-geojson/12.2/gt-geojson-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-geojson/12.0/gt-geojson-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -630,7 +765,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-swing/12.2/gt-swing-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-swing/12.0/gt-swing-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -639,7 +774,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-process/12.2/gt-process-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-process/12.0/gt-process-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -648,7 +783,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-process-feature/12.2/gt-process-feature-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-process-feature/12.0/gt-process-feature-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -657,7 +792,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-process-geometry/12.2/gt-process-geometry-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-process-geometry/12.0/gt-process-geometry-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -666,7 +801,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/xsd/gt-xsd-kml/12.2/gt-xsd-kml-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/xsd/gt-xsd-kml/12.0/gt-xsd-kml-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -684,7 +819,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-geotiff/12.2/gt-geotiff-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-geotiff/12.0/gt-geotiff-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -693,7 +828,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-image/12.2/gt-image-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-image/12.0/gt-image-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -702,7 +837,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-imagemosaic/12.2/gt-imagemosaic-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-imagemosaic/12.0/gt-imagemosaic-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -711,7 +846,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-arcgrid/12.2/gt-arcgrid-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-arcgrid/12.0/gt-arcgrid-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -720,7 +855,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-grassraster/12.2/gt-grassraster-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-grassraster/12.0/gt-grassraster-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -729,7 +864,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-gtopo30/12.2/gt-gtopo30-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-gtopo30/12.0/gt-gtopo30-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -738,7 +873,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-imagepyramid/12.2/gt-imagepyramid-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-imagepyramid/12.0/gt-imagepyramid-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -747,7 +882,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-imageio-ext-gdal/12.2/gt-imageio-ext-gdal-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-imageio-ext-gdal/12.0/gt-imageio-ext-gdal-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -756,7 +891,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-netcdf/12.2/gt-netcdf-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-netcdf/12.0/gt-netcdf-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -765,7 +900,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-process-raster/12.2/gt-process-raster-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-process-raster/12.0/gt-process-raster-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -774,7 +909,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-wms/12.2/gt-wms-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-wms/12.0/gt-wms-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -783,7 +918,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-transform/12.2/gt-transform-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-transform/12.0/gt-transform-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -792,7 +927,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-mbtiles/12.2/gt-mbtiles-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-mbtiles/12.0/gt-mbtiles-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -801,7 +936,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-geopkg/12.2/gt-geopkg-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-geopkg/12.0/gt-geopkg-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -867,7 +1002,9 @@
           <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.transaction/jta/1.1/2ca09f0b36ca7d71b762e14ea2ff09d5eac57558/jta-1.1.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.transaction/jta/1.1/d5dad66d06246bd2e1e369cebff27faa9beb065a/jta-1.1-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -915,7 +1052,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/ui/forms/3.5.200.v20120521-2329/forms-3.5.200.v20120521-2329.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../groovy-swt/src/repository/org/eclipse/core/databinding/observable/1.4.1.v20120521-2329/observable-1.4.1.v20120521-2329.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -924,7 +1061,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/osgi/3.5.0.v20090520/osgi-3.5.0.v20090520.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../groovy-swt/src/repository/org/eclipse/core/databinding/1.4.1.v20120521-2329/databinding-1.4.1.v20120521-2329.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -933,7 +1070,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jface/databinding/1.6.0.v20120521-2329/databinding-1.6.0.v20120521-2329.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../groovy-swt/src/repository/com/ibm/icu/4.4.2.v20110823/icu-4.4.2.v20110823.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -942,79 +1079,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/asm/asm/3.2/asm-3.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/core/commands/3.6.1.v20120521-2329/commands-3.6.1.v20120521-2329.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/core/databinding/observable/1.4.1.v20120521-2329/observable-1.4.1.v20120521-2329.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/core/databinding/1.4.1.v20120521-2329/databinding-1.4.1.v20120521-2329.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/swt/3.650/swt-3.650-win32-win32-x86.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/core/databinding/property/1.4.100.v20120523-1955/property-1.4.100.v20120523-1955.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/miglayout/miglayout-swt/4.2/miglayout-swt-4.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/core/databinding/beans/1.2.200.v20120523-1955/beans-1.2.200.v20120523-1955.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/ibm/icu/4.4.2.v20110823/icu-4.4.2.v20110823.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/asm/asm/3.2/9bc1511dec6adf302991ced13303e4140fdf9ab7/asm-3.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -1028,6 +1093,80 @@
         <JAVADOC />
         <SOURCES>
           <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy/2.4.0/1de30b56375339904a444d4be188112cebc6dec2/groovy-2.4.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../groovy-swt/src/repository/org/eclipse/core/databinding/property/1.4.100.v20120523-1955/property-1.4.100.v20120523-1955.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../groovy-swt/src/repository/org/eclipse/ui/forms/3.5.200.v20120521-2329/forms-3.5.200.v20120521-2329.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../groovy-swt/src/repository/org/eclipse/core/databinding/beans/1.2.200.v20120523-1955/beans-1.2.200.v20120523-1955.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../groovy-swt/src/repository/org/eclipse/core/commands/3.6.1.v20120521-2329/commands-3.6.1.v20120521-2329.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../groovy-swt/src/repository/org/eclipse/jface/databinding/1.6.0.v20120521-2329/databinding-1.6.0.v20120521-2329.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse/osgi/3.5.0.v20090520/f03e9b88e4398f5b7c8ab7f2f700e7a7c292a11f/osgi-3.5.0.v20090520.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../groovy-swt/src/repository/org/eclipse/swt/3.650/swt-3.650-win32-win32-x86.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.miglayout/miglayout-swt/4.2/7ad27385e3217d22dc735510745001bd2c8e07be/miglayout-swt-4.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.miglayout/miglayout-swt/4.2/2320f78211d9e3dd22aa9bf6a83e7d7d78ff4e85/miglayout-swt-4.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -1052,10 +1191,12 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/commons-cli/commons-cli/1.2/commons-cli-1.2.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-cli/commons-cli/1.2/2bf96b7aa8b611c177d329452af1dc933e14501c/commons-cli-1.2.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-cli/commons-cli/1.2/6c5459816530a1962ac18cd315cc775b1b384329/commons-cli-1.2-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -1133,128 +1274,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-hdfs-vfs/5.0.1-stable/1862a4eab4b23a1e5e941d634f60edf78eff1989/pentaho-hdfs-vfs-5.0.1-stable.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/pentaho/pentaho-hdfs-vfs/5.0.1-stable/14de438febf83f7dff2021d01afaf020fef83a5/pentaho-hdfs-vfs-5.0.1-stable-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-jdbc/cdh4.2.0-release-pentaho-5.0.0/d7668ae31e67669042eb3ffaf3c0088f7e6bf4da/hive-jdbc-cdh4.2.0-release-pentaho-5.0.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-jdbc/cdh4.2.0-release-pentaho-5.0.0/b01716f59cee4253cc529fdcf3a3410a0907a4f0/hive-jdbc-cdh4.2.0-release-pentaho-5.0.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-common/0.10.0-cdh4.2.0/47860ae70f5234edab0cc971bdb52419e9df8af3/hive-common-0.10.0-cdh4.2.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-common/0.10.0-cdh4.2.0/d0a4ecd208c25c5f97e959c854691aa725fcec3b/hive-common-0.10.0-cdh4.2.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-builtins/0.10.0-cdh4.2.0/1aca2ace0019c6a4fc34f3b454b611aa5461e372/hive-builtins-0.10.0-cdh4.2.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-builtins/0.10.0-cdh4.2.0/dc278b5addf5e2fc92dda7a43d5e2b4e8e8ca3d6/hive-builtins-0.10.0-cdh4.2.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-exec/0.10.0-cdh4.2.0/e925b9b69d8a2ab4858d0555043af11bad77e55b/hive-exec-0.10.0-cdh4.2.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-exec/0.10.0-cdh4.2.0/da17ab1aa902ff4530b302a9afa3a962aad07aa9/hive-exec-0.10.0-cdh4.2.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-service/0.10.0-cdh4.2.0/5a07f59ffa631dcb17e4cb06513481fb9bde6d5f/hive-service-0.10.0-cdh4.2.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-service/0.10.0-cdh4.2.0/ec54db30c943c82e8215489a7a44326d132849dd/hive-service-0.10.0-cdh4.2.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-serde/0.10.0-cdh4.2.0/a7ca2e8b29a7ff6127b2b18b5980c243ab00874a/hive-serde-0.10.0-cdh4.2.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-serde/0.10.0-cdh4.2.0/86b08018513995d66a2597063f8b40351184e0d/hive-serde-0.10.0-cdh4.2.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-metastore/0.10.0-cdh4.2.0/df88624cec14cec6d7e41718fff078d9ffdd8e53/hive-metastore-0.10.0-cdh4.2.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-metastore/0.10.0-cdh4.2.0/a5f5d7e0fd5ead281768226b9c483efd0ccd370a/hive-metastore-0.10.0-cdh4.2.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.sqoop/sqoop/1.4.2-cdh4.2.0/f2d633edf4bb4683ce406277c5ceb7ca3629b4b/sqoop-1.4.2-cdh4.2.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.sqoop/sqoop/1.4.2-cdh4.2.0/c88c67e0afc9fa3e41acaf73e13b1056169c3485/sqoop-1.4.2-cdh4.2.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.pig/pig/0.10.0-cdh4.2.0/cd00dcdac036eee6643e9fe4a2ec19d5337f90f1/pig-0.10.0-cdh4.2.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.pig/pig/0.10.0-cdh4.2.0/e8396671cdd9b8451e6d7eb39b0051d571a15f98/pig-0.10.0-cdh4.2.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/dk.brics.automaton/automaton/1.11-8/6ebfa65eb431ff4b715a23be7a750cbc4cc96d0f/automaton-1.11-8.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/dk.brics.automaton/automaton/1.11-8/6bc89a2a9c9c5524aa275b572c0fd3699ff7a5be/automaton-1.11-8-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-coverage/12.2/gt-coverage-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-coverage/12.0/gt-coverage-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -1263,7 +1283,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-api/12.2/gt-api-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-api/12.0/gt-api-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -1272,7 +1292,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-referencing/12.2/gt-referencing-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-referencing/12.0/gt-referencing-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -1299,7 +1319,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-jdbc/12.2/gt-jdbc-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-jdbc/12.0/gt-jdbc-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -1308,10 +1328,61 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-metadata/12.2/gt-metadata-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-metadata/12.0/gt-metadata-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/tukaani/xz/1.0/xz-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-fileupload/commons-fileupload/1.2/a10c06183fe21f3bb3dda3b5946b93db6e2ad5cc/commons-fileupload-1.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-fileupload/commons-fileupload/1.2/c7859b375ae5bc1b4a4f2b91ce6d1d387e676e61/commons-fileupload-1.2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xom/xom/1.1/6705564269d976dbc0d869b58aca25290c0eb4cb/xom-1.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xom/xom/1.1/1335bd2e45c7771369828e2a83a2bd069e30fccd/xom-1.1-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.beanshell/bsh-core/2.0b4/495e25a99e29970ffe8ba0b1d551e1d1a9991fc1/bsh-core-2.0b4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.owasp.antisamy/antisamy/1.4.3/6bac1ebc43ac3db223f592ce904ac4c2f3ef26e5/antisamy-1.4.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.owasp.antisamy/antisamy/1.4.3/3f562a79c558eb59284c8c9ee639147e53d8809c/antisamy-1.4.3-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -1326,7 +1397,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/oro/oro/2.0.8/oro-2.0.8.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/oro/oro/2.0.8/5592374f834645c4ae250f4c9fbb314c9369d698/oro-2.0.8.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -1344,10 +1415,368 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/jfree/jcommon/1.0.13/jcommon-1.0.13.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/jfree/jcommon/1.0.16/348f9e02dfd982b105133aea7f702baca4427364/jcommon-1.0.16.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-core/0.20.2/200f54e0051f3148fae8d8fb66fa3f477e52777f/hadoop-core-0.20.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-test/0.20.2/547f30bb192ac86ec30b024cc1c44f5ca7c5029/hadoop-test-0.20.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/sqlline/sqlline/1_0_2/b9bd52eb1e6834d54b4552bf8182d41ebce0d85a/sqlline-1_0_2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/apache/avro/avro/1.7.4/avro-1.7.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-shims/0.10.0-cdh4.7.0/2e9b9d0037f168dbb0e8619cfbdcae0819056afc/hive-shims-0.10.0-cdh4.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-shims/0.10.0-cdh4.7.0/3ca5fcb2219606e7f081b9dd3e39abf26f3be6b8/hive-shims-0.10.0-cdh4.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging-api/1.1/7d4cf5231d46c8524f9b9ed75bb2d1c69ab93322/commons-logging-api-1.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-contrib/0.10.0-cdh4.7.0/e12713ed80d66282437b0631c46fba585c92a247/hive-contrib-0.10.0-cdh4.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-contrib/0.10.0-cdh4.7.0/fedb8fc11c9969eb854d18f38a842c6e4f7587a1/hive-contrib-0.10.0-cdh4.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.antlr/antlr/3.4/7797e70e3f5cb4229695f08ff50333266cf81125/antlr-3.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.antlr/antlr/3.4/2e6a31f24631eb533d8170da9cac6849345f8fda/antlr-3.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.antlr/antlr-runtime/3.4/8f011408269a8e42b8548687e137d8eeb56df4b4/antlr-runtime-3.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.antlr/antlr-runtime/3.4/57a73190ad97f56c0cb83a6a5b6c08d5d428319b/antlr-runtime-3.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.json/json/20090211/c183aa3a2a6250293808bba12262c8920ce5a51c/json-20090211.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.6.1.0/1137cd636b0e3c22f0d273478adb58aa30e984a/derby-10.6.1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.googlecode.javaewah/JavaEWAH/0.3.2/7130b68f1d4d9666f0ced0ba1a1bee37e2e51926/JavaEWAH-0.3.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.googlecode.javaewah/JavaEWAH/0.3.2/6565492999a703f2d5033093f632ed067a215f62/JavaEWAH-0.3.2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-connectionpool/2.0.3/ea12a32fe8c959dd117f3a071e4eacd5181d63f0/datanucleus-connectionpool-2.0.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-connectionpool/2.0.3/6fbedbd2ffcf740e1e714f43f38df8b8573c143/datanucleus-connectionpool-2.0.3-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-api-jdo/3.2.1/d1fddd1ef128986993044e6820f996d738a4b915/datanucleus-api-jdo-3.2.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-api-jdo/3.2.1/6175054084b739024e0ad0abcfd64cd724d5d5cc/datanucleus-api-jdo-3.2.1-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-enhancer/2.0.3/467af0b147ddaae35e2ca218639e0ad9ea80bef5/datanucleus-enhancer-2.0.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-enhancer/2.0.3/7e26e08225c1a4fc4bf544f58e113bc0402113be/datanucleus-enhancer-2.0.3-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-rdbms/3.2.1/483da1bf92d2b35384387d6c3c3f9649e361446c/datanucleus-rdbms-3.2.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-rdbms/3.2.1/d741e9e54329b5701c1ffd8df443c828031e74e9/datanucleus-rdbms-3.2.1-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.linkedin/haivvreo/1.0.7-cdh-4/d04c701e205f91e1ba719046069fe289258028e8/haivvreo-1.0.7-cdh-4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.thrift/libfb303/0.9.0/639bd69767fdbd7f658ce8233248fe1cea635164/libfb303-0.9.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-all/1.8.5/mockito-all-1.8.5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.avro/avro-mapred/1.7.4/a9f65d22a27d9e728127ea33d123d358a51f212f/avro-mapred-1.7.4-hadoop2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.avro/avro-mapred/1.7.4/fc9024e7cd683c53c360ccc9a92b0b79a78fa2f8/avro-mapred-1.7.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.jdo/jdo2-api/2.3-ec/e62bc744438e213fdd5fd112d049cfb7b68a674f/jdo2-api-2.3-ec.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase/0.94.15-cdh4.7.0/3a25f81afe8b7fc37041ff41c7ef20bf5f1ae1e7/hbase-0.94.15-cdh4.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase/0.94.15-cdh4.7.0/9d5707757342d3938acd092ab5e15c30565fb9ac/hbase-0.94.15-cdh4.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase/0.94.15-cdh4.7.0/f2b7ce445436fa644688ed2189844112d8bb7893/hbase-0.94.15-cdh4.7.0-tests.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase/0.94.15-cdh4.7.0/9d5707757342d3938acd092ab5e15c30565fb9ac/hbase-0.94.15-cdh4.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hcatalog/hcatalog-core/0.5.0-cdh4.7.0/ee2913de97edc1be4e4bc4d964439424142a3df8/hcatalog-core-0.5.0-cdh4.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/hsqldb/hsqldb/1.8.0.10/7e9978fdb754bce5fcd5161133e7734ecb683036/hsqldb-1.8.0.10.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/ant-contrib/ant-contrib/1.0b3/943cd5c8802b2a3a64a010efb86ec19bac142e40/ant-contrib-1.0b3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/xmlenc/xmlenc/0.52/xmlenc-0.52.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/tomcat/jasper-runtime/5.5.23/96ca5528a93ab47b001476b74320c644beb89dde/jasper-runtime-5.5.23.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/tomcat/jasper-compiler/5.5.23/6d35bd7fb8c4fbc1f5401fb3678aa976d2e4c241/jasper-compiler-5.5.23.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mortbay.jetty/jsp-api-2.1/6.1.14/756b3fac155e31bd0e85545dbf953495e0455c73/jsp-api-2.1-6.1.14.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mortbay.jetty/jsp-api-2.1/6.1.14/66b48b3eae1a16ae47f3d3abf27f64a0818f7462/jsp-api-2.1-6.1.14-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mortbay.jetty/jsp-2.1/6.1.14/3a1df1e8e0fa56e9a940abbd19bc6f397fce16b5/jsp-2.1-6.1.14.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mortbay.jetty/jsp-2.1/6.1.14/191e377d51c184744db940a578cfadadda02de7a/jsp-2.1-6.1.14-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/commons-el/commons-el/1.0/commons-el-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.python/jython-standalone/2.5.2/3f29363b2765cab6a390fd96e2939c88926b913/jython-standalone-2.5.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.python/jython-standalone/2.5.2/2cccdd6b20cdabee66aa073b7e81e6eabfcfc93e/jython-standalone-2.5.2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mortbay.jetty/servlet-api-2.5/6.1.14/5f07601ab7d7c85dd9e38a17c0e1b0edfbd4a191/servlet-api-2.5-6.1.14.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mortbay.jetty/servlet-api-2.5/6.1.14/19bf7c8cf3b67563414aeeb462c143a9748795d4/servlet-api-2.5-6.1.14-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.kosmosfs/kfs/0.3/20fcbc065182bdcd706c90a2eb383ae70eb5b223/kfs-0.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.fusesource.jansi/jansi/1.9/3ce7490622cb94ae6293cd9b6ca3f617516a2696/jansi-1.9.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.fusesource.jansi/jansi/1.9/9a617212de5bd5739225fd42c81cede59e9d5caa/jansi-1.9-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -1362,7 +1791,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-cql/12.2/gt-cql-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-cql/12.0/gt-cql-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -1371,7 +1800,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-data/12.2/gt-data-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-data/12.0/gt-data-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -1398,7 +1827,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/h2database/h2/1.1.119/h2-1.1.119.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.h2database/h2/1.1.119/c1841760f5d99d4bb9d3c7daf45053e27d9da5b2/h2-1.1.119.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -1425,7 +1854,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/ogc/net.opengis.wfs/12.2/net.opengis.wfs-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/ogc/net.opengis.wfs/12.0/net.opengis.wfs-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -1434,7 +1863,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/xsd/gt-xsd-filter/12.2/gt-xsd-filter-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/xsd/gt-xsd-filter/12.0/gt-xsd-filter-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -1443,7 +1872,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/xsd/gt-xsd-fes/12.2/gt-xsd-fes-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/xsd/gt-xsd-fes/12.0/gt-xsd-fes-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -1452,7 +1881,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/xsd/gt-xsd-ows/12.2/gt-xsd-ows-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/xsd/gt-xsd-ows/12.0/gt-xsd-ows-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -1461,7 +1890,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-xml/12.2/gt-xml-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-xml/12.0/gt-xml-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -1497,10 +1926,12 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/googlecode/json-simple/json-simple/1.1/json-simple-1.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.googlecode.json-simple/json-simple/1.1/5e303a03d04e6788dddfa3655272580ae0fc13bb/json-simple-1.1.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.googlecode.json-simple/json-simple/1.1/19c6d8dee6803c520d855ff7e8a8c3d97f1271ec/json-simple-1.1-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -1517,7 +1948,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-grid/12.2/gt-grid-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-grid/12.0/gt-grid-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -1526,7 +1957,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/xsd/gt-xsd-core/12.2/gt-xsd-core-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/xsd/gt-xsd-core/12.0/gt-xsd-core-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -1598,10 +2029,12 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/net/sf/ehcache/ehcache/1.6.2/ehcache-1.6.2.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.ehcache/ehcache/1.6.2/333050873c61d778059cb00ae3fce87b0635875a/ehcache-1.6.2.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.ehcache/ehcache/1.6.2/3472a11cbce60c2daf020cb13df44e808ebef40a/ehcache-1.6.2-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -1742,7 +2175,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-coverage-api/12.2/gt-coverage-api-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-coverage-api/12.0/gt-coverage-api-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -1841,28 +2274,12 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/miglayout/miglayout-core/4.2/miglayout-core-4.2.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.miglayout/miglayout-core/4.2/70f2bfa2a077ee1632cc8229deffa1d942825c78/miglayout-core-4.2.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/commons-digester/commons-digester/1.8/commons-digester-1.8.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.miglayout/miglayout-core/4.2/4e5b8b17d6c2921d400faa89d33b769adeb222a4/miglayout-core-4.2-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -1886,316 +2303,6 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-core/0.20.2/200f54e0051f3148fae8d8fb66fa3f477e52777f/hadoop-core-0.20.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-test/0.20.2/547f30bb192ac86ec30b024cc1c44f5ca7c5029/hadoop-test-0.20.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-shims/0.10.0-cdh4.2.0/fb2d36bf88a021f1dc2d1c1cf9f5df70edcd5b4e/hive-shims-0.10.0-cdh4.2.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-shims/0.10.0-cdh4.2.0/48178a02956a828a51f583d4e6d5fee4ee6f2af3/hive-shims-0.10.0-cdh4.2.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/commons-logging/commons-logging-api/1.1/commons-logging-api-1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-contrib/0.10.0-cdh4.2.0/f590b585e00da2ce298f5e9d837ef567c2b0ac12/hive-contrib-0.10.0-cdh4.2.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-contrib/0.10.0-cdh4.2.0/c4f8787f3d09b883af09b16ee8b1fbcd1612d536/hive-contrib-0.10.0-cdh4.2.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.antlr/antlr-runtime/3.4/8f011408269a8e42b8548687e137d8eeb56df4b4/antlr-runtime-3.4.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.json/json/20090211/c183aa3a2a6250293808bba12262c8920ce5a51c/json-20090211.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.derby/derby/10.6.1.0/1137cd636b0e3c22f0d273478adb58aa30e984a/derby-10.6.1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.googlecode.javaewah/JavaEWAH/0.3.2/7130b68f1d4d9666f0ced0ba1a1bee37e2e51926/JavaEWAH-0.3.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.googlecode.javaewah/JavaEWAH/0.3.2/6565492999a703f2d5033093f632ed067a215f62/JavaEWAH-0.3.2-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-connectionpool/2.0.3/ea12a32fe8c959dd117f3a071e4eacd5181d63f0/datanucleus-connectionpool-2.0.3.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-connectionpool/2.0.3/6fbedbd2ffcf740e1e714f43f38df8b8573c143/datanucleus-connectionpool-2.0.3-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-enhancer/2.0.3/467af0b147ddaae35e2ca218639e0ad9ea80bef5/datanucleus-enhancer-2.0.3.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-enhancer/2.0.3/7e26e08225c1a4fc4bf544f58e113bc0402113be/datanucleus-enhancer-2.0.3-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-rdbms/2.0.3/89bd76bcb31940199983a99bc0c17cd192494618/datanucleus-rdbms-2.0.3.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-rdbms/2.0.3/6f74e01d419288c2d54e00bfb6e03203d02b9806/datanucleus-rdbms-2.0.3-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.linkedin/haivvreo/1.0.7-cdh-4/d04c701e205f91e1ba719046069fe289258028e8/haivvreo-1.0.7-cdh-4.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.thrift/libfb303/0.9.0/639bd69767fdbd7f658ce8233248fe1cea635164/libfb303-0.9.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-all/1.8.5/mockito-all-1.8.5.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.avro/avro-mapred/1.7.3/5f593a7a8437036ea819407db40ba7d447546de2/avro-mapred-1.7.3.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.avro/avro-mapred/1.7.3/7cbf8e198b9391a6af1478096376ef9299ad6297/avro-mapred-1.7.3-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.jdo/jdo2-api/2.3-ec/e62bc744438e213fdd5fd112d049cfb7b68a674f/jdo2-api-2.3-ec.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase/0.94.2-cdh4.2.0/ee99ceb9c510dd603aa747101941440c177ea23b/hbase-0.94.2-cdh4.2.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase/0.94.2-cdh4.2.0/e0a95afef9e990f09cc754e030ea894e11df947d/hbase-0.94.2-cdh4.2.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase/0.94.2-cdh4.2.0/629f4ed0a9848387e0afe7e80d562c5b890f95ee/hbase-0.94.2-cdh4.2.0-tests.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hbase/hbase/0.94.2-cdh4.2.0/e0a95afef9e990f09cc754e030ea894e11df947d/hbase-0.94.2-cdh4.2.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/hsqldb/hsqldb/1.8.0.10/hsqldb-1.8.0.10.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/ant-contrib/ant-contrib/1.0b3/943cd5c8802b2a3a64a010efb86ec19bac142e40/ant-contrib-1.0b3.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/xmlenc/xmlenc/0.52/xmlenc-0.52.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/tomcat/jasper-runtime/5.5.23/jasper-runtime-5.5.23.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/tomcat/jasper-compiler/5.5.23/jasper-compiler-5.5.23.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/jsp-api-2.1/6.1.14/jsp-api-2.1-6.1.14.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/jsp-2.1/6.1.14/jsp-2.1-6.1.14.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/commons-el/commons-el/1.0/commons-el-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.python/jython-standalone/2.5.2/3f29363b2765cab6a390fd96e2939c88926b913/jython-standalone-2.5.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.python/jython-standalone/2.5.2/2cccdd6b20cdabee66aa073b7e81e6eabfcfc93e/jython-standalone-2.5.2-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/servlet-api-2.5/6.1.14/servlet-api-2.5-6.1.14.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.kosmosfs/kfs/0.3/20fcbc065182bdcd706c90a2eb383ae70eb5b223/kfs-0.3.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.fusesource.jansi/jansi/1.9/3ce7490622cb94ae6293cd9b6ca3f617516a2696/jansi-1.9.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.fusesource.jansi/jansi/1.9/9a617212de5bd5739225fd42c81cede59e9d5caa/jansi-1.9-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/jgridshift/jgridshift/1.0/jgridshift-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -2205,7 +2312,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-opengis/12.2/gt-opengis-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-opengis/12.0/gt-opengis-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -2214,10 +2321,322 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/jdom/jdom/1.0/jdom-1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xerces/xmlParserAPIs/2.6.2/65acede1e5305bd2b92213d7b5761328c6f4fd9/xmlParserAPIs-2.6.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xalan/xalan/2.7.0/a33c0097f1c70b20fa7ded220ea317eb3500515e/xalan-2.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xalan/xalan/2.7.0/fe8fb14a14470c747d80c611852985ded830dab5/xalan-2.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/apache/xmlgraphics/batik-css/1.7/batik-css-1.7.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.nekohtml/nekohtml/1.9.12/6b58cfa01218d900a5c5996b82b52cffab981c0a/nekohtml-1.9.12.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.nekohtml/nekohtml/1.9.12/128f3cb08e546dbb60e9b6cfb9e4c2b8b6e850a9/nekohtml-1.9.12-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.jdt/core/3.1.1/88c83ce444cf46d02494da37c9fa1eebc9ce9cea/core-3.1.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ftpserver/ftplet-api/1.0.0/457ca5bbc4b614d1712e8ebb336b3ba1e16a9642/ftplet-api-1.0.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ftpserver/ftplet-api/1.0.0/7d65ba7b54f50b492d206e1a8438fc64c47c69e5/ftplet-api-1.0.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.mina/mina-core/2.0.0-M5/a024f13898ad5df38d4e3173f478eacc94f63567/mina-core-2.0.0-M5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.mina/mina-core/2.0.0-M5/d7df51e3f615bc9bff1ac8a3ce55d55cd662670b/mina-core-2.0.0-M5-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ftpserver/ftpserver-core/1.0.0/47c8480cc3bfda85d578e3368e78103cb9e9bed7/ftpserver-core-1.0.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ftpserver/ftpserver-core/1.0.0/ed25508be885b8ac0ff0bd229aa2868af57fc403/ftpserver-core-1.0.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ftpserver/ftpserver-deprecated/1.0.0-M2/a1f5645a02a438ba0e115c967262c7818e308fcb/ftpserver-deprecated-1.0.0-M2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ftpserver/ftpserver-deprecated/1.0.0-M2/a3ab7aaec80bbde07d3273b82e961c346922629c/ftpserver-deprecated-1.0.0-M2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-core-asl/1.8.8/jackson-core-asl-1.8.8.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-mapper-asl/1.8.8/jackson-mapper-asl-1.8.8.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/com/thoughtworks/paranamer/paranamer/2.3/paranamer-2.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/xerial/snappy/snappy-java/1.0.4.1/snappy-java-1.0.4.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/antlr/stringtemplate/3.2.1/stringtemplate-3.2.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.avro/avro-ipc/1.7.4/d2c8777ef5c6c4bf0897dacbda94218e7b4e0167/avro-ipc-1.7.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.avro/avro-ipc/1.7.4/cf54eeb1b65fc60fec65a4fa89131a815268fa5f/avro-ipc-1.7.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.avro/avro-ipc/1.7.4/b6a6318a040d51b2df562cd52a18b4a56860bd8d/avro-ipc-1.7.4-tests.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.avro/avro-ipc/1.7.4/cf54eeb1b65fc60fec65a4fa89131a815268fa5f/avro-ipc-1.7.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.inject.extensions/guice-servlet/3.0/610cde0e8da5a8b7d8efb8f0b8987466ffebaaf9/guice-servlet-3.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.inject.extensions/guice-servlet/3.0/2b325f1e78a4c16ffd4b3d81c687a09dd6790a60/guice-servlet-3.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/jboss/netty/netty/3.2.4.Final/netty-3.2.4.Final.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.yammer.metrics/metrics-core/2.1.2/1777023af1bff167d3860ee9084a5c0dff96ba8d/metrics-core-2.1.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.yammer.metrics/metrics-core/2.1.2/4fa17dbaedcf53d841bfe2bcb7000ba13adef1c9/metrics-core-2.1.2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.stephenc.high-scale-lib/high-scale-lib/1.1.1/4e3393337b5f11ac5e8760469284505b7061a815/high-scale-lib-1.1.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.stephenc.high-scale-lib/high-scale-lib/1.1.1/c919a19e0cccdee907af6a651ae6b627aa1c2bd1/high-scale-lib-1.1.1-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.netty/netty/3.6.6.Final/e4e40738ce9bee0a92389cb739c94d7839778647/netty-3.6.6.Final.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.netty/netty/3.6.6.Final/721ecbb9af7082de7ad0d9b6b597beffe475c225/netty-3.6.6.Final-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jruby/jruby-complete/1.6.5/14a7301b9757a08a82e1370f7cc1241343f2df6a/jruby-complete-1.6.5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jruby/jruby-complete/1.6.5/3b9e9fcb7fc6bc0f5d567230f0d59fb4fff6e81b/jruby-complete-1.6.5-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.jackson/jackson-jaxrs/1.8.8/71b16055388e9bd3991c3c3834e8e55098b789f1/jackson-jaxrs-1.8.8.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.jackson/jackson-jaxrs/1.8.8/3453b6c754579418c7e157431dbc35a757d645e0/jackson-jaxrs-1.8.8-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.jackson/jackson-xc/1.8.8/52efa08bc1e4cfea168f552b9e3088297d9d0926/jackson-xc-1.8.8.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.codehaus.jackson/jackson-xc/1.8.8/8d744c009d9ea9d44db5b2c8de95f7e26fcceb74/jackson-xc-1.8.8-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jamon/jamon-runtime/2.3.1/ae23df9c0953b12ba1b799e42ebd1a281fabcd8c/jamon-runtime-2.3.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jamon/jamon-runtime/2.3.1/4cd17c50c73da9aadf49115f3f7f05dbf7df6521/jamon-runtime-2.3.1-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/stax/stax-api/1.0.1/stax-api-1.0.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-cli/0.10.0-cdh4.7.0/9b297d7b6f265e9cab877a70fe56ebbb374328d9/hive-cli-0.10.0-cdh4.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hive/hive-cli/0.10.0-cdh4.7.0/db0789ebc4b29149bbb9093b5b0b64a94ed84d15/hive-cli-0.10.0-cdh4.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-archives/2.0.0-cdh4.7.0/31968871c283d8e51806bde584c50a90dd9a46dd/hadoop-archives-2.0.0-cdh4.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-archives/2.0.0-cdh4.7.0/4791ea98ed928fe618ed6e78d6529f430985986/hadoop-archives-2.0.0-cdh4.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-mapreduce-client-hs/2.0.0-cdh4.7.0/352528de11fd850f64ce067576653457ceb4feca/hadoop-mapreduce-client-hs-2.0.0-cdh4.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-mapreduce-client-hs/2.0.0-cdh4.7.0/2753494a7f3c4544db983153f1c0df4d3766d488/hadoop-mapreduce-client-hs-2.0.0-cdh4.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-server-resourcemanager/2.0.0-cdh4.7.0/280d6aa7ba01f74888a2eb05eacba9d608b4c298/hadoop-yarn-server-resourcemanager-2.0.0-cdh4.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-server-resourcemanager/2.0.0-cdh4.7.0/403e3eec3118d0c7fe492cb61c08cc369da067f9/hadoop-yarn-server-resourcemanager-2.0.0-cdh4.7.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-server-tests/2.0.0-cdh4.7.0/54477b740625f6d18429935205049d7b8db3e2a7/hadoop-yarn-server-tests-2.0.0-cdh4.7.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-server-tests/2.0.0-cdh4.7.0/aa703e61ee3f74694bd76bd642f0578947faf8e8/hadoop-yarn-server-tests-2.0.0-cdh4.7.0-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -2232,7 +2651,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/ogc/org.w3.xlink/12.2/org.w3.xlink-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/ogc/org.w3.xlink/12.0/org.w3.xlink-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -2241,7 +2660,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/ogc/net.opengis.fes/12.2/net.opengis.fes-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/ogc/net.opengis.fes/12.0/net.opengis.fes-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -2268,7 +2687,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/xsd/gt-xsd-gml2/12.2/gt-xsd-gml2-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/xsd/gt-xsd-gml2/12.0/gt-xsd-gml2-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -2277,7 +2696,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/xsd/gt-xsd-gml3/12.2/gt-xsd-gml3-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/xsd/gt-xsd-gml3/12.0/gt-xsd-gml3-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -2286,7 +2705,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/ogc/net.opengis.ows/12.2/net.opengis.ows-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/ogc/net.opengis.ows/12.0/net.opengis.ows-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -2394,7 +2813,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-graph/12.2/gt-graph-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/gt-graph/12.0/gt-graph-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -2439,7 +2858,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/ogc/net.opengis.wcs/12.2/net.opengis.wcs-12.2.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/geotools/ogc/net.opengis.wcs/12.0/net.opengis.wcs-12.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -2484,10 +2903,12 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/net/sf/ehcache/ehcache-core/2.6.2/ehcache-core-2.6.2.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.ehcache/ehcache-core/2.6.2/3baecd92015a9f8fe4cf51c8b5d3a5bddcdd3e86/ehcache-core-2.6.2.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.ehcache/ehcache-core/2.6.2/1c03312f7cfdbe966f92524d3536255ff74d5d45/ehcache-core-2.6.2-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -2502,10 +2923,12 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/jcl-over-slf4j/1.6.4/jcl-over-slf4j-1.6.4.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/jcl-over-slf4j/1.6.4/aad8e9df65ebb68e3ba6f269e3312707f7f1065f/jcl-over-slf4j-1.6.4.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/jcl-over-slf4j/1.6.4/ab90d9b9f6bcc8441bd28078153ff5bdf45a95d4/jcl-over-slf4j-1.6.4-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -2547,7 +2970,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jdt/core/3.1.1/core-3.1.1.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/apache/xmlgraphics/batik-ext/1.7/batik-ext-1.7.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -2556,180 +2979,59 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ftpserver/ftplet-api/1.0.0/457ca5bbc4b614d1712e8ebb336b3ba1e16a9642/ftplet-api-1.0.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.velocity/velocity/1.7/2ceb567b8f3f21118ecdec129fe1271dbc09aa7a/velocity-1.7.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ftpserver/ftplet-api/1.0.0/7d65ba7b54f50b492d206e1a8438fc64c47c69e5/ftplet-api-1.0.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.velocity/velocity/1.7/eb11eb70171ed64842b2e5216d5904e21ed162ac/velocity-1.7-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.mina/mina-core/2.0.0-M5/a024f13898ad5df38d4e3173f478eacc94f63567/mina-core-2.0.0-M5.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/servlet-api/2.5-20081211/servlet-api-2.5-20081211.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/com/google/inject/guice/3.0/guice-3.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jettison/jettison/1.1/jettison-1.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/com/sun/xml/bind/jaxb-impl/2.2.3-1/jaxb-impl-2.2.3-1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.servlet/servlet-api/2.5/5959582d97d8b61f4d154ca9e495aafd16726e34/servlet-api-2.5.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.mina/mina-core/2.0.0-M5/d7df51e3f615bc9bff1ac8a3ce55d55cd662670b/mina-core-2.0.0-M5-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.servlet/servlet-api/2.5/21599814ad9a605b86f3e6381571beccd861a32/servlet-api-2.5-sources.jar!/" />
         </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ftpserver/ftpserver-core/1.0.0/47c8480cc3bfda85d578e3368e78103cb9e9bed7/ftpserver-core-1.0.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ftpserver/ftpserver-core/1.0.0/ed25508be885b8ac0ff0bd229aa2868af57fc403/ftpserver-core-1.0.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ftpserver/ftpserver-deprecated/1.0.0-M2/a1f5645a02a438ba0e115c967262c7818e308fcb/ftpserver-deprecated-1.0.0-M2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.ftpserver/ftpserver-deprecated/1.0.0-M2/a3ab7aaec80bbde07d3273b82e961c346922629c/ftpserver-deprecated-1.0.0-M2-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-core-asl/1.8.8/jackson-core-asl-1.8.8.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-mapper-asl/1.8.8/jackson-mapper-asl-1.8.8.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/thoughtworks/paranamer/paranamer/2.3/paranamer-2.3.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/xerial/snappy/snappy-java/1.0.4.1/snappy-java-1.0.4.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/antlr/stringtemplate/3.2.1/stringtemplate-3.2.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/google/inject/extensions/guice-servlet/3.0/guice-servlet-3.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/jboss/netty/netty/3.2.4.Final/netty-3.2.4.Final.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/yammer/metrics/metrics-core/2.1.2/metrics-core-2.1.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/github/stephenc/high-scale-lib/high-scale-lib/1.1.1/high-scale-lib-1.1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/jruby/jruby-complete/1.6.5/jruby-complete-1.6.5.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-jaxrs/1.8.8/jackson-jaxrs-1.8.8.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jackson/jackson-xc/1.8.8/jackson-xc-1.8.8.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/jamon/jamon-runtime/2.3.1/jamon-runtime-2.3.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/stax/stax-api/1.0.1/stax-api-1.0.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xerces/xmlParserAPIs/2.6.2/65acede1e5305bd2b92213d7b5761328c6f4fd9/xmlParserAPIs-2.6.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -2763,24 +3065,6 @@
       <library>
         <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/org/apache/xmlgraphics/batik-anim/1.7/batik-anim-1.7.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/apache/xmlgraphics/batik-css/1.7/batik-css-1.7.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/apache/xmlgraphics/batik-ext/1.7/batik-ext-1.7.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -2825,55 +3109,23 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/google/inject/guice/3.0/guice-3.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.inject/javax.inject/1/6975da39a7040257bd51d21a231b76c915872d38/javax.inject-1.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.inject/javax.inject/1/a00123f261762a7c5e0ec916a2c7c8298d29c400/javax.inject-1-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/codehaus/jettison/jettison/1.1/jettison-1.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/aopalliance/aopalliance/1.0/235ba8b489512805ac13a8f9ea77a1ca5ebe3e8/aopalliance-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/sun/xml/bind/jaxb-impl/2.2.3-1/jaxb-impl-2.2.3-1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/apache/xmlgraphics/batik-js/1.7/batik-js-1.7.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/javax/inject/javax.inject/1/javax.inject-1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/aopalliance/aopalliance/1.0/aopalliance-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/aopalliance/aopalliance/1.0/4a4b6d692e17846a9f3da036438a7ac491d3c814/aopalliance-1.0-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -2885,6 +3137,15 @@
         <SOURCES>
           <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.sonatype.sisu.inject/cglib/2.2.1-v20090111/65030c30094de36e3fddbc22442d47cbf547741f/cglib-2.2.1-v20090111-sources.jar!/" />
         </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/apache/xmlgraphics/batik-js/1.7/batik-js-1.7.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -2908,95 +3169,52 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/mortbay/jetty/servlet-api/2.5-20081211/servlet-api-2.5-20081211.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-fileupload/commons-fileupload/1.2/a10c06183fe21f3bb3dda3b5946b93db6e2ad5cc/commons-fileupload-1.2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.beanshell/bsh-core/2.0b4/495e25a99e29970ffe8ba0b1d551e1d1a9991fc1/bsh-core-2.0b4.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.owasp.antisamy/antisamy/1.4.3/6bac1ebc43ac3db223f592ce904ac4c2f3ef26e5/antisamy-1.4.3.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.2/4bfc12adfe4842bf07b657f0369c4cb522955686/commons-logging-1.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.owasp.antisamy/antisamy/1.4.3/3f562a79c558eb59284c8c9ee639147e53d8809c/antisamy-1.4.3-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.2/ecf26c7507d67782a3bbd148d170b31dfad001aa/commons-logging-1.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.nekohtml/nekohtml/1.9.12/6b58cfa01218d900a5c5996b82b52cffab981c0a/nekohtml-1.9.12.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../groovy-swt/src/repository/org/eclipse/equinox/common/3.5.1.R35x_v20090807-1100/common-3.5.1.R35x_v20090807-1100.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../groovy-swt/src/repository/org/eclipse/jface/3.8.0.v20120521-2329/jface-3.8.0.v20120521-2329.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.1/fd51f906669f49a4ffd06650666c3b8147a6106e/commons-io-2.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sourceforge.nekohtml/nekohtml/1.9.12/128f3cb08e546dbb60e9b6cfb9e4c2b8b6e850a9/nekohtml-1.9.12-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.1/46773a62217d7f630dfe6bae0bc645bbd92ffd09/commons-io-2.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/commons-logging/commons-logging/1.2/commons-logging-1.2.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/log4j/log4j/1.2.17/5af35056b4d257e4b64b9e8069c0746e8b08629f/log4j-1.2.17.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/jface/3.8.0.v20120521-2329/jface-3.8.0.v20120521-2329.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/eclipse/equinox/common/3.5.1.R35x_v20090807-1100/common-3.5.1.R35x_v20090807-1100.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/commons-io/commons-io/2.1/commons-io-2.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/log4j/log4j/1.2.17/log4j-1.2.17.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/log4j/log4j/1.2.17/677abe279b68c5e7490d6d50c6951376238d7d3e/log4j-1.2.17-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -3011,10 +3229,12 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.5/6b262da268f8ad9eff941b25503a9198f0a0ac93/slf4j-api-1.7.5.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.5/654135274d4c27132ea208a4ec07f344bdb83bcb/slf4j-api-1.7.5-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -3038,56 +3258,47 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/commons-digester/commons-digester/1.8/commons-digester-1.8.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient/4.2.5/666e26e76f2e87d84e4f16acb546481ae1b8e9a6/httpclient-4.2.5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient/4.2.5/55d345272944d7e8dace47925336a3764ee0e24b/httpclient-4.2.5-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpcore/4.2.4/3b7f38df6de5dd8b500e602ae8c2dd5ee446f883/httpcore-4.2.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpcore/4.2.4/c3ffe3a73348645042fb0b06303b6a3de194494e/httpcore-4.2.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-compress/1.4.1/commons-compress-1.4.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/tukaani/xz/1.0/xz-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.antlr/antlr/3.4/7797e70e3f5cb4229695f08ff50333266cf81125/antlr-3.4.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.antlr/antlr/3.4/2e6a31f24631eb533d8170da9cac6849345f8fda/antlr-3.4-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.antlr/ST4/4.0.4/467a2aa12be6d0f0f68c70eecf6714ab733027ac/ST4-4.0.4.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.antlr/ST4/4.0.4/e13c7f5f536ad6cabfa5de628fcb93910531a293/ST4-4.0.4-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/apache/httpcomponents/httpclient/4.2.5/httpclient-4.2.5.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/apache/httpcomponents/httpcore/4.2.4/httpcore-4.2.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -3107,30 +3318,12 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-auth/2.2.0/74e5f8b2134be51312c004d29e33a7bf4377ce20/hadoop-auth-2.2.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.servlet.jsp/jsp-api/2.1/63f943103f250ef1f3a4d5e94d145a0f961f5316/jsp-api-2.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-auth/2.2.0/b472a065fb1ef045ecb452dbc7788b555ca38ec0/hadoop-auth-2.2.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.servlet.jsp/jsp-api/2.1/1c9e754118cf8d3d85b6b1257fb6fb0f914d08c6/jsp-api-2.1-sources.jar!/" />
         </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/javax/servlet/jsp/jsp-api/2.1/jsp-api-2.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -3147,10 +3340,12 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/commons-daemon/commons-daemon/1.0.13/commons-daemon-1.0.13.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-daemon/commons-daemon/1.0.13/750856a1fdb3ddf721ccf73c3518e4211cffc3a3/commons-daemon-1.0.13.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-daemon/commons-daemon/1.0.13/238274fc8b77556fecc6623345e1f43745ceb111/commons-daemon-1.0.13-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -3167,15 +3362,6 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/io/netty/netty/3.6.2.Final/netty-3.6.2.Final.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/commons-net/commons-net/3.1/commons-net-3.1.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -3185,10 +3371,43 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/joda-time/joda-time/2.0/joda-time-2.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-log4j12/1.7.5/6edffc576ce104ec769d954618764f39f0f0f10d/slf4j-log4j12-1.7.5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-log4j12/1.7.5/65ffa6d644792e8b09cf6479d5c01ed95bb153a0/slf4j-log4j12-1.7.5-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.antlr/ST4/4.0.4/467a2aa12be6d0f0f68c70eecf6714ab733027ac/ST4-4.0.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.antlr/ST4/4.0.4/e13c7f5f536ad6cabfa5de628fcb93910531a293/ST4-4.0.4-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/jdom/jdom/1.0/a2ac1cd690ab4c80defe7f9bce14d35934c35cec/jdom-1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xerces/xercesImpl/2.8.1/25101e37ec0c907db6f0612cbf106ee519c1aef1/xercesImpl-2.8.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xerces/xercesImpl/2.8.1/e9d4f5fd18622884c4e369bba570790100f70f32/xercesImpl-2.8.1-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -3223,47 +3442,18 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/antlr/antlr/2.7.7/antlr-2.7.7.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/apache/avro/avro/1.7.4/avro-1.7.4.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.avro/avro-ipc/1.7.3/2ac5a1d6d82c643cb2a0e147c642f1078d982935/avro-ipc-1.7.3.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/junit/junit/4.8.2/c94f54227b08100974c36170dcb53329435fe5ad/junit-4.8.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.avro/avro-ipc/1.7.3/39915cf1ddb6a9311006aebfd30bda6bc06a728b/avro-ipc-1.7.3-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/junit/junit/4.8.2/cccca612a66b8387c399be31d69daf000de2ac9e/junit-4.8.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.avro/avro-ipc/1.7.3/49dbe8721428dbd69ebcf599cf3fff4483e65d8b/avro-ipc-1.7.3-tests.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.avro/avro-ipc/1.7.3/39915cf1ddb6a9311006aebfd30bda6bc06a728b/avro-ipc-1.7.3-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/apache/velocity/velocity/1.7/velocity-1.7.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/antlr/antlr/2.7.7/83cd2cd674a217ade95a4bb83a8a14f351f48bd0/antlr-2.7.7.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -3272,21 +3462,12 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-core/2.0.3/c41dab58bbe67514ab35b53ee9db1651133185de/datanucleus-core-2.0.3.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-core/3.2.2/bdb218908f7ceed578a099a263d645ad33d487cd/datanucleus-core-3.2.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-core/2.0.3/77958f506e2951d0f4c8ee09bf082a8f72f5e570/datanucleus-core-2.0.3-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.datanucleus/datanucleus-core/3.2.2/b169066beb6fe10730c902896759a5e849f74ebf/datanucleus-core-3.2.2-sources.jar!/" />
         </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/google/protobuf/protobuf-java/2.5.0/protobuf-java-2.5.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -3303,10 +3484,23 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/ant/ant/1.6.5/ant-1.6.5.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-mapreduce-client-app/2.2.0/9e5bdd970000b330382128350a957609cbcfe348/hadoop-mapreduce-client-app-2.2.0.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-mapreduce-client-app/2.2.0/3432b6f6dd99bcf209427c264d4bf625e85e0879/hadoop-mapreduce-client-app-2.2.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-mapreduce-client-jobclient/2.2.0/842d0c9d8793fd21bfbb1c6b1fa9fbc05698f76c/hadoop-mapreduce-client-jobclient-2.2.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-mapreduce-client-jobclient/2.2.0/659068241ee5636746d3ddcc120d6b3d0a4e63ba/hadoop-mapreduce-client-jobclient-2.2.0-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -3317,6 +3511,37 @@
         <JAVADOC />
         <SOURCES>
           <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-api/2.2.0/5fadfa6114597aad01b04e510f41226617161dba/hadoop-yarn-api-2.2.0-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/ant/ant/1.6.5/7d18faf23df1a5c3a43613952e0e8a182664564b/ant-1.6.5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/ant/ant/1.6.5/9e0a847494563f35f9b02846a1c1eb4aa2ee5a9a/ant-1.6.5-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/joda-time/joda-time/2.0/joda-time-2.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.protobuf/protobuf-java/2.5.0/a10732c76bfacdbd633a7eb0f7968b1059a65dfa/protobuf-java-2.5.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.protobuf/protobuf-java/2.5.0/7a27a7fc815e481b367ead5df19b4a71ace4a419/protobuf-java-2.5.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -3341,7 +3566,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xom/xom/1.1/6705564269d976dbc0d869b58aca25290c0eb4cb/xom-1.1.jar!/" />
+          <root url="jar://$MAVEN_REPOSITORY$/commons-beanutils/commons-beanutils-core/1.8.0/commons-beanutils-core-1.8.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -3350,117 +3575,67 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/xerces/xercesImpl/2.8.1/xercesImpl-2.8.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-mapreduce-client-app/2.2.0/9e5bdd970000b330382128350a957609cbcfe348/hadoop-mapreduce-client-app-2.2.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.6/b7f0fc8f61ecadeb3695f0b9464755eee44374d4/commons-codec-1.6.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-mapreduce-client-app/2.2.0/3432b6f6dd99bcf209427c264d4bf625e85e0879/hadoop-mapreduce-client-app-2.2.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.6/61e9f9d11fe3e12ec62f633006e99d75fd7f19c8/commons-codec-1.6-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-mapreduce-client-shuffle/2.2.0/c4c9da8f8f6ab1e3ba68798f30360eff4ba52187/hadoop-mapreduce-client-shuffle-2.2.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.jersey/jersey-core/1.9/8341846f18187013bb9e27e46b7ee00a6395daf4/jersey-core-1.9.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-mapreduce-client-shuffle/2.2.0/47ac22c272fee0879d87e5d9d5324f1c0df1764/hadoop-mapreduce-client-shuffle-2.2.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.jersey/jersey-core/1.9/56cafb409f0468aef023b327f25daa54b284fe8d/jersey-core-1.9-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-mapreduce-client-jobclient/2.2.0/842d0c9d8793fd21bfbb1c6b1fa9fbc05698f76c/hadoop-mapreduce-client-jobclient-2.2.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.jersey/jersey-json/1.9/1aa73e1896bcc7013fed247157d7f676226eb432/jersey-json-1.9.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-mapreduce-client-jobclient/2.2.0/659068241ee5636746d3ddcc120d6b3d0a4e63ba/hadoop-mapreduce-client-jobclient-2.2.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.jersey/jersey-json/1.9/9831f56e36a870f372cc2844675d76193144151a/jersey-json-1.9-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-server-nodemanager/2.2.0/5e7f0f16676afffff62919578bcb5606e3548f36/hadoop-yarn-server-nodemanager-2.2.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.xml.stream/stax-api/1.0-2/d6337b0de8b25e53e81b922352fbea9f9f57ba0b/stax-api-1.0-2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-server-nodemanager/2.2.0/893ddb3d5b134ee281a5b1432a25bc4187548c5a/hadoop-yarn-server-nodemanager-2.2.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.xml.stream/stax-api/1.0-2/dd58a0151c110e27c6c18abd45b01792f46d3fcd/stax-api-1.0-2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/commons-codec/commons-codec/1.6/commons-codec-1.6.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.jersey/jersey-server/1.9/3a6ea7cc5e15c824953f9f3ece2201b634d90d18/jersey-server-1.9.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.jersey/jersey-server/1.9/d710a3f1d00388a093da6511ca26a743366edf60/jersey-server-1.9-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/sun/jersey/jersey-core/1.9/jersey-core-1.9.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-auth/2.2.0/74e5f8b2134be51312c004d29e33a7bf4377ce20/hadoop-auth-2.2.0.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/sun/jersey/jersey-json/1.9/jersey-json-1.9.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/javax/xml/stream/stax-api/1.0-2/stax-api-1.0-2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/sun/jersey/jersey-server/1.9/jersey-server-1.9.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/apache/zookeeper/zookeeper/3.4.5/zookeeper-3.4.5.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-log4j12/1.7.5/slf4j-log4j12-1.7.5.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-auth/2.2.0/b472a065fb1ef045ecb452dbc7788b555ca38ec0/hadoop-auth-2.2.0-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -3471,35 +3646,6 @@
         <JAVADOC />
         <SOURCES>
           <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-common/2.2.0/3d1fe69566c347cb7692ebbc0d64a2df3cb6f18e/hadoop-yarn-common-2.2.0-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/sun/jersey/jersey-test-framework/jersey-test-framework-grizzly2/1.9/jersey-test-framework-grizzly2-1.9.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/sun/jersey/contribs/jersey-guice/1.9/jersey-guice-1.9.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xalan/xalan/2.7.0/a33c0097f1c70b20fa7ded220ea317eb3500515e/xalan-2.7.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/xalan/xalan/2.7.0/fe8fb14a14470c747d80c611852985ded830dab5/xalan-2.7.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -3517,48 +3663,45 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-server-common/2.2.0/ce13e5699bbe644da95bfd7e01549c6a389fec7f/hadoop-yarn-server-common-2.2.0.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-server-web-proxy/2.2.0/ab2404e576910f14cbcd185f81776ff806571b37/hadoop-yarn-server-web-proxy-2.2.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-server-common/2.2.0/10c903579cfb1f1ec160c7627321798277930110/hadoop-yarn-server-common-2.2.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-server-web-proxy/2.2.0/356844a5b86c449de5008b2c36f47a45d53880e3/hadoop-yarn-server-web-proxy-2.2.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/sun/jersey/jersey-test-framework/jersey-test-framework-core/1.9/jersey-test-framework-core-1.9.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-mapreduce-client-shuffle/2.2.0/c4c9da8f8f6ab1e3ba68798f30360eff4ba52187/hadoop-mapreduce-client-shuffle-2.2.0.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-mapreduce-client-shuffle/2.2.0/47ac22c272fee0879d87e5d9d5324f1c0df1764/hadoop-mapreduce-client-shuffle-2.2.0-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/javax/servlet/javax.servlet-api/3.0.1/javax.servlet-api-3.0.1.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.jersey.jersey-test-framework/jersey-test-framework-grizzly2/1.9/8bf4d5cef8cbf70a160cc2ff78b332db454030bd/jersey-test-framework-grizzly2-1.9.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.jersey.jersey-test-framework/jersey-test-framework-grizzly2/1.9/17fcca35bddf4f91bea8558a5b2802a45e692b89/jersey-test-framework-grizzly2-1.9-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/sun/jersey/jersey-grizzly2/1.9/jersey-grizzly2-1.9.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.jersey.contribs/jersey-guice/1.9/5963c28c47df7e5d6ad34cec80c071c368777f7b/jersey-guice-1.9.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/glassfish/javax.servlet/3.1/javax.servlet-3.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.jersey.contribs/jersey-guice/1.9/93589b9543ec99347db4c8526dfb82ceea140512/jersey-guice-1.9-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
@@ -3575,64 +3718,133 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/com/sun/jersey/jersey-client/1.9/jersey-client-1.9.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-server-common/2.2.0/ce13e5699bbe644da95bfd7e01549c6a389fec7f/hadoop-yarn-server-common-2.2.0.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-server-common/2.2.0/10c903579cfb1f1ec160c7627321798277930110/hadoop-yarn-server-common-2.2.0-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/glassfish/grizzly/grizzly-http/2.1.2/grizzly-http-2.1.2.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-server-nodemanager/2.2.0/5e7f0f16676afffff62919578bcb5606e3548f36/hadoop-yarn-server-nodemanager-2.2.0.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.hadoop/hadoop-yarn-server-nodemanager/2.2.0/893ddb3d5b134ee281a5b1432a25bc4187548c5a/hadoop-yarn-server-nodemanager-2.2.0-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/glassfish/grizzly/grizzly-http-server/2.1.2/grizzly-http-server-2.1.2.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/1.9/129431673b2735840b9216a651de38b4f1cb3c66/jersey-test-framework-core-1.9.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.jersey.jersey-test-framework/jersey-test-framework-core/1.9/aa91222f3baab96e80120f88ff933a4342ffe660/jersey-test-framework-core-1.9-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/glassfish/grizzly/grizzly-http-servlet/2.1.2/grizzly-http-servlet-2.1.2.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.servlet/javax.servlet-api/3.0.1/6bf0ebb7efd993e222fc1112377b5e92a13b38dd/javax.servlet-api-3.0.1.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/javax.servlet/javax.servlet-api/3.0.1/1952f91d84016a39e31346c9d18bd8c9c4a128a/javax.servlet-api-3.0.1-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/glassfish/grizzly/grizzly-framework/2.1.2/grizzly-framework-2.1.2.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.jersey/jersey-grizzly2/1.9/1e23ccc25f4dced8857b4296cceed42a7a49200c/jersey-grizzly2-1.9.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.jersey/jersey-grizzly2/1.9/3e498efb7c7b6f0ddb73d98a3de30102ed68d7f5/jersey-grizzly2-1.9-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/glassfish/grizzly/grizzly-rcm/2.1.2/grizzly-rcm-2.1.2.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish/javax.servlet/3.1/ab7db738667bea1b937efcf3a1845c0d28e6beaf/javax.servlet-3.1.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish/javax.servlet/3.1/2c0464de33758d4778117e74e7f3494bae708ce5/javax.servlet-3.1-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.8.2/junit-4.8.2.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.jersey/jersey-client/1.9/d3c4b2b5f89db32c96ceddcb863684821910a7bb/jersey-client-1.9.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.sun.jersey/jersey-client/1.9/fcd4ed548c23e5036fe9628cbb36e7b440a6a090/jersey-client-1.9-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.grizzly/grizzly-http/2.1.2/aa477bd5b57367c344bf50f1f4af71a24a94ec9f/grizzly-http-2.1.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.grizzly/grizzly-http/2.1.2/458a23ae60dedada7cdeb2715b72cd48d3812e0f/grizzly-http-2.1.2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.grizzly/grizzly-http-server/2.1.2/8a1c41c688cb3a34998a3515048a2284e5201192/grizzly-http-server-2.1.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.grizzly/grizzly-http-server/2.1.2/7bf9b906c2174c920689553a97dfb55566a03bcd/grizzly-http-server-2.1.2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.grizzly/grizzly-http-servlet/2.1.2/225700354dd0b7bc6132689c4fa046fa69744e20/grizzly-http-servlet-2.1.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.grizzly/grizzly-http-servlet/2.1.2/14d333b05166d090c3d01ed8704e91461de1bb4/grizzly-http-servlet-2.1.2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.grizzly/grizzly-framework/2.1.2/684c82b28f7e7a53c20d30e69d9787abfeb85d32/grizzly-framework-2.1.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.grizzly/grizzly-framework/2.1.2/64c0586a725c9982efd705ec30ab3a013f7aeaad/grizzly-framework-2.1.2-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.grizzly/grizzly-rcm/2.1.2/19c3a4301ae7e38eb0518cfd4f3f34223c1b7f39/grizzly-rcm-2.1.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish.grizzly/grizzly-rcm/2.1.2/98b690bbe70618df7edd7b7535212193df6f3c5c/grizzly-rcm-2.1.2-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="" scope="RUNTIME">
@@ -3647,19 +3859,23 @@
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.11/junit-4.11.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/junit/junit/4.11/4e031bb61df09069aeb2bffb4019e7a5034a4ee0/junit-4.11.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/junit/junit/4.11/28e0ad201304e4a4abf999ca0570b7cffc352c3c/junit-4.11-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$MAVEN_REPOSITORY$/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-core/1.3/42a25dc3219429f0e5d060061f71acb49bf010a0/hamcrest-core-1.3.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hamcrest/hamcrest-core/1.3/1dc37250fbc78e23a65a67fbbaf71d2e9cbc3c0b/hamcrest-core-1.3-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
   </component>

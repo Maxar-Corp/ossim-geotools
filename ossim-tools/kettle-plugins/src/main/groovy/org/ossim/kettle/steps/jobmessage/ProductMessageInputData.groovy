@@ -15,6 +15,17 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ProductMessageInputData extends BaseStepData implements StepDataInterface
 {
 	public RowMetaInterface outputRowMeta;
+
+  enum InputType
+  {
+    FIELD(0),
+    QUEUE(1),
+    private int value
+    InputType(int value){this.value = value}
+    static def valuesAsString(){this.values().collect(){it.toString()}}
+  }
+
+
 //	boolean continueLoop;
 //	public ConcurrentHashMap<Integer, StepInformation> stepInterfaces;
 	

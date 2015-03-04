@@ -132,11 +132,55 @@ public class ProductMessageInputDialog extends BaseStepDialog implements
 				text(id:"verifyPassword", layoutData:"span,growx", text: "", style:"PASSWORD"){
 					onEvent(type:'Modify') { input.setChanged() }
 				}
-				label Messages.getString("JobMessageInputDialog.JobQueueName.Label")
-			   	//migLayout(layoutConstraints:"insets 2, wrap 2", columnConstraints: "[] []")
-				text(id:"jobQueueName", layoutData:"growx", text: ""){
-					onEvent(type:'Modify') { input.setChanged() }
-				}
+        label Messages.getString("JobMessageInputDialog.JobQueueStatusName.Label")
+        text(id:"jobQueueStatusName", layoutData:"growx, spanx", text: ""){
+          onEvent(type:'Modify') { input.setChanged() }
+        }
+
+
+
+        group("Input Message", layoutData:"grow, spanx, wrap", style:"SHADOW_NONE,NO_BACKGROUND") {
+          migLayout(layoutConstraints: "insets 2, wrap 1", columnConstraints: "[grow]")
+          radioButton(id:"fromQueueSelection", text: "From Queue", layoutData: "split 2", selection: true) {
+            onEvent(type: "Selection") {
+              swt.stackLayout.topControl = swt.inputFromQueueGroup
+              swt.inputFromQueueGroup.visible = true
+              swt.inputFromFieldGroup.visible = false
+              input.setChanged()
+            }
+          }
+          radioButton(id: "fromFieldSelection", text: "From Field", layoutData: "wrap", enabled: true) {
+            onEvent(type: "Selection") {
+              swt.stackLayout.topControl = swt.inputFromFieldGroup
+              swt.inputFromQueueGroup.visible = false
+              swt.inputFromFieldGroup.visible = true
+              input.setChanged()
+            }
+          }
+          composite(style: "none", layoutData: "span,growx") {
+            stackLayout(id: "stackLayout");
+            composite(id: "inputFromQueueGroup", style: "none", layoutData: "insets 0, span,growx") {
+              migLayout(layoutConstraints: "insets 0, wrap 2", columnConstraints: "[][grow]")
+              label Messages.getString("JobMessageInputDialog.JobQueueName.Label")
+              //migLayout(layoutConstraints:"insets 2, wrap 2", columnConstraints: "[] []")
+              text(id:"jobQueueName", layoutData:"growx", text: ""){
+                onEvent(type:'Modify') { input.setChanged() }
+              }
+            }
+            composite(id: "inputFromFieldGroup", style: "none", layoutData: "span,growx") {
+              migLayout(layoutConstraints: "insets 2, wrap 1", columnConstraints: "[grow]")
+              label(text: "Input Field")
+              cCombo(id: "inputFieldName",
+                      items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING]),
+                      layoutData: "span,growx")
+                      {
+                        onEvent(type: 'Modify') { input.setChanged(); }
+                      }
+             }
+          }
+        }
+
+
 				/*
 				label Messages.getString("JobMessageInputDialog.JobQueueType.Label")
 				cCombo(id:"jobQueueType", 
@@ -146,10 +190,6 @@ public class ProductMessageInputDialog extends BaseStepDialog implements
 					onEvent(type:'FocusIn') { input.setChanged(); }
 				}
 				*/
-				label Messages.getString("JobMessageInputDialog.JobQueueStatusName.Label")
-				text(id:"jobQueueStatusName", layoutData:"growx, spanx", text: ""){
-					onEvent(type:'Modify') { input.setChanged() }
-				}
 /*				label Messages.getString("JobMessageInputDialog.JobQueueStatusType.Label")
 				cCombo(id:"jobQueueStatusType", 
 					   items:RabbitType.ExchangeType.valuesAsString() as String [], 
@@ -191,6 +231,7 @@ public class ProductMessageInputDialog extends BaseStepDialog implements
 				}
 			}
 		}
+    swt.stackLayout.topControl = swt.inputFromQueueGroup
 		changed = input.hasChanged();
 		shell.text = Messages.getString("JobMessageInputDialog.Shell.Title")
 		getData(); // initialize data fields
@@ -252,15 +293,28 @@ public class ProductMessageInputDialog extends BaseStepDialog implements
 		swt.port.text 					 = input.port
 		swt.username.text 			 = input.username
 		swt.password.text 			 = input.password
-		swt.verifyPassword.text 	 = input.password
+		swt.verifyPassword.text  = input.password
 
 		swt.jobQueueName.text       = input.jobQueueName
 		//swt.jobQueueType.text       = input.jobQueueType.toString()
 		swt.jobQueueStatusName.text = input.jobQueueStatusName
 		//swt.jobQueueStatusType.text = input.jobQueueStatusType.toString()
+    swt.inputFieldName.text = input.inputFieldName?:""
 
 		swt.stepName.selectAll();
 		loadSelectedFields();
+    if(input.inputType == ProductMessageInputData.InputType.QUEUE)
+    {
+      swt.fromQueueSelection.setSelection(true)
+      swt.fromFieldSelection.setSelection(false)
+      swt.stackLayout.topControl = swt.inputFromQueueGroup
+    }
+    else
+    {
+      swt.fromFieldSelection.setSelection(true)
+      swt.fromQueueSelection.setSelection(false)
+      swt.stackLayout.topControl = swt.inputFromFieldGroup
+    }
 	}
 	private void cancel()
 	{
@@ -315,7 +369,16 @@ public class ProductMessageInputDialog extends BaseStepDialog implements
 		input.jobQueueName       = swt.jobQueueName.text
 		//input.jobQueueStatusType = RabbitType.ExchangeType."${swt.jobQueueStatusType.text}"
 		input.jobQueueStatusName = swt.jobQueueStatusName.text
+    input.inputFieldName     = swt.inputFieldName.text
 
+    if(swt.fromFieldSelection.selection)
+    {
+      input.inputType = ProductMessageInputData.InputType.FIELD
+    }
+    else
+    {
+      input.inputType = ProductMessageInputData.InputType.QUEUE
+    }
 //		input.messageFieldName 	= swt.messageFieldName.text
 
 		dispose();

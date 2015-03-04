@@ -1,5 +1,6 @@
 package org.ossim.kettle.steps.jobmessage
 
+import org.ossim.oms.job.MessageFactory
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.row.RowDataUtil;
@@ -135,13 +136,13 @@ class ProductMessageInput extends BaseStep implements StepInterface
 		   // send status RUNNING message
 			try{
 				synchronized(currentMessageLock){
-					currentMessage = new ChipperMessage()
-					currentMessage.fromJsonString(message)
+					currentMessage = MessageFactory.getMessageInstance(message)//= new ChipperMessage()
+					//currentMessage//.fromJsonString(message)
 					currentMessageAborted = false
 				}
 
 				statusMessage = createJsonMessage([
-					jobId:currentMessage.jobId,
+					jobId:currentMessage.id,
 					statusMessage:"Job Started",
 				   status:"RUNNING",
 					percentComplete:0.0,
@@ -184,7 +185,7 @@ class ProductMessageInput extends BaseStep implements StepInterface
 				status = "FAILED"
 			}
 			statusMessage = createJsonMessage([
-				jobId:currentMessage.jobId,
+				jobId:currentMessage.id,
 				statusMessage:resultMessage,
 			   status:status,
 				percentComplete:100,
@@ -200,7 +201,7 @@ class ProductMessageInput extends BaseStep implements StepInterface
 				switch(key)
 				{
 					case "jobId":
-						resultArray << currentMessage.jobId
+						resultArray << currentMessage.id
 						break
 					case "status":
 						resultArray << status
