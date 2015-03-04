@@ -8,10 +8,34 @@ grails.project.source.level = 1.6
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
 enum AccumuloTarget {
-  CDH4, HDP, GDAC
+  CDH4, CDH5, HDP, GDAC
 }
 
-accumuloTarget = AccumuloTarget.HDP
+def accumuloTarget
+
+switch(System.properties?.hadoopDist?.toLowerCase())
+{
+  case "gdac":
+    println "Building for GDAC distribution"
+    accumuloTarget = AccumuloTarget.GDAC
+    break
+  case "cdh4":
+    println "Building for CDH4 distribution"
+    accumuloTarget = AccumuloTarget.CDH4
+    break
+  case "cdh5":
+    println "Building for CDH5 distribution"
+    accumuloTarget = AccumuloTarget.CDH5
+  case "hdp22":
+    println "Building for HDP version 2.2 distribution"
+    accumuloTarget = AccumuloTarget.HDP
+    break
+  default:
+    println "Defaulting to CDH4 dstribution"
+    accumuloTarget = AccumuloTarget.CDH4
+    break
+
+}
 
 grails.project.fork = [
     // configure settings for compilation JVM, note that if you alter the Groovy version forked compilation is required
@@ -87,7 +111,7 @@ grails.project.dependency.resolution = {
     compile( 'org.ossim:ossim-common-libs:1.0-SNAPSHOT' ) {
       excludes 'slf4j-log4j12', 'ehcache'
     }
-    runtime 'org.geotools:gt-imagemosaic-jdbc:12.2'
+    runtime 'org.geotools:gt-imagemosaic-jdbc:12.0'
     runtime 'org.postgresql:postgresql:9.3-1100-jdbc4'
 
     //compile 'net.sf.ehcache:ehcache:2.8.2'
