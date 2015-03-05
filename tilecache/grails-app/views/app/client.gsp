@@ -1,3 +1,4 @@
+<%@ page import="grails.converters.JSON" %>
 <!DOCTYPE html>
 <html>
 
@@ -9,21 +10,6 @@
 
     <title>RBT | Tiles Viewer</title>
 
-    <%--
-    <link rel="stylesheet" href="../bower_components/ol3/dist/ol.css"/>
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css"/>
-    <link rel="stylesheet" href="../bower_components/fontawesome/css/font-awesome.css"/>
-    <link rel="stylesheet" href="../bower_components/datatables/media/css/jquery.dataTables.css"/>
-    <link rel="stylesheet" href="../bower_components/bootstrap-select/dist/css/bootstrap-select.css"/>
-
-    <!--<link rel="stylesheet" href="bower_components/bootstrap-duallistbox/dist/bootstrap-duallistbox.min.css" />-->
-
-    <link rel="stylesheet" href="assets/css/sidebars.css"/>
-    <link rel="stylesheet" href="assets/css/layer_manager.css"/>
-    <link rel="stylesheet" href="assets/css/datepicker3.css"/>
-    <link rel="stylesheet" href="assets/css/slider.css"/>
-    <link rel="stylesheet" href="assets/css/styles.css"/>
-    --%>
     <asset:stylesheet src="app/client.css"/>
 
 </head>
@@ -42,10 +28,6 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <%--
-                <img class="pull-left" style="width: 40px; height: 40px; padding-top: 10px;"
-                     src="../assets/img/rbt_symbol.png" alt="RBT Logo">
-                --%>
                 <asset:image class="pull-left" style="width: 40px; height: 40px; padding-top: 10px;"
                              src="app/rbt_symbol.png" alt="RBT Logo"/>
 
@@ -295,30 +277,13 @@
     </div><!-- /.modal-dialog modal-lg -->
 </div><!-- /.modal fade "exportGeopackageModal" -->
 
-<!-- Bower derived libs -->
-<%--
-<script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
-<script type="text/javascript" src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
-<script type="text/javascript" src="../bower_components/ol3/dist/ol-debug.js"></script>
-<script type="text/javascript" src="../bower_components/bootstrap-select/dist/js/bootstrap-select.js"></script>
-
-<!-- App libs -->
-<script type="text/javascript" src="assets/js/bootstrap-filestyle.js"></script>
-<script type="text/javascript" src="assets/js/bootstrap-datepicker.js"></script>
-<script type="text/javascript" src="assets/js/bootstrap-slider.js"></script>
-<script type="text/javascript" src="assets/js/geopoint.js"></script>
-
-<!-- App specific libs -->
-<script type="text/javascript" src="assets/js/addLayersClient.js"></script>
-<script type="text/javascript" src="assets/js/appClient.js"></script>
-<script type="text/javascript" src="assets/js/dragboxClient.js"></script>
-<script type="text/javascript" src="assets/js/layerManagerClient.js"></script>
-<script type="text/javascript" src="assets/js/zoomToClient.js"></script>
-
-<script type="text/javascript" src="assets/js/sidebars.js"></script>
---%>
 
 <asset:javascript src="app/client.js"/>
+
+<g:javascript>
+    var appClientParams = ${raw( ( appClientParams as JSON ).toString() )};
+    AppClient.initialize(appClientParams);
+</g:javascript>
 </body>
 
 </html>
