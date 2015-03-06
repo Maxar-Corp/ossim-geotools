@@ -19,6 +19,6 @@
 //= require client/dragboxClient.js
 //= require client/layerManagerClient.js
 //= require client/zoomToClient.js
-//= require client//sidebars.js
+//= require client/sidebars.js
 
 //= require_self

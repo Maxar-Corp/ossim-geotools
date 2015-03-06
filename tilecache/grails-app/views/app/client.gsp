@@ -1,4 +1,3 @@
-<%@ page import="grails.converters.JSON" %>
 <!DOCTYPE html>
 <html>
 
@@ -281,8 +280,11 @@
 <asset:javascript src="app/client.js"/>
 
 <g:javascript>
-    var appClientParams = ${raw( ( appClientParams as JSON ).toString() )};
-    AppClient.initialize(appClientParams);
+    var initParams = ${raw( initParams.toString() )};
+    AddLayerClient.initialize( initParams );
+    AppClient.initialize( initParams );
+    DragBoxClient.initialize( initParams );
+    LayerManagerClient.initialize( initParams );
 </g:javascript>
 </body>
 
