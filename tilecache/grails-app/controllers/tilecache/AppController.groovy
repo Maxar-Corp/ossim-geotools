@@ -13,9 +13,9 @@ class AppController
   {
     [
         initParams: [
-            wfsURL: grailsLinkGenerator.link( action: 'testWFS', absolute: true ),
-            urlProductExport: grailsLinkGenerator.link( controller: 'product', action: 'export', absolute: true ),
-            urlLayerActualBounds: grailsLinkGenerator.link( controller: 'accumuloProxy', action: 'actualBounds', absolute: true )
+            wfsURL: grailsLinkGenerator.link( action: 'testWFS'),
+            urlProductExport: grailsLinkGenerator.link( controller: 'product', action: 'export' ),
+            urlLayerActualBounds: grailsLinkGenerator.link( controller: 'accumuloProxy', action: 'actualBounds' )
         ] as JSON
     ]
   }

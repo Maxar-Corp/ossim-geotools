@@ -65,7 +65,7 @@ AppClient = (function ()
                 $( "#currentZoomLevel2" ).html( 'Zoom: ' + map.getView().getZoom() );
             } );
 
-            /*
+
              $.ajax( {
              url: appClientParams.wfsURL,
              dataType: 'json',
@@ -84,9 +84,10 @@ AppClient = (function ()
 
              }
              } );
-             */
+
         },
-        map: map
+        map: map,
+        mapView: mapView
     };
 })();
 

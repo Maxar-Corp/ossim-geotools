@@ -9,7 +9,7 @@ DragBoxClient = (function ()
     var aoiFeature = new ol.Feature();
 
     // Use a ol.FeatureOverlay to store the AOI
-    var aoiFeatureOverlay = new ol.FeatureOverlay( {} );
+    var aoiFeatureOverlay = new ol.FeatureOverlay();
 
     var aoiStyle = new ol.style.Style( {
         stroke: new ol.style.Stroke( {

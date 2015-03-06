@@ -80,6 +80,7 @@ LayerManagerClient = (function ()
         // Find recursively if it is a group
         if ( layer.getLayers )
         {
+            console.log(layer.getLayers);
             var layers = layer.getLayers().getArray(),
                 len = layers.length, result;
             for ( var i = 0; i < len; i++ )
@@ -117,7 +118,7 @@ LayerManagerClient = (function ()
             {
                 var layername = $( this ).closest( 'li' ).data( 'layerid' );
                 var layer = findBy( AppClient.map.getLayerGroup(), 'name', layername );
-
+                console.log(AppClient.map.getLayerGroup());
                 layer.setVisible( !layer.getVisible() );
 
                 if ( layer.getVisible() )

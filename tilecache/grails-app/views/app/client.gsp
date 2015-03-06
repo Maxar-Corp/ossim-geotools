@@ -276,7 +276,6 @@
     </div><!-- /.modal-dialog modal-lg -->
 </div><!-- /.modal fade "exportGeopackageModal" -->
 
-
 <asset:javascript src="app/client.js"/>
 
 <g:javascript>
@@ -285,6 +284,7 @@
     AppClient.initialize( initParams );
     DragBoxClient.initialize( initParams );
     LayerManagerClient.initialize( initParams );
+    ZoomToClient.initialize( initParams );
 </g:javascript>
 </body>
 
