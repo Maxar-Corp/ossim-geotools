@@ -11,9 +11,12 @@ LayerManagerClient = (function ()
     function buildLayerTree( layer )
     {
         var elem;
-        var name = layer.get( 'name' ) ? layer.get( 'name' ) : "Group";
+        var name = layer.get( 'name' ) || "Group";
+
+        //console.log( name );
+
         var div = "<li data-layerid='" + name + "'>" +
-            "<span><i class='glyphicon glyphicon-file'></i> " + layer.get( 'name' ) + "</span>" +
+            "<span><i class='glyphicon glyphicon-file'></i> " + name + "</span>" +
             "<i class='glyphicon glyphicon-check'></i> " +
             "<input style='width:100px;' class='opacity' type='text' value='' data-slider-min='0' data-slider-max='1' data-slider-step='0.1' data-slider-tooltip='hide'>";
         if ( layer.getLayers )
@@ -80,7 +83,7 @@ LayerManagerClient = (function ()
         // Find recursively if it is a group
         if ( layer.getLayers )
         {
-            console.log(layer.getLayers);
+//            console.log(layer.getLayers);
             var layers = layer.getLayers().getArray(),
                 len = layers.length, result;
             for ( var i = 0; i < len; i++ )
@@ -117,17 +120,21 @@ LayerManagerClient = (function ()
             $( 'i' ).on( 'click', function ()
             {
                 var layername = $( this ).closest( 'li' ).data( 'layerid' );
-                var layer = findBy( AppClient.map.getLayerGroup(), 'name', layername );
-                console.log(AppClient.map.getLayerGroup());
-                layer.setVisible( !layer.getVisible() );
 
-                if ( layer.getVisible() )
+                if ( layername )
                 {
-                    $( this ).removeClass( 'glyphicon-unchecked' ).addClass( 'glyphicon-check' );
-                }
-                else
-                {
-                    $( this ).removeClass( 'glyphicon-check' ).addClass( 'glyphicon-unchecked' );
+                    var layer = findBy( AppClient.map.getLayerGroup(), 'name', layername );
+//                console.log(AppClient.map.getLayerGroup());
+                    layer.setVisible( !layer.getVisible() );
+
+                    if ( layer.getVisible() )
+                    {
+                        $( this ).removeClass( 'glyphicon-unchecked' ).addClass( 'glyphicon-check' );
+                    }
+                    else
+                    {
+                        $( this ).removeClass( 'glyphicon-check' ).addClass( 'glyphicon-unchecked' );
+                    }
                 }
             } );
 

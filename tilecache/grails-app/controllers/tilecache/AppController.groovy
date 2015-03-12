@@ -1,21 +1,33 @@
 package tilecache
 
 import grails.converters.JSON
+import groovy.sql.Sql
 
 class AppController
 {
 
   def grailsLinkGenerator
+  def grailsApplication
+
+  def dataSource
 
   def index() {}
 
   def client()
   {
+    def sql = new Sql( dataSource )
+    def tileCacheLayers = sql.rows( "select name from tile_cache_layer_info where epsg_code like '%3857'" )
+
+    sql.close()
+
     [
         initParams: [
-            wfsURL: grailsLinkGenerator.link( action: 'testWFS'),
+            wfsURL: grailsLinkGenerator.link( action: 'testWFS' ),
             urlProductExport: grailsLinkGenerator.link( controller: 'product', action: 'export' ),
-            urlLayerActualBounds: grailsLinkGenerator.link( controller: 'accumuloProxy', action: 'actualBounds' )
+            urlLayerActualBounds: grailsLinkGenerator.link( controller: 'accumuloProxy', action: 'actualBounds' ),
+            accumuloProxyWmsURL: grailsLinkGenerator.link( controller: 'accumuloProxy', action: 'wms', absolute: true ),
+            geoserverURL: grailsApplication.config.tilecache.geoserverURL,
+            tileCacheLayers: tileCacheLayers
         ] as JSON
     ]
   }

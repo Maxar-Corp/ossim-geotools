@@ -22,7 +22,7 @@ AddLayerClient = (function ()
             var osmLineTrident = new ol.layer.Tile( {
                 opacity: 1.0,
                 source: new ol.source.TileWMS( {
-                    url: 'http://localhost:8080/geoserver/osm/wms?',
+                    url: addLayersClientParams.geoserverURL,
                     params: {'LAYERS': 'planet_osm_line_trident', 'TILED': true}
                 } ),
                 name: 'OSM Labels'
@@ -33,8 +33,8 @@ AddLayerClient = (function ()
             var osmTridentSpectreAll = new ol.layer.Tile( {
                 opacity: 1.0,
                 source: new ol.source.TileWMS( {
-                    url: 'http://localhost:8080/geoserver/osm/wms?',
-                    params: {'LAYERS': 'osm-trident-spectre', 'TILED': true}
+                    url: addLayersClientParams.geoserverURL,
+                    params: {'LAYERS': 'trident-spectre', 'TILED': true}
                 } ),
                 name: 'osmTridentSpectreAll'
             } );
@@ -135,16 +135,21 @@ AddLayerClient = (function ()
                 name: 'Tile Set Boundaries'
             } );
 
-            var highres_3857 = new ol.layer.Tile( {
-                opacity: 1.0,
-                source: new ol.source.TileWMS( {
-                    url: 'http://10.0.10.184:8080/tilecache/accumuloProxy/wms?',
-                    params: {'LAYERS': 'highres_3857', 'TILED': true, 'VERSION': '1.1.1'}
-                } ),
-                name: 'highres_3857'
-            } );
+            layersArray.push( osmTridentSpectreAll ); //highres_us
 
-            layersArray.push( osmAwsAll, osmAwsAerialGroup ); //highres_us
+            $.each( addLayersClientParams.tileCacheLayers, function ( idx, tileCacheLayer )
+            {
+                var highres_3857 = new ol.layer.Tile( {
+                    opacity: 1.0,
+                    source: new ol.source.TileWMS( {
+                        url: addLayersClientParams.accumuloProxyWmsURL,
+                        params: {'LAYERS': tileCacheLayer.name, 'TILED': true, 'VERSION': '1.1.1'}
+                    } ),
+                    name: tileCacheLayer.name
+                } );
+
+                layersArray.push( highres_3857 ); //highres_us
+            } );
         },
         layersArray: layersArray
     };
