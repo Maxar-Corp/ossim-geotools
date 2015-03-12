@@ -30,14 +30,14 @@ AddLayerClient = (function ()
 
             // A Geoserver group layer that is a subset of OSM data for Trident Spectre.  Only contains OSM data for Virginia
             // Maryland, North Carolina, and Delaware
-            var osmTridentSpectreAll = new ol.layer.Tile( {
-                opacity: 1.0,
-                source: new ol.source.TileWMS( {
-                    url: addLayersClientParams.geoserverURL,
-                    params: {'LAYERS': 'trident-spectre', 'TILED': true}
-                } ),
-                name: 'osmTridentSpectreAll'
-            } );
+            //var osmTridentSpectreAll = new ol.layer.Tile( {
+            //    opacity: 1.0,
+            //    source: new ol.source.TileWMS( {
+            //        url: addLayersClientParams.geoserverURL,
+            //        params: {'LAYERS': 'trident-spectre', 'TILED': true}
+            //    } ),
+            //    name: 'osmTridentSpectreAll'
+            //} );
 
             var osmAwsPopPlaces = new ol.layer.Tile( {
                 opacity: 1.0,
@@ -135,7 +135,21 @@ AddLayerClient = (function ()
                 name: 'Tile Set Boundaries'
             } );
 
-            layersArray.push( osmTridentSpectreAll ); //highres_us
+
+            $.each( addLayersClientParams.referenceLayers, function ( idx, referenceLayer )
+            {
+                var osmTridentSpectreAll = new ol.layer.Tile( {
+                    opacity: 1.0,
+                    source: new ol.source.TileWMS( {
+                        url: referenceLayer.url,
+                        params: {'LAYERS': referenceLayer.name, 'TILED': true}
+                    } ),
+                    name: referenceLayer.title
+                } );
+
+                layersArray.push( osmTridentSpectreAll ); //highres_us
+
+            } );
 
             $.each( addLayersClientParams.tileCacheLayers, function ( idx, tileCacheLayer )
             {
@@ -150,6 +164,22 @@ AddLayerClient = (function ()
 
                 layersArray.push( highres_3857 ); //highres_us
             } );
+
+            $.each( addLayersClientParams.overlayLayers, function ( idx, overlayLayer )
+            {
+                var osmTridentSpectreAll = new ol.layer.Tile( {
+                    opacity: 1.0,
+                    source: new ol.source.TileWMS( {
+                        url: overlayLayer.url,
+                        params: {'LAYERS': overlayLayer.name, 'TILED': true}
+                    } ),
+                    name: overlayLayer.title
+                } );
+
+                layersArray.push( osmTridentSpectreAll ); //highres_us
+
+            } );
+
         },
         layersArray: layersArray
     };

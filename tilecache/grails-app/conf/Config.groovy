@@ -151,5 +151,10 @@ accumulo {
 }
 
 tilecache {
-  geoserverURL = "http://localhost:8080/geoserver/trident-spectre/wms"
+  referenceLayers = [
+      [url: "http://localhost:8080/geoserver/wms", name: 'trident-spectre:trident-spectre', title: 'Reference Layer']
+  ]
+  overlayLayers = [
+      [url: "http://localhost:8080/geoserver/wms", name: 'trident-spectre:ne_10m_populated_places', title: 'Place Names']
+  ]
 }

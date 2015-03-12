@@ -26,7 +26,8 @@ class AppController
             urlProductExport: grailsLinkGenerator.link( controller: 'product', action: 'export' ),
             urlLayerActualBounds: grailsLinkGenerator.link( controller: 'accumuloProxy', action: 'actualBounds' ),
             accumuloProxyWmsURL: grailsLinkGenerator.link( controller: 'accumuloProxy', action: 'wms', absolute: true ),
-            geoserverURL: grailsApplication.config.tilecache.geoserverURL,
+            referenceLayers: grailsApplication.config.tilecache.referenceLayers,
+            overlayLayers: grailsApplication.config.tilecache.overlayLayers,
             tileCacheLayers: tileCacheLayers
         ] as JSON
     ]
