@@ -2,19 +2,11 @@ package joms.geotools.tileapi.app
 
 import geoscript.geom.Bounds
 import geoscript.layer.GeoPackage
-import geoscript.layer.Grid
-import geoscript.layer.ImageTile
-import geoscript.layer.Pyramid
-import geoscript.layer.Tile
 import geoscript.proj.Projection
 import joms.geotools.tileapi.TileLayerExport
-import joms.geotools.tileapi.accumulo.AccumuloTileGenerator
 import joms.geotools.tileapi.accumulo.AccumuloTileLayer
 import joms.geotools.tileapi.hibernate.TileCacheHibernate
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
-
-import javax.imageio.ImageIO
-import javax.media.jai.JAI
 
 import static groovyx.gpars.GParsPool.withPool
 /**

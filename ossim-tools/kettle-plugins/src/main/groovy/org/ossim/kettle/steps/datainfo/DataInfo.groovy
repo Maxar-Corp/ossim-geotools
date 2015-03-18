@@ -61,13 +61,13 @@ public class DataInfo extends BaseStep implements StepInterface
           //Class imageReaderClass=Class.forName("javax.imageio.spi.ImageReaderSpi");
 
      // def imageReaders = javax.imageio.ImageIO.getImageReadersBySuffix("")
-        IIORegistry registry = IIORegistry.getDefaultInstance();
-      def providers=registry.getServiceProviders(ImageReaderSpi.class, true);
-      println "*"*40
-      providers?.each{
-        println it
-      }
-      println "*"*40
+   //     IIORegistry registry = IIORegistry.getDefaultInstance();
+   //   def providers=registry.getServiceProviders(ImageReaderSpi.class, true);
+   //   println "*"*40
+   //   providers?.each{
+   //     println it
+   //   }
+   //   println "*"*40
 
        first = false;
        data.outputRowMeta = getInputRowMeta().clone();

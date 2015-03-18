@@ -1,6 +1,5 @@
 package joms.geotools.tileapi.hibernate.controller
 
-import com.vividsolutions.jts.geom.Envelope
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.io.WKTReader
 import geoscript.geom.Bounds
@@ -9,12 +8,12 @@ import geoscript.proj.Projection
 import groovy.sql.Sql
 import joms.geotools.tileapi.OssimImageTileRenderer
 import joms.geotools.tileapi.accumulo.AccumuloApi
-import joms.geotools.tileapi.accumulo.AccumuloPyramid
+import joms.geotools.tileapi.TileCachePyramid
 import joms.geotools.tileapi.accumulo.AccumuloTileLayer
 import joms.geotools.tileapi.accumulo.ImageTileKey
 import joms.geotools.tileapi.accumulo.TileCacheImageTile
 import joms.geotools.tileapi.DateUtil
-import joms.geotools.tileapi.accumulo.AccumuloTileGenerator
+import joms.geotools.tileapi.TileCacheTileGenerator
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
 import joms.geotools.tileapi.hibernate.domain.TileCacheTileTableTemplate
 import joms.oms.TileCacheSupport
@@ -84,7 +83,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
       //new Bounds(env.minX, env.minY, env.maxX, env.maxY)
    //   if(layerInfo.epsgCode.toLowerCase().trim() == "epsg:4326")
    //   {
-      def pyramid = new AccumuloPyramid(bounds:b,
+      def pyramid = new TileCachePyramid(bounds:b,
                                         clippedBounds:new Bounds(layerInfo.bounds.envelopeInternal),
                                         proj:new Projection(layerInfo.epsgCode),
                                         origin: Pyramid.Origin.TOP_LEFT,
@@ -107,7 +106,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   {
     newGeoscriptTileLayer(getLayerInfoByName(layerName))
   }
-  AccumuloTileGenerator[] getTileGenerators(TileCacheLayerInfo layer, String input, def clipOptions=[:])
+  TileCacheTileGenerator[] getTileGenerators(TileCacheLayerInfo layer, String input, def clipOptions=[:])
   {
 
     TileCacheSupport tileCacheSupport = new TileCacheSupport()
@@ -151,7 +150,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
                      cut_height:layer.tileHeight.toString(),
                      hist_op:needToStretch?"auto-minmax":"none",
                      clip_poly_lat_lon:"(${clipPolyLatLonKeyWord})".toString()])
-            AccumuloTileGenerator generator = new AccumuloTileGenerator(verbose:false,
+            TileCacheTileGenerator generator = new TileCacheTileGenerator(verbose:false,
                     tileLayer:tileLayer,
                     tileRenderer:tileRenderer,
                     startZoom:intersections.minLevel,
@@ -169,10 +168,10 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
 
     tileCacheSupport.delete()
     tileCacheSupport = null
-    result as AccumuloTileGenerator[]
+    result as TileCacheTileGenerator[]
   }
 
-  AccumuloTileGenerator[] getTileGenerators(String layer, String input, def clipOptions=[:])
+  TileCacheTileGenerator[] getTileGenerators(String layer, String input, def clipOptions=[:])
   {
     getTileGenerators(getLayerInfoByName(layer), input, clipOptions)
   }
