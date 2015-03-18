@@ -151,7 +151,7 @@ task copyToKettle << {
       if(commonLibs.exists())
       {
         println "Copying: ${commonLibs}"
-        ant.copy(file: commonLibs.toString(), todir: destinationPlugin.toString())
+        ant.copy(file: commonLibs.toString(), todir: destinationLib.toString())
       }
     }
   }
