@@ -418,7 +418,21 @@ public class OssimValueMetaBase extends ValueMetaBase
 	   	inputStream.readFully( buffer );
 	   	def byteArrayInputStream = new ByteArrayInputStream(buffer)
 			def objIStream = new ObjectInputStream(byteArrayInputStream)
-			result = objIStream.readObject() as PlanarImage
+      def object = objIStream.readObject()
+
+      if (object instanceof RenderedImage)
+      {
+        def planarImage = PlanarImage.wrapRenderedImage(object as RenderedImage)
+        result = JAI.create("NULL", planarImage)
+      }
+      else if(object instanceof PlanarImage)
+      {
+        result = object as PlanarImage
+      }
+      else
+      {
+        throw new Exception("Can't convert stream object to Planar.  Please add support for class conversion: ${object.class.name}")
+      }
 			result?.data
 			objIStream.close()
    	}
