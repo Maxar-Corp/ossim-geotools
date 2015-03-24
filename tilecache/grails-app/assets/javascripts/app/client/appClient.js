@@ -14,7 +14,7 @@ AppClient = (function () {
         },
         projection: 'EPSG:4326',
         undefinedHTML: '<span class="fa fa-map-marker"></span>'
-    });git
+    });
 
 
     //var template = 'Coordinate is ({x}|{y}).';
