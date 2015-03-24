@@ -1,4 +1,4 @@
-package joms.geotools.tileapi.accumulo
+package joms.geotools.tileapi
 
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.Polygon
@@ -11,7 +11,7 @@ import joms.oms.TileCacheSupport
 /**
  * Created by gpotts on 1/25/15.
  */
-class AccumuloPyramid extends Pyramid
+class TileCachePyramid extends Pyramid
 {
 
   Bounds clippedBounds

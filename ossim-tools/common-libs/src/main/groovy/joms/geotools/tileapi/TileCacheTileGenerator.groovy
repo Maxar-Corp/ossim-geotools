@@ -1,4 +1,4 @@
-package joms.geotools.tileapi.accumulo
+package joms.geotools.tileapi
 
 import geoscript.geom.Bounds
 import geoscript.layer.Tile
@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage
 /**
  * Created by gpotts on 1/25/15.
  */
-class AccumuloTileGenerator {
+class TileCacheTileGenerator {
 
   /**
    * Whether to verbosely print status or not

@@ -100,8 +100,8 @@ public class DataInfoIndexer extends BaseStep implements StepInterface
 			}
 			catch(e)
 			{
-        println "ERROR QUERYING THE LIST!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        e.printStackTrace()
+        //println "ERROR QUERYING THE LIST!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        //e.printStackTrace()
          // println "Checking data set ${e}"
 			}
 		}
@@ -308,7 +308,7 @@ public class DataInfoIndexer extends BaseStep implements StepInterface
 				}
 				if (count % meta.batchSize== 0) 
 				{
-          println "COMMITING TRANSACTION---------------------"
+          //println "COMMITING TRANSACTION---------------------"
 					commitTransaction()
 				}
 				
