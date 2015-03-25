@@ -18,127 +18,89 @@ AddLayerClient = (function ()
         {
             wfsURL = addLayersClientParams.wfsURL;
 
-            // ### Begin base map ###
-            var osmLineTrident = new ol.layer.Tile( {
-                opacity: 1.0,
-                source: new ol.source.TileWMS( {
-                    url: addLayersClientParams.geoserverURL,
-                    params: {'LAYERS': 'planet_osm_line_trident', 'TILED': true}
-                } ),
-                name: 'OSM Labels'
-            } );
-
-            // A Geoserver group layer that is a subset of OSM data for Trident Spectre.  Only contains OSM data for Virginia
-            // Maryland, North Carolina, and Delaware
-            //var osmTridentSpectreAll = new ol.layer.Tile( {
-            //    opacity: 1.0,
-            //    source: new ol.source.TileWMS( {
-            //        url: addLayersClientParams.geoserverURL,
-            //        params: {'LAYERS': 'trident-spectre', 'TILED': true}
-            //    } ),
-            //    name: 'osmTridentSpectreAll'
+            //var osmAwsAerialGroup = new ol.layer.Group( {
+            //    layers: [
+            //        new ol.layer.Tile( {
+            //            style: 'Aerial',
+            //            //visible: false,
+            //            source: new ol.source.MapQuest( {layer: 'sat'} ),
+            //            name: 'Aerial'
+            //        } ),
+            //        new ol.layer.Tile( {
+            //            opacity: 1.0,
+            //            source: new ol.source.TileWMS( {
+            //                url: 'http://52.0.52.104/geoserver/ged/wms?',
+            //                params: {'LAYERS': 'planet_osm_line', 'TILED': true}
+            //            } ),
+            //            name: 'Labels'
+            //        } ),
+            //        new ol.layer.Tile( {
+            //            opacity: 1.0,
+            //            source: new ol.source.TileWMS( {
+            //                url: 'http://52.0.52.104/geoserver/ged/wms?',
+            //                params: {'LAYERS': 'ne_10m_populated_places_all', 'TILED': true}
+            //            } ),
+            //            name: 'Place Names'
+            //        } )
+            //    ],
+            //    name: 'Aerial and Labels'
             //} );
-
-            var osmAwsPopPlaces = new ol.layer.Tile( {
-                opacity: 1.0,
-                source: new ol.source.TileWMS( {
-                    url: 'http://52.0.52.104/geoserver/ged/wms?',
-                    params: {'LAYERS': 'ne_10m_populated_places', 'TILED': true}
-                } ),
-                name: 'osmAwsPopPlaces'
-            } );
-
-            var osmAwsPopPlacesAll = new ol.layer.Tile( {
-                opacity: 1.0,
-                source: new ol.source.TileWMS( {
-                    url: 'http://52.0.52.104/geoserver/ged/wms?',
-                    params: {'LAYERS': 'ne_10m_populated_places_all', 'TILED': true}
-                } ),
-                name: 'osmAwsPopPlacesAll'
-            } );
-
-            // RBT's OSM on AWS
-            var osmAwsAll = new ol.layer.Tile( {
-                opacity: 1.0,
-                source: new ol.source.TileWMS( {
-                    url: 'http://52.0.52.104/geoserver/ged/wms?',
-                    params: {'LAYERS': 'osm-group', 'TILED': true}
-                } ),
-                name: 'Open Street Map'
-            } );
-            // ### end base map ###
-
-            var osmAwsAerialGroup = new ol.layer.Group( {
-                layers: [
-                    new ol.layer.Tile( {
-                        style: 'Aerial',
-                        //visible: false,
-                        source: new ol.source.MapQuest( {layer: 'sat'} ),
-                        name: 'Aerial'
-                    } ),
-                    new ol.layer.Tile( {
-                        opacity: 1.0,
-                        source: new ol.source.TileWMS( {
-                            url: 'http://52.0.52.104/geoserver/ged/wms?',
-                            params: {'LAYERS': 'planet_osm_line', 'TILED': true}
-                        } ),
-                        name: 'Labels'
-                    } ),
-                    new ol.layer.Tile( {
-                        opacity: 1.0,
-                        source: new ol.source.TileWMS( {
-                            url: 'http://52.0.52.104/geoserver/ged/wms?',
-                            params: {'LAYERS': 'ne_10m_populated_places_all', 'TILED': true}
-                        } ),
-                        name: 'Place Names'
-                    } )
-                ],
-                name: 'Aerial and Labels'
-            } );
-
 
             var tileBoundsVectorSource = new ol.source.GeoJSON( {
                 url: wfsURL,
                 crossOrigin: 'anonymous',
-                projection: 'EPSG:4326'
+                projection: 'EPSG:3857'
             } );
 
             // Tile sets extents layer
-            var tileBoundsVectorLayer = new ol.layer.Vector( {
-                source: tileBoundsVectorSource,
-                style: (function ()
-                {
-                    var stroke = new ol.style.Stroke( {
-                        color: 'red',
-                        width: 5
-                    } );
-                    var textStroke = new ol.style.Stroke( {
-                        color: '#fff',
-                        width: 3
-                    } );
-                    var textFill = new ol.style.Fill( {
-                        color: 'red'
-                    } );
-                    return function ( feature, resolution )
-                    {
-                        return [new ol.style.Style( {
-                            stroke: stroke,
-                            text: new ol.style.Text( {
-                                font: '36px Calibri,sans-serif',
-                                text: 'Name: ' + feature.get( 'name' ) + ' Min: ' + feature.get( 'min_level' ) + ' Max: ' + feature.get( 'max_level' ),
-                                fill: textFill,
-                                stroke: textStroke
-                            } )
-                        } )];
-                    };
-                })(),
-                name: 'Tile Set Boundaries'
-            } );
+            //var tileBoundsVectorLayer = new ol.layer.Vector( {
+            //    source: tileBoundsVectorSource,
+            //    style: (function ()
+            //    {
+            //        var stroke = new ol.style.Stroke( {
+            //            color: 'red',
+            //            width: 5
+            //        } );
+            //        var textStroke = new ol.style.Stroke( {
+            //            color: '#fff',
+            //            width: 3
+            //        } );
+            //        var textFill = new ol.style.Fill( {
+            //            color: 'red'
+            //        } );
+            //        return function ( feature, resolution )
+            //        {
+            //            return [new ol.style.Style( {
+            //                stroke: stroke,
+            //                text: new ol.style.Text( {
+            //                    font: '36px Calibri,sans-serif',
+            //                    text: 'Name: ' + feature.get( 'name' ) + ' Min: ' + feature.get( 'min_level' ) + ' Max: ' + feature.get( 'max_level' ),
+            //                    fill: textFill,
+            //                    stroke: textStroke
+            //                } )
+            //            } )];
+            //        };
+            //    })(),
+            //    name: 'Tile Set Boundaries'
+            //} );
 
+            var resolutions = [156543.033928, 78271.5169639999, 39135.7584820001, 19567.8792409999, 9783.93962049996, 4891.96981024998, 2445.98490512499, 1222.99245256249, 611.49622628138, 305.748113140558, 152.874056570411, 76.4370282850732, 38.2185141425366, 19.1092570712683, 9.55462853563415, 4.77731426794937, 2.38865713397468, 1.19432856685505, 0.597164283559817, 0.298582141647617];
+
+            var tileGrid = new ol.layer.Tile({
+                source: new ol.source.TileDebug({
+                    projection: 'EPSG:3857',
+                    tileGrid: new ol.tilegrid.TileGrid({
+                        resolutions: resolutions,
+                        origin: [20037508.34,-20037508.34] })
+                }),
+                name: 'Tile Grid'
+            });
+            //layersArray.push(tileGrid);
+            console.log(tileGrid);
 
             $.each( addLayersClientParams.referenceLayers, function ( idx, referenceLayer )
             {
-                var osmTridentSpectreAll = new ol.layer.Tile( {
+                var osmGroup = new ol.layer.Tile( {
                     opacity: 1.0,
                     source: new ol.source.TileWMS( {
                         url: referenceLayer.url,
@@ -147,7 +109,7 @@ AddLayerClient = (function ()
                     name: referenceLayer.title
                 } );
 
-                layersArray.push( osmTridentSpectreAll ); //highres_us
+                layersArray.push( osmGroup );
 
             } );
 
@@ -162,13 +124,14 @@ AddLayerClient = (function ()
                     name: tileCacheLayer.name
                 } );
 
-                layersArray.push( highres_3857 ); //highres_us
+                //layersArray.push( highres_3857 ); //highres_us
             } );
 
             $.each( addLayersClientParams.overlayLayers, function ( idx, overlayLayer )
             {
-                var osmTridentSpectreAll = new ol.layer.Tile( {
+                var osmOverlay = new ol.layer.Tile( {
                     opacity: 1.0,
+                    //visible: false,
                     source: new ol.source.TileWMS( {
                         url: overlayLayer.url,
                         params: {'LAYERS': overlayLayer.name, 'TILED': true}
@@ -176,9 +139,11 @@ AddLayerClient = (function ()
                     name: overlayLayer.title
                 } );
 
-                layersArray.push( osmTridentSpectreAll ); //highres_us
+                layersArray.push( osmOverlay );
 
             } );
+
+            layersArray.push(tileGrid);
 
         },
         layersArray: layersArray

@@ -16,9 +16,6 @@ AppClient = (function () {
         undefinedHTML: '<span class="fa fa-map-marker"></span>'
     });
 
-
-    //var template = 'Coordinate is ({x}|{y}).';
-
     var mapView = new ol.View({
         //maxResolution: 0.5625,
         zoom: 13,
