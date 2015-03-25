@@ -36,6 +36,7 @@ import javax.annotation.Resource
 class TileCacheServiceDAO implements InitializingBean, DisposableBean, ApplicationContextAware
 {
 
+
    @Resource(name = "sessionFactory")
    @Autowired
    SessionFactory sessionFactory
@@ -53,8 +54,8 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
    {
       layerInfoTableDAO = applicationContext?.getBean("tileCacheLayerInfoDAO")
       accumuloApi = applicationContext?.getBean("accumuloApi")
-      sqlSession = sessionFactory?.openSession()
-      if(sqlSession) sql = new Sql(sqlSession?.connection())
+      sqlSession = sessionFactory.openSession()
+      sql = new Sql(sqlSession.connection())
    }
    void destroy()
    {
@@ -78,14 +79,16 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
       if(layerInfo)
       {
          // Envelope env = layerInfo.bounds.envelopeInternal
-         Bounds b          = new Projection(layerInfo.epsgCode).bounds
+         Projection proj = new Projection(layerInfo.epsgCode)
+         Bounds b          = (layerInfo.epsgCode.toLowerCase() == 'epsg:3857') ? new Bounds(-20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244, 'epsg:3857') : proj.bounds
          Bounds clipBounds = new Bounds(layerInfo.bounds.envelopeInternal)
          //new Bounds(env.minX, env.minY, env.maxX, env.maxY)
          //   if(layerInfo.epsgCode.toLowerCase().trim() == "epsg:4326")
          //   {
          def pyramid = new TileCachePyramid(bounds:b,
-                 clippedBounds:new Bounds(layerInfo.bounds.envelopeInternal),
-                 proj:new Projection(layerInfo.epsgCode),
+//                                        clippedBounds:new Bounds(layerInfo.bounds.envelopeInternal),
+                 clippedBounds: clipBounds,
+                 proj:proj,
                  origin: Pyramid.Origin.TOP_LEFT,
                  tileWidth: layerInfo.tileWidth,
                  tileHeight: layerInfo.tileHeight
@@ -94,13 +97,78 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
          result = new AccumuloTileLayer(tileCacheService:this,
                  layerInfo:layerInfo,
                  bounds:b,
-                 proj:new Projection(layerInfo.epsgCode),
+                 proj:proj,
                  name:layerInfo.name,
                  pyramid:pyramid)
          //  }
       }
 
       result
+   }
+   AccumuloTileLayer newGeoscriptTileLayer(String layerName)
+   {
+      newGeoscriptTileLayer(getLayerInfoByName(layerName))
+   }
+   TileCacheTileGenerator[] getTileGenerators(TileCacheLayerInfo layer, String input, def clipOptions=[:])
+   {
+
+      TileCacheSupport tileCacheSupport = new TileCacheSupport()
+
+      def result = []
+
+      //println "TRYING TO OPEN IMAGE ${input}"
+      //println "LAYER ==== ${layer}"
+      try
+      {
+         if (layer && tileCacheSupport.openImage(input))
+         {
+            int entry = 0
+            int numberOfEntries = tileCacheSupport.getNumberOfEntries()
+
+            //println "N ENTRIES ==== ${numberOfEntries}"
+            //println resolutions
+            for (entry = 0; entry < numberOfEntries; ++entry)
+            {
+
+               int[] minLevel = [0] as int[]
+               int[] maxLevel = [0] as int[]
+               boolean needToStretch = tileCacheSupport.getBitDepth(entry) > 8
+               //println "NEED TO STRETCH============ ${needToStretch}"
+               int numberOfResolutionLevels = tileCacheSupport.getNumberOfResolutionLevels(entry)
+               double gsd = tileCacheSupport.getDegreesPerPixel(entry)
+               joms.oms.Envelope envelope = tileCacheSupport.getEnvelope(entry)
+               Bounds bounds = new Bounds(envelope.minX, envelope.minY, envelope.maxX, envelope.maxY)
+
+               AccumuloTileLayer tileLayer = newGeoscriptTileLayer(layer)
+               double[] resolutions = tileLayer.pyramid.grids*.yResolution as double[]
+
+               def intersections = tileLayer.pyramid.findIntersections(tileCacheSupport, entry, clipOptions)
+
+               if (intersections)
+               {
+                  // for the poly cutter in ossim it is a list of tuples
+                  // of the form ((<lat>,<lon>),......(<lat>,<lon>))
+                  def clipPolyLatLonKeyWord = intersections.clippedGeometryLatLon.points.collect {
+                     "(${it.y},${it.x})"
+                  }.join(",")
+                  OssimImageTileRenderer tileRenderer = new OssimImageTileRenderer(input, entry,
+                          [cut_width        : layer.tileWidth.toString(),
+                           cut_height       : layer.tileHeight.toString(),
+                           hist_op          : needToStretch ? "auto-minmax" : "none",
+                           clip_poly_lat_lon: "(${clipPolyLatLonKeyWord})".toString()])
+                  TileCacheTileGenerator generator = new TileCacheTileGenerator(verbose: true,
+                          tileLayer: tileLayer,
+                          tileRenderer: tileRenderer,
+                          startZoom: intersections.minLevel,
+                          endZoom: intersections.maxLevel,
+                          bounds: intersections.clippedBounds)//bounds)
+                  result << generator
+               }
+            }
+         }
+
+         result
+      }
    }
    AccumuloTileLayer newGeoscriptTileLayer(String layerName)
    {
@@ -526,7 +594,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
 
       if(tile.res <= 0)
       {
-        tile.res = tile.bounds.width/layer.tileWidth
+         tile.res = tile.bounds.width/layer.tileWidth
       }
       if (!result)
       {
