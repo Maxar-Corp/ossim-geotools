@@ -34,9 +34,9 @@ class TileCacheLayerInfoDAO  extends DAOImpl<TileCacheLayerInfo> implements DAO<
 
   List list()
   {
-    Query query = session.getNamedQuery("findAllLayerInfos")
+    Query query = session?.getNamedQuery("findAllLayerInfos")
 
-    query.list()
+    query?.list()
   }
 
   String sqlFromCriteria()

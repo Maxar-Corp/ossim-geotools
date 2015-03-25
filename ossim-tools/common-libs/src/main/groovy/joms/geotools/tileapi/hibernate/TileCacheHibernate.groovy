@@ -14,118 +14,119 @@ import joms.oms.Init
 @EnableTransactionManagement
 class TileCacheHibernate
 {
-  private final contextLock = new Object()
-  private def applicationContext
-  private def sql
+   private final contextLock = new Object()
+   private def applicationContext
+   private def sql
 
-  String dbCreate
-  String driverClassName
-  String username
-  String password
-  String url
-  String accumuloInstanceName
-  String accumuloPassword
-  String accumuloUsername
-  String accumuloZooServers
+   static int mutex = 0
+   String dbCreate
+   String driverClassName
+   String username
+   String password
+   String url
+   String accumuloInstanceName
+   String accumuloPassword
+   String accumuloUsername
+   String accumuloZooServers
 
-  @Synchronized( "contextLock" )
+   @Synchronized( "contextLock" )
 
-  def getApplicationContext()
-  {
-    applicationContext
-  }
+   def getApplicationContext()
+   {
+      applicationContext
+   }
 
-  @Synchronized( "contextLock" )
-  BasicDataSource getDataSource()
-  {
-    applicationContext?.getBean( "dataSource" )
-  }
+   @Synchronized( "contextLock" )
+   BasicDataSource getDataSource()
+   {
+      applicationContext?.getBean( "dataSource" )
+   }
 
-  @Synchronized( "contextLock" )
-  def getSessionFactory()
-  {
-    applicationContext?.getBean( "sessionFactory" )
-  }
+   @Synchronized( "contextLock" )
+   def getSessionFactory()
+   {
+      applicationContext?.getBean( "sessionFactory" )
+   }
 
-  @Synchronized( "contextLock" )
-  Sql getCacheSql()
-  {
-    if ( !sql )
-    {
-      sql = getNewSqlInstance()
-    }
+   @Synchronized( "contextLock" )
+   Sql getCacheSql()
+   {
+      if ( !sql )
+      {
+         sql = getNewSqlInstance()
+      }
 
-    sql
-  }
+      sql
+   }
 
-  @Synchronized( "contextLock" )
-  Sql getNewSqlInstance()
-  {
-    def sessionFactory = applicationContext?.getBean( "sessionFactory" )
-    Sql result
-    def session = sessionFactory?.openSession()
-    try
-    {
+   @Synchronized( "contextLock" )
+   Sql getNewSqlInstance()
+   {
+      def sessionFactory = applicationContext?.getBean( "sessionFactory" )
+      Sql result
+      def session = sessionFactory?.openSession()
+      try
+      {
 
-      result = new Sql( session.connection() )
+         result = new Sql( session.connection() )
 //Sql.newInstance([url:dataSource.url, user:dataSource.username, password:dataSource.password, driverClassName:dataSource.driverClassName])
-    }
-    catch ( def e )
-    {
-      session?.close()
-      e.printStackTrace()
-    }
+      }
+      catch ( def e )
+      {
+         session?.close()
+         e.printStackTrace()
+      }
 
-    result
-  }
+      result
+   }
 
-  @Synchronized( "contextLock" )
-  def openSession()
-  {
-    def sessionFactory = applicationContext?.getBean( "sessionFactory" );
+   @Synchronized( "contextLock" )
+   def openSession()
+   {
+      def sessionFactory = applicationContext?.getBean( "sessionFactory" );
 //GrailsRuntimeConfigurator.SESSION_FACTORY_BEAN)
-    def session = sessionFactory?.openSession();
+      def session = sessionFactory?.openSession();
 
-    session
-  }
+      session
+   }
 
-  static hibernateTableNameToSqlTableName(def tableName)
-  {
-    tableName.replaceAll( /\B[A-Z]/ ) { '_' + it }.toLowerCase()
-  }
+   static hibernateTableNameToSqlTableName(def tableName)
+   {
+      tableName.replaceAll( /\B[A-Z]/ ) { '_' + it }.toLowerCase()
+   }
 
-  static def sqlTableNameToHibernate(def tableName)
-  {
-    tableName.replaceAll( /_[a-z|A-Z]/ ) { it[1].toUpperCase() }.capitalize()
-  }
+   static def sqlTableNameToHibernate(def tableName)
+   {
+      tableName.replaceAll( /_[a-z|A-Z]/ ) { it[1].toUpperCase() }.capitalize()
+   }
 
-  def getTablesAndInfo()
-  {
-    def result = []
+   def getTablesAndInfo()
+   {
+      def result = []
 
-    sessionFactory.allClassMetadata.each { metadata ->
-      def columns = []
-      def columnTypes = []
-      metadata.value.propertyNames.each { prop ->
-        columns << prop
+      sessionFactory.allClassMetadata.each { metadata ->
+         def columns = []
+         def columnTypes = []
+         metadata.value.propertyNames.each { prop ->
+            columns << prop
+         }
+         columns = columns.sort()
+         columns.each { col ->
+            columnTypes << metadata.value.getPropertyType( col ).name
+         }
+         result << [class      : metadata.key,
+                    name       : metadata.value.tableName,
+                    columns    : columns,
+                    columnTypes: columnTypes]
       }
-      columns = columns.sort()
-      columns.each { col ->
-        columnTypes << metadata.value.getPropertyType( col ).name
-      }
-      result << [class      : metadata.key,
-                 name       : metadata.value.tableName,
-                 columns    : columns,
-                 columnTypes: columnTypes]
-    }
 
-    result
-  }
+      result
+   }
 
-  private getSpringConfiguration()
-  {
+   private getSpringConfiguration()
+   {
 
-    """
+      """
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
@@ -143,11 +144,11 @@ http://www.springframework.org/schema/context/spring-context.xsd">
     <bean name="accumuloTileLayer" class="joms.geotools.tileapi.accumulo.AccumuloTileLayer" />
 </beans>
 """
-  }
+   }
 
-  private def getHibernatePropertiesFromMap(def map)
-  {
-    """
+   private def getHibernatePropertiesFromMap(def map)
+   {
+      """
          <beans xmlns="http://www.springframework.org/schema/beans"
             xmlns:util="http://www.springframework.org/schema/util"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -168,7 +169,7 @@ http://www.springframework.org/schema/context/spring-context.xsd">
               <property name="username" value="${map.accumuloUsername ?: 'root'}"/>
               <property name="password" value="${map.accumuloPassword ?: 'root'}"/>
               <property name="instanceName" value="${map.accumuloInstanceName ?: 'accumulo'}"/>
-              <property name="zooServers" value="${map.accumuloZooServers}"/>
+              <property name="zooServers" value="${map.accumuloZooServers?:""}"/>
           </bean>
           <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
               <property name="driverClassName" value="${map.driverClass ?: map.driverClassName}"/>
@@ -224,11 +225,13 @@ http://www.springframework.org/schema/context/spring-context.xsd">
           </bean>
       </beans>
       """
-  }
+   }
 
-  private void createTableFunction()
-  {
-    String sqlString = """CREATE OR REPLACE FUNCTION create_table_if_not_exists(table_name text, stmt text) RETURNS VOID AS
+   private void createTableFunction()
+   {
+      synchronized (mutex)
+      {
+         String sqlString = """CREATE OR REPLACE FUNCTION create_table_if_not_exists(table_name text, stmt text) RETURNS VOID AS
             \$\$
             BEGIN
               IF NOT EXISTS (
@@ -242,22 +245,25 @@ http://www.springframework.org/schema/context/spring-context.xsd">
             END;
             \$\$
             LANGUAGE plpgsql;"""
-    try
-    {
-      Sql sql = getNewSqlInstance()
-      sql.execute( sqlString.toString() )
+         try
+         {
+            Sql sql = getNewSqlInstance()
+            sql.execute( sqlString.toString() )
 
-      sql.close()
-    }
-    catch ( def e )
-    {
-      e.printStackTrace()
-    }
-  }
+            sql.close()
+         }
+         catch ( def e )
+         {
+            e.printStackTrace()
+         }
+      }
+   }
 
-  private void createIndexFunction()
-  {
-    String sqlString = """CREATE OR REPLACE FUNCTION create_index_if_not_exists (t_name text, i_name text, index_sql text) RETURNS void AS \$\$
+   private void createIndexFunction()
+   {
+      synchronized(mutex)
+      {
+         String sqlString = """CREATE OR REPLACE FUNCTION create_index_if_not_exists (t_name text, i_name text, index_sql text) RETURNS void AS \$\$
                                                               DECLARE
                                                                 full_index_name varchar;
                                                                 schema_name varchar;
@@ -281,121 +287,125 @@ http://www.springframework.org/schema/context/spring-context.xsd">
                                                               LANGUAGE plpgsql VOLATILE;
                                                               """.toString()
 
-    try
-    {
-      Sql sql = getNewSqlInstance()
-      sql.execute( sqlString.toString() )
+         try
+         {
+            Sql sql = getNewSqlInstance()
+            sql.execute( sqlString.toString() )
 
-      sql.close()
-    }
-    catch ( def e )
-    {
-      e.printStackTrace()
-    }
-  }
+            sql.close()
+         }
+         catch ( def e )
+         {
+            e.printStackTrace()
+         }
+      }
+   }
 
-  private void createIndex()
-  {
-    createTableFunction()
-    createIndexFunction()
-    def dataSource = getDataSource()
-    // println "DRIVER ========== ${Class.forName(dataSource.driverClassName)}"
-    String sqlString = """SELECT create_index_if_not_exists('tile_cache_layer_info', 'bounds_idx', 'USING GIST(bounds)');
+   private void createIndex()
+   {
+      createTableFunction()
+      createIndexFunction()
+      def dataSource = getDataSource()
+      synchronized (mutex)
+      {
+         // println "DRIVER ========== ${Class.forName(dataSource.driverClassName)}"
+         String sqlString = """SELECT create_index_if_not_exists('tile_cache_layer_info', 'bounds_idx', 'USING GIST(bounds)');
                        """.toString()
 
 
-    try
-    {
-      Sql sql = getNewSqlInstance()
-      sql.execute( sqlString.toString() )
+         try
+         {
+            Sql sql = getNewSqlInstance()
+            sql.execute( sqlString.toString() )
 
-      sql.close()
-    }
-    catch ( def e )
-    {
-      e.printStackTrace()
-    }
+            sql.close()
+         }
+         catch ( def e )
+         {
+            e.printStackTrace()
+         }
+      }
 
-  }
+   }
 
-  private void setDataSourcePropertiesFromMap(def map)
-  {
-    def ds = getDataSource()
+   private void setDataSourcePropertiesFromMap(def map)
+   {
+      def ds = getDataSource()
 
-    ds.password = map.password
-    ds.username = map.username
-    ds.url = map.url
-    ds.driverClassName = map.driverClass ?: map.driverClassName
-  }
+      ds.password = map.password
+      ds.username = map.username
+      ds.url = map.url
+      ds.driverClassName = map.driverClass ?: map.driverClassName
+   }
 
-  @Synchronized( "contextLock" )
-  void initialize(HashMap map)
-  {
-    Hints.putSystemDefault( Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE )
-    if ( applicationContext )
-    {
-      return
-    }
-    try{
-      Init.instance().initialize()
-    }
-    catch(java.lang.UnsatisfiedLinkError e)
-    {
-      println "Unable to initialize OSSIM: ${e}"
-    }
+   @Synchronized( "contextLock" )
+   void initialize(HashMap map)
+   {
+      Hints.putSystemDefault( Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE )
+      if ( applicationContext )
+      {
+         return
+      }
+      try{
+         Init.instance().initialize()
+      }
+      catch(java.lang.UnsatisfiedLinkError e)
+      {
+         println "Unable to initialize OSSIM: ${e}"
+      }
 
-    def hibProperties = getHibernatePropertiesFromMap( map )
-    def springConfig = getSpringConfiguration()
+      def hibProperties = getHibernatePropertiesFromMap( map )
+      def springConfig = getSpringConfiguration()
 
-    try
-    {
-      applicationContext = new GenericXmlApplicationContext()
-      applicationContext.setValidating( false );
+      try
+      {
+         applicationContext = new GenericXmlApplicationContext()
+         applicationContext.setValidating( false );
 
-      applicationContext.load( new ByteArrayResource( hibProperties.getBytes() ) );
-      applicationContext.load( new ByteArrayResource( springConfig.getBytes() ) )
+         applicationContext.load( new ByteArrayResource( hibProperties.getBytes() ) );
+         applicationContext.load( new ByteArrayResource( springConfig.getBytes() ) )
 
-      //applicationContext.load("classpath:hibernate-config.xml");
-      //  applicationContext.load("classpath:spring-config.xml");
-      applicationContext.refresh();
+         //applicationContext.load("classpath:hibernate-config.xml");
+         //  applicationContext.load("classpath:spring-config.xml");
+         applicationContext.refresh();
 //      setDataSourcePropertiesFromMap(map)
-      // println "DATASOURCE===================${applicationContext.dataSource}"
+         // println "DATASOURCE===================${applicationContext.dataSource}"
 
-    }
-    catch ( def e )
-    {
-      e.printStackTrace()
-    }
+      }
+      catch ( def e )
+      {
+         e.printStackTrace()
+      }
 
-    createIndex()
-  }
+      createIndex()
+   }
 
-  @Synchronized( "contextLock" )
-  void initialize()
-  {
-    def params = [
-        dbCreate            : this.dbCreate,
-        driverClassName     : this.driverClassName,
-        username            : this.username,
-        password            : this.password,
-        url                 : this.url,
-        accumuloInstanceName: this.accumuloInstanceName,
-        accumuloPassword    : this.accumuloPassword,
-        accumuloUsername    : this.accumuloUsername,
-        accumuloZooServers  : this.accumuloZooServers
-    ]
+   @Synchronized( "contextLock" )
+   void initialize()
+   {
+      def params = [
+              dbCreate            : this.dbCreate,
+              driverClassName     : this.driverClassName,
+              username            : this.username,
+              password            : this.password,
+              url                 : this.url,
+              accumuloInstanceName: this.accumuloInstanceName,
+              accumuloPassword    : this.accumuloPassword,
+              accumuloUsername    : this.accumuloUsername,
+              accumuloZooServers  : this.accumuloZooServers
+      ]
 
-    //println params
+      //println params
 
-    this.initialize( params )
-  }
+      this.initialize( params )
+   }
 
-  void shutdown()
-  {
-    sql?.close()
-    sql = null
-    applicationContext?.close()
-    applicationContext?.destroy()
-    applicationContext = null
-  }
+   void shutdown()
+   {
+      sql?.close()
+      sql = null
+      applicationContext?.close()
+      applicationContext?.destroy()
+      applicationContext = null
+   }
 }

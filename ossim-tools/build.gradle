@@ -1,30 +1,31 @@
 enum AccumuloTarget {
-  CDH4, CDH5, HDP, GDAC
+   CDH4, CDH5, HDP, GDAC
 }
 
 def accumuloTarget
 
+println configurations
 switch(System.properties?.hadoopDist?.toLowerCase())
 {
-  case "gdac":
-    println "Building for GDAC distribution"
-    accumuloTarget = AccumuloTarget.GDAC
-    break
-  case "cdh4":
-    println "Building for CDH4 distribution"
-    accumuloTarget = AccumuloTarget.CDH4
-    break
-  case "cdh5":
-    println "Building for CDH5 distribution"
-    accumuloTarget = AccumuloTarget.CDH5
-  case "hdp22":
-    println "Building for HDP version 2.2 distribution"
-    accumuloTarget = AccumuloTarget.HDP
-    break
-  default:
-    println "Defaulting to CDH4 dstribution"
-    accumuloTarget = AccumuloTarget.CDH4
-    break
+   case "gdac":
+      println "Building for GDAC distribution"
+      accumuloTarget = AccumuloTarget.GDAC
+      break
+   case "cdh4":
+      println "Building for CDH4 distribution"
+      accumuloTarget = AccumuloTarget.CDH4
+      break
+   case "cdh5":
+      println "Building for CDH5 distribution"
+      accumuloTarget = AccumuloTarget.CDH5
+   case "hdp22":
+      println "Building for HDP version 2.2 distribution"
+      accumuloTarget = AccumuloTarget.HDP
+      break
+   default:
+      println "Defaulting to CDH4 dstribution"
+      accumuloTarget = AccumuloTarget.CDH4
+      break
 
 }
 
@@ -38,426 +39,449 @@ def kettleDependencies = [
         'pentaho-kettle:kettle-ui-swt:5.2.1.1-210',
         'pentaho:pentaho-hadoop-shims-api:5.2.1.0-148'
         */
-                          ]
+]
 
 switch ( accumuloTarget )
 {
-  case AccumuloTarget.CDH4:
-    kettleDependencies << 'pentaho:pentaho-hadoop-shims-cdh47-mapred:5.2.0.0-209'
-    break
-  case AccumuloTarget.CDH5:
-    //kettleDependencies << 'pentaho:pentaho-hadoop-shims-cdh51-mapred:5.2.0.1-218'
-    kettleDependencies << 'pentaho:pentaho-hadoop-shims-cdh52-mapred-5.3.0.0-213'
+   case AccumuloTarget.CDH4:
+      kettleDependencies << 'pentaho:pentaho-hadoop-shims-cdh47-mapred:5.2.0.0-209'
+      break
+   case AccumuloTarget.CDH5:
+      //kettleDependencies << 'pentaho:pentaho-hadoop-shims-cdh51-mapred:5.2.0.1-218'
+      kettleDependencies << 'pentaho:pentaho-hadoop-shims-cdh52-mapred-5.3.0.0-213'
 
-    break
-  case AccumuloTarget.HDP:
+      break
+   case AccumuloTarget.HDP:
 
-   // kettleDependencies << 'pentaho:pentaho-hadoop-shims-hdp20-mapred:5.2-SNAPSHOT'
-    kettleDependencies << 'pentaho:pentaho-hadoop-shims-hdp21-mapred:TRUNK-SNAPSHOT'
+      // kettleDependencies << 'pentaho:pentaho-hadoop-shims-hdp20-mapred:5.2-SNAPSHOT'
+      kettleDependencies << 'pentaho:pentaho-hadoop-shims-hdp21-mapred:TRUNK-SNAPSHOT'
 
-    break
-  case AccumuloTarget.GDAC:
-    kettleDependencies << 'pentaho:pentaho-hadoop-shims-mapr21-mapred:5.2-SNAPSHOT'
-    //kettleDependencies << 'pentaho:pentaho-hadoop-shims-mapr21-mapred:5.2.0.0-152'
-    break
+      break
+   case AccumuloTarget.GDAC:
+      kettleDependencies << 'pentaho:pentaho-hadoop-shims-mapr21-mapred:5.2-SNAPSHOT'
+      //kettleDependencies << 'pentaho:pentaho-hadoop-shims-mapr21-mapred:5.2.0.0-152'
+      break
 }
 
 
 def JOMS_VERSION = "1.8.19"
 allprojects {
-  //Put instructions for all projects
-  apply plugin: 'java'
-  apply plugin: 'groovy'
-  apply plugin: 'idea'
-  apply plugin: 'maven'
+   //Put instructions for all projects
+   apply plugin: 'java'
+   apply plugin: 'groovy'
+   apply plugin: 'idea'
+   apply plugin: 'maven'
 
 
-  sourceCompatibility = 1.7
-  version = '1.0-SNAPSHOT'
+   sourceCompatibility = 1.7
+   version = '1.0-SNAPSHOT'
 
-  repositories {
-    mavenLocal()
-    maven {
-      switch ( accumuloTarget )
-      {
-        case AccumuloTarget.CDH4:
-        case AccumuloTarget.CDH5:
-        url 'http://repository.cloudera.com/artifactory/cloudera-repos/'
-        break
-      case AccumuloTarget.HDP:
-        url 'http://repo.hortonworks.com/content/repositories/releases/'
-        break
-      case AccumuloTarget.GDAC:
-        url 'https://proxy.missionfocus.com/nexus/content/groups/public'
-        break
+   repositories {
+      mavenLocal()
+      maven {
+         switch ( accumuloTarget )
+         {
+            case AccumuloTarget.CDH4:
+            case AccumuloTarget.CDH5:
+               url 'http://repository.cloudera.com/artifactory/cloudera-repos/'
+               break
+            case AccumuloTarget.HDP:
+               url 'http://repo.hortonworks.com/content/repositories/releases/'
+               break
+            case AccumuloTarget.GDAC:
+               url 'https://proxy.missionfocus.com/nexus/content/groups/public'
+               break
+         }
       }
-    }
-    maven {
-      url 'http://repo.boundlessgeo.com/main'
-    }
-    maven {
-      url 'http://download.osgeo.org/webdav/geotools'
-    }
-    maven {
-      url 'maven2-repository.dev.java.net'
-    }
-    maven {
-      url 'http://maven.geo-solutions.it'
-    }
-    maven {
-      url 'https://artifacts.unidata.ucar.edu/content/repositories/unidata/'
-    }
-    maven {
-      url 'http://www.hibernatespatial.org/repository'
-    }
-    mavenCentral()
-    maven{
-      url 'http://dev.mapfish.org/maven/repository'
-    }
-    // this is our local repository for goovy-swt
-    maven {  url "${rootDir}/../groovy-swt/src/repository" }
+      maven {
+         url 'http://repo.boundlessgeo.com/main'
+      }
+      maven {
+         url 'http://download.osgeo.org/webdav/geotools'
+      }
+      maven {
+         url 'maven2-repository.dev.java.net'
+      }
+      maven {
+         url 'http://maven.geo-solutions.it'
+      }
+      maven {
+         url 'https://artifacts.unidata.ucar.edu/content/repositories/unidata/'
+      }
+      maven {
+         url 'http://www.hibernatespatial.org/repository'
+      }
+      mavenCentral()
+      maven{
+         url 'http://dev.mapfish.org/maven/repository'
+      }
+      // this is our local repository for goovy-swt
+      maven {  url "${rootDir}/../groovy-swt/src/repository" }
 
-  }
+   }
 }
+
 
 task copyToKettle << {
 
-  File file = System.getenv("KETTLE_HOME") as File
+   File file = System.getenv("KETTLE_HOME") as File
 
-  File destinationLib    = new File(file, "libext/ossim")
-  File destinationPlugin = new File(file, "plugins/radiantblue")
-  if(file.exists())
-  {
-    if(destinationLib.exists())
-    {
-      if(!destinationPlugin.exists())
+   File destinationLib    = new File(file, "libext/ossim")
+   File destinationPlugin = new File(file, "plugins/radiantblue")
+   if(file.exists())
+   {
+      if(destinationLib.exists())
       {
-        destinationPlugin.mkdir()
-      }
-      File kettleLib    = "${projectDir}/kettle-libs/build/libs/ossim-kettle-libs-${allprojects.version[0]}.jar" as File
-      File kettlePlugin = "${projectDir}/kettle-plugins/build/libs/ossim-kettle-plugins-${allprojects.version[0]}.jar" as File
-      File commonLibs   = "${projectDir}/common-libs/build/libs/ossim-common-libs-${allprojects.version[0]}.jar" as File
+         if(!destinationPlugin.exists())
+         {
+            destinationPlugin.mkdir()
+         }
+         File kettleLib    = "${projectDir}/kettle-libs/build/libs/ossim-kettle-libs-${allprojects.version[0]}.jar" as File
+         File kettlePlugin = "${projectDir}/kettle-plugins/build/libs/ossim-kettle-plugins-${allprojects.version[0]}.jar" as File
+         File commonLibs   = "${projectDir}/common-libs/build/libs/ossim-common-libs-${allprojects.version[0]}.jar" as File
+         File app   = "${projectDir}/app/build/libs/ossim-app-${allprojects.version[0]}.jar" as File
 
-      if(kettleLib.exists())
-      {
-        println "Copying: ${kettleLib}"
-        ant.copy(file: kettleLib.toString(), todir: destinationLib.toString())
+         if(kettleLib.exists())
+         {
+            println "Copying: ${kettleLib}"
+            ant.copy(file: kettleLib.toString(), todir: destinationLib.toString())
+         }
+         if(kettlePlugin.exists())
+         {
+            println "Copying: ${kettlePlugin}"
+            ant.copy(file: kettlePlugin.toString(), todir: destinationPlugin.toString())
+         }
+         if(commonLibs.exists())
+         {
+            println "Copying: ${commonLibs}"
+            ant.copy(file: commonLibs.toString(), todir: destinationLib.toString())
+         }
+         if(app.exists())
+         {
+            println "Copying: ${app}"
+            ant.copy(file: app.toString(), todir: destinationLib.toString())
+         }
       }
-      if(kettlePlugin.exists())
-      {
-        println "Copying: ${kettlePlugin}"
-        ant.copy(file: kettlePlugin.toString(), todir: destinationPlugin.toString())
-      }
-      if(commonLibs.exists())
-      {
-        println "Copying: ${commonLibs}"
-        ant.copy(file: commonLibs.toString(), todir: destinationLib.toString())
-      }
-    }
-  }
-  //configurations.compile.each { File file -> "cp ${file.absoluteFile} ${outDir}".execute()  }
+   }
+   //configurations.compile.each { File file -> "cp ${file.absoluteFile} ${outDir}".execute()  }
 }
 
 
 buildscript {
-  repositories {
-    jcenter()
-    maven {
-      name 'Shadow'
-      url 'http://dl.bintray.com/content/johnrengelman/gradle-plugins'
-    }
-  }
-  dependencies {
-    classpath "com.github.jengelman.gradle.plugins:shadow:1.2.0"
-  }
+   repositories {
+      jcenter()
+      maven {
+         name 'Shadow'
+         url 'http://dl.bintray.com/content/johnrengelman/gradle-plugins'
+      }
+   }
+   dependencies {
+      classpath "com.github.jengelman.gradle.plugins:shadow:1.2.0"
+   }
 }
 
 
 subprojects {
-  //Put instructions for each sub project
+   //Put instructions for each sub project
 
-  install {
-    repositories.mavenInstaller {
-      pom.groupId = "org.ossim"
-      // only necessary if artifact ID diverges from project name
-      // the latter defaults to project directory name and can be
-      // configured in settings.gradle
-      // shouldn't be needed as this is the default anyway
-      pom.packaging = 'jar'
-    }
-  }
+   install {
+      repositories.mavenInstaller {
+         pom.groupId = "org.ossim"
+         // only necessary if artifact ID diverges from project name
+         // the latter defaults to project directory name and can be
+         // configured in settings.gradle
+         // shouldn't be needed as this is the default anyway
+         pom.packaging = 'jar'
+      }
+   }
 
 
-  dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-  }
+   dependencies {
+      testCompile group: 'junit', name: 'junit', version: '4.11'
+   }
 }
 
 
 project( ':kettle-libs' ) {
-  apply plugin: "com.github.johnrengelman.shadow"
-  repositories {
-    jcenter()
-    mavenCentral()
-    maven {
-      url 'http://repository.pentaho.org/artifactory/repo/'
-    }
-  }
-  jar {
-    baseName = "ossim-kettle-libs"
-  }
-  task copyJars << {
-    File outputDir = "${projectDir}/kettle-libs-jars" as File
-    if(!outputDir.exists()) outDir.mkdir()
-    configurations.compile.each { File file -> "cp ${file.absoluteFile} ${outDir}".execute()  }
-  }
+   apply plugin: "com.github.johnrengelman.shadow"
+   repositories {
+      jcenter()
+      mavenCentral()
+      maven {
+         url 'http://repository.pentaho.org/artifactory/repo/'
+      }
+   }
+   jar {
+      baseName = "ossim-kettle-libs"
+   }
+   task printJars << {
+         def tempList = []
+         configurations.compile.each{
+            File f = it as File
+            tempList << f.name
+         }
+         tempList.sort().each{
+            println it
+         }
+   }
+   task copyJars << {
+      File outputDir = "${projectDir}/kettle-libs-jars" as File
+      if(!outputDir.exists()) outDir.mkdir()
+      configurations.compile.each { File file -> "cp ${file.absoluteFile} ${outDir}".execute()  }
+   }
 //  task copyJars << {
 //    configurations.compile.each { File file -> println file.absoluteFile }
 //  }
-  dependencies{
-    compile project( ':common-libs' )
-    kettleDependencies.each{
-      compile it
-    }
-    //compile 'pentaho-kettle:kettle-core:5.1.2.1'
-   // compile 'pentaho-kettle:kettle-engine:5.1.2.1'
-   // compile 'pentaho-kettle:kettle-ui-swt:5.1.2.1'
-   // compile 'pentaho:pentaho-hadoop-shims-api:5.1.2.0-101'
+   dependencies{
+      compile project( ':common-libs' )
+      kettleDependencies.each{
+         compile it
+      }
+      //compile 'pentaho-kettle:kettle-core:5.1.2.1'
+      // compile 'pentaho-kettle:kettle-engine:5.1.2.1'
+      // compile 'pentaho-kettle:kettle-ui-swt:5.1.2.1'
+      // compile 'pentaho:pentaho-hadoop-shims-api:5.1.2.0-101'
 
-    compile 'org.codehaus.groovy:groovy-all:2.4.0'
-    compile 'org.geoscript:geoscript-groovy:1.4.0'
-    compile 'org.hibernate:hibernate-core:3.6.10.Final'
-    compile 'org.postgresql:postgresql:9.3-1100-jdbc4'
-    compile 'org.hibernate:hibernate-core:3.6.10.Final'
-    compile 'org.hibernatespatial:hibernate-spatial-postgis:1.1.1'
-    compile 'org.hibernatespatial:hibernate-spatial:1.1.1'
-    runtime 'org.postgis:postgis-jdbc:1.5.2'
+      compile 'org.codehaus.groovy:groovy-all:2.4.0'
+      compile 'org.geoscript:geoscript-groovy:1.4.0'
+      compile 'org.hibernate:hibernate-core:3.6.10.Final'
+      compile 'org.postgresql:postgresql:9.3-1100-jdbc4'
+      compile 'org.hibernate:hibernate-core:3.6.10.Final'
+      compile 'org.hibernatespatial:hibernate-spatial-postgis:1.1.1'
+      compile 'org.hibernatespatial:hibernate-spatial:1.1.1'
+      runtime 'org.postgis:postgis-jdbc:1.5.2'
 
-    //compile 'org.hibernate:hibernate-core:4.3.8.Final'
-   // compile 'org.hibernate:hibernate-spatial:4.3'
-    compile 'org.springframework:spring-core:4.1.4.RELEASE'
-    compile 'org.springframework:spring-context:4.1.4.RELEASE'
-    compile 'org.springframework:spring-orm:4.1.4.RELEASE'
-    compile 'org.springframework:spring-tx:4.1.4.RELEASE'
-    compile 'org.springframework:spring-beans:4.1.4.RELEASE'
-    compile 'javax.validation:validation-api:1.1.0.Final'
-    compile 'org.hibernate:hibernate-validator:4.3.2.Final'
-    compile "org.ossim:joms:${JOMS_VERSION}"
-    compile group: 'groovy-swt', name:'groovy-swt', version: '0.8', classifier: "without-swt"
+      //compile 'org.hibernate:hibernate-core:4.3.8.Final'
+      // compile 'org.hibernate:hibernate-spatial:4.3'
+      compile 'org.springframework:spring-core:4.1.4.RELEASE'
+      compile 'org.springframework:spring-context:4.1.4.RELEASE'
+      compile 'org.springframework:spring-orm:4.1.4.RELEASE'
+      compile 'org.springframework:spring-tx:4.1.4.RELEASE'
+      compile 'org.springframework:spring-beans:4.1.4.RELEASE'
+      compile 'javax.validation:validation-api:1.1.0.Final'
+      compile 'org.hibernate:hibernate-validator:4.3.2.Final'
+      compile "org.ossim:joms:${JOMS_VERSION}"
+      compile group: 'groovy-swt', name:'groovy-swt', version: '0.8', classifier: "without-swt"
 
-    switch ( accumuloTarget )
-    {
-      case AccumuloTarget.CDH4:
-        compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.1'
-        compile 'org.apache.accumulo:accumulo-core:1.6.1'
-      //  compile 'pentaho:pentaho-hadoop-shims-cdh42-mapred:5.0.1-stable'
-        break
-      case AccumuloTarget.CDH5:
-        compile 'org.apache.hadoop:hadoop-client:2.5.0-cdh5.2.4'
-        compile 'org.apache.accumulo:accumulo-core:1.6.1'
-        //compile 'pentaho:pentaho-hadoop-shims-cdh51-mapred:5.2.0.1-218'
-        break
-      case AccumuloTarget.HDP:
-        compile 'org.apache.accumulo:accumulo-core:1.6.1.2.2.0.0-2041'
-        compile 'org.apache.hadoop:hadoop-client:2.6.0.2.2.0.0-2041'
-        //compile 'pentaho:pentaho-hadoop-shims-hdp20-mapred:5.2-SNAPSHOT'
-
-        break
-      case AccumuloTarget.GDAC:
-        compile 'org.imintel:semapp-java-client:0.26.0'
-        compile 'org.apache.accumulo:accumulo-core:1.6.1'
-       // compile 'pentaho:pentaho-hadoop-shims-mapr21-mapred:5.2-SNAPSHOT'
-        break
-    }
-
-  }
-  install {
-    repositories.mavenInstaller {
-      pom.artifactId = 'ossim-kettle-libs'
-    }
-  }
-  /* shadowJar {
-     zip64 true
-     baseName "ossim-kettle-libs-all"
-     //exclude "META-INF/services/javax.imageio.spi.*"
-     //minimizeJar true
-     mergeServiceFiles{
-       // exclude "META-INF/services/javax.imageio.spi.*"
-     }
-     mergeGroovyExtensionModules()
-     mergeServiceFiles( 'META-INF/spring.schema' )
-     mergeServiceFiles( 'META-INF/spring.handlers' )
-     dependencies {
-       exclude(dependency('javax.media:jai_core:1.1.3'))
-       exclude(dependency('javax.media:jai_codec:1.1.3'))
-       exclude(dependency('javax.media:jai_imageio:1.1'))
-       kettleDependencies.each{
-         exclude (dependency("${it}"))
-       }
-
-       switch ( accumuloTarget )
-       {
+      switch ( accumuloTarget )
+      {
          case AccumuloTarget.CDH4:
-           exclude (dependency('org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.1'))
-           exclude (dependency('pentaho:pentaho-hadoop-shims-cdh42-mapred:5.0.1-stable'))
-           break
+            compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.1'
+            compile 'org.apache.accumulo:accumulo-core:1.6.1'
+            //  compile 'pentaho:pentaho-hadoop-shims-cdh42-mapred:5.0.1-stable'
+            break
          case AccumuloTarget.CDH5:
-           exclude (dependency('org.apache.hadoop:hadoop-client:2.5.0-cdh5.2.4'))
-           exclude (dependency('pentaho:pentaho-hadoop-shims-cdh51-mapred:5.2.0.1-218'))
-           break
+            compile 'org.apache.hadoop:hadoop-client:2.5.0-cdh5.2.4'
+            compile 'org.apache.accumulo:accumulo-core:1.6.1'
+            //compile 'pentaho:pentaho-hadoop-shims-cdh51-mapred:5.2.0.1-218'
+            break
          case AccumuloTarget.HDP:
-           compile 'org.apache.accumulo:accumulo-core:1.6.1.2.2.0.0-2041'
-           compile 'org.apache.hadoop:hadoop-client:2.6.0.2.2.0.0-2041'
-           compile 'pentaho:pentaho-hadoop-shims-hdp20-mapred:5.2-SNAPSHOT'
+            compile 'org.apache.accumulo:accumulo-core:1.6.1.2.2.0.0-2041'
+            compile 'org.apache.hadoop:hadoop-client:2.6.0.2.2.0.0-2041'
+            //compile 'pentaho:pentaho-hadoop-shims-hdp20-mapred:5.2-SNAPSHOT'
 
-           break
+            break
          case AccumuloTarget.GDAC:
-           compile 'org.imintel:semapp-java-client:0.26.0'
-           exclude (dependency('org.apache.accumulo:accumulo-core:1.6.1'))
-           compile 'pentaho:pentaho-hadoop-shims-mapr21-mapred:5.2-SNAPSHOT'
-           break
-       }
+            compile 'org.imintel:semapp-java-client:0.26.0'
+            compile 'org.apache.accumulo:accumulo-core:1.6.1'
+            // compile 'pentaho:pentaho-hadoop-shims-mapr21-mapred:5.2-SNAPSHOT'
+            break
+      }
 
-    //  exclude(dependency('pentaho-kettle:kettle-core:5.2.1.1-210'))
-    //  exclude(dependency('pentaho-kettle:kettle-engine:5.2.1.1-210'))
-    //  exclude(dependency('pentaho-kettle:kettle-ui-swt:5.2.1.1-210'))
+   }
+   install {
+      repositories.mavenInstaller {
+         pom.artifactId = 'ossim-kettle-libs'
+      }
+   }
+   /* shadowJar {
+      zip64 true
+      baseName "ossim-kettle-libs-all"
+      //exclude "META-INF/services/javax.imageio.spi.*"
+      //minimizeJar true
+      mergeServiceFiles{
+        // exclude "META-INF/services/javax.imageio.spi.*"
+      }
+      mergeGroovyExtensionModules()
+      mergeServiceFiles( 'META-INF/spring.schema' )
+      mergeServiceFiles( 'META-INF/spring.handlers' )
+      dependencies {
+        exclude(dependency('javax.media:jai_core:1.1.3'))
+        exclude(dependency('javax.media:jai_codec:1.1.3'))
+        exclude(dependency('javax.media:jai_imageio:1.1'))
+        kettleDependencies.each{
+          exclude (dependency("${it}"))
+        }
 
-    }
+        switch ( accumuloTarget )
+        {
+          case AccumuloTarget.CDH4:
+            exclude (dependency('org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.1'))
+            exclude (dependency('pentaho:pentaho-hadoop-shims-cdh42-mapred:5.0.1-stable'))
+            break
+          case AccumuloTarget.CDH5:
+            exclude (dependency('org.apache.hadoop:hadoop-client:2.5.0-cdh5.2.4'))
+            exclude (dependency('pentaho:pentaho-hadoop-shims-cdh51-mapred:5.2.0.1-218'))
+            break
+          case AccumuloTarget.HDP:
+            compile 'org.apache.accumulo:accumulo-core:1.6.1.2.2.0.0-2041'
+            compile 'org.apache.hadoop:hadoop-client:2.6.0.2.2.0.0-2041'
+            compile 'pentaho:pentaho-hadoop-shims-hdp20-mapred:5.2-SNAPSHOT'
 
-  }
-     */
+            break
+          case AccumuloTarget.GDAC:
+            compile 'org.imintel:semapp-java-client:0.26.0'
+            exclude (dependency('org.apache.accumulo:accumulo-core:1.6.1'))
+            compile 'pentaho:pentaho-hadoop-shims-mapr21-mapred:5.2-SNAPSHOT'
+            break
+        }
+
+     //  exclude(dependency('pentaho-kettle:kettle-core:5.2.1.1-210'))
+     //  exclude(dependency('pentaho-kettle:kettle-engine:5.2.1.1-210'))
+     //  exclude(dependency('pentaho-kettle:kettle-ui-swt:5.2.1.1-210'))
+
+     }
+
+   }
+      */
 }
 
 project( ':kettle-plugins' ) {
-  repositories {
-    maven {
-      url 'http://repository.pentaho.org/artifactory/repo/'
-    }
-  }
-  jar{
-    baseName = "ossim-kettle-plugins"
-    sourceSets {
-      main {
-        resources {
-          srcDir 'src/main/groovy'
-          include '**/*.png'
-          include '**/*.properties'
-        }
+   repositories {
+      maven {
+         url 'http://repository.pentaho.org/artifactory/repo/'
       }
-    }
-  }
-  dependencies{
-    compile project(":kettle-libs")
-  }
-  install {
-    repositories.mavenInstaller {
-      pom.artifactId = 'ossim-kettle-plugins'
-    }
-  }
+   }
+   jar{
+      baseName = "ossim-kettle-plugins"
+      sourceSets {
+         main {
+            resources {
+               srcDir 'src/main/groovy'
+               include '**/*.png'
+               include '**/*.properties'
+            }
+         }
+      }
+   }
+   dependencies{
+      compile project(":kettle-libs")
+   }
+   install {
+      repositories.mavenInstaller {
+         pom.artifactId = 'ossim-kettle-plugins'
+      }
+   }
 }
 
 
 //Common Project specific stuff
 project( ':common-libs' ) {
-  dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.4.0'
-    compile 'org.mortbay.jetty:jetty:6.1.26'
-    compile 'org.codehaus.gpars:gpars:1.2.1'
-    compile 'org.geotools:gt-imagemosaic-jdbc:12.2'
-    compile 'org.geoscript:geoscript-groovy:1.4.0'
-    compile "org.ossim:joms:${JOMS_VERSION}"
-    compile 'com.github.davidmoten:geo:0.6.10'
-    compile 'org.postgresql:postgresql:9.3-1100-jdbc4'
-    compile 'org.hibernate:hibernate-core:3.6.10.Final'
-    compile 'org.hibernatespatial:hibernate-spatial-postgis:1.1.1'
-    compile 'org.hibernatespatial:hibernate-spatial:1.1.1'
-    runtime 'org.postgis:postgis-jdbc:1.5.2'
+   dependencies {
+      compile 'org.codehaus.groovy:groovy-all:2.4.0'
+      compile 'org.mortbay.jetty:jetty:6.1.26'
+      compile 'org.codehaus.gpars:gpars:1.2.1'
+      compile 'org.geotools:gt-imagemosaic-jdbc:12.2'
+      compile 'org.geoscript:geoscript-groovy:1.4.0'
+      compile "org.ossim:joms:${JOMS_VERSION}"
+      compile 'com.github.davidmoten:geo:0.6.10'
+      compile 'org.postgresql:postgresql:9.3-1100-jdbc4'
+      compile 'org.hibernate:hibernate-core:3.6.10.Final'
+      compile 'org.hibernatespatial:hibernate-spatial-postgis:1.1.1'
+      compile 'org.hibernatespatial:hibernate-spatial:1.1.1'
+      runtime 'org.postgis:postgis-jdbc:1.5.2'
 
-    //compile 'org.hibernate:hibernate-core:4.3.8.Final'
-   // compile 'org.hibernate:hibernate-spatial:4.3'
-    compile 'org.springframework:spring-core:4.1.4.RELEASE'
-    compile 'org.springframework:spring-context:4.1.4.RELEASE'
-    compile 'org.springframework:spring-orm:4.1.4.RELEASE'
-    compile 'org.springframework:spring-tx:4.1.4.RELEASE'
-    compile 'javax.validation:validation-api:1.1.0.Final'
-    compile 'org.hibernate:hibernate-validator:4.3.2.Final'
-    compile 'org.springframework.amqp:spring-rabbit:1.4.3.RELEASE'
-    compile 'org.springframework.amqp:spring-amqp:1.4.3.RELEASE'
+      //compile 'org.hibernate:hibernate-core:4.3.8.Final'
+      // compile 'org.hibernate:hibernate-spatial:4.3'
+      compile 'org.springframework:spring-core:4.1.4.RELEASE'
+      compile 'org.springframework:spring-context:4.1.4.RELEASE'
+      compile 'org.springframework:spring-orm:4.1.4.RELEASE'
+      compile 'org.springframework:spring-tx:4.1.4.RELEASE'
+      compile 'javax.validation:validation-api:1.1.0.Final'
+      compile 'org.hibernate:hibernate-validator:4.3.2.Final'
+      compile 'org.springframework.amqp:spring-rabbit:1.4.3.RELEASE'
+      compile 'org.springframework.amqp:spring-amqp:1.4.3.RELEASE'
 
-    compile 'javax.media:jai_core:1.1.3'
-    compile 'javax.media:jai_codec:1.1.3'
-    compile 'javax.media:jai_imageio:1.1'
-    //compile 'org.apache.zookeeper:zookeeper:3.4.5'
+      compile 'javax.media:jai_core:1.1.3'
+      compile 'javax.media:jai_codec:1.1.3'
+      compile 'javax.media:jai_imageio:1.1'
+      //compile 'org.apache.zookeeper:zookeeper:3.4.5'
 
-    switch ( accumuloTarget )
-    {
-    case AccumuloTarget.CDH4:
-      compile 'org.apache.zookeeper:zookeeper:3.4.5-cdh4.7.1'
-      compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.1'
-      compile 'org.apache.accumulo:accumulo-core:1.6.1'
-        break
-    case AccumuloTarget.CDH5:
-      compile 'org.apache.hadoop:hadoop-client:2.5.0-cdh5.2.4'
-      compile 'org.apache.accumulo:accumulo-core:1.6.1'
-      compile 'org.apache.zookeeper:zookeeper:3.4.5-cdh5.3.2'
-      break
-    case AccumuloTarget.HDP:
-      compile 'org.apache.accumulo:accumulo-core:1.6.1.2.2.0.0-2041'
-      compile 'org.apache.hadoop:hadoop-client:2.6.0.2.2.0.0-2041'
-      break
-    case AccumuloTarget.GDAC:
-      compile 'compile org.apache.zookeeper:zookeeper:3.4.5'
-      compile 'org.imintel:semapp-java-client:0.26.0'
-      compile 'org.apache.accumulo:accumulo-core:1.6.1'
-      break
-    }
-  }
-  jar {
-    baseName = "ossim-common-libs"
-  }
+      switch ( accumuloTarget )
+      {
+         case AccumuloTarget.CDH4:
+            compile 'org.apache.zookeeper:zookeeper:3.4.5-cdh4.7.1'
+            compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.1'
+            compile 'org.apache.accumulo:accumulo-core:1.6.1'
+            break
+         case AccumuloTarget.CDH5:
+            compile 'org.apache.hadoop:hadoop-client:2.5.0-cdh5.2.4'
+            compile 'org.apache.accumulo:accumulo-core:1.6.1'
+            compile 'org.apache.zookeeper:zookeeper:3.4.5-cdh5.3.2'
+            break
+         case AccumuloTarget.HDP:
+            compile 'org.apache.accumulo:accumulo-core:1.6.1.2.2.0.0-2041'
+            compile 'org.apache.hadoop:hadoop-client:2.6.0.2.2.0.0-2041'
+            break
+         case AccumuloTarget.GDAC:
+            compile 'compile org.apache.zookeeper:zookeeper:3.4.5'
+            compile 'org.imintel:semapp-java-client:0.26.0'
+            compile 'org.apache.accumulo:accumulo-core:1.6.1'
+            break
+      }
+   }
+   jar {
+      baseName = "ossim-common-libs"
+   }
 
-  install {
-    repositories.mavenInstaller {
-      pom.artifactId = 'ossim-common-libs'
-    }
-  }
+   install {
+      repositories.mavenInstaller {
+         pom.artifactId = 'ossim-common-libs'
+      }
+   }
 
 }
 
+
 //App Project specific stuff
 project( ':app' ) {
-  apply plugin: "com.github.johnrengelman.shadow"
+   apply plugin: "com.github.johnrengelman.shadow"
 
-  dependencies {
-    compile project( ':common-libs' )
-  }
+   dependencies {
+      compile project( ':common-libs' )
+   }
 
-  install {
-    repositories.mavenInstaller {
-      pom.artifactId = 'ossim-app'
-    }
-  }
-  jar {
-    baseName = "ossim-app"
-  }
+   install {
+      repositories.mavenInstaller {
+         pom.artifactId = 'ossim-app'
+      }
+   }
+   jar {
+      baseName = "ossim-app"
+   }
+   task copyJars << {
+      File outputDir = "${projectDir}/app-jars" as File
+      if(!outputDir.exists()) outputDir.mkdir()
+      configurations.compile.each { File file -> "cp ${file.absoluteFile} ${outputDir}".execute()  }
+   }
 
-  shadowJar {
-    zip64 true
-    baseName "ossim-app-all"
-    //exclude "META-INF/services/javax.imageio.spi.*"
-    //minimizeJar true
-    mergeServiceFiles{
-     // exclude "META-INF/services/javax.imageio.spi.*"
-    }
-    mergeGroovyExtensionModules()
-    mergeServiceFiles( 'META-INF/spring.schema' )
-    mergeServiceFiles( 'META-INF/spring.handlers' )
-    dependencies {
-      exclude(dependency('javax.media:jai_core:1.1.3'))
-      exclude(dependency('javax.media:jai_codec:1.1.3'))
-      exclude(dependency('javax.media:jai_imageio:1.1'))
-    }
-  }
+   shadowJar {
+      zip64 true
+      baseName "ossim-app-all"
+      //exclude "META-INF/services/javax.imageio.spi.*"
+      //minimizeJar true
+      mergeServiceFiles{
+         // exclude "META-INF/services/javax.imageio.spi.*"
+      }
+      mergeGroovyExtensionModules()
+      mergeServiceFiles( 'META-INF/spring.schema' )
+      mergeServiceFiles( 'META-INF/spring.handlers' )
+      dependencies {
+         exclude(dependency('javax.media:jai_core:1.1.3'))
+         exclude(dependency('javax.media:jai_codec:1.1.3'))
+         exclude(dependency('javax.media:jai_imageio:1.1'))
+      }
+   }
 }
 
 

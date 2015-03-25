@@ -6,6 +6,7 @@ import geoscript.geom.Bounds
 import geoscript.layer.Pyramid
 import geoscript.proj.Projection
 import groovy.sql.Sql
+import joms.geotools.tileapi.BoundsUtil
 import joms.geotools.tileapi.OssimImageTileRenderer
 import joms.geotools.tileapi.accumulo.AccumuloApi
 import joms.geotools.tileapi.TileCachePyramid
@@ -79,13 +80,12 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     {
      // Envelope env = layerInfo.bounds.envelopeInternal
       Projection proj = new Projection(layerInfo.epsgCode)
-      Bounds b          = (layerInfo.epsgCode.toLowerCase() == 'epsg:3857') ? new Bounds(-20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244, 'epsg:3857') : proj.bounds
+      Bounds b          = BoundsUtil.getDefaultBounds(proj) //(layerInfo.epsgCode.toLowerCase() == 'epsg:3857') ? new Bounds(-20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244, 'epsg:3857') : proj.bounds
       Bounds clipBounds = new Bounds(layerInfo.bounds.envelopeInternal)
       //new Bounds(env.minX, env.minY, env.maxX, env.maxY)
    //   if(layerInfo.epsgCode.toLowerCase().trim() == "epsg:4326")
    //   {
       def pyramid = new TileCachePyramid(bounds:b,
-//                                        clippedBounds:new Bounds(layerInfo.bounds.envelopeInternal),
                                         clippedBounds: clipBounds,
                                         proj:proj,
                                         origin: Pyramid.Origin.TOP_LEFT,

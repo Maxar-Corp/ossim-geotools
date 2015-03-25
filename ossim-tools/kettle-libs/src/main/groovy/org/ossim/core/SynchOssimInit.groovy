@@ -12,8 +12,8 @@ class SynchOssimInit
 	{
 		if(!initialized){
       	Init.instance().initialize();
-			//def newArgs = ["","-T",".*"] as String[];
-         //Init.instance().initialize( newArgs.length, newArgs);
+		//	def newArgs = ["","-T",".*"] as String[];
+    //     Init.instance().initialize( newArgs.length, newArgs);
 
 		} 
 		initialized = true

@@ -35,4 +35,21 @@ class BoundsUtil {
 
     bounds.geometry.g as Polygon
   }
+  static Bounds getDefaultBounds(Projection proj)
+  {
+     Bounds result
+
+     if(proj?.epsg == 3857)
+     {
+        result = new Bounds(-20037508.342789244,-20037508.342789244,
+                            20037508.342789244,20037508.342789244,proj)
+
+     }
+     else
+     {
+        result = proj?.bounds
+     }
+
+     result
+  }
 }

@@ -50,7 +50,7 @@ class TileCacheImageTile extends ImageTile
   TileCacheImageTile(Bounds bbox, long z, long x, long y, byte[] data)
   {
     super(z, x, y, data)
-    this.bounds = new Bounds(bbox.envelopeInternal)
+    this.bounds = bbox
     this.key.rowId = getHashId()
   }
   TileCacheImageTile(double res, String hashId, Polygon bbox, long z, long x, long y, byte[] data)
@@ -90,15 +90,22 @@ class TileCacheImageTile extends ImageTile
     if(!key.rowId)
     {
       def hash = new GeoHash()
-      if(bounds.proj.epsg == 4326)
-      {
-        result = hash.encodeHash((bounds.minY+bounds.maxY)*0.5, (bounds.minX+bounds.maxX)*0.5, 20)
-      }
-      else
-      {
-        def tempBounds = bounds.reproject(geographicProjection)
-        result = hash.encodeHash((tempBounds.minY+tempBounds.maxY)*0.5, (tempBounds.minX+tempBounds.maxX)*0.5, 20)
-      }
+       if(bounds.proj)
+       {
+          if(bounds.proj.epsg == 4326)
+          {
+             result = hash.encodeHash((bounds.minY+bounds.maxY)*0.5, (bounds.minX+bounds.maxX)*0.5, 20)
+          }
+          else
+          {
+             def tempBounds = bounds.reproject(geographicProjection)
+             result = hash.encodeHash((tempBounds.minY+tempBounds.maxY)*0.5, (tempBounds.minX+tempBounds.maxX)*0.5, 20)
+          }
+       }
+       else
+       {
+          result = hash.encodeHash((bounds.minY+bounds.maxY)*0.5, (bounds.minX+bounds.maxX)*0.5, 20)
+       }
     }
 
     result

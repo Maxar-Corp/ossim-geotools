@@ -29,7 +29,7 @@ public abstract class DAOImpl<T> implements DAO<T> {
   }
 
   Session getSession() {
-    return sessionFactory.getCurrentSession();
+    return sessionFactory?.getCurrentSession();
   }
 
   @Override

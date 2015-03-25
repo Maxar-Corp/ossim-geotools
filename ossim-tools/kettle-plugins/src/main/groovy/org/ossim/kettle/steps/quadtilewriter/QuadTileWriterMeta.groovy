@@ -121,7 +121,7 @@ public class QuadTileWriterMeta extends BaseStepMeta implements StepMetaInterfac
 		this.setDefault();
 
 		outputResultFieldName  		= XMLHandler.getTagValue(stepnode, "outputResultFieldName");
-		def outputFileNameMaskString	= XMLHandler.getTagValue(stepnode, "outputFileNameMaskString");
+		def outputFileNameMaskString	= XMLHandler.getTagValue(stepnode, "outputFileNameMask");
 		def outputTypeString       = XMLHandler.getTagValue(stepnode, "outputType");
 		inputTileField      			= XMLHandler.getTagValue(stepnode, "inputTileField")
 		inputTileStatusField      	= XMLHandler.getTagValue(stepnode, "inputTileStatusField")
@@ -152,7 +152,7 @@ public class QuadTileWriterMeta extends BaseStepMeta implements StepMetaInterfac
 	{
 		this.setDefault();
 		outputResultFieldName      = rep.getStepAttributeString(id_step, "outputResultFieldName");
-		def outputFileNameMaskString	= rep.getStepAttributeString(id_step, "outputFileNameMaskString");
+		def outputFileNameMaskString	= rep.getStepAttributeString(id_step, "outputFileNameMask");
 		def outputTypeString       = rep.getStepAttributeString(id_step, "outputType");
 		inputTileField             = rep.getStepAttributeString(id_step, "inputTileField");
 		inputTileStatusField       = rep.getStepAttributeString(id_step, "inputTileStatusField");
