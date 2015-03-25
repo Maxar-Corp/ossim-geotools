@@ -3,6 +3,7 @@ package joms.geotools.tileapi.app
 import geoscript.geom.Bounds
 import geoscript.layer.GeoPackage
 import geoscript.proj.Projection
+import joms.geotools.tileapi.BoundsUtil
 import joms.geotools.tileapi.TileCachePyramid
 import joms.geotools.tileapi.TileLayerExport
 import joms.geotools.tileapi.accumulo.AccumuloTileLayer
@@ -259,14 +260,8 @@ class TileCacheApp
       else if(tileCacheAppConfig.epsgCode)
       {
          Projection proj = new Projection(tileCacheAppConfig.epsgCode)
-         if(proj.epsg == 3857)
-         {
-            tileCacheAppConfig.bounds = new Bounds(-20037508.34278924,-20037508.34278924,20037508.34278924,20037508.34278924, proj)
-         }
-         else
-         {
-            tileCacheAppConfig.bounds = new Projection(tileCacheAppConfig.epsgCode).bounds
-         }
+
+         tileCacheAppConfig.bounds = BoundsUtil.getDefaultBounds(proj)
       }
 
       tileCacheAppConfig.arguments = options.arguments()

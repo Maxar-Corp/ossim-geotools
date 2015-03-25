@@ -269,17 +269,7 @@ class TileCachePyramid extends Pyramid
     {
       if(!this.proj) this.proj = hints.proj
 
-      switch(this.proj?.epsg)
-      {
-        case 3857:
-          //println "FIXING 3857!!!!!!!!!!!!!!!!!!!"
-          // make sure it's square and always the same default bounds
-          //
-          this.bounds = new Bounds(-20037508.34278924,-20037508.34278924,20037508.34278924,20037508.34278924,this.proj)
-          break
-        default:
-          bounds = this.proj.bounds
-      }
+       this.bounds = BoundsUtil.getDefaultBounds(this.proj)
     }
 
     if(!clippedBounds) clippedBounds = this.bounds
