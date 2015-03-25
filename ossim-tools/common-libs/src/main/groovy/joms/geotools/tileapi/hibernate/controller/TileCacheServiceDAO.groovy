@@ -78,14 +78,16 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     if(layerInfo)
     {
      // Envelope env = layerInfo.bounds.envelopeInternal
-      Bounds b          = new Projection(layerInfo.epsgCode).bounds
+      Projection proj = new Projection(layerInfo.epsgCode)
+      Bounds b          = (layerInfo.epsgCode.toLowerCase() == 'epsg:3857') ? new Bounds(-20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244, 'epsg:3857') : proj.bounds
       Bounds clipBounds = new Bounds(layerInfo.bounds.envelopeInternal)
       //new Bounds(env.minX, env.minY, env.maxX, env.maxY)
    //   if(layerInfo.epsgCode.toLowerCase().trim() == "epsg:4326")
    //   {
       def pyramid = new TileCachePyramid(bounds:b,
-                                        clippedBounds:new Bounds(layerInfo.bounds.envelopeInternal),
-                                        proj:new Projection(layerInfo.epsgCode),
+//                                        clippedBounds:new Bounds(layerInfo.bounds.envelopeInternal),
+                                        clippedBounds: clipBounds,
+                                        proj:proj,
                                         origin: Pyramid.Origin.TOP_LEFT,
                                         tileWidth: layerInfo.tileWidth,
                                         tileHeight: layerInfo.tileHeight
@@ -94,7 +96,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
       result = new AccumuloTileLayer(tileCacheService:this,
               layerInfo:layerInfo,
               bounds:b,
-              proj:new Projection(layerInfo.epsgCode),
+              proj:proj,
               name:layerInfo.name,
               pyramid:pyramid)
     //  }
@@ -150,7 +152,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
                      cut_height:layer.tileHeight.toString(),
                      hist_op:needToStretch?"auto-minmax":"none",
                      clip_poly_lat_lon:"(${clipPolyLatLonKeyWord})".toString()])
-            TileCacheTileGenerator generator = new TileCacheTileGenerator(verbose:false,
+            TileCacheTileGenerator generator = new TileCacheTileGenerator(verbose:true,
                     tileLayer:tileLayer,
                     tileRenderer:tileRenderer,
                     startZoom:intersections.minLevel,
