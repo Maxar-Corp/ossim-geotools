@@ -150,6 +150,7 @@ accumulo {
 }
 
 tilecache {
+  wmtsTileGrid = true
   referenceLayers = [
 //      [url: "http://localhost:8080/geoserver/wms", name: 'trident-spectre:trident-spectre', title: 'Reference Layer']
       [url: 'http://52.0.52.104/geoserver/ged/wms', name: 'osm-group', title: 'Reference Layer']      

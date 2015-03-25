@@ -22,6 +22,7 @@ class AppController
 
     [
         initParams: [
+            wmtsTileGrid: grailsApplication.config.tilecache.wmtsTileGrid ?: false,
             wfsURL: grailsLinkGenerator.link( action: 'testWFS' ),
             urlProductExport: grailsLinkGenerator.link( controller: 'product', action: 'export' ),
             urlLayerActualBounds: grailsLinkGenerator.link( controller: 'accumuloProxy', action: 'actualBounds' ),

@@ -20,6 +20,9 @@ import org.springframework.beans.factory.InitializingBean
 import javax.imageio.ImageIO
 import javax.media.jai.JAI
 import javax.servlet.http.HttpServletResponse
+import java.awt.Color
+import java.awt.Font
+import java.awt.font.TextLayout
 import java.awt.image.BufferedImage
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
@@ -368,5 +371,32 @@ class AccumuloProxyService implements InitializingBean
     response
   }
 
+  def getTileGridOverlay(AccumuloProxyWmtsCommand cmd)
+  {
+    def text = "${cmd.tileMatrix}/${cmd.tileCol}/${cmd.tileRow}"
+    def tileSize = 256  
+
+    BufferedImage image = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB)
+    ByteArrayOutputStream ostream = new  ByteArrayOutputStream()
+
+    def g2d = image.createGraphics()
+    def font = new Font("TimesRoman", Font.PLAIN, 18)
+    def bounds = new TextLayout(text, font, g2d.fontRenderContext).bounds
+
+    g2d.color = Color.red
+    g2d.font = font
+    g2d.drawRect(0, 0, tileSize, tileSize)
+
+    // Center Text in tile
+    g2d.drawString(text, 
+      Math.rint((tileSize - bounds.@width ) / 2) as int, 
+      Math.rint((tileSize - bounds.@height) / 2) as int)
+
+    g2d.dispose()
+
+    ImageIO.write(image, 'png', ostream)
+
+    [contentType: 'image/png', buffer: ostream.toByteArray()]
+  }
 }
 

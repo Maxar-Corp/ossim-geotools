@@ -11,6 +11,9 @@ class UrlMappings
     }
     "/accumuloProxy/wmts/$id?"( action: "wmts", controller: "accumuloProxy" ) {
     }
+    "/accumuloProxy/tileParamGrid"( action: "tileParamGrid", controller: "accumuloProxy" ) {
+    }
+    
     "/$controller/$action?/$id?(.$format)?" {
       constraints {
         // apply constraints here

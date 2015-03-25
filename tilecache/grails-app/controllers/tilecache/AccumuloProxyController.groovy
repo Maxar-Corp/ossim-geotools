@@ -14,6 +14,7 @@ class AccumuloProxyController
 
   def wmts(AccumuloProxyWmtsCommand cmd)
   {
+    /*
     GeoPackage pkg
 
     def tileLayer = accumuloProxyService.daoTileCacheService.newGeoscriptTileLayer("bmng")
@@ -21,9 +22,9 @@ class AccumuloProxyController
     render ""
 
     return null
-
+    */
     // need to support case insensitive data bindings
-    println cmd
+    //println cmd
 
     if ( cmd.validate() )
     {
@@ -254,4 +255,10 @@ def putTile()
 //    null
 //  }
 
+  def tileParamGrid(AccumuloProxyWmtsCommand cmd)
+  {
+      def results = accumuloProxyService.getTileGridOverlay( cmd )
+
+      render contentType: results.contentType, file: results.buffer    
+  }
 }

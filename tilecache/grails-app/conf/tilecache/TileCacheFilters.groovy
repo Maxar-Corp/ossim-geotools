@@ -4,6 +4,20 @@ class TileCacheFilters
 {
 
   def filters = {
+    tileParamGrid( uri: '/accumuloProxy/tileParamGrid' ) {
+      before = {
+        //println "before: ${params}"
+        AccumuloProxyWmtsCommand.fixParamNames( params )
+        //println "after: ${params}"
+      }
+      after = { Map model ->
+
+      }
+      afterView = { Exception e ->
+
+      }
+    }
+
     getTile( uri: '/accumuloProxy/wmts' ) {
       before = {
         //println "before: ${params}"

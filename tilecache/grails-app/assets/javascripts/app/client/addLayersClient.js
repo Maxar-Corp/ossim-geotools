@@ -107,6 +107,29 @@ AddLayerClient = (function ()
                 0.29858214173896974                
             ];
 
+            var matrixIds = [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19                
+            ];
+
             var tileGrid = new ol.layer.Tile({
                 source: new ol.source.TileDebug({
                     projection: 'EPSG:3857',
@@ -117,7 +140,30 @@ AddLayerClient = (function ()
                 name: 'Tile Grid'
             });
             //layersArray.push(tileGrid);
-            console.log(tileGrid);
+            //console.log(tileGrid);
+
+            var projection = ol.proj.get('EPSG:3857');
+            var projectionExtent = projection.getExtent();
+
+            var tileParamGrid = new ol.layer.Tile({
+              extent: projectionExtent,
+              source: new ol.source.WMTS({
+//                url: '/tilecache/accumuloProxy/wmts',
+                layer: 'highres_3857',
+                url: '/tilecache/accumuloProxy/tileParamGrid',
+//                layer: '0',
+                matrixSet: 'EPSG:3857',
+                format: 'image/png',
+                projection: projection,
+                tileGrid: new ol.tilegrid.WMTS({
+                  origin: ol.extent.getTopLeft(projectionExtent),
+                  resolutions: resolutions,
+                  matrixIds: matrixIds
+                }),
+                style: 'default'
+              }),
+              name: 'tileParamGrid'
+            });
 
             $.each( addLayersClientParams.referenceLayers, function ( idx, referenceLayer )
             {
@@ -164,7 +210,12 @@ AddLayerClient = (function ()
 
             } );
 
-            layersArray.push(tileGrid);
+            if ( addLayersClientParams.wmtsTileGrid )
+            {                
+                layersArray.push( tileParamGrid );
+            }    
+
+            //layersArray.push(tileGrid);
 
         },
         layersArray: layersArray

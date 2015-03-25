@@ -7,8 +7,6 @@ trait CaseInsensitiveBind
 {
   static def fixParamNames(def params)
   {
-    //println params
-
     def names = ( getMetaClass()?.properties*.name ).sort() - ['class', 'constraints', 'errors']
 
     def newParams = params.inject( [:] ) { a, b ->
