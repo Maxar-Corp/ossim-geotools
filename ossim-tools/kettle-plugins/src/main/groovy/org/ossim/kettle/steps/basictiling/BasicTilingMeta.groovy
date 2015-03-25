@@ -1,4 +1,7 @@
 package org.ossim.kettle.steps.basictiling
+
+import geoscript.layer.Pyramid
+
 import java.util.List;
 import java.util.Map;
 import org.eclipse.swt.widgets.Shell;
@@ -31,7 +34,6 @@ import org.pentaho.di.trans.step.StepInterface;
 import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.trans.step.StepMetaInterface;
 import org.w3c.dom.Node;
-import org.ossim.core.MultiResolutionTileGenerator
 import org.ossim.core.SynchOssimInit
 import geoscript.proj.Projection
 
@@ -60,6 +62,8 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 	String inputFilenameField = ""
 	String inputEntryField    = ""
 	Boolean mosaicInput       = false
+
+
 	/**
     * This sets the tilename mask.  The key tokens that are supported are.
     *
@@ -75,6 +79,7 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
     *                this is replaced with 0/0/100
     *   
 	*/
+
 	String tileIdNameMask     = "%l%/%r%/%c%"
 	def origin                = "LOWER_LEFT"
 	def tileGenerationOrder   = "LOWEST_TO_HIGHEST"
@@ -86,8 +91,8 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 									tile_level:"tile_level",
 									tile_row:"tile_row",
 									tile_col:"tile_col",
-									tile_global_row:"tile_global_row",
-									tile_global_col:"tile_global_col",
+									//tile_global_row:"tile_global_row",
+									//tile_global_col:"tile_global_col",
 									tile_epsg:"tile_epsg",
 									tile_minx:"tile_minx",
 									tile_miny:"tile_miny",
@@ -102,14 +107,14 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 									summary_epsg_miny:"summary_epsg_miny",
 									summary_epsg_maxx:"summary_epsg_maxx",
 									summary_epsg_maxy:"summary_epsg_maxy",
-									summary_clip_minx:"summary_clip_minx",
-									summary_clip_miny:"summary_clip_miny",
-									summary_clip_maxx:"summary_clip_maxx",
-									summary_clip_maxy:"summary_clip_maxy",
-									summary_orig_minx:"summary_orig_minx",
-									summary_orig_miny:"summary_orig_miny",
-									summary_orig_maxx:"summary_orig_maxx",
-									summary_orig_maxy:"summary_orig_maxy",
+//									summary_clip_minx:"summary_clip_minx",
+//									summary_clip_miny:"summary_clip_miny",
+//									summary_clip_maxx:"summary_clip_maxx",
+//									summary_clip_maxy:"summary_clip_maxy",
+//									summary_orig_minx:"summary_orig_minx",
+//									summary_orig_miny:"summary_orig_miny",
+//									summary_orig_maxx:"summary_orig_maxx",
+//									summary_orig_maxy:"summary_orig_maxy",
 									summary_epsg:"summary_epsg",
 									summary_min_level:"summary_min_level",
 									summary_max_level:"summary_max_level",
@@ -126,8 +131,8 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 											tile_filenames:[type:ValueMetaInterface.TYPE_STRING],
 											tile_file_entries:[type:ValueMetaInterface.TYPE_STRING],
 											tile_level:[type:ValueMetaInterface.TYPE_INTEGER],
-											tile_global_row:[type:ValueMetaInterface.TYPE_INTEGER],
-											tile_global_col:[type:ValueMetaInterface.TYPE_INTEGER],
+									//		tile_global_row:[type:ValueMetaInterface.TYPE_INTEGER],
+									//		tile_global_col:[type:ValueMetaInterface.TYPE_INTEGER],
 											tile_row:[type:ValueMetaInterface.TYPE_INTEGER],
 											tile_col:[type:ValueMetaInterface.TYPE_INTEGER],
 											tile_epsg:[type:ValueMetaInterface.TYPE_STRING],
@@ -144,14 +149,14 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 											summary_epsg_miny:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
 											summary_epsg_maxx:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
 											summary_epsg_maxy:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
-											summary_clip_minx:[type:ValueMetaInterface.TYPE_NUMBER, len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
-											summary_clip_miny:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
-											summary_clip_maxx:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
-											summary_clip_maxy:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
-											summary_orig_minx:[type:ValueMetaInterface.TYPE_NUMBER, len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
-											summary_orig_miny:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
-											summary_orig_maxx:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
-											summary_orig_maxy:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
+//											summary_clip_minx:[type:ValueMetaInterface.TYPE_NUMBER, len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
+//											summary_clip_miny:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
+//											summary_clip_maxx:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
+//											summary_clip_maxy:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
+//											summary_orig_minx:[type:ValueMetaInterface.TYPE_NUMBER, len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
+//											summary_orig_miny:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
+//											summary_orig_maxx:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
+//											summary_orig_maxy:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
 											summary_epsg:[type:ValueMetaInterface.TYPE_STRING],
 											summary_min_level:[type:ValueMetaInterface.TYPE_INTEGER],
 											summary_max_level:[type:ValueMetaInterface.TYPE_INTEGER],
@@ -171,10 +176,10 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 		switch(type.toUpperCase())
 		{
 			case "EPSG:3857":
-				projectionMinx = -20037508.34
-				projectionMiny = -20037508.34
-				projectionMaxx = 20037508.34
-				projectionMaxy = 20037508.34
+				projectionMinx = -20037508.34278924
+				projectionMiny = -20037508.34278924
+				projectionMaxx = 20037508.34278924
+				projectionMaxy = 20037508.34278924
 			break
 			default:
 				def proj       = new Projection(this.projectionType)
@@ -187,15 +192,21 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 		}
 	}
 	def getOriginAsInteger(){
-		def result = MultiResolutionTileGenerator.TILE_ORIGIN_UPPER_LEFT
+    def result =  Pyramid.Origin.TOP_LEFT
+    if(origin.toUpperCase().contains("LOWER"))
+    {
+    		result = Pyramid.Origin.BOTTOM_LEFT
+    }
+		//def result = MultiResolutionTileGenerator.TILE_ORIGIN_UPPER_LEFT
 
-		if(origin.toUpperCase().contains("LOWER"))
-		{
-			result = MultiResolutionTileGenerator.TILE_ORIGIN_LOWER_LEFT
-		}
+		//if(origin.toUpperCase().contains("LOWER"))
+		//{
+	//		result = MultiResolutionTileGenerator.TILE_ORIGIN_LOWER_LEFT
+	//	}
 
 		result
 	}
+  /*
 	def getTileGenerationOrderAsInteger(){
 		def result = MultiResolutionTileGenerator.TILE_LOWEST_TO_HIGHEST
 
@@ -206,6 +217,7 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 
 		result
 	}
+	*/
 	def isSummaryOnly(){
 		def result = selectedFieldNames.findAll{v->v.startsWith("summary")}?.size() == selectedFieldNames.size()
 

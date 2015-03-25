@@ -1,5 +1,6 @@
-package org.ossim.kettle.steps.basictiling;
+package org.ossim.kettle.steps.basictiling
 
+import geoscript.layer.Pyramid;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -264,10 +265,10 @@ public class BasicTilingDialog extends BaseStepDialog implements
 
     switch(input.getOriginAsInteger())
     {
-      case MultiResolutionTileGenerator.TILE_ORIGIN_UPPER_LEFT:
+      case Pyramid.Origin.TOP_LEFT:
         swt.origin.text = "UPPER_LEFT"
         break
-      case MultiResolutionTileGenerator.TILE_ORIGIN_LOWER_LEFT:
+      case Pyramid.Origin.BOTTOM_LEFT:
         swt.origin.text = "LOWER_LEFT"
         break
       default:
@@ -275,6 +276,7 @@ public class BasicTilingDialog extends BaseStepDialog implements
         break
     }
 
+    /*
     switch(input.getTileGenerationOrderAsInteger())
     {
       case MultiResolutionTileGenerator.TILE_LOWEST_TO_HIGHEST:
@@ -287,6 +289,7 @@ public class BasicTilingDialog extends BaseStepDialog implements
         swt.tileGenerationOrder.text = "LOWEST_TO_HIGHEST"
         break
     }
+    */
   }
 
   private void cancel()
@@ -391,7 +394,7 @@ public class BasicTilingDialog extends BaseStepDialog implements
     }
     input.mosaicInput         = swt.mosaicInputCheckbox.selection
     input.origin              = swt.origin.text
-    input.tileGenerationOrder = swt.tileGenerationOrder.text
+    //input.tileGenerationOrder = swt.tileGenerationOrder.text
     if(swt.tileWidth.text) input.targetTileWidth   = swt.tileWidth.text.toInteger()
     if(swt.tileHeight.text) input.targetTileHeight = swt.tileHeight.text.toInteger()
     input.inputFilenameField = swt.inputFilenameField.text

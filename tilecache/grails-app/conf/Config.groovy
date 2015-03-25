@@ -145,9 +145,9 @@ accumulo {
   username = "root"
   password = "root"
 //  zooServers="accumulo-site.radiantblue.local"
-  zooServers = "192.168.31.172"
+  zooServers = "sandbox.accumulo.radiantblue.local"
   instance = "accumulo"
-  tileAccessClass = "joms.geotools.tileapi.AccumuloTileAccess"
+ // tileAccessClass = "joms.geotools.tileapi.AccumuloTileAccess"
 }
 
 tilecache {
@@ -155,6 +155,7 @@ tilecache {
       [url: "http://localhost:8080/geoserver/wms", name: 'trident-spectre:trident-spectre', title: 'Reference Layer']
   ]
   overlayLayers = [
-      [url: "http://localhost:8080/geoserver/wms", name: 'trident-spectre:ne_10m_populated_places', title: 'Place Names']
+          [url: "http://localhost:8080/geoserver/wms", name: 'trident-spectre:ne_10m_populated_places', title: 'Place Names'],
+                  [url: "http://localhost:8080/geoserver/wms", name: 'topp:states', title: 'States']
   ]
 }

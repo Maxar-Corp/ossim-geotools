@@ -61,13 +61,16 @@ class AccumuloApi implements InitializingBean
   }
   def initialize()
   {
-    //String instanceName = "accumulo";
-    //String zooServers = "accumulo.radiantblue.local"
-    instance = new ZooKeeperInstance(instanceName, zooServers);
-    //Connector conn
-    connector = instance.getConnector(username, new PasswordToken(password));
-    //conn = inst.getConnector("root", new PasswordToken("hadoop"));
+    if(zooServers&&instanceName)
+    {
+      //String instanceName = "accumulo";
+      //String zooServers = "accumulo.radiantblue.local"
+      instance = new ZooKeeperInstance(instanceName, zooServers);
+      //Connector conn
+      connector = instance.getConnector(username, new PasswordToken(password));
+      //conn = inst.getConnector("root", new PasswordToken("hadoop"));
 
+    }
     this
   }
 

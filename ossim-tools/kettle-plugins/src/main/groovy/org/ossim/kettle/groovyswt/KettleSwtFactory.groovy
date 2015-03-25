@@ -1,5 +1,8 @@
 package org.ossim.kettle.groovyswt
 
+import org.eclipse.swt.events.SelectionListener
+import org.pentaho.di.ui.core.namedcluster.NamedClusterWidget
+
 import java.util.Map
 import org.codehaus.groovy.GroovyException
 import groovy.swt.factory.AbstractSwtFactory
@@ -62,6 +65,9 @@ class KettleSwtFactory extends  AbstractSwtFactory
       case "tableView":
         result = createTableView(parent, style, attributes)
         break
+      case "myNamedClusterWidget":
+        result = createNamedClusterWidget(parent, style, attributes)
+        break
       case "columnInfo":
     //  println "HERE AT COLUMNINFO!!!!!!!"
             // this must be a setting or child
@@ -104,6 +110,21 @@ class KettleSwtFactory extends  AbstractSwtFactory
       break
       default:
       break
+    }
+
+    result
+  }
+  protected Object createNamedClusterWidget(Object parent, int style, def attributes) throws InstantiationException
+  {
+    Object result = null
+    def selectionListener = attributes.remove("selectionListener")
+    def showLabel = attributes.remove("showLabel")
+
+    if(attributes?.showLabel!=null) showLabel = attributes?.showLabel
+    result = new NamedClusterWidget(parent, showLabel)
+    if(selectionListener)
+    {
+      result.addSelectionListener(selectionListener)
     }
 
     result

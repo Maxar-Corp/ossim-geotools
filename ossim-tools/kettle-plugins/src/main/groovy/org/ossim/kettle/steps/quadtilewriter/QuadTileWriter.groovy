@@ -44,7 +44,7 @@ class QuadTileWriter extends BaseStep implements StepInterface
 
 		meta = (QuadTileWriterMeta) smi;
 		data = (QuadTileWriterData) sdi;
-		
+
 		Object[] row = getRow();
 		if (row==null) 
 		{

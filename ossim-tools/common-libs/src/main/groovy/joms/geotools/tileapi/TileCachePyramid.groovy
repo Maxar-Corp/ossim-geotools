@@ -6,6 +6,7 @@ import geoscript.geom.Bounds
 import geoscript.layer.Grid
 import geoscript.layer.Pyramid
 import geoscript.proj.Projection
+import groovy.json.JsonBuilder
 import joms.oms.TileCacheSupport
 
 /**
@@ -15,6 +16,8 @@ class TileCachePyramid extends Pyramid
 {
 
   Bounds clippedBounds
+  def geographicProj = new Projection("EPSG:4326")
+
   /**
    * Options can be supplied to shrink the clip region further.  So if your image covers
    * several levels you can clip to a particular level and region
@@ -58,21 +61,18 @@ class TileCachePyramid extends Pyramid
 
     if(ossimEnvelope)
     {
-      // Lets take the ossimEnvelope of the passed in image and transform
-      // to this pyramids projection.  We will then intersect it with this
-      // pyramids bounds and use that for the tile set clipping.
-      //
-      def geographicProj = new Projection("EPSG:4326")
-
+     // println "GOT ENVELOPE: ${ossimEnvelope}"
       // transform the bounds of the input image
       def inputImageBounds = new Bounds(ossimEnvelope.minX, ossimEnvelope.minY,
                                         ossimEnvelope.maxX, ossimEnvelope.maxY)
 
       inputImageBounds.proj =  geographicProj
+     // println "THIS projeciton: ${this.proj}"
 
       // create a reprojected bounds defined in the projection of this pyramid
       def reprojectedImageBounds = inputImageBounds.reproject(this.proj)
 
+     // println "reprojectedImageBounds: ${reprojectedImageBounds}"
       //def geoScriptGeom = inputImageBounds.geometry
 
       // transform the points
@@ -201,13 +201,99 @@ class TileCachePyramid extends Pyramid
           // we are 0 based but the resolutions were grabbed from the startLevel
           // so let's shift our result to the start level
           result = [clippedGeometryLatLon:latLonClipBounds, clippedBounds: clipBounds, minLevel: resultMinLevel, maxLevel: resultMaxLevel]
-          println "CLAMPED RESULT: ${result}"
+          //println "CLAMPED RESULT: ${result}"
         }
       }
     }
     result
   }
 
+  def getMinMaxLevel()
+  {
+    Long minLevel = 9999
+    Long maxLevel = -1
+
+    this.grids.each{
+      if(it.z < minLevel) minLevel = it.z
+      if(it.z > maxLevel) maxLevel = it.z
+    }
+
+    [minLevel:minLevel, maxLevel:maxLevel]
+  }
+  TileCacheHints getHints()
+  {
+    def minMax = this.minMaxLevel
+
+    TileCacheHints result = new TileCacheHints(tileWidth:tileWidth,
+                       tileHeight:tileHeight,
+                       layerBounds:this.bounds,
+                       proj:this.proj,
+                       clipBounds:clippedBounds,
+                       minLevel:minMax.minLevel,
+                       maxLevel:minMax.maxLevel
+    )
+
+    result
+  }
+  def getLevelInformationAsJSON()
+  {
+    def levels = []
+
+    this.grids.each{grid->
+      levels << [
+              zoomLevel: grid.z,
+              minx:this.bounds.minX,
+              miny:this.bounds.minY,
+              maxx:this.bounds.maxX,
+              maxy:this.bounds.maxY,
+              ncols:grid.width,
+              nrows:grid.height,
+              unitsPerPixelX:grid.xResolution,
+              unitsPerPixelY:grid.yResolution,
+              tileDeltaX:this.tileWidth*grid.xResolution,
+              tileDeltaY:this.tileHeight*grid.yResolution
+      ]
+    }
+
+    def builder = new JsonBuilder(levels)
+
+    builder.toString()
+  }
+
+  void initializeGrids(TileCacheHints hints)
+  {
+    if(!this.bounds) this.bounds = hints.layerBounds
+
+    //println "BOUNDS????????????? ${this.bounds}"
+    if(!this.bounds)
+    {
+      if(!this.proj) this.proj = hints.proj
+
+      switch(this.proj?.epsg)
+      {
+        case 3857:
+          //println "FIXING 3857!!!!!!!!!!!!!!!!!!!"
+          // make sure it's square and always the same default bounds
+          //
+          this.bounds = new Bounds(-20037508.34278924,-20037508.34278924,20037508.34278924,20037508.34278924,this.proj)
+          break
+        default:
+          bounds = this.proj.bounds
+      }
+    }
+
+    if(!clippedBounds) clippedBounds = this.bounds
+
+    int minLevel = hints.minLevel?:0
+    int maxLevel = hints.maxLevel?:22
+
+    if((minLevel!=null)&&(maxLevel!=null))
+    {
+      initializeGrids(minLevel, maxLevel)
+    }
+
+   // println "HINTS: ${this.hints}"
+  }
   void initializeGrids(int minLevel, int maxLevel)
   {
     if(this.tileWidth&&
@@ -215,7 +301,7 @@ class TileCachePyramid extends Pyramid
        this.bounds&&
        this.proj)
     {
-      double modelSize = bounds.height
+      double modelSize = bounds.width
       int numberTilesAtRes0 = 1
       // if geographic
 
@@ -224,15 +310,14 @@ class TileCachePyramid extends Pyramid
         if(tileWidth==tileHeight)
         {
           numberTilesAtRes0 = 2
+          modelSize/=2.0
         }
       }
       int n = 0
       this.grids = (minLevel..maxLevel).collect { long z ->
         n = 2**z
-        double res = modelSize/n  // units per pixel
+        double res = modelSize/n
         new Grid(z,numberTilesAtRes0*n,n,res/tileWidth,res/tileWidth)
-        // http://wiki.openstreetmap.org/wiki/Zoom_levels
-        //  double res = 156412.0 / n
       }
 
     }
