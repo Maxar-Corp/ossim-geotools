@@ -63,7 +63,8 @@
             <h3>Build Tiles</h3>
 
             <p>Administer the tile server, and update existing tile reference layer from OMAR.</p>
-            <a href="admin/admin.html" class="btn btn-primary" role="button">View App</a>
+            <g:link action="admin" class="btn btn-primary" role="button">View App</g:link>
+
         </div>
     </div>
 </div>

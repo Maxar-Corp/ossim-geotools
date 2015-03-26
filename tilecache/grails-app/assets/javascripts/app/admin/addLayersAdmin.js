@@ -1,6 +1,12 @@
 //var url ='http://10.0.10.181:8080/tilecache/accumuloProxy/wfs?request=GetFeature&typeName=tilecache:layers'
 var url = "../json_layer.txt"; // For testing while not on RBT network
-var tileUrls = ['http://s1:8080/tilecache/accumuloProxy/wms?','http://s2:8080/tilecache/accumuloProxy/wms?','http://s3:8080/tilecache/accumuloProxy/wms?','http://s4:8080/tilecache/accumuloProxy/wms?'];
+
+var tileUrls = [
+	'http://s1:8080/tilecache/accumuloProxy/wms?',
+	'http://s2:8080/tilecache/accumuloProxy/wms?',
+	'http://s3:8080/tilecache/accumuloProxy/wms?',
+	'http://s4:8080/tilecache/accumuloProxy/wms?'
+];
 
 // ### Begin base map ###
 var osmLine = new ol.layer.Tile({
@@ -24,8 +30,9 @@ var osmPolygon = new ol.layer.Tile({
 var osmAll = new ol.layer.Tile({
 	opacity: 1.0,
 	source: new ol.source.TileWMS({
-	url: 'http://localhost:8080/geoserver/osm/wms?',
-	params: {'LAYERS': 'osm_all', 'TILED': true}
+//	url: 'http://localhost:8080/geoserver/osm/wms?',
+	url: 'http://52.0.52.104/geoserver/ged/wms',
+	params: {'LAYERS': /*'osm_all'*/'osm-group', 'TILED': true}
 }),
 	name: 'osmAll'
 });
