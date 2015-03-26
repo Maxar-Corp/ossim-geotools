@@ -27,10 +27,11 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <asset:image class="pull-left" style="width: 40px; height: 40px; padding-top: 10px;"
-                             src="app/rbt_symbol.png" alt="RBT Logo"/>
+                <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left"
+                                                    style="width: 40px; height: 40px; padding-top: 10px;"
+                             src="app/rbt_symbol.png" alt="RBT Logo"/></g:link>
+                <a class="navbar-brand">&nbsp;&nbsp;RBT | Tiles Viewer</a>
 
-                <a class="navbar-brand" href="#">RBT | Tiles Viewer</a>
             </div>
 
             <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
