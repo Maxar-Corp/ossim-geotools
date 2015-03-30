@@ -243,7 +243,7 @@ project( ':kettle-libs' ) {
       // compile 'pentaho:pentaho-hadoop-shims-api:5.1.2.0-101'
 
       compile 'org.codehaus.groovy:groovy-all:2.4.0'
-      compile 'org.geoscript:geoscript-groovy:1.4.0'
+      compile 'org.geoscript:geoscript-groovy:1.5.0'
       compile 'org.hibernate:hibernate-core:3.6.10.Final'
       compile 'org.postgresql:postgresql:9.3-1100-jdbc4'
       compile 'org.hibernate:hibernate-core:3.6.10.Final'
@@ -382,7 +382,7 @@ project( ':common-libs' ) {
       compile 'org.mortbay.jetty:jetty:6.1.26'
       compile 'org.codehaus.gpars:gpars:1.2.1'
       compile 'org.geotools:gt-imagemosaic-jdbc:12.2'
-      compile 'org.geoscript:geoscript-groovy:1.4.0'
+      compile 'org.geoscript:geoscript-groovy:1.5.0'
       compile "org.ossim:joms:${JOMS_VERSION}"
       compile 'com.github.davidmoten:geo:0.6.10'
       compile 'org.postgresql:postgresql:9.3-1100-jdbc4'
