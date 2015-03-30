@@ -3,9 +3,9 @@
 
 <head>
 
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
 
     <title>RBT | Tiles Administrator</title>
 
@@ -16,6 +16,7 @@
 <body>
 
 <div class="row text-center security-level-top">Unclassified</div>
+
 <div class="container">
     <nav style="top:28px" class="navbar navbar-fixed-top navbar-default" role="navigation">
         <div class="container-fluid">
@@ -28,20 +29,24 @@
                 </button>
 
                 <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left"
-                                                    style="width: 40px; height: 40px; padding-top: 10px;"
-                                                    src="app/rbt_symbol.png" alt="RBT Logo"/></g:link>
+                                                                                   style="width: 40px; height: 40px; padding-top: 10px;"
+                                                                                   src="app/rbt_symbol.png"
+                                                                                   alt="RBT Logo"/></g:link>
 
                 <a class="navbar-brand">&nbsp;&nbsp;RBT | Tiles Administrator</a>
             </div>
+
             <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="#" class="fa fa-gear" data-toggle="modal" data-target="#exportGeopackageModal">&nbsp;Options</a>
+                        <a href="#" class="fa fa-gear" data-toggle="modal"
+                           data-target="#exportGeopackageModal">&nbsp;Options</a>
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle fa fa-question-circle" data-toggle="dropdown">&nbsp;Help <b class="caret"></b></a>
+                        <a href="#" class="dropdown-toggle fa fa-question-circle" data-toggle="dropdown">&nbsp;Help <b
+                                class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
                                 <a class="fa fa-tachometer" href="#">&nbsp;&nbsp;View Dashboard</a>
@@ -101,6 +106,16 @@
 </nav>
 
 <asset:javascript src="app/admin.js"/>
+<g:javascript>
+    $( document ).ready( function ()
+    {
+        var initParams = ${raw( initParams.toString() )};
+
+        AddLayersAdmin.initialize(initParams);
+        AppAdmin.initialize(initParams);
+        //LayerManagerAdmin.initialize(initParams);
+    } );
+</g:javascript>
 
 </body>
 

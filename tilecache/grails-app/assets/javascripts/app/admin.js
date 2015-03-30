@@ -7,5 +7,6 @@
 //= require ../ol3/ol.js
 
 //= require admin/addLayersAdmin.js
+// require admin/layerManagerAdmin.js
 //= require admin/appAdmin.js
 //= require_self

@@ -34,7 +34,21 @@ class AppController
     ]
   }
 
-  def admin() {}
+  def admin()
+  {
+    [
+        initParams: [
+//            wmtsTileGrid: grailsApplication.config.tilecache.wmtsTileGrid ?: false,
+            wfsURL: grailsLinkGenerator.link( action: 'testWFS' ) //,
+//            urlProductExport: grailsLinkGenerator.link( controller: 'product', action: 'export' ),
+//            urlLayerActualBounds: grailsLinkGenerator.link( controller: 'accumuloProxy', action: 'actualBounds' ),
+//            accumuloProxyWmsURL: grailsLinkGenerator.link( controller: 'accumuloProxy', action: 'wms', absolute: true ),
+//            referenceLayers: grailsApplication.config.tilecache.referenceLayers,
+//            overlayLayers: grailsApplication.config.tilecache.overlayLayers,
+//            tileCacheLayers: tileCacheLayers
+        ] as JSON
+    ]
+  }
 
 
   def testWFS()
