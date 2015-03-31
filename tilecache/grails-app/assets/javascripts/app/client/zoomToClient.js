@@ -2,6 +2,12 @@ ZoomToClient = (function () {
 
     var zoomLocationSplit, zoomLat, zoomLon;
 
+    // Suppress Enter key from causing a submit behavior
+    $('#zoomToForm').keypress(function(event){
+        if (event.keyCode == 10 || event.keyCode == 13)
+            event.preventDefault();
+    });
+
     $('#zoomButton').on("click", function () {
 
         var coordSelect = $('#coordSelect').val();
@@ -133,12 +139,12 @@ ZoomToClient = (function () {
 
         //console.log('In ZoomTo ' + 'Lat:' + parseFloat(lat) + ' ' + ' Lon:' + parseFloat(lon));
 
-        var pan = ol.animation.pan({
-            duration: 2000,
-            easing: ol.easing.elastic,
-            source: /** @type {ol.Coordinate} */ (AppClient.mapView.getCenter())
-        });
-        AppClient.map.beforeRender(pan);
+        //var pan = ol.animation.pan({
+        //    duration: 2000,
+        //    easing: ol.easing.elastic,
+        //    source: /** @type {ol.Coordinate} */ (AppClient.mapView.getCenter())
+        //});
+        //AppClient.map.beforeRender(pan);
 
         AppClient.mapView.setCenter(ol.proj.transform([parseFloat(lon), parseFloat(lat)], 'EPSG:4326', 'EPSG:3857'))
         AppClient.mapView.setZoom(15);

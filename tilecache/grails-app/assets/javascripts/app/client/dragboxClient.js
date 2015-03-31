@@ -200,6 +200,8 @@ DragBoxClient = (function ()
 
                 $( "#createGp" ).removeClass( "disabled" );
 
+                // Sets the last tab (#jobInfo) as active, and disables the first two so
+                // that multiple submits can't be sent.
                 $('#ulAoiTabs a[href="#jobInfo"]').tab('show');
                 $("#liAoiInputTab").removeClass('active').addClass('disabled disabledTab');
                 $('#liAoiOutputTab').removeClass('active').addClass('disabled disabledTab');
@@ -215,7 +217,6 @@ DragBoxClient = (function ()
 
             // Remove the AOI feature if the user closes the geopackage modal window
             $('#exportGeopackageModal').on('hidden.bs.modal', function (e) {
-                alert('You tried to close me!');
                 aoiFeatureOverlay.removeFeature( aoiFeature );
             })
 

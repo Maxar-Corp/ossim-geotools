@@ -42,10 +42,9 @@
                 </form>
 
                 <div class="col-sm-6 col-md-6">
-                    <form class="navbar-form" role="search">
+                    <form class="navbar-form" role="search" id="zoomToForm">
                         <div class="form-group">
                             <div class="input-group">
-
                                 <div class="input-group-btn">
                                     <select class="form-control selectpicker" data-style="btn-primary" id="coordSelect">
                                         <option data-icon="glyphicon-map-marker"
@@ -55,8 +54,7 @@
                                     </select>
                                 </div>
                                 <input class="form-control" id="coordInput" type="text"
-                                       placeholder="Search by coordinates">
-
+                                       placeholder="Search by coordinates" value="39.5742132,-85.6194194">
                                 <div class="input-group-btn">
                                     <button id="zoomButton" class="btn btn-primary" type="button"><i
                                             class="glyphicon glyphicon-search"></i>
@@ -65,7 +63,6 @@
 
                             </div>
                         </div>
-
                     </form>
                 </div>
                 <ul class="nav navbar-nav navbar-right">
