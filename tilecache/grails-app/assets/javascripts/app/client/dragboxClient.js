@@ -34,6 +34,9 @@ DragBoxClient = (function ()
         } )
     } );
 
+    // Add the DragBox control upon app load.  The interaction is available
+    // by using the <ALT> key and defining a box
+    AppClient.map.addInteraction( dragBoxControl );
 
     return {
         initialize: function ( dragBoxParams )
@@ -43,9 +46,10 @@ DragBoxClient = (function ()
 
             $( '#createGp' ).on( "click", function ()
             {
-
-                AppClient.map.addInteraction( dragBoxControl );
                 $( "#createGp" ).addClass( "disabled" );
+
+                // Open a modal dialog, and pass the aoiFeature geometry.
+                $( '#exportGeopackageModal' ).modal( 'show' );
 
             } );
 
@@ -88,9 +92,6 @@ DragBoxClient = (function ()
                 });
                 console.log('Initial min: ' + $("#aoiLodSlider").data('slider').min);
                 console.log('Initial max: ' + $("#aoiLodSlider").data('slider').max);
-
-                // Open a modal dialog, and pass the aoiFeature geometry.
-                $( '#exportGeopackageModal' ).modal( 'show' );
 
                 // Use an ajax request to pull the level of detail and the bounding box for the AOI
                 $.ajax( {
@@ -136,6 +137,8 @@ DragBoxClient = (function ()
                 } );
 
                 $( '#aoiPolygon' ).html( outputWkt );
+
+                $( "#createGp" ).removeClass( "disabled" );
 
             } );
 
