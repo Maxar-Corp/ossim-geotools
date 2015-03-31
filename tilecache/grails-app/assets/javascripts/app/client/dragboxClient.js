@@ -51,6 +51,8 @@ DragBoxClient = (function ()
                 // Open a modal dialog, and pass the aoiFeature geometry.
                 $( '#exportGeopackageModal' ).modal( 'show' );
 
+                // Display a warning toast, with no title
+
             } );
 
             $( '#cancelGpButton' ).on( "click", function ()

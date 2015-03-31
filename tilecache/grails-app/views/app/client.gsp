@@ -27,17 +27,14 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left"
-                                                    style="width: 40px; height: 40px; padding-top: 10px;"
-                             src="app/rbt_symbol.png" alt="RBT Logo"/></g:link>
+                <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left" style="width: 40px; height: 40px; padding-top: 10px;" src="app/rbt_symbol.png" alt="RBT Logo"/></g:link>
                 <a class="navbar-brand">&nbsp;&nbsp;RBT | Tiles Viewer</a>
 
             </div>
 
             <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
                 <form class="navbar-form navbar-left" role="search">
-                    <button type="button" id="createGp" class="btn btn-primary disabled" data-toggle="tooltip"
-                            data-placement="bottom" title="Use the <Alt> key to generate an AOI for the Geopackage">Create Geopackage</button>
+                    <button type="button" id="createGp" class="btn btn-primary disabled" data-toggle="tooltip" data-placement="bottom" title="Use the <Alt> key to generate an AOI for the Geopackage">Create Geopackage</button>
                 </form>
                 <div class="col-sm-6 col-md-6">
                     <form class="navbar-form" role="search" id="zoomToForm">

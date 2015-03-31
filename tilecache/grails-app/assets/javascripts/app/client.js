@@ -12,6 +12,7 @@
 //= require client/bootstrap-datepicker.js
 //= require client/bootstrap-slider.js
 //= require client/geopoint.js
+//= require client/toastr.min.js
 
 /* App specific libs */
 //= require client/addLayersClient.js

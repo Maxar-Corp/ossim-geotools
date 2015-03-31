@@ -37,8 +37,22 @@ AppClient = (function () {
         target: 'map'
     });
 
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-bottom-right",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut",
+        "timeOut": "10000"
+
+    }
+    toastr.info('Use the < ALT > key to define an Area of Interest, and then click "Create Geopackage" to generate a .gpkg file.', 'Define Geopackage AOI');
+
     return {
         initialize: function (appClientParams) {
+
+
+
 
             $.each(AddLayerClient.layersArray, function (i, obj) {
                 map.addLayer(obj);
