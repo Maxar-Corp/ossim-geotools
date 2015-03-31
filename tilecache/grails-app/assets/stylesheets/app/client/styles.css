@@ -23,9 +23,9 @@ h1 { font-family: 'Comfortaa', Arial, serif; font-weight: 400; }
 	box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
 }
 
-/*.disabledTab{*/
-    /*pointer-events: none;*/
-/*}*/
+.disabledTab{
+    pointer-events: none;
+}
 
 #map { 
 	position: absolute; 

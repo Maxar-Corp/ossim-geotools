@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 
-<head>
+    <head>
 
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -13,12 +13,12 @@
 
 </head>
 
-<body>
+    <body>
 
-<div class="row text-center security-level-top">Unclassified</div>
+        <div class="row text-center security-level-top">Unclassified</div>
 
-<div class="container">
-    <nav style="top:28px" class="navbar navbar-fixed-top navbar-default shadow" role="navigation">
+        <div class="container">
+            <nav style="top:28px" class="navbar navbar-fixed-top navbar-default shadow" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-navbar-collapse-1">
@@ -78,89 +78,59 @@
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
-</div><!-- /.container" -->
+        </div><!-- /.container" -->
 
-<div class="navbar-offset"></div>
+        <div class="navbar-offset"></div>
 
-<div id='currentZoomLevel2'></div>
+        <div id='currentZoomLevel2'></div>
 
-<div id="map" class="map"></div>
+        <div id="map" class="map"></div>
 
-<div class="row main-row">
-    <div class="col-sm-4 col-md-3 sidebar sidebar-left pull-left">
-        <div class="panel-group sidebar-body" id="accordion-left">
-            <div class="panel panel-default shadow">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" href="#layers">
-                            <i class="fa fa-map-marker"></i>
-                            Layers
-                        </a>
-                        <span class="pull-right slide-submenu">
-                            <i class="fa fa-chevron-left"></i>
-                        </span>
-                    </h4>
-                </div>
-
-                <div id="layers" class="panel-collapse collapse in">
-                    <div class="panel-body list-group">
-                        <div id="layertree" class="tree">
-                            <ul>
-                                <li></li>
-                            </ul>
+        <div class="row main-row">
+            <div class="col-sm-4 col-md-3 sidebar sidebar-left pull-left">
+                <div class="panel-group sidebar-body" id="accordion-left">
+                    <div class="panel panel-default shadow">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" href="#layers">
+                                    <i class="fa fa-map-marker"></i>
+                                    Layers
+                                </a>
+                                <span class="pull-right slide-submenu">
+                                    <i class="fa fa-chevron-left"></i>
+                                </span>
+                            </h4>
                         </div>
-                        <!-- <a href="#" class="list-group-item">
-									<i class="fa fa-globe"></i> Open Street Map
-								</a>
-								<a href="#" class="list-group-item disabled">
-									<i class="fa fa-globe"></i> Imagery
-								</a> -->
-                        <!-- 								<p>Click on a layer and then use the arrows to rearrange the rendering order.</p>
-								<ul class="layerstack controls"></ul>
-								<br>
-								<div class="controls">
-									<button id="raise" class="btn btn-primary btn-xs">
-										<span class="glyphicon glyphicon-arrow-up"></span>
-									</button>
-									<br/>
-									<button id="lower" class="btn btn-primary btn-xs">
-										<span class="glyphicon glyphicon-arrow-down"></span>
-									</button>
-								</div> -->
+                        <div id="layers" class="panel-collapse collapse in">
+                            <div class="panel-body list-group">
+                                <div id="layertree" class="tree">
+                                    <ul>
+                                        <li></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                    <div class="panel panel-default shadow">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" href="#properties">
+                                    <i class="fa fa-wrench"></i>
+                                    Tools
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="properties" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                            </div>
+                        </div>
+                    </div>
+                 </div>
             </div>
 
-            <div class="panel panel-default shadow">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" href="#properties">
-                            <i class="fa fa-wrench"></i>
-                            Tools
-                        </a>
-                    </h4>
-                </div>
+            <div class="col-sm-4 col-md-6 mid"></div>
 
-                <div id="properties" class="panel-collapse collapse in">
-                    <div class="panel-body">
-                        <!-- <p>Measure:</p>
-							<form class="form-inline">
-							<label>Geometry type &nbsp;</label>
-							<select id="type">
-								<option value="length">Length</option>
-								<option value="area">Area</option>
-							</select>
-							</form> -->
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-sm-4 col-md-6 mid"></div>
-
-    <div class="col-sm-4 col-md-3 sidebar sidebar-right pull-right">
+            <div class="col-sm-4 col-md-3 sidebar sidebar-right pull-right">
         <div class="panel-group sidebar-body" id="accordion-right">
             <div class="panel panel-default shadow">
                 <div class="panel-heading">
@@ -184,7 +154,6 @@
                         <!-- <p class="fa fa-globe">
 									&nbsp;Current Zoom Level: <span class="alert alert-success"id="currentZoomLevel"></span>
 								</p> -->
-
                         <table id="tilesList" class="table table-striped table-hover table-condensed table-responsive">
                             <caption>Tile Sets</caption>
                             <tr>
@@ -199,107 +168,82 @@
             </div>
         </div>
     </div>
-</div>
+        </div>
 
-<div class="mini-submenu mini-submenu-left pull-left shadow">
-    <i class="fa fa-list-alt"></i>
-</div>
+        <div class="mini-submenu mini-submenu-left pull-left shadow">
+            <i class="fa fa-list-alt"></i>
+        </div>
 
-<div class="mini-submenu mini-submenu-right pull-right shadow">
-    <i class="fa fa-tasks"></i>
-</div>
+        <div class="mini-submenu mini-submenu-right pull-right shadow">
+            <i class="fa fa-tasks"></i>
+        </div>
 
-<nav class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom ">
-    <div class="container " style="min-height:">
-        Unclassified
-    </div>
-</nav>
-
-<!-- Export to Geopackage Form -->
-<div class="modal fade" id="exportGeopackageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
-     Saria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-
-                <h3 class="modal-title fa fa-cube" id="ModalLabel">&nbsp;&nbsp;&nbsp;Export to Geopackage</h3>
+        <nav class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom ">
+            <div class="container " style="min-height:">
+                Unclassified
             </div>
+        </nav>
 
-            <div class="modal-body">
-                <form class="form-inline">
-                    <div class="container">
-                        <div class="row col-sm-6 col-md-6">
-                            <div role="tabpanel">
-
-                                <!-- Nav tabs -->
-                                <ul class="nav nav-tabs" role="tablist">
-
-                                <li role="presentation" class="active"><a href="#inputs" aria-controls="home" role="tab" data-toggle="tab">Inputs</a></li>
-                                <li role="presentation"><a href="#outputs" aria-controls="profile" role="tab" data-toggle="tab">Outputs</a></li>
-                                <li  role="presentation"><a href="#jobInfo" aria-controls="messages" role="tab" data-toggle="tab">Job Info</a></li>
-
-                                </ul>
-
-                                <!-- Tab panes -->
-                                <div class="tab-content">
-
-                                <div role="tabpanel" class="tab-pane active" id="inputs">
-                                    <div class="row">
-                                        <div class="col-sm-5 col-md-5 center-text">
-
-                                            <h4>Input Parameters:</h4>
-                                            <p>Verbiage about current input parameters</p>
-                                            <p><strong>WKT Polygon:&nbsp;</strong><span class="small" id="aoiPolygon"></span></p>
+        <!-- Export to Geopackage Form -->
+        <div class="modal fade" id="exportGeopackageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" Saria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h3 class="modal-title fa fa-cube" id="ModalLabel">&nbsp;&nbsp;&nbsp;Export to Geopackage</h3>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-inline">
+                            <div class="container">
+                                <div class="row col-sm-6 col-md-6">
+                                    <!-- Nav tabs -->
+                                    <ul class="nav nav-pills" role="tablist" id="ulAoiTabs">
+                                        <li id="liAoiInputTab" role="presentation" class="active"><a href="#inputs" aria-controls="home" role="tab" data-toggle="tab">Inputs</a></li>
+                                        <li id="liAoiOutputTab" role="presentation"><a href="#outputs" aria-controls="profile" role="tab" data-toggle="tab">Outputs</a></li>
+                                        <li id="liJobInfoTab" class="disabled disabledTab" role="presentation"><a href="#jobInfo" aria-controls="messages" role="tab" data-toggle="tab">Job Info</a></li>
+                                    </ul>
+                                    <!-- Tab panes -->
+                                    <div class="tab-content">
+                                        <div role="tabpanel" class="tab-pane active" id="inputs">
+                                            <div class="row">
+                                                <h4>Input Parameters:</h4>
+                                                <p>Verbiage about current input parameters</p>
+                                                <p><strong>WKT Polygon:&nbsp;</strong><span class="small" id="aoiPolygon"></span></p>
+                                            </div>
+                                        </div>
+                                        <div role="tabpanel" class="tab-pane" id="outputs">
+                                            <h4>Output Parameters:</h4>
+                                            <p>Verbiage about modifying the output parameters using the controls below.</p>
+                                            <p><strong>Bounding Box:</strong><br><span id="aoiBbox"></span></p>
+                                            <p><strong>Levels of Detail:</strong>&nbsp;<span id="aoiLod"></span></p>
+                                            <b><span id="minLodTxt">Min: 0</span>&nbsp;&nbsp;&nbsp;</b><input style="width: 180px" type="text" data-slider-min="0" data-slider-max="22" data-slider-step="1" data-slider-value="[0,22]" id="aoiLodSlider"><b>&nbsp;&nbsp;&nbsp;<span id="maxLodTxt">Max: 22</span></b>
+                                            <br>
+                                            <br>
+                                            <button type="button" id="submitAoi" class="btn btn-success">Submit</button>
+                                                <!-- <button type="button" id="modifyAoi" class="btn btn-warning disabled">Modify</button> -->
+                                            <button type="button" id="cancelAoi" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                        </div>
+                                        <div role="tabpanel" class="tab-pane" id="jobInfo">
+                                            <h4>Submitted Job Information:</h4>
+                                            <p>No job info</p>
+                                            <div id="aoiJobInfo" class="col-sm-5 col-md-5 alert alert-success">
+                                                <p><strong>ID:</strong>&nbsp;<span id="aoiJobId"></span></p>
+                                                <p><strong>Layers:</strong>&nbsp;<span id="aoiLayers"></span></p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div role="tabpanel" class="tab-pane" id="outputs">
-                                    <div class="col-sm-5 col-md-5">
-
-                                        <h4>Output Parameters:</h4>
-                                        <p>Verbiage about modifying the output parameters using the controls below.</p>
-                                        <p><strong>Bounding Box:</strong><br><span id="aoiBbox"></span></p>
-                                        <p><strong>Levels of Detail:</strong>&nbsp;<span id="aoiLod"></span></p>
-                                        <b><span id="minLodTxt">Min: 0</span>&nbsp;&nbsp;&nbsp;</b><input style="width: 180px" type="text" data-slider-min="0"
-                                                                                                          data-slider-max="22" data-slider-step="1" data-slider-value="[0,22]" id="aoiLodSlider"><b>&nbsp;&nbsp;&nbsp;<span id="maxLodTxt">Max: 22</span></b>
-                                        <br>
-                                        <br>
-                                        <button type="button" id="submitAoi" class="btn btn-success">Submit</button>
-                                        <!-- <button type="button" id="modifyAoi" class="btn btn-warning disabled">Modify</button> -->
-                                        <button type="button" id="cancelAoi" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                                    </div>
-                                </div>
-                                <div role="tabpanel" class="tab-pane" id="jobInfo">
-
-                                    <h4>Submitted Job Information:</h4>
-                                    <p>No job info</p>
-
-                                    <div id="aoiJobInfo" class="col-sm-5 col-md-5 alert alert-success">
-
-                                        <p><strong>ID:</strong>&nbsp;<span id="aoiJobId"></span></p>
-
-                                        <p><strong>Layers:</strong>&nbsp;<span id="aoiLayers"></span></p>
-                                    </div>
-                                </div>
-
                             </div>
-
-                            </div>
-                        </div>
-                    </div>
                 </form>
             </div><!-- /.modal-body -->
 
         </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog modal-lg -->
-</div><!-- /.modal fade "exportGeopackageModal" -->
+            </div><!-- /.modal-dialog modal-lg -->
+        </div><!-- /.modal fade "exportGeopackageModal" -->
 
-<asset:javascript src="app/client.js"/>
+    <asset:javascript src="app/client.js"/>
 
-<g:javascript>
+    <g:javascript>
     var initParams = ${raw( initParams.toString() )};
     AddLayerClient.initialize( initParams );
     AppClient.initialize( initParams );
@@ -307,6 +251,7 @@
     LayerManagerClient.initialize( initParams );
     ZoomToClient.initialize( initParams );
 </g:javascript>
+
 </body>
 
 </html>
