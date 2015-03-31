@@ -3,15 +3,15 @@ class UrlMappings
 
   static mappings = {
     // remove the format overide for the getTile action
-    "/accumuloProxy/getTile/$id?"( action: "getTile", controller: "accumuloProxy" ) {
+    "/wmts/getTile/$id?"( action: "getTile", controller: "accumuloProxy" ) {
     }
     "/accumuloProxy/getTiles/$id?"( action: "getTiles", controller: "accumuloProxy" ) {
     }
-    "/accumuloProxy/wms/$id?"( action: "wms", controller: "accumuloProxy" ) {
+    "/wms/index/$id?"( action: "index", controller: "wms" ) {
     }
-    "/accumuloProxy/wmts/$id?"( action: "wmts", controller: "accumuloProxy" ) {
+    "/wmts/index/$id?"( action: "index", controller: "wmts" ) {
     }
-    "/accumuloProxy/tileParamGrid"( action: "tileParamGrid", controller: "accumuloProxy" ) {
+    "/wmts/tileParamGrid"( action: "tileParamGrid", controller: "wmts" ) {
     }
     
     "/$controller/$action?/$id?(.$format)?" {

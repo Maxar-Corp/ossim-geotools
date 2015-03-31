@@ -1,10 +1,14 @@
 package tilecache
 
+import tilecache.wfs.WfsCommand
+import tilecache.wms.WmsCommand
+import tilecache.wmts.WmtsCommand
+
 class TileCacheFilters
 {
 
   def filters = {
-    tileParamGrid( uri: '/accumuloProxy/tileParamGrid' ) {
+    tileParamGrid( uri: '/wmts/tileParamGrid' ) {
       before = {
         //println "before: ${params}"
         WmtsCommand.fixParamNames( params )
@@ -18,7 +22,7 @@ class TileCacheFilters
       }
     }
 
-    getTile( uri: '/accumuloProxy/wmts' ) {
+    getTile( uri: '/wmts/index' ) {
       before = {
         //println "before: ${params}"
         WmtsCommand.fixParamNames( params )
@@ -61,7 +65,7 @@ class TileCacheFilters
     }
 
 
-    getMap( uri: '/accumuloProxy/wms' ) {
+    getMap( uri: '/wms/index' ) {
       before = {
         //println "before: ${params}"
         WmsCommand.fixParamNames( params )
@@ -75,7 +79,7 @@ class TileCacheFilters
       }
     }
 
-    getFeature( uri: '/accumuloProxy/wfs' ) {
+    getFeature( uri: '/wfs/index' ) {
       before = {
         //println "before: ${params}"
         WfsCommand.fixParamNames( params )

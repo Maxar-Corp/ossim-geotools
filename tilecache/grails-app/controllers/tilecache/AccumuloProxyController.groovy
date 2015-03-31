@@ -12,73 +12,6 @@ class AccumuloProxyController
 
    }
 
-   def wmts(WmtsCommand cmd)
-   {
-      /*
-      GeoPackage pkg
-
-      def tileLayer = accumuloProxyService.daoTileCacheService.newGeoscriptTileLayer("bmng")
-
-      render ""
-
-      return null
-      */
-      // need to support case insensitive data bindings
-      //println cmd
-
-      if ( cmd.validate() )
-      {
-         if ( cmd.request.toLowerCase() == "gettile" )
-         {
-
-            def tile = accumuloProxyService.getTile( cmd )
-
-            render contentType: tile.contentType, file: tile.buffer
-         }
-      }
-      else
-      {
-         render ""
-      }
-   }
-
-   def wms(WmsCommand cmd)
-   {
-      try
-      {
-         // need to support case insensitive data bindings
-         println cmd
-
-         if ( cmd.validate() )
-         {
-            if ( cmd.request.toLowerCase() == "getmap" )
-            {
-               def tileAccessUrl = createLink( absolute: true, controller: "accumuloProxy", action: "tileAccess" ) as String
-
-               //println tileAccessUrl
-               def results = accumuloProxyService.getMap( cmd, tileAccessUrl )
-
-               // println bytes.size()
-               if ( results.buffer.size() > 0 )
-               {
-                  render contentType: results.contentType, file: results.buffer
-               }
-            }
-         }
-         else
-         {
-            render "${cmd.errors}"
-         }
-      }
-      catch ( def e )
-      {
-         println "---------------------------------------------------------"
-         e.printStackTrace()
-         // response.outputStream.close()
-
-         //render e.toString()
-      }
-   }
    def actualBounds(){
       println params
 
@@ -92,41 +25,6 @@ class AccumuloProxyController
 
       println bounds
       render contentType: "application/json", (bounds as JSON).toString()
-   }
-   def wfs(WfsCommand cmd)
-   {
-      response.setHeader( "Access-Control-Allow-Origin", "*" );
-      response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
-      response.setHeader( "Access-Control-Max-Age", "3600" );
-      response.setHeader( "Access-Control-Allow-Headers", "x-requested-with" );
-
-      if ( cmd.validate() )
-      {
-         switch ( cmd.request.toLowerCase() )
-         {
-            case "getfeature":
-               def result = accumuloProxyService.wfsGetFeature( cmd )
-               if ( params.callback )
-               {
-                  result = "${params.callback}(${result});";
-               }
-               // allow cross domain
-               // println output
-               render contentType: result.contentType, file: result.buffer
-               break
-            case "getcapabilities":
-               break
-            case "DescribeFeatureType":
-               break
-            default:
-               break
-         }
-         // response.outputStream.close()
-      }
-      else
-      {
-         render "${cmd.errors}"
-      }
    }
 
    /*
@@ -279,11 +177,4 @@ class AccumuloProxyController
 //    render ""
 //    null
 //  }
-
-   def tileParamGrid(WmtsCommand cmd)
-   {
-      def results = accumuloProxyService.getTileGridOverlay( cmd )
-
-      render contentType: results.contentType, file: results.buffer
-   }
 }

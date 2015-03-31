@@ -1,14 +1,14 @@
 AddLayersAdmin = (function ()
 {
-    //var url ='http://10.0.10.181:8080/tilecache/accumuloProxy/wfs?request=GetFeature&typeName=tilecache:layers'
+    //var url ='http://10.0.10.181:8080/tilecache/wfs?request=GetFeature&typeName=tilecache:layers'
     //var url = "../json_layer.txt"; // For testing while not on RBT network
     var wfsUrl;
 
     var tileUrls = [
-        'http://s1:8080/tilecache/accumuloProxy/wms?',
-        'http://s2:8080/tilecache/accumuloProxy/wms?',
-        'http://s3:8080/tilecache/accumuloProxy/wms?',
-        'http://s4:8080/tilecache/accumuloProxy/wms?'
+        'http://s1:8080/tilecache/wms?',
+        'http://s2:8080/tilecache/wms?',
+        'http://s3:8080/tilecache/wms?',
+        'http://s4:8080/tilecache/wms?'
     ];
 
     // ### Begin base map ###
@@ -84,7 +84,7 @@ AddLayersAdmin = (function ()
     var reference = new ol.layer.Tile( {
         opacity: 1.0,
         source: new ol.source.TileWMS( {
-            //url: 'http://10.0.10.181:8080/tilecache/accumuloProxy/wms?',
+            //url: 'http://10.0.10.181:8080/tilecache/wms?',
             urls: tileUrls,
             params: {'VERSION': '1.1.1', 'LAYERS': 'reference', 'TILED': true, 'FORMAT': 'image/jpeg'}
         } ),
@@ -94,7 +94,7 @@ AddLayersAdmin = (function ()
     var reference2 = new ol.layer.Tile( {
         opacity: 1.0,
         source: new ol.source.TileWMS( {
-            //url: 'http://10.0.10.181:8080/tilecache/accumuloProxy/wms?',
+            //url: 'http://10.0.10.181:8080/tilecache/wms?',
             urls: tileUrls,
             params: {'VERSION': '1.1.1', 'LAYERS': 'reference2', 'TILED': true, 'FORMAT': 'image/jpeg'}
         } ),
@@ -104,7 +104,7 @@ AddLayersAdmin = (function ()
     var reference3 = new ol.layer.Tile( {
         opacity: 1.0,
         source: new ol.source.TileWMS( {
-            //url: 'http://10.0.10.181:8080/tilecache/accumuloProxy/wms?',
+            //url: 'http://10.0.10.181:8080/tilecache/wms?',
             urls: tileUrls,
             params: {'VERSION': '1.1.1', 'LAYERS': 'reference3', 'TILED': true} //, 'FORMAT': 'image/jpeg'}
         } ),
@@ -114,7 +114,7 @@ AddLayersAdmin = (function ()
     var reference4 = new ol.layer.Tile( {
         opacity: 1.0,
         source: new ol.source.TileWMS( {
-            //url: 'http://10.0.10.181:8080/tilecache/accumuloProxy/wms?',
+            //url: 'http://10.0.10.181:8080/tilecache/wms?',
             urls: tileUrls,
             params: {'VERSION': '1.1.1', 'LAYERS': 'reference4', 'TILED': true} //, 'FORMAT': 'image/jpeg'}
         } ),
@@ -124,7 +124,7 @@ AddLayersAdmin = (function ()
     var highres_us = new ol.layer.Tile( {
         opacity: 1.0,
         source: new ol.source.TileWMS( {
-            //url: 'http://10.0.10.181:8080/tilecache/accumuloProxy/wms?',
+            //url: 'http://10.0.10.181:8080/tilecache/wms?',
             urls: tileUrls,
             params: {'VERSION': '1.1.1', 'LAYERS': 'highres_us', 'TILED': true} //, 'FORMAT': 'image/jpeg'}
         } ),
@@ -159,7 +159,7 @@ AddLayersAdmin = (function ()
             //console.log('addlayers firing with values: ' + id + ' ' + name);
             //var id = 1;
 
-            wmsUrl = 'http://10.0.10.181:8080/tilecache/accumuloProxy/wms?';
+            wmsUrl = 'http://10.0.10.181:8080/tilecache/wms?';
             //name = 'reference';
 
             //url='http://demo.boundlessgeo.com/geoserver/wms';

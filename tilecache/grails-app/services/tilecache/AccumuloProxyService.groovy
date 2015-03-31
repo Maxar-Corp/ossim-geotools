@@ -64,130 +64,6 @@ class AccumuloProxyService implements InitializingBean
       // println "DATA SOURCE UNPROXIED ===== ${dataSourceUnproxied}"
    }
 
-   def getTile(WmtsCommand cmd)
-   {
-      def x = cmd.tileCol
-      def y = cmd.tileRow
-      def z = cmd.tileMatrix.toInteger()
-
-      def ostream = new ByteArrayOutputStream()
-      def contentType = cmd.format
-
-      def layer = daoTileCacheService.getLayerInfoByName( cmd.layer )
-      if ( layer )
-      {
-         def tiles = daoTileCacheService.getTilesWithinConstraint( layer, [x: x, y: y, z: z] )
-
-         if ( tiles )
-         {
-            def formatType = cmd.format.split( "/" )[-1].toLowerCase()
-            def inputStream = new ByteArrayInputStream( tiles[0].data )
-            BufferedImage image = ImageIO.read( inputStream )
-            def outputImage = image
-            if ( image )
-            {
-               switch ( formatType )
-               {
-                  case "jpeg":
-                  case "jpg":
-                     if ( image.raster.numBands > 3 )
-                     {
-                        outputImage = JAI.create( "BandSelect", image, [0, 1, 2] as int[] )
-                     }
-                     break;
-                  default:
-                     //outputImage = image
-                     break
-               }
-            }
-
-            ImageIO.write( outputImage, formatType, ostream )
-         }
-         else
-         {
-            // exception output
-         }
-      }
-      else
-      {
-         // exception output
-      }
-
-      [contentType: contentType, buffer: ostream.toByteArray()]
-   }
-
-   def getMap(WmsCommand cmd, String tileAccessUrl)
-   {
-      def startTime = System.currentTimeMillis()
-      GeoScriptMap map
-      def layers = []
-      def element = getMapBlockingQueue.take()
-      def contentType = cmd.format
-      def result = new ByteArrayOutputStream()
-
-//println "_______________________________"
-//println cmd
-//println "_______________________________"
-      try
-      {
-         def gridFormat = new ImageMosaicJDBCFormat()
-//GridFormatFinder.findFormat(new URL("http://localhost:8080/tilecache/accumuloProxy/tileAccess?layer=BMNG"))
-         cmd.layers.split( "," ).each { layer ->
-            //   def gridReader = gridFormat.getReader( new URL( "${tileAccessUrl}?layer=${layer}" ) )
-            //   def mosaic = new GridReaderLayer( gridReader, new RasterSymbolizer().gtStyle )
-
-            def l = layerCache.get(layer)
-            if(!l)
-            {
-               l = daoTileCacheService.newGeoscriptTileLayer(layer)
-               layerCache.put(layer, l)
-            }
-            // println l
-            if(l) layers << l
-         }
-
-         //def img = ImageIO.read("/Volumes/DataDrive/data/earth2.tif" as File)
-         // BufferedImage dest = img.getSubimage(0, 0, cmd.width, cmd.height);
-
-         // ImageIO.write(dest, cmd.format.split('/')[-1],response.outputStream)
-         //img = null
-
-         map = new GeoScriptMap(
-                 width: cmd.width,
-                 height: cmd.height,
-                 proj: cmd.srs,
-                 type: cmd.format.split( '/' )[-1],
-                 bounds: cmd.bbox.split( "," ).collect() { it.toDouble() } as Bounds, // [-180, -90, 180, 90] as Bounds,
-                 // backgroundColor:cmd.bgcolor,
-                 layers: layers
-         )
-
-         // def gzipped = new GZIPOutputStream(result)
-         //  OutputStreamWriter writer=new OutputStreamWriter(gzipped);
-         map.render( result )
-         //gzipped.finish();
-         //writer.close();
-
-      }
-      catch ( def e )
-      {
-         // really need to write exception to stream
-
-         e.printStackTrace()
-      }
-      finally
-      {
-         // map?.layers.each{it.dispose()}
-         map?.close()
-         getMapBlockingQueue.put( element )
-      }
-      // println "Time: ${(System.currentTimeMillis()-startTime)/1000} seconds"
-      //println result.toByteArray().size()
-
-      [contentType: contentType, buffer: result.toByteArray()]
-      // println "Done GetMap ${tempId}"
-
-   }
    /**
     *
     * We will create the Layer table and the table for caching tiles in postgres and
@@ -341,42 +217,6 @@ class AccumuloProxyService implements InitializingBean
 
       daoTileCacheService.getActualLayerBounds(params?.name, constraints)
    }
-   def wfsGetFeature(WfsCommand cmd)
-   {
-      def typename = cmd.typeName.split( ":" )[-1]
-      def typenameLowerCase = typename.toLowerCase()
-      //println typeName
-      def response = [:]
-
-      if ( typenameLowerCase == "layers" )
-      {
-
-         // application/javascript if callback is available
-         response.contentType = "application/json"
-         def layers = daoTileCacheService.listAllLayers()
-         def result = [type: "FeatureCollection", features: []]
-         layers.each { layer ->
-            def jsonPoly = new GeometryJSON().toString( layer.bounds )
-            def obj = new JsonSlurper().parseText( jsonPoly ) as HashMap
-            def layerInfo = [type: "Feature", geometry: obj]
-            layerInfo.properties = [name            : layer.name,
-                                    id              : layer.id,
-                                    tile_store_table: layer.tileStoreTable,
-                                    epsg_code       : layer.epsgCode,
-                                    min_level       : layer.minLevel,
-                                    max_level       : layer.maxLevel,
-                                    tile_width      : layer.tileWidth,
-                                    tile_height     : layer.tileHeight]
-            result.features << layerInfo
-         }
-         response.buffer = ( result as JSON ).toString()?.bytes
-
-      }
-//    else
-//    {
-//    }
-      response
-   }
 
    def getLayers(AccumuloProxyGetLayersCommand cmd)
    {
@@ -398,34 +238,6 @@ class AccumuloProxyService implements InitializingBean
          }
       }
       response
-   }
-
-   def getTileGridOverlay(WmtsCommand cmd)
-   {
-      def text = "${cmd.tileMatrix}/${cmd.tileCol}/${cmd.tileRow}"
-      def tileSize = 256
-
-      BufferedImage image = new BufferedImage(256, 256, BufferedImage.TYPE_INT_ARGB)
-      ByteArrayOutputStream ostream = new  ByteArrayOutputStream()
-
-      def g2d = image.createGraphics()
-      def font = new Font("TimesRoman", Font.PLAIN, 18)
-      def bounds = new TextLayout(text, font, g2d.fontRenderContext).bounds
-
-      g2d.color = Color.red
-      g2d.font = font
-      g2d.drawRect(0, 0, tileSize, tileSize)
-
-      // Center Text in tile
-      g2d.drawString(text,
-              Math.rint((tileSize - bounds.@width ) / 2) as int,
-              Math.rint((tileSize - bounds.@height) / 2) as int)
-
-      g2d.dispose()
-
-      ImageIO.write(image, 'png', ostream)
-
-      [contentType: 'image/png', buffer: ostream.toByteArray()]
    }
 }
 
