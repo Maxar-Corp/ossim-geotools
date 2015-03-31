@@ -7,7 +7,7 @@ class TileCacheFilters
     tileParamGrid( uri: '/accumuloProxy/tileParamGrid' ) {
       before = {
         //println "before: ${params}"
-        AccumuloProxyWmtsCommand.fixParamNames( params )
+        WmtsCommand.fixParamNames( params )
         //println "after: ${params}"
       }
       after = { Map model ->
@@ -21,7 +21,7 @@ class TileCacheFilters
     getTile( uri: '/accumuloProxy/wmts' ) {
       before = {
         //println "before: ${params}"
-        AccumuloProxyWmtsCommand.fixParamNames( params )
+        WmtsCommand.fixParamNames( params )
         //println "after: ${params}"
       }
       after = { Map model ->
@@ -64,7 +64,7 @@ class TileCacheFilters
     getMap( uri: '/accumuloProxy/wms' ) {
       before = {
         //println "before: ${params}"
-        AccumuloProxyWmsCommand.fixParamNames( params )
+        WmsCommand.fixParamNames( params )
         //println "after: ${params}"
       }
       after = { Map model ->
@@ -78,7 +78,7 @@ class TileCacheFilters
     getFeature( uri: '/accumuloProxy/wfs' ) {
       before = {
         //println "before: ${params}"
-        AccumuloProxyWfsCommand.fixParamNames( params )
+        WfsCommand.fixParamNames( params )
         //println "after: ${params}"
       }
       after = { Map model ->
