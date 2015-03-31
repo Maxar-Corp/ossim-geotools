@@ -164,3 +164,21 @@ tilecache {
            [url: "http://52.0.52.104/geoserver/ged/wms", name: 'ne_10m_populated_places_all', title: 'Place Names']
    ]
 }
+
+rabbitmq{
+   enabled=false
+
+   /*
+   connection{
+      host = "localhost"
+      username = "omar"
+      password = "Encrypted 2be98afc86aa7f285a91aff228dd38f99"
+   }
+   product{
+      queue = "omar.tilecache.product"
+   }
+   ingest{
+      queue = "omar.tilecache.ingest"
+   }
+   */
+}

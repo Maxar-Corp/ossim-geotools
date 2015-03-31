@@ -8,7 +8,7 @@ import groovy.transform.ToString
  */
 @Validateable
 @ToString( includeNames = true )
-class AccumuloProxyWmtsCommand implements CaseInsensitiveBind
+class WmtsCommand implements CaseInsensitiveBind
 {
   String version = "1.0.0"
   String service = "WMTS"

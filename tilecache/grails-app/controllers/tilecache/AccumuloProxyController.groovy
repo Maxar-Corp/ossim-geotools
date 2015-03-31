@@ -1,6 +1,5 @@
 package tilecache
 
-import geoscript.layer.GeoPackage
 import grails.converters.JSON
 import org.apache.commons.collections.map.CaseInsensitiveMap
 
@@ -13,7 +12,7 @@ class AccumuloProxyController
 
    }
 
-   def wmts(AccumuloProxyWmtsCommand cmd)
+   def wmts(WmtsCommand cmd)
    {
       /*
       GeoPackage pkg
@@ -43,7 +42,7 @@ class AccumuloProxyController
       }
    }
 
-   def wms(AccumuloProxyWmsCommand cmd)
+   def wms(WmsCommand cmd)
    {
       try
       {
@@ -94,7 +93,7 @@ class AccumuloProxyController
       println bounds
       render contentType: "application/json", (bounds as JSON).toString()
    }
-   def wfs(AccumuloProxyWfsCommand cmd)
+   def wfs(WfsCommand cmd)
    {
       response.setHeader( "Access-Control-Allow-Origin", "*" );
       response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
@@ -281,7 +280,7 @@ class AccumuloProxyController
 //    null
 //  }
 
-   def tileParamGrid(AccumuloProxyWmtsCommand cmd)
+   def tileParamGrid(WmtsCommand cmd)
    {
       def results = accumuloProxyService.getTileGridOverlay( cmd )
 

@@ -7,7 +7,7 @@ import groovy.transform.ToString
  */
 @Validateable
 @ToString( includeNames = true )
-class AccumuloProxyWfsCommand implements CaseInsensitiveBind
+class WfsCommand implements CaseInsensitiveBind
 {
   String version = "2.0.0"
   String typeName

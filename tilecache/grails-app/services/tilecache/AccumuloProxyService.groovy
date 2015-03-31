@@ -2,9 +2,7 @@ package tilecache
 
 import geoscript.geom.Bounds
 import geoscript.geom.Polygon
-import geoscript.proj.Projection
 import geoscript.render.Map as GeoScriptMap
-import geoscript.style.RasterSymbolizer
 import grails.converters.JSON
 import grails.transaction.Transactional
 import groovy.json.JsonSlurper
@@ -15,18 +13,15 @@ import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
 import org.geotools.factory.Hints
 import org.geotools.gce.imagemosaic.jdbc.ImageMosaicJDBCFormat
 import org.geotools.geojson.geom.GeometryJSON
-import org.geotools.map.GridReaderLayer
 import org.springframework.beans.factory.InitializingBean
 
 import javax.imageio.ImageIO
 import javax.media.jai.JAI
-import javax.servlet.http.HttpServletResponse
 import java.awt.Color
 import java.awt.Font
 import java.awt.font.TextLayout
 import java.awt.image.BufferedImage
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentMap
 import java.util.concurrent.LinkedBlockingQueue
 
 @Transactional
@@ -69,7 +64,7 @@ class AccumuloProxyService implements InitializingBean
       // println "DATA SOURCE UNPROXIED ===== ${dataSourceUnproxied}"
    }
 
-   def getTile(AccumuloProxyWmtsCommand cmd)
+   def getTile(WmtsCommand cmd)
    {
       def x = cmd.tileCol
       def y = cmd.tileRow
@@ -121,7 +116,7 @@ class AccumuloProxyService implements InitializingBean
       [contentType: contentType, buffer: ostream.toByteArray()]
    }
 
-   def getMap(AccumuloProxyWmsCommand cmd, String tileAccessUrl)
+   def getMap(WmsCommand cmd, String tileAccessUrl)
    {
       def startTime = System.currentTimeMillis()
       GeoScriptMap map
@@ -346,7 +341,7 @@ class AccumuloProxyService implements InitializingBean
 
       daoTileCacheService.getActualLayerBounds(params?.name, constraints)
    }
-   def wfsGetFeature(AccumuloProxyWfsCommand cmd)
+   def wfsGetFeature(WfsCommand cmd)
    {
       def typename = cmd.typeName.split( ":" )[-1]
       def typenameLowerCase = typename.toLowerCase()
@@ -405,7 +400,7 @@ class AccumuloProxyService implements InitializingBean
       response
    }
 
-   def getTileGridOverlay(AccumuloProxyWmtsCommand cmd)
+   def getTileGridOverlay(WmtsCommand cmd)
    {
       def text = "${cmd.tileMatrix}/${cmd.tileCol}/${cmd.tileRow}"
       def tileSize = 256
