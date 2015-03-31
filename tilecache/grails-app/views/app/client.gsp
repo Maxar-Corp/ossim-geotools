@@ -231,47 +231,67 @@
             <div class="modal-body">
                 <form class="form-inline">
                     <div class="container">
-                        <div class="row center-block">
-                            <div class="col-sm-5 col-md-5 alert alert-info">Geopackage Area Of Interest
+                        <div class="row col-sm-6 col-md-6">
+                            <div role="tabpanel">
+
+                                <!-- Nav tabs -->
+                                <ul class="nav nav-tabs" role="tablist">
+
+                                <li role="presentation" class="active"><a href="#inputs" aria-controls="home" role="tab" data-toggle="tab">Inputs</a></li>
+                                <li role="presentation"><a href="#outputs" aria-controls="profile" role="tab" data-toggle="tab">Outputs</a></li>
+                                <li  role="presentation"><a href="#jobInfo" aria-controls="messages" role="tab" data-toggle="tab">Job Info</a></li>
+
+                                </ul>
+
+                                <!-- Tab panes -->
+                                <div class="tab-content">
+
+                                <div role="tabpanel" class="tab-pane active" id="inputs">
+                                    <div class="row">
+                                        <div class="col-sm-5 col-md-5 center-text">
+
+                                            <h4>Input Parameters:</h4>
+                                            <p>Verbiage about current input parameters</p>
+                                            <p><strong>WKT Polygon:&nbsp;</strong><span class="small" id="aoiPolygon"></span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div role="tabpanel" class="tab-pane" id="outputs">
+                                    <div class="col-sm-5 col-md-5">
+
+                                        <h4>Output Parameters:</h4>
+                                        <p>Verbiage about modifying the output parameters using the controls below.</p>
+                                        <p><strong>Bounding Box:</strong><br><span id="aoiBbox"></span></p>
+                                        <p><strong>Levels of Detail:</strong>&nbsp;<span id="aoiLod"></span></p>
+                                        <b><span id="minLodTxt">Min: 0</span>&nbsp;&nbsp;&nbsp;</b><input style="width: 180px" type="text" data-slider-min="0"
+                                                                                                          data-slider-max="22" data-slider-step="1" data-slider-value="[0,22]" id="aoiLodSlider"><b>&nbsp;&nbsp;&nbsp;<span id="maxLodTxt">Max: 22</span></b>
+                                        <br>
+                                        <br>
+                                        <button type="button" id="submitAoi" class="btn btn-success">Submit</button>
+                                        <!-- <button type="button" id="modifyAoi" class="btn btn-warning disabled">Modify</button> -->
+                                        <button type="button" id="cancelAoi" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                    </div>
+                                </div>
+                                <div role="tabpanel" class="tab-pane" id="jobInfo">
+
+                                    <h4>Submitted Job Information:</h4>
+                                    <p>No job info</p>
+
+                                    <div id="aoiJobInfo" class="col-sm-5 col-md-5 alert alert-success">
+
+                                        <p><strong>ID:</strong>&nbsp;<span id="aoiJobId"></span></p>
+
+                                        <p><strong>Layers:</strong>&nbsp;<span id="aoiLayers"></span></p>
+                                    </div>
+                                </div>
+
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div><p class="label label-default">Inputs</p></div>
-
-                            <div class="col-sm-5 col-md-5 center-text">
-                                <p><strong>WKT Polygon:&nbsp;</strong><span class="small" id="aoiPolygon"></span></p>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div><p class="label label-warning">Outputs</p></div>
-
-                            <div class="col-sm-5 col-md-5">
-                                <p><strong>Bounding Box:</strong><br><span id="aoiBbox"></span></p>
-
-                                <p><strong>Levels of Detail:</strong>&nbsp;<span id="aoiLod"></span></p>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div id="aoiJobInfo" class="col-sm-5 col-md-5 alert alert-success">
-                                <h4>Submitted Job Info</h4>
-
-                                <p><strong>ID:</strong>&nbsp;<span id="aoiJobId"></span></p>
-
-                                <p><strong>Layers:</strong>&nbsp;<span id="aoiLayers"></span></p>
                             </div>
                         </div>
                     </div>
                 </form>
             </div><!-- /.modal-body -->
-
-            <div class="modal-footer">
-                <button type="button" id="submitAoi" class="btn btn-success">Submit</button>
-                <!-- <button type="button" id="modifyAoi" class="btn btn-warning disabled">Modify</button> -->
-                <button type="button" id="cancelAoi" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            </div>
 
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog modal-lg -->

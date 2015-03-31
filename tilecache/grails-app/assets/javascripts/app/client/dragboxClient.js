@@ -1,7 +1,7 @@
 DragBoxClient = (function ()
 {
 
-    var output, outputWkt, formatWkt;
+    var output, outputWkt, formatWkt, aoiLodSlider;
 
     var urlProductExport; // = "http://10.0.10.181:8080/tilecache/product/export/";
     var urlLayerActualBounds; // = "http://10.0.10.181:8080/tilecache/accumuloProxy/actualBounds?"
@@ -77,6 +77,19 @@ DragBoxClient = (function ()
                 aoiFeature.setGeometry( output );
                 aoiFeatureOverlay.addFeature( aoiFeature );
 
+                aoiLodSlider = $('#aoiLodSlider').slider({
+                    min: '0',
+                    max: '22',
+                    tooltip: 'show',
+                    //handle: 'triangle',
+                    formater: function (value) {
+                        return parseInt(value);
+                    }
+
+                });
+                console.log('Initial min: ' + $("#aoiLodSlider").data('slider').min);
+                console.log('Initial max: ' + $("#aoiLodSlider").data('slider').max);
+
                 // Open a modal dialog, and pass the aoiFeature geometry.
                 $( '#exportGeopackageModal' ).modal( 'show' );
 
@@ -130,6 +143,9 @@ DragBoxClient = (function ()
             $( '#submitAoi' ).on( "click", function ()
             {
 
+                console.log('Output min: ' + parseInt($("#aoiLodSlider").data('slider').value[0]));
+                console.log('Output max: ' + parseInt($("#aoiLodSlider").data('slider').value[1]));
+
                 // IN PROGRESS: Submit job to tile server for processing.  For now we can simulate this with a setTimeout function.  Add progress bar.
 
                 productTest.aoi = outputWkt;
@@ -182,7 +198,15 @@ DragBoxClient = (function ()
                 } );
 
                 AppClient.map.removeInteraction( dragBoxControl );
+
                 $( "#createGp" ).removeClass( "disabled" );
+
+
+                //$("#aoiInputTab").tab('hide')//.addClass('disabled disabledTab');
+                //$('#aoiOutputTab').tab('hide')//.addClass('disabled disabledTab');
+                //$('#jobInfoTab').removeClass('disabled disabledTab').addClass('active');
+
+                //$("#jobInfo").
 
             } );
 
