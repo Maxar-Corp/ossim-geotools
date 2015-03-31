@@ -1,7 +1,8 @@
-package tilecache
+package tilecache.wfs
 
 import grails.validation.Validateable
 import groovy.transform.ToString
+import tilecache.CaseInsensitiveBind
 
 /**
  */

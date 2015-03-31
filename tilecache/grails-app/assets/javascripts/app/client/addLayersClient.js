@@ -1,16 +1,16 @@
 AddLayerClient = (function ()
 {
-    //var url ='http://10.0.10.184:8080/tilecache/accumuloProxy/wfs?request=GetFeature&typeName=tilecache:layers'
+    //var url ='http://10.0.10.184:8080/tilecache/wfs?request=GetFeature&typeName=tilecache:layers'
     //var url = "../json_3857.txt"; // For testing while not on RBT network
     var wfsURL;
     var layersArray = [];
 
     // This allows the client to request more tiles
     var tileUrls = [
-        'http://s1:8080/tilecache/accumuloProxy/wms?',
-        'http://s2:8080/tilecache/accumuloProxy/wms?',
-        'http://s3:8080/tilecache/accumuloProxy/wms?',
-        'http://s4:8080/tilecache/accumuloProxy/wms?'
+        'http://s1:8080/tilecache/wms?',
+        'http://s2:8080/tilecache/wms?',
+        'http://s3:8080/tilecache/wms?',
+        'http://s4:8080/tilecache/wms?'
     ];
 
     return {
@@ -148,9 +148,9 @@ AddLayerClient = (function ()
             var tileParamGrid = new ol.layer.Tile({
               extent: projectionExtent,
               source: new ol.source.WMTS({
-//                url: '/tilecache/accumuloProxy/wmts',
+//                url: '/tilecache/wmts',
                 layer: 'highres_3857',
-                url: '/tilecache/accumuloProxy/tileParamGrid',
+                url: '/tilecache/wmts/tileParamGrid',
 //                layer: '0',
                 matrixSet: 'EPSG:3857',
                 format: 'image/png',
@@ -185,7 +185,7 @@ AddLayerClient = (function ()
                 var highres_3857 = new ol.layer.Tile( {
                     opacity: 1.0,
                     source: new ol.source.TileWMS( {
-                        url: addLayersClientParams.accumuloProxyWmsURL,
+                        url: addLayersClientParams.tileCacheWmsURL,
                         params: {'LAYERS': tileCacheLayer.name, 'TILED': true, 'VERSION': '1.1.1'}
                     } ),
                     name: tileCacheLayer.name

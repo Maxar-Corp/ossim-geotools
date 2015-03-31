@@ -26,7 +26,7 @@ class AppController
             wfsURL: grailsLinkGenerator.link( action: 'testWFS' ),
             urlProductExport: grailsLinkGenerator.link( controller: 'product', action: 'export' ),
             urlLayerActualBounds: grailsLinkGenerator.link( controller: 'accumuloProxy', action: 'actualBounds' ),
-            accumuloProxyWmsURL: grailsLinkGenerator.link( controller: 'accumuloProxy', action: 'wms', absolute: true ),
+            tileCacheWmsURL: grailsLinkGenerator.link( controller: 'wms', action: 'index', absolute: true ),
             referenceLayers: grailsApplication.config.tilecache.referenceLayers,
             overlayLayers: grailsApplication.config.tilecache.overlayLayers,
             tileCacheLayers: tileCacheLayers
