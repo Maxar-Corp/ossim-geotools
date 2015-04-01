@@ -216,6 +216,7 @@ DragBoxClient = (function ()
             $( '#cancelAoi' ).on( "click", function ()
             {
                 aoiFeatureOverlay.removeFeature( aoiFeature );
+                //AppClient.map.removeInteraction( dragBoxControl );
                 $( "#createGp" ).removeClass( "disabled" );
             } );
 

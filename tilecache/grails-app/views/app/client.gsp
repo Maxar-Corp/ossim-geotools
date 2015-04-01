@@ -17,60 +17,70 @@
 
         <div class="row text-center security-level-top">Unclassified</div>
 
-        <div class="container">
+        %{--<div class="container">--}%
             <nav style="top:28px" class="navbar navbar-fixed-top navbar-default shadow" role="navigation">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left" style="width: 40px; height: 40px; padding-top: 10px;" src="app/rbt_symbol.png" alt="RBT Logo"/></g:link>
-                <a class="navbar-brand">&nbsp;&nbsp;RBT | Tiles Viewer</a>
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-navbar-collapse-1">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left" style="width: 40px; height: 40px; padding-top: 10px;" src="app/rbt_symbol.png" alt="RBT Logo"/></g:link>
+                        <a class="navbar-brand">&nbsp;&nbsp;RBT | Tiles Viewer</a>
+                    </div>
 
-            </div>
+                    <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
+                        <div class="col-sm-8 col-md-8">
+                            <form class="navbar-form navbar-left" role="search">
+                                <button type="button" id="createGp" class="btn btn-primary disabled"
+                                        data-toggle="tooltip" data-placement="bottom"
+                                        title="Use the <Alt> key to generate an AOI for the Geopackage"><i
+                                        class="fa fa-cube"></i>&nbsp;&nbsp;Create Geopackage</button>
+                            </form>
 
-            <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
-                <form class="navbar-form navbar-left" role="search">
-                    <button type="button" id="createGp" class="btn btn-primary disabled" data-toggle="tooltip" data-placement="bottom" title="Use the <Alt> key to generate an AOI for the Geopackage">Create Geopackage</button>
-                </form>
-                <div class="col-sm-6 col-md-6">
-                    <form class="navbar-form" role="search" id="zoomToForm">
-                        <div class="form-group">
-                            <div class="input-group">
-                                <div class="input-group-btn">
-                                    <select class="form-control selectpicker" data-style="btn-primary" id="coordSelect">
-                                        <option data-icon="glyphicon-map-marker"
-                                                value="dd">DD&nbsp;&nbsp;&nbsp;</option>
-                                        <option data-icon="glyphicon-time" value="dms">DMS&nbsp;&nbsp;</option>
-                                        <option data-icon="glyphicon-th" value="mgrs">MGRS</option>
-                                    </select>
+                            <form class="navbar-form" role="search" id="zoomToForm">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-btn">
+                                            <select  class="form-control selectpicker" data-style="btn-primary" id="coordSelect" >
+                                                <option data-icon="glyphicon-map-marker" value="dd">DD&nbsp;&nbsp;&nbsp;</option>
+                                                <option data-icon="glyphicon-time" value="dms">DMS&nbsp;&nbsp;</option>
+                                                <option data-icon="glyphicon-th-large" value="mgrs">MGRS</option>
+                                            </select>
+                                        </div>
+                                        <input class="form-control" id="coordInput" type="text" placeholder="Search by coordinates" value="39.5742132,-85.6194194">
+                                        <div class="input-group-btn">
+                                            <button id="zoomButton" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i></button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <input class="form-control" id="coordInput" type="text"
-                                       placeholder="Search by coordinates" value="39.5742132,-85.6194194">
-                                <div class="input-group-btn">
-                                    <button id="zoomButton" class="btn btn-primary" type="button"><i
-                                            class="glyphicon glyphicon-search"></i>
-                                    </button>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-addon"><i class="fa fa-th"></i>&nbsp;&nbsp;Current
+                                        Tile Layer</div>
+                                        <select class="form-control selectpicker" id="tileLayerSelect">
+                                            <option value="Layer1">Layer1</option>
+                                            <option value="Layer2">Layer2</option>
+                                            <option value="Layer3">Layer3</option>
+                                        </select>
+                                    </div>
                                 </div>
-
-                            </div>
+                            </form>
                         </div>
-                    </form>
-                </div>
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle fa fa-question-circle" data-toggle="dropdown">&nbsp;Help <b
-                                class="caret"></b></a>
-                    </li>
-                    <li><a href="#">About</a></li>
-                </ul>
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-    </nav>
-        </div><!-- /.container" -->
+                        <div class="nav navbar-nav navbar-right">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle fa fa-question-circle" data-toggle="dropdown">&nbsp;Help <b class="caret"></b></a>
+                            </li>
+                            <li>
+                                <a href="#">About</a>
+                            </li>
+                        </div>
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
+            </nav>
+        %{--</div><!-- /.container" -->--}%
 
         <div class="navbar-offset"></div>
 
@@ -119,47 +129,37 @@
                     </div>
                  </div>
             </div>
-
             <div class="col-sm-4 col-md-6 mid"></div>
-
             <div class="col-sm-4 col-md-3 sidebar sidebar-right pull-right">
-        <div class="panel-group sidebar-body" id="accordion-right">
-            <div class="panel panel-default shadow">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" href="#">
-                            <i class="fa fa-tasks"></i>
-                            Information
-                        </a>
-                        <span class="pull-right slide-submenu">
-                            <i class="fa fa-chevron-right"></i>
-                        </span>
-                    </h4>
-                </div>
-
-                <div id="taskpane" class="panel-collapse collapse in">
-                    <div class="panel-body">
-                        <!-- <p>Measure Output:</p>
-								<span><ol id="measureOutput" reversed></ol></span> -->
-                        <!-- <button id="button_ajax">Click</button> -->
-                        <!-- <div id="tilesList"></div> -->
-                        <!-- <p class="fa fa-globe">
-									&nbsp;Current Zoom Level: <span class="alert alert-success"id="currentZoomLevel"></span>
-								</p> -->
-                        <table id="tilesList" class="table table-striped table-hover table-condensed table-responsive">
-                            <caption>Tile Sets</caption>
-                            <tr>
-                                <th>Name</th>
-                                <th>ID</th>
-                                <th>Min</th>
-                                <th>Max</th>
-                            </tr>
-                        </table>
+                <div class="panel-group sidebar-body" id="accordion-right">
+                    <div class="panel panel-default shadow">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" href="#">
+                                    <i class="fa fa-tasks"></i>
+                                    Information
+                                </a>
+                                <span class="pull-right slide-submenu">
+                                    <i class="fa fa-chevron-right"></i>
+                                </span>
+                            </h4>
+                        </div>
+                        <div id="taskpane" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                <table id="tilesList" class="table table-striped table-hover table-condensed table-responsive">
+                                    <caption>Tile Sets</caption>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>ID</th>
+                                        <th>Min</th>
+                                        <th>Max</th>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
         </div>
 
         <div class="mini-submenu mini-submenu-left pull-left shadow">
@@ -171,7 +171,7 @@
         </div>
 
         <nav class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom ">
-            <div class="container " style="min-height:">
+            <div class="container">
                 Unclassified
             </div>
         </nav>
