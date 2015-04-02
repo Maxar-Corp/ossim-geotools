@@ -111,7 +111,7 @@ grails.project.dependency.resolution = {
     compile( 'org.ossim:ossim-common-libs:1.0-SNAPSHOT' ) {
       excludes 'slf4j-log4j12', 'ehcache'
     }
-    runtime 'org.geotools:gt-imagemosaic-jdbc:13.0'
+    //runtime 'org.geotools:gt-imagemosaic-jdbc:13.0'
 
     //compile 'net.sf.ehcache:ehcache:2.8.2'
     // runtime "net.sf.ehcache:ehcache:2.6.0"
@@ -124,7 +124,7 @@ grails.project.dependency.resolution = {
 
   plugins {
     build ":tomcat:7.0.55.3"
-     compile ":rabbitmq-native:3.1.0"
+    // compile ":rabbitmq-native:3.1.0"
     // plugins for the compile step
     compile ":scaffolding:2.1.2"
     compile ':cache:1.1.8'
