@@ -3,7 +3,7 @@ AppClient = (function () {
     var ftStoryImage4326 = [-76.0211, 36.9207]; //35.3386966201419,-116.514302051577
 
     // 3857
-    var ftStoryImage3857 = ol.proj.transform([-76.018882, 36.922158], 'EPSG:4326', 'EPSG:3857');
+    var ftStoryImage3857 = ol.proj.transform([-76.31, 36.93], 'EPSG:4326', 'EPSG:3857');
 
     // Norfolk area BBox: -76.6023743199,36.5972904049,-75.7974156012,36.9992201554
 
@@ -78,10 +78,15 @@ AppClient = (function () {
 //             console.log( data );
 
                     $.each(data.features, function (idx, obj) {
-
                         $("#tilesList").append(
                             "<tr><td>" + obj.properties.name + "</td><td>" + obj.properties.id + "</td><td>" + obj.properties.min_level + "</td><td>" + obj.properties.max_level + "</td></tr>"
                         );
+
+                        //$.each(selectValues, function(key, value) {
+                        //    $('#mySelect')
+                        //        .append($('<option>', { value : key })
+                        //            .text(value));
+                        //});
 
                     });
 

@@ -182,7 +182,7 @@ AddLayerClient = (function ()
 
             $.each( addLayersClientParams.tileCacheLayers, function ( idx, tileCacheLayer )
             {
-                var highres_3857 = new ol.layer.Tile( {
+                var tileLayer = new ol.layer.Tile( {
                     opacity: 1.0,
                     source: new ol.source.TileWMS( {
                         url: addLayersClientParams.tileCacheWmsURL,
@@ -191,7 +191,13 @@ AddLayerClient = (function ()
                     name: tileCacheLayer.name
                 } );
 
-                layersArray.push( highres_3857 ); //highres_us
+                console.log(tileCacheLayer.name);
+                $('#tileLayerSelect').append($('<option>', {
+                    value: tileCacheLayer.name,
+                    text : tileCacheLayer.name
+                }));
+
+                layersArray.push( tileLayer ); //highres_us
             } );
 
             $.each( addLayersClientParams.overlayLayers, function ( idx, overlayLayer )
@@ -205,7 +211,6 @@ AddLayerClient = (function ()
                     } ),
                     name: overlayLayer.title
                 } );
-
                 layersArray.push( osmOverlay );
 
             } );
@@ -214,8 +219,6 @@ AddLayerClient = (function ()
             {                
                 layersArray.push( tileParamGrid );
             }    
-
-            //layersArray.push(tileGrid);
 
         },
         layersArray: layersArray
