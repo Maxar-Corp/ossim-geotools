@@ -111,7 +111,7 @@ grails.project.dependency.resolution = {
     compile( 'org.ossim:ossim-common-libs:1.0-SNAPSHOT' ) {
       excludes 'slf4j-log4j12', 'ehcache'
     }
-    //runtime 'org.geotools:gt-imagemosaic-jdbc:13.0'
+    runtime 'org.geotools:gt-imagemosaic-jdbc:13.0'
 
     //compile 'net.sf.ehcache:ehcache:2.8.2'
     // runtime "net.sf.ehcache:ehcache:2.6.0"
