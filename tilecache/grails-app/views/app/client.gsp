@@ -58,7 +58,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="input-group" id="tileLayerInputGroup">
-                                        <div class="input-group-addon"><i class="fa fa-th"></i>&nbsp;&nbsp;Current
+                                        <div class="input-group-addon"><i class="fa fa-th"></i>&nbsp;&nbsp;Active
                                         Tile Layer</div>
                                         <select class="form-control selectpicker" id="tileLayerSelect">
                                         </select>
