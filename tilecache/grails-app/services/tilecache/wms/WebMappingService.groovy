@@ -3,7 +3,6 @@ package tilecache.wms
 import geoscript.geom.Bounds
 import geoscript.render.Map as GeoScriptMap
 import grails.transaction.Transactional
-import org.geotools.gce.imagemosaic.jdbc.ImageMosaicJDBCFormat
 
 @Transactional
 class WebMappingService
@@ -14,39 +13,23 @@ class WebMappingService
   {
     def startTime = System.currentTimeMillis()
     GeoScriptMap map
-    def layers = []
-    def element = accumuloProxyService.getMapBlockingQueue.take()
     def contentType = cmd.format
     def result = new ByteArrayOutputStream()
 
-//println "_______________________________"
-//println cmd
-//println "_______________________________"
+    //println "_______________________________"
+    //println cmd
+    //println "_______________________________"
     try
     {
-      def gridFormat = new ImageMosaicJDBCFormat()
-//GridFormatFinder.findFormat(new URL("http://localhost:8080/tilecache/accumuloProxy/tileAccess?layer=BMNG"))
-      cmd.layers.split( "," ).each { layer ->
-        //   def gridReader = gridFormat.getReader( new URL( "${tileAccessUrl}?layer=${layer}" ) )
-        //   def mosaic = new GridReaderLayer( gridReader, new RasterSymbolizer().gtStyle )
-
-        def l = accumuloProxyService.layerCache.get(layer)
-        if(!l)
-        {
-          l = accumuloProxyService.daoTileCacheService.newGeoscriptTileLayer(layer)
-          accumuloProxyService.layerCache.put(layer, l)
-        }
-        // println l
-        if(l) {
-          layers << l
-        }
-      }
+      def layers = accumuloProxyService.createTileLayers(cmd.layers?.split(','))
 
       //def img = ImageIO.read("/Volumes/DataDrive/data/earth2.tif" as File)
       // BufferedImage dest = img.getSubimage(0, 0, cmd.width, cmd.height);
 
       // ImageIO.write(dest, cmd.format.split('/')[-1],response.outputStream)
       //img = null
+
+      def element = accumuloProxyService.createSession()
 
       map = new GeoScriptMap(
           width: cmd.width,
@@ -57,6 +40,8 @@ class WebMappingService
           // backgroundColor:cmd.bgcolor,
           layers: layers
       )
+
+      accumuloProxyService.deleteSession( element )
 
       // def gzipped = new GZIPOutputStream(result)
       //  OutputStreamWriter writer=new OutputStreamWriter(gzipped);
@@ -75,13 +60,11 @@ class WebMappingService
     {
       // map?.layers.each{it.dispose()}
       map?.close()
-      accumuloProxyService.getMapBlockingQueue.put( element )
     }
     // println "Time: ${(System.currentTimeMillis()-startTime)/1000} seconds"
     //println result.toByteArray().size()
 
     [contentType: contentType, buffer: result.toByteArray()]
     // println "Done GetMap ${tempId}"
-
   }
 }

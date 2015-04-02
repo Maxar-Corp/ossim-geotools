@@ -350,12 +350,20 @@ class TileStoreOperationDialog extends BaseStepDialog implements
          swt.layerName.items = getLayerList()
          swt.layerName.text  = input.layerName
       }
-      else
+      else if(input.layerFieldName)
       {
          swt.layerFromFieldGroupButton.selection = true
          swt.layerFromTextGroupButton.selection = false
          swt.stackLayout.topControl = swt.layerFromFieldGroup
-         swt.layerFieldName.text = input.layerFieldName
+         swt.layerFieldName.text = input.layerFieldName?:""
+      }
+      else
+      {
+         swt.layerFromFieldGroupButton.selection = false
+         swt.layerFromTextGroupButton.selection = true
+         swt.stackLayout.topControl = swt.layerFromTextGroup
+         swt.layerName.items = getLayerList()
+         swt.layerName.text  = ""
       }
       if(input.tileStoreCommon.clusterName)
       {

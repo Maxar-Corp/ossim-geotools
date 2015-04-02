@@ -91,9 +91,9 @@ class TileStoreCommon
    void getXML(StringBuffer result, Repository repository) throws KettleValueException
    {
       result.append("    ").append(XMLHandler.addTagValue("connection", databaseMeta==null?"":databaseMeta.getName())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-      result.append("    ").append(XMLHandler.addTagValue( "clusterName", clusterName ) ); //$NON-NLS-1$ //$NON-NLS-2$
+      result.append("    ").append(XMLHandler.addTagValue( "clusterName", clusterName?:"" ) ); //$NON-NLS-1$ //$NON-NLS-2$
       try {
-         if ( repository != null && !StringUtils.isEmpty( clusterName ) &&
+         if ( repository != null && clusterName  &&
                  NamedClusterManager.getInstance().contains( clusterName, repository.getMetaStore() ) ) {
             // pull config from NamedCluster
             NamedCluster nc = NamedClusterManager.getInstance().read( clusterName, repository.getMetaStore() );

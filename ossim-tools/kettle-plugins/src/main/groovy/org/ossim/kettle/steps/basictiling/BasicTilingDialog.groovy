@@ -32,13 +32,32 @@ import org.pentaho.di.ui.core.widget.ColumnInfo
 import org.ossim.kettle.groovyswt.KettleSwtBuilder
 import org.eclipse.swt.widgets.TableItem
 import org.eclipse.swt.custom.CCombo
-import org.ossim.core.MultiResolutionTileGenerator
 
 public class BasicTilingDialog extends BaseStepDialog implements
         StepDialogInterface {
 
   private BasicTilingMeta input;
   private def swt;
+   String originField
+   String tileNameMaskField
+   String projectionTypeField
+   String tileWidthField
+   String tileHeightField
+   String clampMinLevelField
+   String clampMaxLevelField
+   String clampGeometryField
+   String filenameField
+   String fileEntryField
+   private def fields = ["origin":"originField",
+                         "tile_mask":"tileNameMaskField",
+                         "projection":"projectionTypeField",
+                         "tile_width":"tileWidthField",
+                         "tile_height":"tileHeightField",
+                         "min_level":"clampMinLevelField",
+                         "max_level":"clampMaxLevelField",
+                         "clamp_geometry":"clampGeometryField",
+                         "filename":"filenameField",
+                         "entry":"fileEntryField"]
 
   public BasicTilingDialog(Shell parent, Object baseStepMeta,
                            TransMeta transMeta, String stepname) {
@@ -121,15 +140,6 @@ public class BasicTilingDialog extends BaseStepDialog implements
                 {
                   onEvent(type:'Modify') { input.setChanged(); }
                 }
-        label Messages.getString("BasicTilingDialog.TileIdGenerationOrder.Label")
-        cCombo(id:"tileGenerationOrder",
-                items:["LOWEST_TO_HIGHEST", "HIGHEST_TO_LOWEST"],
-                text:"LOWEST_TO_HIGHEST",
-                style:"READ_ONLY",
-                layoutData:"span,growx")
-                {
-                  onEvent(type:'Modify') { input.setChanged() }
-                }
         label(Messages.getString("BasicTilingDialog.TileWidth.Label"), layoutData:"split 2")
         text(id:"tileWidth", text:"512"){
           onEvent("Modify"){
@@ -150,10 +160,10 @@ public class BasicTilingDialog extends BaseStepDialog implements
           onEvent(type:"Selection"){
             swt.stackLayout.topControl = swt.inputFilenameGroup
             swt.inputFilenameGroup.visible = true
-            swt.inputBoundsManuallyGroup.visible = false
+            swt.inputBoundsWktGroup.visible = false
           }
         }
-        radioButton (text:"Manually", layoutData:"wrap", enabled:false){
+        radioButton (text:"Wkt ", layoutData:"wrap", enabled:false){
           onEvent(type:"Selection"){
             swt.stackLayout.topControl = swt.inputBoundsManuallyGroup
             swt.inputFilenameGroup.visible = false
@@ -181,9 +191,23 @@ public class BasicTilingDialog extends BaseStepDialog implements
                     }
             checkBox(id:"mosaicInputCheckbox", text:"Mosaic Input", layoutData:"span,growx")
           }
-          composite(id:"inputBoundsManuallyGroup", style:"none", layoutData:"span,growx"){
-            migLayout(layoutConstraints:"insets 2, wrap 1", columnConstraints: "[grow]")
-            label "Not Implemented and currently under construction"
+          composite(id:"inputBoundsWktGroup", style:"none", layoutData:"span,growx"){
+            migLayout(layoutConstraints:"insets 0, wrap 2", columnConstraints: "[][grow]")
+             label (id:"inputWktFieldLabel", text:"Input wkt")
+             cCombo(id:"inputWktField",
+                     items:SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING]),
+                     layoutData:"span,growx")
+                     {
+                        onEvent(type:'Modify') { input.setChanged(); }
+                     }
+             label (id:"inputEpsgFieldLabel", text:"epsg")
+             cCombo(id:"inputEpsgField",
+                     items:SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING]),
+                     layoutData:"span,growx")
+                     {
+                        onEvent(type:'Modify') { input.setChanged(); }
+                     }
+
             //canvas(id:"boxSelectionCanvas", layoutData:"span, grow"){
             //	onEvent("MouseMove"){ event->
             //		println "MOUSE MOVED!!!!"
@@ -276,20 +300,7 @@ public class BasicTilingDialog extends BaseStepDialog implements
         break
     }
 
-    /*
-    switch(input.getTileGenerationOrderAsInteger())
-    {
-      case MultiResolutionTileGenerator.TILE_LOWEST_TO_HIGHEST:
-        swt.tileGenerationOrder.text = "LOWEST_TO_HIGHEST"
-        break
-      case MultiResolutionTileGenerator.TILE_HIGHEST_TO_LOWEST:
-        swt.tileGenerationOrder.text = "HIGHEST_TO_LOWEST"
-        break
-      default:
-        swt.tileGenerationOrder.text = "LOWEST_TO_HIGHEST"
-        break
-    }
-    */
+
   }
 
   private void cancel()
@@ -394,7 +405,6 @@ public class BasicTilingDialog extends BaseStepDialog implements
     }
     input.mosaicInput         = swt.mosaicInputCheckbox.selection
     input.origin              = swt.origin.text
-    //input.tileGenerationOrder = swt.tileGenerationOrder.text
     if(swt.tileWidth.text) input.targetTileWidth   = swt.tileWidth.text.toInteger()
     if(swt.tileHeight.text) input.targetTileHeight = swt.tileHeight.text.toInteger()
     input.inputFilenameField = swt.inputFilenameField.text
