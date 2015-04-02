@@ -1,5 +1,6 @@
 package tilecache
 
+import com.vividsolutions.jts.geom.Envelope
 import geoscript.geom.Bounds
 import geoscript.geom.Polygon
 import geoscript.render.Map as GeoScriptMap
@@ -28,6 +29,7 @@ import java.util.concurrent.LinkedBlockingQueue
 class AccumuloProxyService implements InitializingBean
 {
 
+   def rabbitProducer
    def grailsApplication
    TileCacheHibernate hibernate
    TileCacheServiceDAO daoTileCacheService
@@ -59,7 +61,6 @@ class AccumuloProxyService implements InitializingBean
 
       getMapBlockingQueue = new LinkedBlockingQueue( 10 )
       ( 0..<10 ).each { getMapBlockingQueue.put( 0 ) }
-
       // println "DATA SOURCE ===== ${dataSource}"
       // println "DATA SOURCE UNPROXIED ===== ${dataSourceUnproxied}"
    }
@@ -131,9 +132,26 @@ class AccumuloProxyService implements InitializingBean
    }
    def getLayers()
    {
-      daoTileCacheService.listAllLayers().each {
+      def result = []
+      TileCacheLayerInfo info
+
+      daoTileCacheService.listAllLayers().each{
+
+         Envelope env = it.bounds.envelopeInternal
+
+         result << [
+                 name:it.name,
+                 epsgCode:it.epsgCode,
+                 bounds:"${env.minX},${env.minY},${env.maxX},${env.maxY}",
+                 minLevel:"${it.minLevel}",
+                 maxLevel:"${it.maxLevel}",
+                 tileWidth:"${it.tileWidth}",
+                 tileHeight:"${it.tileHeight}"
+         ]
 
       }
+
+      result
    }
 
    def renameLayer(String oldName, String newName)

@@ -143,8 +143,13 @@ class AccumuloProxyController
 
    def getLayer()
    {
-      println "HERE!!!!"
       def result = accumuloProxyService.getLayer(params.name?:"")
+
+      render contentType: "application/json", (result as JSON).toString()
+   }
+   def getLayers()
+   {
+      def result = accumuloProxyService.getLayers()
 
       render contentType: "application/json", (result as JSON).toString()
    }
