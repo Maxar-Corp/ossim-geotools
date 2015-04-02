@@ -167,18 +167,16 @@ tilecache {
 
 rabbitmq{
    enabled=false
-
-   /*
-   connection{
-      host = "localhost"
-      username = "omar"
-      password = "Encrypted 2be98afc86aa7f285a91aff228dd38f99"
-   }
    product{
       queue = "omar.tilecache.product"
    }
    ingest{
       queue = "omar.tilecache.ingest"
    }
-   */
+
+   connection{
+      host = "localhost"
+      username = "omar"
+      password = "Encrypted 2be98afc86aa7f285a91aff228dd38f99"
+   }
 }

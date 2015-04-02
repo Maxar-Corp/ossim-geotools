@@ -7,7 +7,7 @@ import org.codehaus.groovy.grails.web.json.JSONArray
 
 class ProductController
 {
-
+  def rabbitProducer
   def index() {}
 
   def export()
@@ -42,7 +42,16 @@ class ProductController
 
 //        def inputString = '{"aoi":"POLYGON((-76.34119444915345 36.96805897475397,-76.34119444915345 36.90159168959772,-76.2901080233722 36.90159168959772,-76.2901080233722 36.96805897475397,-76.34119444915345 36.96805897475397))","writerProperties":{"imageFormat":"png","srs":"EPSG:4326"},"layers":["highres_us"],"srs":"EPSG:4326","format":"image/gpkg","type":"TileCacheMessage"}'
 //      println "MESSAGE STRING: ${inputString}"
-      println "INPUT: ${input}"
+
+    try{
+       rabbitProducer.sendMessage("omar.tilecache.product", (input as JSON).toString())
+    }
+    catch(e)
+    {
+
+    }
+
+    //   println "INPUT: ${input}"
 
 //      message.fromJsonString( input )
 //      message.newJobId()

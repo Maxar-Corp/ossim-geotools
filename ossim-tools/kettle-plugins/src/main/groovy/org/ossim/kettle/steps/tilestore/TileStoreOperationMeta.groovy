@@ -62,7 +62,7 @@ class TileStoreOperationMeta extends BaseStepMeta implements StepMetaInterface
    {
       StringBuffer retval = new StringBuffer(400);
 
-      tileStoreCommon.getXML(retval, repository)
+      tileStoreCommon?.getXML(retval, repository)
       retval.append( "    " ).append( XMLHandler.addTagValue( "layerFieldName", layerFieldName?:"" ) );
       retval.append( "    " ).append( XMLHandler.addTagValue( "layerName", layerName?:"" ) );
       retval.append( "    " ).append(XMLHandler.addTagValue("operationType", operationType.toString())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
