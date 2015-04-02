@@ -51,8 +51,6 @@ DragBoxClient = (function ()
                 // Open a modal dialog, and pass the aoiFeature geometry.
                 $( '#exportGeopackageModal' ).modal( 'show' );
 
-                // Display a warning toast, with no title
-
             } );
 
             $( '#cancelGpButton' ).on( "click", function ()
@@ -95,9 +93,12 @@ DragBoxClient = (function ()
                 console.log('Initial min: ' + $("#aoiLodSlider").data('slider').min);
                 console.log('Initial max: ' + $("#aoiLodSlider").data('slider').max);
 
+                console.log($('#tileLayerSelect').val());
+                var gpkgInputTileLayer = $('#tileLayerSelect').val();
+
                 // Use an ajax request to pull the level of detail and the bounding box for the AOI
                 $.ajax( {
-                    url: urlLayerActualBounds + "?name=highres_3857&aoi=" + outputWkt,
+                    url: urlLayerActualBounds + "?name=" + gpkgInputTileLayer + "&aoi=" + outputWkt,
                     type: 'GET',
                     dataType: 'json',
                     success: function ( data )

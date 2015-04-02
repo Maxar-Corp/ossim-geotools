@@ -191,7 +191,7 @@ AddLayerClient = (function ()
                     name: tileCacheLayer.name
                 } );
 
-                console.log(tileCacheLayer.name);
+                //console.log(tileCacheLayer.name);
                 $('#tileLayerSelect').append($('<option>', {
                     value: tileCacheLayer.name,
                     text : tileCacheLayer.name
