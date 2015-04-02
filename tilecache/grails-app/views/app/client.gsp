@@ -57,13 +57,10 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <div class="input-group">
+                                    <div class="input-group" id="tileLayerInputGroup">
                                         <div class="input-group-addon"><i class="fa fa-th"></i>&nbsp;&nbsp;Current
                                         Tile Layer</div>
                                         <select class="form-control selectpicker" id="tileLayerSelect">
-                                            <option value="Layer1">Layer1</option>
-                                            <option value="Layer2">Layer2</option>
-                                            <option value="Layer3">Layer3</option>
                                         </select>
                                     </div>
                                 </div>
@@ -236,13 +233,13 @@
     <asset:javascript src="app/client.js"/>
 
     <g:javascript>
-    var initParams = ${raw( initParams.toString() )};
-    AddLayerClient.initialize( initParams );
-    AppClient.initialize( initParams );
-    DragBoxClient.initialize( initParams );
-    LayerManagerClient.initialize( initParams );
-    ZoomToClient.initialize( initParams );
-</g:javascript>
+            var initParams = ${raw( initParams.toString() )};
+            AddLayerClient.initialize( initParams );
+            AppClient.initialize( initParams );
+            DragBoxClient.initialize( initParams );
+            LayerManagerClient.initialize( initParams );
+            ZoomToClient.initialize( initParams );
+    </g:javascript>
 
 </body>
 
