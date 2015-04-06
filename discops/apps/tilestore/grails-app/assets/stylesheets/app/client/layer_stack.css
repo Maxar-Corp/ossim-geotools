@@ -1,0 +1,18 @@
+ul.layerstack {
+    list-style: none;
+}
+ul.layerstack li {
+    border-bottom: 1px solid #ccc;
+    padding: 8px;
+}
+ul.layerstack li:hover {
+    background-color: #eee;
+}
+ul.layerstack li.selected {
+    background-color: rgba(0,60,136,.3);
+}
+.controls {
+    float: left;
+    margin-right: 5px;
+    padding-left: 0px;
+}

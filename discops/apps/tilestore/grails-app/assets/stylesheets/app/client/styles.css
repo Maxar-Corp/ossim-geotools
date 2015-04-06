@@ -1,0 +1,162 @@
+body { overflow: hidden; }
+
+h1 { font-family: 'Comfortaa', Arial, serif; font-weight: 400; }
+
+.security-level-top {
+	background-color: green; 
+	color: white; 
+	font-size:20px; 
+	font-weight:bold
+}
+
+.security-level-bottom {
+	min-height: 20px;
+	background-color: green; 
+	color: white; 
+	font-size: 20px; 
+	font-weight:bold
+}
+
+.shadow {
+	-webkit-box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
+	-moz-box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
+	box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
+}
+
+.toast-bottom-right {
+    bottom: 7em;
+    margin-right: 10px;
+}
+
+#map { 
+	position: absolute; 
+	top: 50px; 
+	bottom: 0px; 
+	left: 0px; 
+	right: 0px; 
+}
+
+#map { z-index: 35; }
+
+#map .ol-zoom { 
+	top: 50px;
+	font-size: 1.2em;
+}
+
+/* Move the attribution above footer */
+#map .ol-attribution{
+	bottom: 2.5em;
+}
+
+/* Move the scale bar above footer */
+#map .ol-scale-line {
+	bottom: 2.5em;
+}
+
+.zoom-top-opened-sidebar { margin-top: 5px; }
+.zoom-top-collapsed { margin-top: 5px; }
+
+/* Move the fullscreen toggle to the top right */
+#map .ol-full-screen {
+	top: 65px;
+	left: auto;
+	right: 6px;
+ }
+
+ #map .ol-rotate {
+	top: 2.25em;
+ }
+
+/* Move the zoomslider to the top right and style it up a bit */
+#map .ol-zoomslider {
+	top: 45px;
+	left: auto;
+	right: 10px;
+	background-color: rgba(0,60,136,0.2);
+	width: 200px;
+	height: 15px;
+	padding: 0;
+	-webkit-box-shadow: 0 0 5px rgb(0,60,136);
+	-moz-box-shadow: 0 0 5px rgb(0,60,136);
+	box-shadow: 0 0 5px rgb(0,60,136);
+}
+
+#map .ol-zoomslider:hover {
+	background-color: rgba(0,60,136,0.3);
+}
+
+#map .ol-zoomslider-thumb {
+	height: 15px;
+	width: 15px;
+	margin: 0;
+	filter: none;
+	background-color: rgba(0,60,136,0.6);
+	border-radius: 20px;
+}
+#map a.ol-zoomslider-handle:hover {
+	background-color: rgba(0,60,136,0.7);
+}
+
+#map .ol-mouse-position {
+	top: auto;
+	bottom: 5em;
+	right: 8px;
+	color: #fff;
+	background-color: rgba(0,60,136,0.4);
+	padding: 2px 10px;
+	border-radius: 5px;
+}
+
+#currentZoomLevel2{
+	position: absolute;
+	left: 6.5em;
+	left: 47%;
+	z-index: 999;
+	color: #fff;
+	background-color: rgba(0,60,136,0.4);
+	padding: 2px 10px;
+	border-radius: 5px;
+}
+
+#createGp .fa-cube {
+    color: #fff;
+}
+
+#tileLayerInputGroup .selectpicker {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.tooltip.bottom .tooltip-arrow {
+	bottom: 0;
+	left: 50%;
+	margin-left: -5px;
+	border-top-color: #fff;
+	border-width: 5px 5px 0;
+}
+
+.tooltip-inner {
+	color: #000;
+	background: #fff;
+	border: solid 1px #fff;
+}
+
+.input-group-btn:first-child > .btn-group:not(:first-child) > .btn {
+    -webkit-border-top-left-radius: 4px;
+    -webkit-border-bottom-left-radius: 4px;
+    -moz-border-radius-topleft: 4px;
+    -moz-border-radius-bottomleft: 4px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.input-group-addon {
+    background-color: #337ab7;
+    border-color: #2e6da4;
+    color: #fff
+}
+
+.input-group-addon .fa-th {
+    color: #fff;
+}
+
