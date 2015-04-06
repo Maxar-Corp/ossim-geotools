@@ -2,11 +2,11 @@ package tilecache.wms
 
 import geoscript.geom.Bounds
 import geoscript.render.Map as GeoScriptMap
-import grails.transaction.Transactional
 
-@Transactional
 class WebMappingService
 {
+  static transactional = false
+
   def accumuloProxyService
 
   def getMap(WmsCommand cmd/*, String tileAccessUrl*/)

@@ -5,7 +5,7 @@
 //= require jquery.js
 //= require bootstrap.js
 //= require client/bootstrap-select.js
-//= require ../ol3/ol-debug.js
+//= require ../ol3/ol.js
 
 /* App libs */
 //= require client/bootstrap-filestyle.js
