@@ -33,7 +33,7 @@ class DiskCacheController {
   //@Secured(['ROLE_ADMIN'])
   def create(CreateCommand cmd){
     println cmd
-    def data = diskCacheService.create(params)//new CaseInsensitiveMap(params));
+    def data = diskCacheService.create(params)
     response.withFormat {
       json {
         render contentType: 'application/json', text: data as JSON
