@@ -2,17 +2,17 @@ package tilecache.wfs
 
 import com.vividsolutions.jts.geom.Envelope
 import grails.converters.JSON
-import grails.transaction.Transactional
 import groovy.json.JsonSlurper
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
 import org.geotools.geojson.geom.GeometryJSON
 
-@Transactional
 class WebFeatureService
 {
+  static transactional = false
+
   def accumuloProxyService
 
-  def wfsGetFeature(WfsCommand cmd)
+  def getFeature(WfsCommand cmd)
   {
     def typename = cmd.typeName.split( ":" )[-1]
     def typenameLowerCase = typename.toLowerCase()

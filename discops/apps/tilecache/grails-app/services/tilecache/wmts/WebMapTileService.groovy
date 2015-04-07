@@ -1,7 +1,5 @@
 package tilecache.wmts
 
-import grails.transaction.Transactional
-
 import javax.imageio.ImageIO
 import javax.media.jai.JAI
 import java.awt.Color
@@ -9,10 +7,12 @@ import java.awt.Font
 import java.awt.font.TextLayout
 import java.awt.image.BufferedImage
 
-@Transactional
 class WebMapTileService
 {
+  static transactional = false
+
   def accumuloProxyService
+
 
   def getTile(WmtsCommand cmd)
   {

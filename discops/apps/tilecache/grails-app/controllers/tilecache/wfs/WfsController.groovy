@@ -21,7 +21,7 @@ class WfsController
         def result
         if(request.method.toLowerCase() == "get")
         {
-           result = webFeatureService.wfsGetFeature( cmd )
+           result = webFeatureService.getFeature( cmd )
            render contentType: result.contentType, file: result.buffer
         }
         else
