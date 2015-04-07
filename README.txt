@@ -7,8 +7,7 @@ Build this first.  This is a dependency to the core ossim-tools library.  Make s
 in the kettle plugins
 
 cd groovy-swt
-mvn clean install
-
+gradle clean install
 
 2. ossim-tools  
 
