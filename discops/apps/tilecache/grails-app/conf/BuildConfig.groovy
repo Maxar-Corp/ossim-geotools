@@ -146,3 +146,6 @@ grails.project.dependency.resolution = {
     //compile ":handlebars-asset-pipeline:1.3.0.3"
   }
 }
+
+grails.plugin.location.ossimCommon = "../../plugins/ossim-common"
+grails.plugin.location.ossimDiskCache = "../../plugins/ossim-diskcache"

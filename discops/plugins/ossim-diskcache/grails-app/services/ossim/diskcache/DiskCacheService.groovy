@@ -36,7 +36,6 @@ class DiskCacheService {
      *
      */
 
-/*
     FetchDataCommand cmd = new FetchDataCommand(sort:"currentSize",
             order:"asc",
             filter:null,
@@ -64,7 +63,6 @@ class DiskCacheService {
     }
 
     result
-    */
   }
   def create(def params){
     def result = [success:true];

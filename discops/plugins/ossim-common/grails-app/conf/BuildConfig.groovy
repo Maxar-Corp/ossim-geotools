@@ -35,8 +35,6 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://repository.jboss.com/maven2/"
     }
     dependencies {
-       compile "net.sf.ehcache:ehcache-core:2.6.10"
-       compile 'commons-collections:commons-collections:3.2.1'
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
         // runtime 'mysql:mysql-connector-java:5.1.27'
     }
@@ -46,9 +44,5 @@ grails.project.dependency.resolution = {
               ":rest-client-builder:2.1.0") {
             export = false
         }
-
-      // build ":spring-security-core:2.0-RC4"
     }
 }
-
-grails.plugin.location.ossimCommon = "../../plugins/ossim-common"

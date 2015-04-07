@@ -7,6 +7,7 @@ import geoscript.geom.Bounds
 import geoscript.proj.Projection
 import grails.validation.Validateable
 import groovy.transform.ToString
+import org.ossim.common.CaseInsensitiveBind
 
 /**
  * Created by gpotts on 1/16/15.

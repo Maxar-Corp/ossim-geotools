@@ -16,10 +16,9 @@ class DiskCacheController {
     ]
   }
 
-  //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
-  //def list(FetchDataCommand cmd){
-  def list(){
-    /*def data = diskCacheService.list( cmd )
+ // @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
+  def list(FetchDataCommand cmd){
+    def data = diskCacheService.list( cmd )
     response.withFormat {
       json {
         render contentType: 'application/json', text: data as JSON
@@ -28,12 +27,12 @@ class DiskCacheController {
         render contentType: 'application/xml', text: data as XML
       }
     }
-    */
+
   }
 
   //@Secured(['ROLE_ADMIN'])
-  def create(){
-    println params
+  def create(CreateCommand cmd){
+    println cmd
     def data = diskCacheService.create(params)//new CaseInsensitiveMap(params));
     response.withFormat {
       json {
