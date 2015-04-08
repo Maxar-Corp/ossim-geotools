@@ -53,7 +53,6 @@ class AccumuloService implements InitializingBean
       // println "DATA SOURCE ===== ${dataSource}"
       // println "DATA SOURCE UNPROXIED ===== ${dataSourceUnproxied}"
    }
-
    /**
     *
     * We will create the Layer table and the table for caching tiles in postgres and
