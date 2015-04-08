@@ -7,6 +7,7 @@ class DiskCacheService {
   def springSecurityService
   def grailsApplication
   def messageSource
+  Integer roundRobinIndex = 0
 
   static columnNames = [
           'id','directory', 'directoryType', 'maxSize', 'currentSize','expirePeriod'
@@ -28,6 +29,36 @@ class DiskCacheService {
     // println tableModel
     return tableModel
   }
+  def getNextLocation()
+  {
+     def result = [:]
+
+     DiskCache.withTransaction {
+        def row
+
+       // DiskCache.count()%
+        try
+        {
+           row = DiskCache.withCriteria {
+              maxResults(1)
+              order("id", "asc")
+              firstResult(roundRobinIndex)
+              setReadOnly(true)
+           }.get(0)
+
+           ++roundRobinIndex
+           roundRobinIndex = roundRobinIndex%DiskCache.count()
+        }
+        catch (e)
+        {
+          // println e
+           row = null
+        }
+        if(row) result.directory = row?.directory
+     }
+
+     result
+  }
   def getBestLocation(){
 
 
@@ -35,13 +66,14 @@ class DiskCacheService {
      * Fetch data that basically has the smallest size
      *
      */
-
-    FetchDataCommand cmd = new FetchDataCommand(sort:"currentSize",
+   // will move this out later
+     // keep here for now
+    FetchDataCommand cmd = new FetchDataCommand(sortBy:"currentSize",
             order:"asc",
             filter:null,
             rows:1, page:1)
 
-    String result = ""
+    def result = [:]
 
     DiskCache.withTransaction {
       def row
@@ -49,7 +81,7 @@ class DiskCacheService {
       try{
         row = DiskCache.withCriteria {
           maxResults( cmd.rows )
-          order( cmd.sort, cmd.order )
+          order( cmd.sortBy, cmd.order )
           firstResult( 0 )
           setReadOnly(true)
         }.get(0)
@@ -59,17 +91,16 @@ class DiskCacheService {
         row = null
       }
 
-      result = row?.directory
+      if(row) result.directory = row?.directory
     }
 
     result
   }
-  def create(def params){
+  def create(CreateCommand cmd){
     def result = [success:true];
-    params.remove("id")
     try{
       DiskCache.withTransaction {
-        def diskCache = new DiskCache(params);
+        def diskCache = new DiskCache(cmd.properties);
         if(!diskCache.save(flush:true))
         {
           diskCache.errors.allErrors.each {result.message = "${result.message?'\n':''} ${messageSource.getMessage(it, null)}"  }
@@ -88,18 +119,23 @@ class DiskCacheService {
     }
     result;
   }
-  def update(def params){
+  def update(UpdateCommand cmd){
     def result = [success:true];
     try{
       DiskCache.withTransaction {
         def row
-        if(params?.id!=null) row = DiskCache.findById(params?.id.toInteger());
-        else if(params?.directory) row = DiskCache.findByDirectory(params.directory);
-        params.remove("id")
+         println cmd
+        if(cmd?.id!=null) row = DiskCache.findById(cmd?.id);
+        else if(cmd?.directory) row = DiskCache.findByDirectory(cmd.directory);
+        // cmd.remove("id")
         if(row)
         {
-          row.properties = params
-          row.save(flush:true)
+           row.directory=cmd.directory!=null?cmd.directory:row.directory
+           row.maxSize=cmd.maxSize!=null?cmd.maxSize:row.maxSize
+           row.currentSize=cmd.currentSize!=null?cmd.currentSize:row.currentSize
+           row.expirePeriod=cmd.expirePeriod!=null?cmd.expirePeriod:row.expirePeriod
+
+           row.save(flush:true)
         }
         else
         {

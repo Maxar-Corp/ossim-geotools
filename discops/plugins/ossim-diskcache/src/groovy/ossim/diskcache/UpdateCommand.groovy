@@ -1,12 +1,15 @@
 package ossim.diskcache
 
+import grails.validation.Validateable
 import groovy.transform.ToString
+import org.ossim.common.CaseInsensitiveBind
 
 /**
  * Created by gpotts on 4/7/15.
  */
+@Validateable
 @ToString(includeNames = true)
-class UpdateCommand
+class UpdateCommand implements CaseInsensitiveBind
 {
    Long id
 
