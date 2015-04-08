@@ -1,0 +1,17 @@
+*.iml
+*.iws
+*.zip
+*.ipr
+*.tld
+groovy-swt/.gradle/
+groovy-swt/target/
+ossim-tools/.gradle/
+ossim-tools/app/app-jars/
+ossim-tools/app/build/
+ossim-tools/build/
+ossim-tools/common-libs/build/
+ossim-tools/kettle-libs/build/
+ossim-tools/kettle-plugins/build/
+ossim-tools/ossim-tools.iws
+*tilecache-app-config.xml
+discops/apps/tilestore/target/
