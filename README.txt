@@ -22,7 +22,7 @@ Note the shadow jar is placed under the app/build/libs directory and will have a
 
 3. discops/apps/tilestore
 
-Expects grails version 2.5.0 and can be build be doing:
+Expects grails version 2.5.0 and can be built by doing:
 
 grails clean
 grails compile
