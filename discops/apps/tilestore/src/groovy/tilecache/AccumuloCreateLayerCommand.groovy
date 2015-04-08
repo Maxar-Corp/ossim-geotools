@@ -41,13 +41,13 @@ class AccumuloCreateLayerCommand implements CaseInsensitiveBind
    }
    void initFromJson(def jsonObj)
    {
-      name = jsonObj.name?:this.name
-      epsgCode = jsonObj.epsgCode?:this.epsgCode
-      bbox = jsonObj.bbox?:this.bbox
-      minLevel = jsonObj.minLevel?:this.minLevel
-      maxLevel = jsonObj.maxLevel?:this.maxLevel
+      name       = jsonObj.name?:this.name
+      epsgCode   = jsonObj.epsgCode?:this.epsgCode
+      bbox       = jsonObj.bbox?:this.bbox
+      minLevel   = jsonObj.minLevel?:this.minLevel
+      maxLevel   = jsonObj.maxLevel?:this.maxLevel
       tileHeight = jsonObj?.tileHeight?:this.tileHeight
-      tileWidth = jsonObj?.tileWidth?:this.tileWidth
+      tileWidth  = jsonObj?.tileWidth?:this.tileWidth
    }
    Polygon getClip()
    {
