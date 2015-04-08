@@ -129,13 +129,13 @@ class AccumuloController
       accumuloService.deleteLayer(map.name)
    }
 
-   def renameLayer()//String oldName, String newName)
+   def renameLayer(RenameLayerCommand cmd)//String oldName, String newName)
    {
-      CaseInsensitiveMap map = new CaseInsensitiveMap(params)
+     // CaseInsensitiveMap map = new CaseInsensitiveMap(params)
 
-      accumuloService.renameLayer( map.oldName, map.newName )
+      accumuloService.renameLayer( cmd.oldName, cmd.newName)
 
-      def result = accumuloService.getLayer(map.newName?:"")
+      def result = accumuloService.getLayer(cmd.newName?:"")
 
       render contentType: "application/json", (result as JSON).toString()
    }
