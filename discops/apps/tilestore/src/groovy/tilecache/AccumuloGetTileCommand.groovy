@@ -9,7 +9,7 @@ import org.ossim.common.CaseInsensitiveBind
  */
 @Validateable
 @ToString( includeNames = true )
-class AccumuloProxyGetTileCommand implements CaseInsensitiveBind
+class AccumuloGetTileCommand implements CaseInsensitiveBind
 {
   String hashId
   String family

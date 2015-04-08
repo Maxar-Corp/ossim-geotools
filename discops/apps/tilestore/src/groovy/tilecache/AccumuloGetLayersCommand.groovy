@@ -8,7 +8,7 @@ import org.ossim.common.CaseInsensitiveBind
  */
 @Validateable
 @ToString( includeNames = true )
-class AccumuloProxyGetLayersCommand implements CaseInsensitiveBind
+class AccumuloGetLayersCommand implements CaseInsensitiveBind
 {
   String format
   String outputFields

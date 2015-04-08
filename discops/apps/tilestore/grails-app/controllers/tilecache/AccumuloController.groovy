@@ -105,7 +105,7 @@ class AccumuloController
    }
    */
 
-   def createOrUpdateLayer(AccumuloProxyCreateLayerCommand cmd)
+   def createOrUpdateLayer(AccumuloCreateLayerCommand cmd)
    {
       if(request.JSON)
       {

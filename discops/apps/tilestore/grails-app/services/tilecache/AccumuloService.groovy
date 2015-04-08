@@ -2,25 +2,15 @@ package tilecache
 
 import geoscript.geom.Bounds
 import geoscript.geom.Polygon
-import geoscript.render.Map as GeoScriptMap
-import grails.converters.JSON
 import grails.transaction.Transactional
-import groovy.json.JsonSlurper
 import groovy.xml.StreamingMarkupBuilder
 import joms.geotools.tileapi.hibernate.TileCacheHibernate
 import joms.geotools.tileapi.hibernate.controller.TileCacheServiceDAO
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
 import org.geotools.factory.Hints
 import org.geotools.gce.imagemosaic.jdbc.ImageMosaicJDBCFormat
-import org.geotools.geojson.geom.GeometryJSON
 import org.springframework.beans.factory.InitializingBean
 
-import javax.imageio.ImageIO
-import javax.media.jai.JAI
-import java.awt.Color
-import java.awt.Font
-import java.awt.font.TextLayout
-import java.awt.image.BufferedImage
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.LinkedBlockingQueue
 
@@ -77,7 +67,7 @@ class AccumuloService implements InitializingBean
     * @param params
     * @return
     */
-   def createOrUpdateLayer(AccumuloProxyCreateLayerCommand cmd)
+   def createOrUpdateLayer(AccumuloCreateLayerCommand cmd)
    {
       def result = daoTileCacheService.getLayerInfoByName( cmd.name )
       if ( !result )
@@ -240,7 +230,7 @@ class AccumuloService implements InitializingBean
       daoTileCacheService.getActualLayerBounds( params?.name, constraints )
    }
 
-   def getLayers(AccumuloProxyGetLayersCommand cmd)
+   def getLayers(AccumuloGetLayersCommand cmd)
    {
       def response = [:]
       if ( cmd.format )

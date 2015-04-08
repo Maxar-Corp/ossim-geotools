@@ -39,7 +39,7 @@ class TileCacheFilters
     createLayer( uri: '/accumuloProxy/createLayer' ) {
       before = {
         //println "before: ${params}"
-        AccumuloProxyCreateLayerCommand.fixParamNames( params )
+        AccumuloCreateLayerCommand.fixParamNames( params )
         //println "after: ${params}"
       }
       after = { Map model ->
@@ -53,7 +53,7 @@ class TileCacheFilters
     getLayers( uri: '/accumuloProxy/getLayers' ) {
       before = {
         //println "before: ${params}"
-        AccumuloProxyGetLayersCommand.fixParamNames( params )
+        AccumuloGetLayersCommand.fixParamNames( params )
         //println "after: ${params}"
       }
       after = { Map model ->
