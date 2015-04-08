@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.LinkedBlockingQueue
 
 @Transactional
-class AccumuloProxyService implements InitializingBean
+class AccumuloService implements InitializingBean
 {
 
    def grailsApplication

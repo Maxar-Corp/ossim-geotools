@@ -3,9 +3,9 @@ class UrlMappings
 
   static mappings = {
     // remove the format overide for the getTile action
-    "/wmts/getTile/$id?"( action: "getTile", controller: "accumuloProxy" ) {
+    "/wmts/getTile/$id?"( action: "getTile", controller: "accumulo" ) {
     }
-    "/accumuloProxy/getTiles/$id?"( action: "getTiles", controller: "accumuloProxy" ) {
+    "/accumuloProxy/getTiles/$id?"( action: "getTiles", controller: "accumulo" ) {
     }
     "/wms/index/$id?"( action: "index", controller: "wms" ) {
     }

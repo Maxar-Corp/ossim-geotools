@@ -6,8 +6,8 @@ import spock.lang.Specification
 /**
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
  */
-@TestFor(AccumuloProxyService)
-class AccumuloProxyServiceSpec extends Specification {
+@TestFor(AccumuloService)
+class AccumuloServiceSpec extends Specification {
 
   def setup() {
   }

@@ -10,7 +10,7 @@ import org.geotools.geojson.geom.GeometryJSON
 @Transactional
 class WebFeatureService
 {
-  def accumuloProxyService
+  def accumuloService
 
   def wfsGetFeature(WfsCommand cmd)
   {
@@ -24,7 +24,7 @@ class WebFeatureService
 
       // application/javascript if callback is available
       response.contentType = "application/json"
-      def layers = accumuloProxyService.daoTileCacheService.listAllLayers()
+      def layers = accumuloService.daoTileCacheService.listAllLayers()
       def result = [type: "FeatureCollection", features: []]
       layers.each { layer ->
          TileCacheLayerInfo inf;

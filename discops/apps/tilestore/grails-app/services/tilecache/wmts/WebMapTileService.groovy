@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage
 @Transactional
 class WebMapTileService
 {
-  def accumuloProxyService
+  def accumuloService
 
   def getTile(WmtsCommand cmd)
   {
@@ -23,11 +23,11 @@ class WebMapTileService
     def ostream = new ByteArrayOutputStream()
     def contentType = cmd.format
 
-    def layer = accumuloProxyService.daoTileCacheService.getLayerInfoByName( cmd.layer )
+    def layer = accumuloService.daoTileCacheService.getLayerInfoByName( cmd.layer )
 
     if ( layer )
     {
-      def tiles = accumuloProxyService.daoTileCacheService.getTilesWithinConstraint( layer, [x: x, y: y, z: z] )
+      def tiles = accumuloService.daoTileCacheService.getTilesWithinConstraint( layer, [x: x, y: y, z: z] )
 
       if ( tiles )
       {

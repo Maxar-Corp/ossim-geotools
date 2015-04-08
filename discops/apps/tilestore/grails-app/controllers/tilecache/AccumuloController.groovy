@@ -3,9 +3,9 @@ package tilecache
 import grails.converters.JSON
 import org.apache.commons.collections.map.CaseInsensitiveMap
 
-class AccumuloProxyController
+class AccumuloController
 {
-   def accumuloProxyService
+   def accumuloService
 
    def index()
    {
@@ -21,7 +21,7 @@ class AccumuloProxyController
       response.setHeader( "Access-Control-Max-Age", "3600" );
       response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
 
-      def bounds = accumuloProxyService.getActualBounds(params)
+      def bounds = accumuloService.getActualBounds(params)
 
       println bounds
       render contentType: "application/json", (bounds as JSON).toString()
@@ -116,9 +116,9 @@ class AccumuloProxyController
          }
       }
 
-      accumuloProxyService.createOrUpdateLayer( cmd )
+      accumuloService.createOrUpdateLayer( cmd )
 
-      def layerInfo = accumuloProxyService.getLayer(cmd.name)
+      def layerInfo = accumuloService.getLayer(cmd.name)
 
       render contentType: "application/json", (layerInfo as JSON).toString()
    }
@@ -126,16 +126,16 @@ class AccumuloProxyController
    {
       CaseInsensitiveMap map = new CaseInsensitiveMap(params)
 
-      accumuloProxyService.deleteLayer(map.name)
+      accumuloService.deleteLayer(map.name)
    }
 
    def renameLayer()//String oldName, String newName)
    {
       CaseInsensitiveMap map = new CaseInsensitiveMap(params)
 
-      accumuloProxyService.renameLayer( map.oldName, map.newName )
+      accumuloService.renameLayer( map.oldName, map.newName )
 
-      def result = accumuloProxyService.getLayer(map.newName?:"")
+      def result = accumuloService.getLayer(map.newName?:"")
 
       render contentType: "application/json", (result as JSON).toString()
    }
@@ -143,13 +143,13 @@ class AccumuloProxyController
 
    def getLayer()
    {
-      def result = accumuloProxyService.getLayer(params.name?:"")
+      def result = accumuloService.getLayer(params.name?:"")
 
       render contentType: "application/json", (result as JSON).toString()
    }
    def getLayers()
    {
-      def result = accumuloProxyService.getLayers()
+      def result = accumuloService.getLayers()
 
       render contentType: "application/json", (result as JSON).toString()
    }
