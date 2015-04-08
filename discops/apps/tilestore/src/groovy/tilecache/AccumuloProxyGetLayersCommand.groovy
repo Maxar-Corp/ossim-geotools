@@ -2,6 +2,7 @@ package tilecache
 
 import grails.validation.Validateable
 import groovy.transform.ToString
+import org.ossim.common.CaseInsensitiveBind
 
 /**
  */
