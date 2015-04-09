@@ -5,6 +5,7 @@
 //= require jquery.js
 //= require bootstrap.js
 //= require ../ol3/ol.js
+//= require bootstrap-select.js
 
 //= require admin/addLayersAdmin.js
 // require admin/layerManagerAdmin.js
