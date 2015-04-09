@@ -14,7 +14,7 @@
 </head>
 
     <body>
-         <tilestore:securityClassificationBanner class="row text-center security-level-top"/>
+         <tilestore:securityClassificationBanner class="row text-center"/>
 
         <!--<div class="row text-center security-level-top">Unclassified</div>-->
 
