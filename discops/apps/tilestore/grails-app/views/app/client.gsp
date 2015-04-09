@@ -14,8 +14,9 @@
 </head>
 
     <body>
+         <tilestore:securityClassificationBanner class="row text-center security-level-top"/>
 
-        <div class="row text-center security-level-top">Unclassified</div>
+        <!--<div class="row text-center security-level-top">Unclassified</div>-->
 
         %{--<div class="container">--}%
             <nav style="top:28px" class="navbar navbar-fixed-top navbar-default shadow" role="navigation">
@@ -166,14 +167,16 @@
         <div class="mini-submenu mini-submenu-right pull-right shadow">
             <i class="fa fa-tasks"></i>
         </div>
-
+        <!--
         <nav class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom ">
             <div class="container">
                 Unclassified
             </div>
         </nav>
+        -->
+        <tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
 
-        <!-- Export to Geopackage Form -->
+                <!-- Export to Geopackage Form -->
         <div class="modal fade" id="exportGeopackageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" Saria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
