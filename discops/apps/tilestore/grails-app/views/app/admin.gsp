@@ -15,7 +15,7 @@
 
 <body>
 
-<div class="row text-center security-level-top">Unclassified</div>
+<tilestore:securityClassificationBanner class="row text-center security-level-top"/>
 
 <div class="container">
     <nav style="top:28px" class="navbar navbar-fixed-top navbar-default" role="navigation">
@@ -224,12 +224,14 @@
 
 
 
-
+ <!--
 <nav class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom ">
     <div class="container " style="min-height:">
         Unclassified
     </div>
 </nav>
+-->
+<tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
 
 <asset:javascript src="app/admin.js"/>
 <g:javascript>

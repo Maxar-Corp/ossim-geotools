@@ -14,11 +14,10 @@ class TileCacheTagLib
       def fontSize = attrs.fontSize ?: "20px"
       def fontWeight = attrs.fontWeight ?: "bold"
       def id = attrs.id ? "id=\"${attrs.id}\"" : ''
-      //def style = attrs.style
+      def style = attrs.style?:""
       def classString = "class=\"${attrs.class?:''.toString()}\""
-      println classString
-    //  if ( !style ) style = "background: ${levelMap.color}; color: black; font-size:${fontSize}; font-weight:${fontWeight}"
-      out << """<div ${id} ${classString}>
+      if ( !style ) style = "\"background: ${levelMap.color}; color: black; font-size:${fontSize}; font-weight:${fontWeight}\""
+      out << """<div ${id} ${classString} ${style}>
        ${levelMap.description}
      </div>"""
    }
