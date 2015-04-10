@@ -164,6 +164,16 @@ tilecache {
            [url: "http://52.0.52.104/geoserver/ged/wms", name: 'ne_10m_populated_places_all', title: 'Place Names']
    ]
 }
+security {
+//  level = 'UNCLASS'
+//level = 'SECRET'
+//level = 'TOPSECRET'
+   UNCLASS = [description: "Unclassified", color: "green"]
+   SECRET = [description: "Secret // NOFORN", color: "red"]
+   TOPSECRET = [description: "Top Secret", color: "yellow"]
+   sessionTimeout = 60
+   level = "UNCLASS"
+}
 
 rabbitmq{
    enabled=false
