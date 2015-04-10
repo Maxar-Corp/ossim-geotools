@@ -2,7 +2,7 @@ package tilecache.wfs
 
 import grails.validation.Validateable
 import groovy.transform.ToString
-import tilecache.CaseInsensitiveBind
+import org.ossim.common.CaseInsensitiveBind
 
 /**
  */

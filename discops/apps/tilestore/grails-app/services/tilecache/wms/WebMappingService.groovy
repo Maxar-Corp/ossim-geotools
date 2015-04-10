@@ -7,7 +7,7 @@ import grails.transaction.Transactional
 @Transactional
 class WebMappingService
 {
-  def accumuloProxyService
+  def accumuloService
 
   def getMap(WmsCommand cmd/*, String tileAccessUrl*/)
   {
@@ -15,13 +15,13 @@ class WebMappingService
     GeoScriptMap map
     def contentType = cmd.format
     def result = new ByteArrayOutputStream()
-
+    def element
     //println "_______________________________"
     //println cmd
     //println "_______________________________"
     try
     {
-      def layers = accumuloProxyService.createTileLayers(cmd.layers?.split(','))
+      def layers = accumuloService.createTileLayers(cmd.layers?.split(','))
 
       //def img = ImageIO.read("/Volumes/DataDrive/data/earth2.tif" as File)
       // BufferedImage dest = img.getSubimage(0, 0, cmd.width, cmd.height);
@@ -29,7 +29,7 @@ class WebMappingService
       // ImageIO.write(dest, cmd.format.split('/')[-1],response.outputStream)
       //img = null
 
-      def element = accumuloProxyService.createSession()
+      element = accumuloService.createSession()
 
       map = new GeoScriptMap(
           width: cmd.width,
@@ -41,7 +41,7 @@ class WebMappingService
           layers: layers
       )
 
-      accumuloProxyService.deleteSession( element )
+      accumuloService.deleteSession( element )
 
       // def gzipped = new GZIPOutputStream(result)
       //  OutputStreamWriter writer=new OutputStreamWriter(gzipped);
@@ -58,6 +58,8 @@ class WebMappingService
     }
     finally
     {
+      if(element != null) accumuloService.deleteSession( element )
+
       // map?.layers.each{it.dispose()}
       map?.close()
     }

@@ -1,5 +1,7 @@
 package tilecache
 
+import org.ossim.common.CaseInsensitiveBind
+
 /**
  * Created by gpotts on 2/17/15.
  */
