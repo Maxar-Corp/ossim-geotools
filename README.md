@@ -7,24 +7,28 @@ via Open Geospatial Consortium Standards, [OGC](http://www.opengeospatial.org/st
 
 ## Prerequisites
 
-- You'll need [OSSIM](http://trac.osgeo.org/ossim/) Don't install this just yet.
+- You'll need [OSSIM](http://trac.osgeo.org/ossim/)
 - Some version of [Java 7 JDK](http://openjdk.java.net/install/)
 - [Grails 2.5.0](https://grails.org/download.html)
 - [Maven >= 3](https://maven.apache.org/)
+- [Gradle](http://gradle.org/)
 
 ## Building
 
 ### groovy-swt
 
-You'll need [groovy-swt](
 This is a dependency for many of the ossim-tools modules, and it's included
 within this repo for convenience.
+
+1. `$ cd groovy-swt`
+2. `$ gradle clean install`
+
+## Running
 
 ### Maven
 
 If you haven't already, install [Maven >= 3](https://maven.apache.org/).
 
-1. `$ cd groovy-swt`
 2. `$ mvn clean install`
 
 ### ossim-tools [OSSIM](http://trac.osgeo.org/ossim/)
