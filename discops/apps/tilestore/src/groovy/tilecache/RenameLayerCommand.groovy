@@ -18,4 +18,9 @@ class RenameLayerCommand  implements CaseInsensitiveBind
       oldName nullable: false, blank: false
       newName nullable: false, blank: false
    }
+   void initFromJson(def json)
+   {
+      oldName = json?.oldName
+      newName = json?.newName
+   }
 }
