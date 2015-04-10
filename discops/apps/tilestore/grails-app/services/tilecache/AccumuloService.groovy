@@ -136,7 +136,22 @@ class AccumuloService implements InitializingBean
 
    def deleteLayer(String name)
    {
-      daoTileCacheService.deleteLayer( name )
+      def result = [:]
+      TileCacheLayerInfo layerInfo =  daoTileCacheService.getLayerInfoByName(name)
+      if(layerInfo)
+      {
+         daoTileCacheService.deleteLayer( name )
+         layerInfo =  daoTileCacheService.getLayerInfoByName(name)
+
+         result.message = "Layer ${name} removed"
+      }
+      else
+      {
+         result.message = "Layer name ${name} does not exists so we did not delete"
+      }
+
+      result
+
    }
 
    def getLayers()
