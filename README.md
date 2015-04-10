@@ -59,11 +59,9 @@ Now you can build [OSSIM](http://trac.osgeo.org/ossim/)
 
 *You'll need at least [Grails 2.5.0](https://grails.org/download.html) installed.*
 
-discops/apps/tilestore
-
-
-grails clean
-grails compile
+1. `$ cd discops/apps/tilestore`
+2. `$ grails clean`
+3. `$ grails compile`
 
 **Not Complete**
 
