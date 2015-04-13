@@ -5,7 +5,7 @@ import org.apache.commons.collections.map.CaseInsensitiveMap
 
 class LayerManagerController
 {
-   def accumuloService
+   def layerManagerService
 
    def index()
    {
@@ -19,7 +19,7 @@ class LayerManagerController
       response.setHeader( "Access-Control-Max-Age", "3600" );
       response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
 
-      def bounds = accumuloService.getActualBounds(params)
+      def bounds = layerManagerService.getActualBounds(params)
 
       println bounds
       render contentType: "application/json", (bounds as JSON).toString()
@@ -120,9 +120,9 @@ class LayerManagerController
          }
       }
 
-      accumuloService.createOrUpdateLayer( cmd )
+      layerManagerService.createOrUpdateLayer( cmd )
 
-      def layerInfo = accumuloService.getLayer(cmd.name)
+      def layerInfo = layerManagerService.getLayer(cmd.name)
 
       render contentType: "application/json", (layerInfo as JSON).toString()
    }
@@ -157,7 +157,7 @@ class LayerManagerController
             break
       }
 
-      def result = accumuloService.deleteLayer(name)
+      def result = layerManagerService.deleteLayer(name)
 
       render contentType: "application/json", (result as JSON).toString()
    }
@@ -178,9 +178,9 @@ class LayerManagerController
             // need error
          }
       }
-      accumuloService.renameLayer( cmd.oldName, cmd.newName)
+      layerManagerService.renameLayer( cmd.oldName, cmd.newName)
 
-      def result = accumuloService.getLayer(cmd.newName?:"")
+      def result = layerManagerService.getLayer(cmd.newName?:"")
 
       render contentType: "application/json", (result as JSON).toString()
    }
@@ -193,7 +193,7 @@ class LayerManagerController
       response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
       response.setHeader( "Access-Control-Max-Age", "3600" );
       response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
-      def result = accumuloService.getLayer(params.name?:"")
+      def result = layerManagerService.getLayer(params.name?:"")
 
       render contentType: "application/json", (result as JSON).toString()
    }
@@ -204,7 +204,7 @@ class LayerManagerController
       response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
       response.setHeader( "Access-Control-Max-Age", "3600" );
       response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
-      def result = accumuloService.getLayers()
+      def result = layerManagerService.getLayers()
 
       render contentType: "application/json", (result as JSON).toString()
    }
