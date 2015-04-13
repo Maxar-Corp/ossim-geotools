@@ -13,8 +13,6 @@ class AccumuloController
    }
 
    def actualBounds(){
-      println params
-
       response.setHeader( "Access-Control-Allow-Origin", "*" );
       response.setHeader( "Access-Control-Allow-Origin", "*" );
       response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
@@ -107,6 +105,12 @@ class AccumuloController
 
    def createOrUpdateLayer(AccumuloCreateLayerCommand cmd)
    {
+      response.setHeader( "Access-Control-Allow-Origin", "*" );
+      response.setHeader( "Access-Control-Allow-Origin", "*" );
+      response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
+      response.setHeader( "Access-Control-Max-Age", "3600" );
+      response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
+
       if(request.JSON)
       {
          cmd.initFromJson(request.JSON)
@@ -124,15 +128,56 @@ class AccumuloController
    }
    def deleteLayer(def params)
    {
+      response.setHeader( "Access-Control-Allow-Origin", "*" );
+      response.setHeader( "Access-Control-Allow-Origin", "*" );
+      response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
+      response.setHeader( "Access-Control-Max-Age", "3600" );
+      response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
+
+      def name
       CaseInsensitiveMap map = new CaseInsensitiveMap(params)
 
-      accumuloService.deleteLayer(map.name)
+      switch(request.method.toLowerCase())
+      {
+         case "get":
+            name = map.name
+            break
+         case "post":
+            if(request.JSON)
+            {
+               name = request.JSON.name
+            }
+            else
+            {
+               name = map.name
+            }
+            break
+         default:
+            name = map.name
+            break
+      }
+
+      def result = accumuloService.deleteLayer(name)
+
+      render contentType: "application/json", (result as JSON).toString()
    }
 
    def renameLayer(RenameLayerCommand cmd)//String oldName, String newName)
    {
+      response.setHeader( "Access-Control-Allow-Origin", "*" );
+      response.setHeader( "Access-Control-Allow-Origin", "*" );
+      response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
+      response.setHeader( "Access-Control-Max-Age", "3600" );
+      response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
      // CaseInsensitiveMap map = new CaseInsensitiveMap(params)
-
+      if(request.JSON)
+      {
+         cmd.initFromJson(request.JSON)
+         if(!cmd.validate())
+         {
+            // need error
+         }
+      }
       accumuloService.renameLayer( cmd.oldName, cmd.newName)
 
       def result = accumuloService.getLayer(cmd.newName?:"")
@@ -143,12 +188,22 @@ class AccumuloController
 
    def getLayer()
    {
+      response.setHeader( "Access-Control-Allow-Origin", "*" );
+      response.setHeader( "Access-Control-Allow-Origin", "*" );
+      response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
+      response.setHeader( "Access-Control-Max-Age", "3600" );
+      response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
       def result = accumuloService.getLayer(params.name?:"")
 
       render contentType: "application/json", (result as JSON).toString()
    }
    def getLayers()
    {
+      response.setHeader( "Access-Control-Allow-Origin", "*" );
+      response.setHeader( "Access-Control-Allow-Origin", "*" );
+      response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
+      response.setHeader( "Access-Control-Max-Age", "3600" );
+      response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
       def result = accumuloService.getLayers()
 
       render contentType: "application/json", (result as JSON).toString()
