@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.LinkedBlockingQueue
 
 @Transactional
-class AccumuloService implements InitializingBean
+class LayerManagerService implements InitializingBean
 {
 
    def grailsApplication
@@ -47,7 +47,7 @@ class AccumuloService implements InitializingBean
       ] )
       daoTileCacheService = hibernate.applicationContext.getBean( "tileCacheServiceDAO" );
 
-      getMapBlockingQueue = new LinkedBlockingQueue( 10 )
+      getMapBlockingQueue = new LinkedBlockingQueue( grailsApplication.config.tilecache.maxTileConnections?:20 )
       ( 0..<10 ).each { getMapBlockingQueue.put( 0 ) }
 
       // println "DATA SOURCE ===== ${dataSource}"
@@ -66,7 +66,7 @@ class AccumuloService implements InitializingBean
     * @param params
     * @return
     */
-   def createOrUpdateLayer(AccumuloCreateLayerCommand cmd)
+   def createOrUpdateLayer(CreateLayerCommand cmd)
    {
       def result = daoTileCacheService.getLayerInfoByName( cmd.name )
       if ( !result )
@@ -244,7 +244,7 @@ class AccumuloService implements InitializingBean
       daoTileCacheService.getActualLayerBounds( params?.name, constraints )
    }
 
-   def getLayers(AccumuloGetLayersCommand cmd)
+   def getLayers(GetLayersCommand cmd)
    {
       def response = [:]
       if ( cmd.format )
@@ -269,7 +269,7 @@ class AccumuloService implements InitializingBean
    def createTileLayers(String[] layerNames)
    {
       def layers = []
-      def gridFormat = new ImageMosaicJDBCFormat()
+      //def gridFormat = new ImageMosaicJDBCFormat()
       //GridFormatFinder.findFormat(new URL("http://localhost:8080/tilecache/accumuloProxy/tileAccess?layer=BMNG"))
       layerNames.each { layer ->
          //   def gridReader = gridFormat.getReader( new URL( "${tileAccessUrl}?layer=${layer}" ) )

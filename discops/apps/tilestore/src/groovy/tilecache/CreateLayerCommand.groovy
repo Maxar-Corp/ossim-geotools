@@ -14,7 +14,7 @@ import org.ossim.common.CaseInsensitiveBind
  */
 @Validateable
 @ToString( includeNames = true )
-class AccumuloCreateLayerCommand implements CaseInsensitiveBind
+class CreateLayerCommand implements CaseInsensitiveBind
 {
    //
    String name

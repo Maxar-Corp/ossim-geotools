@@ -3,9 +3,9 @@ package tilecache
 import grails.converters.JSON
 import org.apache.commons.collections.map.CaseInsensitiveMap
 
-class AccumuloController
+class LayerManagerController
 {
-   def accumuloService
+   def layerManagerService
 
    def index()
    {
@@ -19,7 +19,7 @@ class AccumuloController
       response.setHeader( "Access-Control-Max-Age", "3600" );
       response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
 
-      def bounds = accumuloService.getActualBounds(params)
+      def bounds = layerManagerService.getActualBounds(params)
 
       println bounds
       render contentType: "application/json", (bounds as JSON).toString()
@@ -41,7 +41,7 @@ class AccumuloController
    def hashIdList = hashIds.split(",")
    def result = []
    hashIdList.each{hashId->
-     def tile = accumuloProxyService.getTile(table, hashId, family, qualifier)
+     def tile = layerManagerService.getTile(table, hashId, family, qualifier)
      if(tile)
      {
        def ostream = new ByteArrayOutputStream()
@@ -94,7 +94,7 @@ class AccumuloController
    //println "IMAGE ======================= ${img}"
 
    //    println "hash: ${hash} , family:${family}, qualifier:${qualifier}, image:${img}"
-   accumuloProxyService.writeTile(table, hash, img, family, qualifier)
+   layerManagerService.writeTile(table, hash, img, family, qualifier)
  //        println "DONE WRITING!!"
 
  //        render "Did the putTile"
@@ -103,7 +103,7 @@ class AccumuloController
    }
    */
 
-   def createOrUpdateLayer(AccumuloCreateLayerCommand cmd)
+   def createOrUpdateLayer(CreateLayerCommand cmd)
    {
       response.setHeader( "Access-Control-Allow-Origin", "*" );
       response.setHeader( "Access-Control-Allow-Origin", "*" );
@@ -120,9 +120,9 @@ class AccumuloController
          }
       }
 
-      accumuloService.createOrUpdateLayer( cmd )
+      layerManagerService.createOrUpdateLayer( cmd )
 
-      def layerInfo = accumuloService.getLayer(cmd.name)
+      def layerInfo = layerManagerService.getLayer(cmd.name)
 
       render contentType: "application/json", (layerInfo as JSON).toString()
    }
@@ -157,7 +157,7 @@ class AccumuloController
             break
       }
 
-      def result = accumuloService.deleteLayer(name)
+      def result = layerManagerService.deleteLayer(name)
 
       render contentType: "application/json", (result as JSON).toString()
    }
@@ -178,9 +178,9 @@ class AccumuloController
             // need error
          }
       }
-      accumuloService.renameLayer( cmd.oldName, cmd.newName)
+      layerManagerService.renameLayer( cmd.oldName, cmd.newName)
 
-      def result = accumuloService.getLayer(cmd.newName?:"")
+      def result = layerManagerService.getLayer(cmd.newName?:"")
 
       render contentType: "application/json", (result as JSON).toString()
    }
@@ -193,7 +193,7 @@ class AccumuloController
       response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
       response.setHeader( "Access-Control-Max-Age", "3600" );
       response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
-      def result = accumuloService.getLayer(params.name?:"")
+      def result = layerManagerService.getLayer(params.name?:"")
 
       render contentType: "application/json", (result as JSON).toString()
    }
@@ -204,7 +204,7 @@ class AccumuloController
       response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
       response.setHeader( "Access-Control-Max-Age", "3600" );
       response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
-      def result = accumuloService.getLayers()
+      def result = layerManagerService.getLayers()
 
       render contentType: "application/json", (result as JSON).toString()
    }
@@ -213,7 +213,7 @@ class AccumuloController
    {
       if ( cmd.validate() )
       {
-         def results = accumuloProxyService.getLayers( cmd )
+         def results = layerManagerService.getLayers( cmd )
 
          render contentType: results.contentType, file: results.buffer
       }
@@ -226,7 +226,7 @@ class AccumuloController
 
 //  def tileAccess()
 //  {
-//    def xmlString = accumuloProxyService.tileAccess( params )
+//    def xmlString = layerManagerService.tileAccess( params )
 //
 //    render contentType: 'application/xml', file: xmlString.bytes
 //  }

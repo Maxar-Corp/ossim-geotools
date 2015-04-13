@@ -4,28 +4,54 @@
 Is a library that provides the user with a web accessible graphical interface
 that makes it easier to manage geospatial imagery within PostgreSQL and Accumulo. 
 It also allows users to view geospatially encoded tiles and serve them 
-via Open Geospatial Consortium Standards, [OGC](http://www.opengeospatial.org/standards).
+via Open Geospatial Consortium Standards, [OGC Standards](http://www.opengeospatial.org/standards).
+
+**Not Complete**
+
+A library that provides functions for putting imagery into postgres/accumulo
+
+(2) a cmdline app that is used to put images into postgres/accumulo. It is built on top of (1).
+
+(3a) a web app (“tilestore”) that is used to put images into postgres/accumulo. It is built on top of (1) and (2).
+
+(3b) a server (“tilestore”) that exposes the data in postgres/accumulo via OGC services
+
+(4) a Pentaho plugin which allows the user to draw a “workflow" to perform image processing jobs in a distributed manner. The plug-in makes OGC and Omar API calls, and it uses Map/Reduce and Hadoop to implement the parallelized workflows.
+
+**Not Complete**
 
 ## Prerequisites
 
-- You'll need [OSSIM](http://trac.osgeo.org/ossim/) Don't install this just yet.
+- You'll need [OSSIM](http://trac.osgeo.org/ossim/)
 - Some version of [Java 7 JDK](http://openjdk.java.net/install/)
 - [Grails 2.5.0](https://grails.org/download.html)
 - [Maven >= 3](https://maven.apache.org/)
+- [Gradle](http://gradle.org/)
 
 ## Building
 
 ### groovy-swt
 
-You'll need [groovy-swt](
 This is a dependency for many of the ossim-tools modules, and it's included
 within this repo for convenience.
+
+1. `$ cd groovy-swt`
+2. `$ gradle clean install`
+
+### Tilestore 
+
+*You'll need at least [Grails 2.5.0](https://grails.org/download.html) installed.*
+
+1. `$ cd discops/apps/tilestore`
+2. `$ grails clean`
+3. `$ grails compile`
+
+## Running
 
 ### Maven
 
 If you haven't already, install [Maven >= 3](https://maven.apache.org/).
 
-1. `$ cd groovy-swt`
 2. `$ mvn clean install`
 
 ### ossim-tools [OSSIM](http://trac.osgeo.org/ossim/)
@@ -52,24 +78,3 @@ For a quick build without copying to kettle location:
 Now you can build [OSSIM](http://trac.osgeo.org/ossim/)
 
 
-### Tilestore 
-
-*You'll need at least [Grails 2.5.0](https://grails.org/download.html) installed.*
-
-discops/apps/tilestore
-
-
-grails clean
-grails compile
-
-**Not Complete**
-
-A library that provides functions for putting imagery into postgres/accumulo
-
-(2) a cmdline app that is used to put images into postgres/accumulo. It is built on top of (1).
-
-(3a) a web app (“tilestore”) that is used to put images into postgres/accumulo. It is built on top of (1) and (2).
-
-(3b) a server (“tilestore”) that exposes the data in postgres/accumulo via OGC services
-
-(4) a Pentaho plugin which allows the user to draw a “workflow" to perform image processing jobs in a distributed manner. The plug-in makes OGC and Omar API calls, and it uses Map/Reduce and Hadoop to implement the parallelized workflows.

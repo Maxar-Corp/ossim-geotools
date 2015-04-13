@@ -9,13 +9,13 @@ class WmsController
     try
     {
       // need to support case insensitive data bindings
-      println cmd
+     // println cmd
 
       if ( cmd.validate() )
       {
         if ( cmd.request.toLowerCase() == "getmap" )
         {
-          def tileAccessUrl = createLink( absolute: true, controller: "accumulo", action: "tileAccess" ) as String
+          def tileAccessUrl = createLink( absolute: true, controller: "layerManager", action: "tileAccess" ) as String
 
           //println tileAccessUrl
           def results = webMappingService.getMap( cmd/*, tileAccessUrl*/ )
@@ -35,7 +35,7 @@ class WmsController
     }
     catch ( def e )
     {
-      println "---------------------------------------------------------"
+      //println "---------------------------------------------------------"
       e.printStackTrace()
       // response.outputStream.close()
 
