@@ -36,10 +36,10 @@ class TileCacheFilters
       }
     }
 
-    createLayer( uri: '/accumulo/createLayer' ) {
+    createLayer( uri: '/layerManager/createLayer' ) {
       before = {
         //println "before: ${params}"
-        AccumuloCreateLayerCommand.fixParamNames( params )
+        CreateLayerCommand.fixParamNames( params )
         //println "after: ${params}"
       }
       after = { Map model ->
@@ -50,10 +50,10 @@ class TileCacheFilters
       }
     }
 
-     getLayers( uri: '/accumulo/getLayers' ) {
+     getLayers( uri: '/layerManager/getLayers' ) {
         before = {
            //println "before: ${params}"
-           AccumuloGetLayersCommand.fixParamNames( params )
+           GetLayersCommand.fixParamNames( params )
            //println "after: ${params}"
         }
         after = { Map model ->
@@ -63,7 +63,7 @@ class TileCacheFilters
 
         }
      }
-     renameLayer( uri: '/accumulo/renameLayer' ) {
+     renameLayer( uri: '/layerManager/renameLayer' ) {
         before = {
            //println "before: ${params}"
            RenameLayerCommand.fixParamNames( params )

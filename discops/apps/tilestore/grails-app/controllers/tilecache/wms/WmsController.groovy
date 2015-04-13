@@ -15,7 +15,7 @@ class WmsController
       {
         if ( cmd.request.toLowerCase() == "getmap" )
         {
-          def tileAccessUrl = createLink( absolute: true, controller: "accumulo", action: "tileAccess" ) as String
+          def tileAccessUrl = createLink( absolute: true, controller: "layerManager", action: "tileAccess" ) as String
 
           //println tileAccessUrl
           def results = webMappingService.getMap( cmd/*, tileAccessUrl*/ )

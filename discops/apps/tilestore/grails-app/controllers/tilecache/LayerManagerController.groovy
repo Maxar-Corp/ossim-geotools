@@ -3,7 +3,7 @@ package tilecache
 import grails.converters.JSON
 import org.apache.commons.collections.map.CaseInsensitiveMap
 
-class AccumuloController
+class LayerManagerController
 {
    def accumuloService
 
@@ -103,7 +103,7 @@ class AccumuloController
    }
    */
 
-   def createOrUpdateLayer(AccumuloCreateLayerCommand cmd)
+   def createOrUpdateLayer(CreateLayerCommand cmd)
    {
       response.setHeader( "Access-Control-Allow-Origin", "*" );
       response.setHeader( "Access-Control-Allow-Origin", "*" );

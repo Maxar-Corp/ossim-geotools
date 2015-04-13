@@ -66,7 +66,7 @@ class AccumuloService implements InitializingBean
     * @param params
     * @return
     */
-   def createOrUpdateLayer(AccumuloCreateLayerCommand cmd)
+   def createOrUpdateLayer(CreateLayerCommand cmd)
    {
       def result = daoTileCacheService.getLayerInfoByName( cmd.name )
       if ( !result )
@@ -244,7 +244,7 @@ class AccumuloService implements InitializingBean
       daoTileCacheService.getActualLayerBounds( params?.name, constraints )
    }
 
-   def getLayers(AccumuloGetLayersCommand cmd)
+   def getLayers(GetLayersCommand cmd)
    {
       def response = [:]
       if ( cmd.format )

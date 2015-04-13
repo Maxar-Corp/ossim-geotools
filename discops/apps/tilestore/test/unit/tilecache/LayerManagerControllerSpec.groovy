@@ -6,8 +6,8 @@ import spock.lang.Specification
 /**
  * See the API for {@link grails.test.mixin.web.ControllerUnitTestMixin} for usage instructions
  */
-@TestFor(AccumuloController)
-class AccumuloControllerSpec extends Specification {
+@TestFor(LayerManagerController)
+class LayerManagerControllerSpec extends Specification {
 
     def setup() {
     }
