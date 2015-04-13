@@ -3,6 +3,7 @@ package joms.geotools.tileapi.hibernate.controller
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.io.WKTReader
 import geoscript.geom.Bounds
+import geoscript.geom.io.KmlReader
 import geoscript.layer.Pyramid
 import geoscript.proj.Projection
 import groovy.sql.Sql
