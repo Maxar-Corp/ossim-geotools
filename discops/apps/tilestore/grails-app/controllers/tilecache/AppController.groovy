@@ -16,7 +16,7 @@ class AppController
   def client()
   {
     def sql = new Sql( dataSource )
-    def tileCacheLayers = sql.rows( "select name from tile_cache_layer_info where epsg_code like '%3857'" )
+    def tileCacheLayers = sql.rows( "select name from tile_cache_layer_info ")//where epsg_code like '%3857'" )
 
     sql.close()
 

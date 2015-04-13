@@ -41,7 +41,7 @@ class LayerManagerController
    def hashIdList = hashIds.split(",")
    def result = []
    hashIdList.each{hashId->
-     def tile = accumuloProxyService.getTile(table, hashId, family, qualifier)
+     def tile = layerManagerService.getTile(table, hashId, family, qualifier)
      if(tile)
      {
        def ostream = new ByteArrayOutputStream()
@@ -94,7 +94,7 @@ class LayerManagerController
    //println "IMAGE ======================= ${img}"
 
    //    println "hash: ${hash} , family:${family}, qualifier:${qualifier}, image:${img}"
-   accumuloProxyService.writeTile(table, hash, img, family, qualifier)
+   layerManagerService.writeTile(table, hash, img, family, qualifier)
  //        println "DONE WRITING!!"
 
  //        render "Did the putTile"
@@ -213,7 +213,7 @@ class LayerManagerController
    {
       if ( cmd.validate() )
       {
-         def results = accumuloProxyService.getLayers( cmd )
+         def results = layerManagerService.getLayers( cmd )
 
          render contentType: results.contentType, file: results.buffer
       }
@@ -226,7 +226,7 @@ class LayerManagerController
 
 //  def tileAccess()
 //  {
-//    def xmlString = accumuloProxyService.tileAccess( params )
+//    def xmlString = layerManagerService.tileAccess( params )
 //
 //    render contentType: 'application/xml', file: xmlString.bytes
 //  }

@@ -22,8 +22,7 @@ class WebMappingService
     try
     {
       def layers = layerManagerService.createTileLayers(cmd.layers?.split(','))
-
-      //def img = ImageIO.read("/Volumes/DataDrive/data/earth2.tif" as File)
+     //def img = ImageIO.read("/Volumes/DataDrive/data/earth2.tif" as File)
       // BufferedImage dest = img.getSubimage(0, 0, cmd.width, cmd.height);
 
       // ImageIO.write(dest, cmd.format.split('/')[-1],response.outputStream)
@@ -41,11 +40,9 @@ class WebMappingService
           layers: layers
       )
 
-      layerManagerService.deleteSession( element )
-
       // def gzipped = new GZIPOutputStream(result)
       //  OutputStreamWriter writer=new OutputStreamWriter(gzipped);
-      map.render( result )
+      map?.render( result )
       //gzipped.finish();
       //writer.close();
 
