@@ -152,6 +152,7 @@ accumulo {
 }
 
 tilecache {
+   maxTileConnections=50
   wmtsTileGrid = true
   referenceLayers = [
 //      [url: "http://localhost:8080/geoserver/wms", name: 'trident-spectre:trident-spectre', title: 'Reference Layer']
@@ -164,6 +165,7 @@ tilecache {
            [url: "http://52.0.52.104/geoserver/ged/wms", name: 'ne_10m_populated_places_all', title: 'Place Names']
    ]
 }
+
 security {
 //  level = 'UNCLASS'
 //level = 'SECRET'

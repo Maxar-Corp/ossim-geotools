@@ -9,7 +9,7 @@ class WmsController
     try
     {
       // need to support case insensitive data bindings
-      println cmd
+     // println cmd
 
       if ( cmd.validate() )
       {
@@ -35,7 +35,7 @@ class WmsController
     }
     catch ( def e )
     {
-      println "---------------------------------------------------------"
+      //println "---------------------------------------------------------"
       e.printStackTrace()
       // response.outputStream.close()
 

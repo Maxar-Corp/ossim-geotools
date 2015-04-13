@@ -47,7 +47,7 @@ class LayerManagerService implements InitializingBean
       ] )
       daoTileCacheService = hibernate.applicationContext.getBean( "tileCacheServiceDAO" );
 
-      getMapBlockingQueue = new LinkedBlockingQueue( 10 )
+      getMapBlockingQueue = new LinkedBlockingQueue( grailsApplication.config.tilecache.maxTileConnections?:20 )
       ( 0..<10 ).each { getMapBlockingQueue.put( 0 ) }
 
       // println "DATA SOURCE ===== ${dataSource}"
