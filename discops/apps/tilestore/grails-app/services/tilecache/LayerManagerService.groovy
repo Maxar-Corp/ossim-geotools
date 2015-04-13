@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.LinkedBlockingQueue
 
 @Transactional
-class AccumuloService implements InitializingBean
+class LayerManagerService implements InitializingBean
 {
 
    def grailsApplication
