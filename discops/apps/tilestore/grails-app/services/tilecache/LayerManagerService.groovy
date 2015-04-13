@@ -269,7 +269,7 @@ class LayerManagerService implements InitializingBean
    def createTileLayers(String[] layerNames)
    {
       def layers = []
-      def gridFormat = new ImageMosaicJDBCFormat()
+      //def gridFormat = new ImageMosaicJDBCFormat()
       //GridFormatFinder.findFormat(new URL("http://localhost:8080/tilecache/accumuloProxy/tileAccess?layer=BMNG"))
       layerNames.each { layer ->
          //   def gridReader = gridFormat.getReader( new URL( "${tileAccessUrl}?layer=${layer}" ) )
