@@ -69,7 +69,15 @@
                         <button type="button" id="navCreateTileLayer" class="btn btn-primary"
                                 data-toggle="tooltip" data-placement="bottom"
                                 title=""><i
-                                class="fa fa-th"></i>&nbsp;&nbsp;New Tile Layer</button>
+                                class="fa fa-th"></i>&nbsp;&nbsp;New</button>
+                        <button type="button" id="submitRenameTileLayer" class="btn btn-primary"
+                                data-toggle="tooltip" data-placement="bottom"
+                                title=""><i
+                                class="fa fa-th"></i>&nbsp;&nbsp;Rename</button>
+                        <button type="button" id="submitDeleteTileLayer" class="btn btn-primary"
+                                data-toggle="tooltip" data-placement="bottom"
+                                title=""><i
+                                class="fa fa-th"></i>&nbsp;&nbsp;Delete</button>
                     </form>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle fa fa-question-circle" data-toggle="dropdown">&nbsp;Help <b class="caret"></b></a>
