@@ -135,7 +135,7 @@ AppAdmin = (function () {
         alert(layerMessage.name + layerMessage.minLevel + layerMessage.maxLevel);
 
         $.ajax({
-            url: "/tilecache/accumulo/createOrUpdateLayer",
+            url: "/tilecache/layerManager/createOrUpdateLayer",
             type: 'POST',
             dataType: 'json',
             data: layerMessage,

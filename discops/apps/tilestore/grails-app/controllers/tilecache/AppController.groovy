@@ -16,7 +16,7 @@ class AppController
   def client()
   {
     def sql = new Sql( dataSource )
-    def tileCacheLayers = sql.rows( "select name from tile_cache_layer_info where epsg_code like '%3857'" )
+    def tileCacheLayers = sql.rows( "select name from tile_cache_layer_info ")//where epsg_code like '%3857'" )
 
     sql.close()
 
@@ -25,7 +25,7 @@ class AppController
             wmtsTileGrid: grailsApplication.config.tilecache.wmtsTileGrid ?: false,
             wfsURL: grailsLinkGenerator.link( action: 'testWFS' ),
             urlProductExport: grailsLinkGenerator.link( controller: 'product', action: 'export' ),
-            urlLayerActualBounds: grailsLinkGenerator.link( controller: 'accumulo', action: 'actualBounds' ),
+            urlLayerActualBounds: grailsLinkGenerator.link( controller: 'layerManager', action: 'getActualBounds' ),
             tileCacheWmsURL: grailsLinkGenerator.link( controller: 'wms', action: 'index', absolute: true ),
             referenceLayers: grailsApplication.config.tilecache.referenceLayers,
             overlayLayers: grailsApplication.config.tilecache.overlayLayers,
