@@ -12,7 +12,7 @@ class LayerManagerController
 
    }
 
-   def actualBounds(){
+   def getActualBounds(){
       response.setHeader( "Access-Control-Allow-Origin", "*" );
       response.setHeader( "Access-Control-Allow-Origin", "*" );
       response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
