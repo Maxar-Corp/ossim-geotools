@@ -15,3 +15,4 @@ ossim-tools/kettle-plugins/build/
 ossim-tools/ossim-tools.iws
 *tilecache-app-config.xml
 discops/apps/tilestore/target/
+*.idea
