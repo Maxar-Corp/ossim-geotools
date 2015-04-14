@@ -165,12 +165,22 @@ http://www.springframework.org/schema/context/spring-context.xsd">
             http://www.springframework.org/schema/tx/spring-tx.xsd"
                  >
 
-          <bean id="accumuloApi" class="joms.geotools.tileapi.accumulo.AccumuloApi" destroy-method="close">
+          <bean id="tileApi" class="joms.geotools.tileapi.accumulo.AccumuloApi" destroy-method="close">
               <property name="username" value="${map.accumuloUsername ?: 'root'}"/>
               <property name="password" value="${map.accumuloPassword ?: 'root'}"/>
               <property name="instanceName" value="${map.accumuloInstanceName ?: 'accumulo'}"/>
               <property name="zooServers" value="${map.accumuloZooServers?:""}"/>
           </bean>
+
+<!--  COMMENT OUT BEAN ABOVE AND UNCOMMENT BEAN BELOW TO USE GEOWAVE -->
+
+<!--      <bean id="tileApi" class="joms.geotools.tileapi.geowave.GeoWaveApi" destroy-method="close">
+              <property name="username" value="${map.accumuloUsername ?: 'root'}"/>
+              <property name="password" value="${map.accumuloPassword ?: 'root'}"/>
+              <property name="instanceName" value="${map.accumuloInstanceName ?: 'accumulo'}"/>
+              <property name="zooServers" value="${map.accumuloZooServers?:""}"/>
+          </bean> 
+-->
           <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
               <property name="driverClassName" value="${map.driverClass ?: map.driverClassName}"/>
               <property name="url" value="${map.url}"/>
