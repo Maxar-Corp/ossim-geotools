@@ -114,6 +114,25 @@ class LayerManagerService implements InitializingBean
       result
    }
 
+   def createLayer(CreateLayerCommand cmd)
+   {
+      def result = daoTileCacheService.getLayerInfoByName( cmd.name )
+      if ( !result )
+      {
+         result = daoTileCacheService.createOrUpdateLayer(
+                 new TileCacheLayerInfo( name: cmd.name,
+                         bounds: cmd.clip,
+                         epsgCode: cmd.epsgCode,
+                         tileHeight: cmd.tileHeight,
+                         tileWidth: cmd.tileWidth,
+                         minLevel: cmd.minLevel,
+                         maxLevel: cmd.maxLevel )
+         )
+      }
+
+      result
+   }
+
    def getLayer(String name)
    {
       def result = [:]
