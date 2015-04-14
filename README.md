@@ -40,7 +40,7 @@ The ossim-geotools distribution uses a lot of the JNI bindings of the OSSIM dist
 ### Using JOMS from RPM distribution
 
 
-If you have built the joms-<version>.jar and have packaged it into a oms RPM you can install the RPM and then 
+If you have built the `joms-<version>.jar` and have packaged it into a oms RPM you can install the RPM and then 
 put the jar into a local maven cache.  The OMS rpm should intall the the joms jar file under the /usr/share/java location.  You should see a file there with the name `joms-<version>.jar`
 
 if `<version>` is 1.8.19 then you can issue the following command and install it:
