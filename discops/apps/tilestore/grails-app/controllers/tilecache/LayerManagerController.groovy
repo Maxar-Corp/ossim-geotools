@@ -13,12 +13,6 @@ class LayerManagerController
    }
 
    def getActualBounds(){
-      response.setHeader( "Access-Control-Allow-Origin", "*" );
-      response.setHeader( "Access-Control-Allow-Origin", "*" );
-      response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
-      response.setHeader( "Access-Control-Max-Age", "3600" );
-      response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
-
       def bounds = layerManagerService.getActualBounds(params)
 
       println bounds
@@ -105,12 +99,6 @@ class LayerManagerController
 
    def createOrUpdateLayer(CreateLayerCommand cmd)
    {
-      response.setHeader( "Access-Control-Allow-Origin", "*" );
-      response.setHeader( "Access-Control-Allow-Origin", "*" );
-      response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
-      response.setHeader( "Access-Control-Max-Age", "3600" );
-      response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
-
       if(request.JSON)
       {
          cmd.initFromJson(request.JSON)
@@ -126,14 +114,23 @@ class LayerManagerController
 
       render contentType: "application/json", (layerInfo as JSON).toString()
    }
+   def createLayer(CreateLayerCommand cmd)
+   {
+      if(request.JSON)
+      {
+         cmd.initFromJson(request.JSON)
+         if(!cmd.validate())
+         {
+            // need error
+         }
+      }
+
+      def layerInfo = layerManagerService.createLayer( cmd )
+
+      render contentType: "application/json", (layerInfo as JSON).toString()
+   }
    def deleteLayer(def params)
    {
-      response.setHeader( "Access-Control-Allow-Origin", "*" );
-      response.setHeader( "Access-Control-Allow-Origin", "*" );
-      response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
-      response.setHeader( "Access-Control-Max-Age", "3600" );
-      response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
-
       def name
       CaseInsensitiveMap map = new CaseInsensitiveMap(params)
 
@@ -164,11 +161,6 @@ class LayerManagerController
 
    def renameLayer(RenameLayerCommand cmd)//String oldName, String newName)
    {
-      response.setHeader( "Access-Control-Allow-Origin", "*" );
-      response.setHeader( "Access-Control-Allow-Origin", "*" );
-      response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
-      response.setHeader( "Access-Control-Max-Age", "3600" );
-      response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
      // CaseInsensitiveMap map = new CaseInsensitiveMap(params)
       if(request.JSON)
       {
@@ -188,22 +180,12 @@ class LayerManagerController
 
    def getLayer()
    {
-      response.setHeader( "Access-Control-Allow-Origin", "*" );
-      response.setHeader( "Access-Control-Allow-Origin", "*" );
-      response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
-      response.setHeader( "Access-Control-Max-Age", "3600" );
-      response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
       def result = layerManagerService.getLayer(params.name?:"")
 
       render contentType: "application/json", (result as JSON).toString()
    }
    def getLayers()
    {
-      response.setHeader( "Access-Control-Allow-Origin", "*" );
-      response.setHeader( "Access-Control-Allow-Origin", "*" );
-      response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
-      response.setHeader( "Access-Control-Max-Age", "3600" );
-      response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
       def result = layerManagerService.getLayers()
 
       render contentType: "application/json", (result as JSON).toString()

@@ -1,6 +1,7 @@
 package tilecache.wfs
 
 import grails.converters.JSON
+import joms.geotools.web.HttpStatus
 
 class WfsController
 {
@@ -8,11 +9,6 @@ class WfsController
 
   def index(WfsCommand cmd)
   {
-    response.setHeader( "Access-Control-Allow-Origin", "*" );
-    //response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
-    response.setHeader( "Access-Control-Allow-Methods", "GET" );
-    response.setHeader( "Access-Control-Max-Age", "3600" );
-    response.setHeader( "Access-Control-Allow-Headers", "x-requested-with" );
     if ( cmd.validate() )
     {
       switch ( cmd.request.toLowerCase() )
@@ -26,7 +22,7 @@ class WfsController
         }
         else
         {
-           response.status = 405
+           response.status = HttpStatus.METHOD_NOT_ALLOWED
            render([error: 'Only HTTP GET requests are accepted at this time.'] as JSON)
         }
        // if ( params.callback )

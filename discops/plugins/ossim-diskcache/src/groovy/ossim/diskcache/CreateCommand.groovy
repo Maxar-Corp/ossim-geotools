@@ -32,4 +32,11 @@ class CreateCommand implements CaseInsensitiveBind
     *
     */
    String  expirePeriod
+
+   void initFromJson(def jsonObj)
+   {
+      directory       = jsonObj.directory?:this.directory
+      directoryType   = jsonObj.directoryType?:this.directoryType
+      maxSize         = (jsonObj.maxSize!=null)?:this.maxSize
+d   }
 }
