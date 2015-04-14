@@ -126,7 +126,7 @@ AppAdmin = (function () {
 
 
 
-    $('#submitCreateTileLayer').on('click', function () {
+    $('#submitCreateTile').on('click', function () {
 
         layerMessage.name = $('#layerName').val();
         layerMessage.minLevel = $('#minTileLevel').val();
@@ -146,7 +146,7 @@ AppAdmin = (function () {
         });
     });
 
-    $('#submitRenameTileLayer').on('click', function(oldName, newName){
+    $('#submitRenameTile').on('click', function(oldName, newName){
         oldName = "drake";
         newName = "drake2";
         $.ajax({
