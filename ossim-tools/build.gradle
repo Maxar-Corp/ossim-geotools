@@ -121,6 +121,10 @@ allprojects {
       maven{
          url 'http://dev.mapfish.org/maven/repository'
       }
+      maven{
+      // for java-vector
+         url 'https://github.com/ElectronicChartCentre/ecc-mvn-repo/tree/master/releases'
+      }
       // this is our local repository for goovy-swt
       maven {  url "${rootDir}/../groovy-swt/src/repository" }
 
@@ -387,7 +391,7 @@ project( ':common-libs' ) {
       compile 'org.codehaus.groovy:groovy-all:2.4.0'
       compile 'org.mortbay.jetty:jetty:6.1.26'
       compile 'org.codehaus.gpars:gpars:1.2.1'
-      compile 'org.geotools:gt-imagemosaic-jdbc:12.2'
+      compile 'org.geotools:gt-imagemosaic-jdbc:13.0'
       compile 'org.geoscript:geoscript-groovy:1.5.0'
       compile "org.ossim:joms:${JOMS_VERSION}"
       compile 'com.github.davidmoten:geo:0.6.10'

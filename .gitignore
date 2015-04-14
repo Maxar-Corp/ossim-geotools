@@ -1,3 +1,10 @@
+*.iml
+*.iws
+*.zip
+*.ipr
+*.tld
+ossim-tools/app/app-jars/
+*tilecache-app-config.xml
 bin
 .classpath
 .project
@@ -5,3 +12,4 @@ bin
 target
 .gradle
 build
+
