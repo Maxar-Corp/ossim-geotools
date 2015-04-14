@@ -158,8 +158,7 @@
                                     <label for="layerName">Tile Layer Name&nbsp;</label>
                                     <input type="text" class="form-control " id="layerName"><br><br>
                                     <label for="minTileLevel">Min. Level</label>
-                                    <select class="form-control selectpicker" data-style="btn-primary"
-                                             id="minTileLevel" >
+                                    <select id="minTileLevel" class="form-control selectpicker" data-style="btn-primary">
                                         <option value="0">0&nbsp;</option>
                                         <option value="1">1&nbsp;</option>
                                         <option value="2">2&nbsp;</option>
@@ -186,8 +185,7 @@
                                     </select>
                                     &nbsp;&nbsp;&nbsp;
                                     <label for="maxTileLevel">Max. Level</label>
-                                    <select class="form-control selectpicker" data-style="btn-primary"
-                                             id="maxTileLevel" >
+                                    <select id="maxTileLevel" class="form-control selectpicker" data-style="btn-primary">
                                         <option value="0">0&nbsp;</option>
                                         <option value="1">1&nbsp;</option>
                                         <option value="2">2&nbsp;</option>
@@ -213,8 +211,8 @@
                                         <option value="22">22</option>
                                     </select><br><br>
                                     <label for="epsg">Projection</label>
-                                    <select class="form-control selectpicker" data-style="btn-primary"
-                                             id="epsg" disabled>
+                                    <select id="epsgCode" class="form-control selectpicker" data-style="btn-primary"
+                                             id="epsg">
                                         <option value="EPSG:3857">EPSG: 3857</option>
                                         <option value="EPSG:4326">EPSG: 4326</option>
                                     </select>&nbsp;&nbsp;&nbsp;
