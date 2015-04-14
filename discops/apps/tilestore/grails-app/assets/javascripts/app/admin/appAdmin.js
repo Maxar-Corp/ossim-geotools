@@ -126,7 +126,7 @@ AppAdmin = (function () {
 
 
 
-    $('#submitCreateTile').on('click', function () {
+    $('#submitCreateTileLayer').on('click', function () {
 
         layerMessage.name = $('#layerName').val();
         layerMessage.minLevel = $('#minTileLevel').val();
@@ -140,11 +140,45 @@ AppAdmin = (function () {
             dataType: 'json',
             data: layerMessage,
             success: function (data) {
-
+                alert(JSON.stringify(data));
             }
 
         });
     });
+
+    $('#submitRenameTileLayer').on('click', function(oldName, newName){
+        oldName = "drake";
+        newName = "drake2";
+        $.ajax({
+            url: "/tilecache/accumulo/renameLayer?",
+            type: 'POST',
+            dataType: 'json',
+            data: {'oldName': oldName, 'newName': newName},
+            success: function (data) {
+                alert(JSON.stringify(data));
+            }
+        });
+
+    });
+
+    $('#submitDeleteTileLayer').on('click', function(layerToDelete){
+        layerToDelete = 'HumptyFratFTW';
+        $.ajax({
+            url: "/tilecache/accumulo/deleteLayer?",
+            type: 'POST',
+            dataType: 'json',
+            data: {'name': layerToDelete},
+            success: function (data) {
+                alert(JSON.stringify(data));
+            }
+        });
+
+    });
+
+
+
+
+
 
     $('#twice').on('click', function () {
         mapTile.render();
