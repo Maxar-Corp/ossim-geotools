@@ -33,13 +33,9 @@ AppAdmin = (function () {
     var ftStoryImage4326 = [-76.328543005672, 36.933125884544]; //35.3386966201419,-116.514302051577
 
     var layerMessage = {
-        type: "LayerMessage",
-        tileHeight: "",
-        tileWidth: "",
-        bBox: "Polygon((30 10, 40 40, 20 40, 10 20, 30 10))",
         minLevel: "0",
-        maxLevel: "16",
-        name: "TileLayer2",
+        maxLevel: "0",
+        name: "TileLayer",
         epsgCode: "EPSG:3857"
     }
 
@@ -129,8 +125,9 @@ AppAdmin = (function () {
         layerMessage.name = $('#layerName').val();
         layerMessage.minLevel = $('#minTileLevel').val();
         layerMessage.maxLevel = $('#maxTileLevel').val();
+        layerMessage.epsgCode = $('#epsgCode').val();
 
-        alert(layerMessage.name + layerMessage.minLevel + layerMessage.maxLevel);
+        //alert(layerMessage.name + layerMessage.minLevel + layerMessage.maxLevel);
 
         $.ajax({
             url: "/tilecache/layerManager/createOrUpdateLayer",
