@@ -1,14 +1,16 @@
 package joms.geotools.tileapi.hibernate.controller
 
 import com.vividsolutions.jts.geom.Geometry
+import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.WKTReader
+
 import geoscript.geom.Bounds
 import geoscript.layer.Pyramid
 import geoscript.proj.Projection
 import groovy.sql.Sql
 import joms.geotools.tileapi.BoundsUtil
 import joms.geotools.tileapi.OssimImageTileRenderer
-import joms.geotools.tileapi.accumulo.AccumuloApi
+import joms.geotools.tileapi.TileApi;
 import joms.geotools.tileapi.TileCachePyramid
 import joms.geotools.tileapi.accumulo.AccumuloTileLayer
 import joms.geotools.tileapi.accumulo.ImageTileKey
@@ -18,6 +20,7 @@ import joms.geotools.tileapi.TileCacheTileGenerator
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
 import joms.geotools.tileapi.hibernate.domain.TileCacheTileTableTemplate
 import joms.oms.TileCacheSupport
+
 import org.hibernate.SessionFactory
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.DisposableBean
@@ -40,7 +43,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   @Resource(name = "sessionFactory")
   @Autowired
   SessionFactory sessionFactory
-  AccumuloApi accumuloApi
+  TileApi tileApi
   ApplicationContext applicationContext
   TileCacheLayerInfoDAO layerInfoTableDAO
   Sql sql
@@ -53,7 +56,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   void afterPropertiesSet()
   {
     layerInfoTableDAO = applicationContext?.getBean("tileCacheLayerInfoDAO")
-    accumuloApi = applicationContext?.getBean("accumuloApi")
+    tileApi = applicationContext?.getBean("tileApi")
     sqlSession = sessionFactory.openSession()
     sql = new Sql(sqlSession.connection())
   }
@@ -207,7 +210,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
       layer.name = newName
       layerInfoTableDAO.update(layer)
       sql.execute("ALTER TABLE ${oldTileStore} RENAME TO ${defaultTileStore}".toString());
-      accumuloApi.renameTable(oldTileStore, defaultTileStore)
+      tileApi.renameLayer(oldTileStore, defaultTileStore)
     }
   }
 
@@ -244,7 +247,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
       {
         createTileStore(layerInfo.tileStoreTable)
       }
-      accumuloApi.createTable(layerInfo.tileStoreTable)
+      tileApi.createLayer(layerInfo.tileStoreTable)
       layer = layerInfo
     }
     layer
@@ -279,7 +282,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
       {
         sql.execute("DROP TABLE ${layer.tileStoreTable};".toString())
       }
-      accumuloApi.deleteTable(layer.tileStoreTable)
+      tileApi.deleteLayer(layer.tileStoreTable)
       layerInfoTableDAO.delete(layer)
     }
   }
@@ -389,6 +392,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     def queryString = "select * from ${layer?.tileStoreTable} ${createWhereClause(constraints)}".toString()
     def metaRows = [:]
     def hashIds = []
+	def bounds = []
 
     if(!layer) return result
     if(constraints.offset&&constraints.maxRows)
@@ -396,6 +400,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
       sql.eachRow(queryString, constraints.offset, constraints.maxRows){row->
         metaRows."${row.hash_id}" = new TileCacheTileTableTemplate().bindSql(row)
         hashIds << new ImageTileKey(rowId:row.hash_id)
+		bounds << row.bounds
       }
     }
     else
@@ -403,12 +408,13 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
       sql.eachRow(queryString){row->
         metaRows."${row.hash_id}" = new TileCacheTileTableTemplate().bindSql(row)
         hashIds << new ImageTileKey(rowId:row.hash_id)
+		bounds << row.bounds
       }
     }
     if(hashIds)
     {
 
-      def tiles        = accumuloApi.getTiles(layer.tileStoreTable, hashIds as ImageTileKey[])
+      def tiles        = tileApi.getTiles(layer.tileStoreTable, hashIds as ImageTileKey[], bounds as Polygon[])
       tiles.each{k,v->
 
         TileCacheImageTile tile = v as  TileCacheImageTile
@@ -539,7 +545,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
 
     if(tile.data)
     {
-      accumuloApi.writeTile(table, tile)
+      tileApi.writeTile(table, tile)
     }
   }
 
@@ -558,7 +564,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   {
     ImageTileKey key = new ImageTileKey([rowId:meta.hashId])
 
-    TileCacheImageTile tile = accumuloApi.getTile(layer.tileStoreTable, key) as TileCacheImageTile
+    TileCacheImageTile tile = tileApi.getTile(layer.tileStoreTable, key, meta.bounds as Polygon) as TileCacheImageTile
 
     if(meta)
     {
@@ -579,14 +585,14 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   }
 
   @Transactional
-  def getTileByKey(TileCacheLayerInfo layer, ImageTileKey key)
+  def getTileByKey(TileCacheLayerInfo layer, ImageTileKey key, Bounds bounds)
   {
     String table = layer.tileStoreTable
     TileCacheImageTile result
     def meta = sql.firstRow("select * from ${table} where hash_id = '${key.rowId}'".toString())
     if(meta)
     {
-      result        = accumuloApi.getTile(table, key)
+      result        = tileApi.getTile(table, key, bounds.toPolygon())
       if(result)
       {
         result.x      = meta.x?.toLong()
@@ -601,10 +607,5 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
 
 
     result
-  }
-  @Transactional
-  def getTileDataByKey(TileCacheLayerInfo layer, ImageTileKey key)
-  {
-    accumuloApi.getTile(layer.tileStoreTable, key)?.data
   }
 }

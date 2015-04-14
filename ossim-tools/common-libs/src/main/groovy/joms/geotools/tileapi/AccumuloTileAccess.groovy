@@ -26,7 +26,7 @@ import java.awt.Rectangle
 import java.sql.SQLException
 import java.util.concurrent.LinkedBlockingQueue
 
-import joms.geotools.tileapi.accumulo.AccumuloApi
+import joms.geotools.tileapi.TileApi
 
 import org.apache.commons.lang.builder.ToStringBuilder
 

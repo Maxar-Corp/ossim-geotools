@@ -14,13 +14,18 @@ import org.apache.accumulo.core.data.Value
 import org.apache.hadoop.io.Text
 import org.springframework.beans.factory.InitializingBean
 
+import com.vividsolutions.jts.geom.Polygon;
+
 import javax.imageio.ImageIO
+
 import java.awt.image.BufferedImage
+
+import joms.geotools.tileapi.TileApi;
 
 /**
  * Created by gpotts on 1/8/15.
  */
-class AccumuloApi implements InitializingBean
+class AccumuloApi implements InitializingBean, TileApi
 {
   String username
   String password
@@ -87,11 +92,11 @@ class AccumuloApi implements InitializingBean
     scanner.setRange(range);
     scanner
   }
-  void renameTable(String oldTableName, String newTableName)
+  void renameLayer(String oldTableName, String newTableName)
   {
     connector.tableOperations().rename(oldTableName, newTableName)
   }
-  void createTable(String table)
+  void createLayer(String table)
   {
     if(table)
     {
@@ -101,7 +106,7 @@ class AccumuloApi implements InitializingBean
       }
     }
   }
-  void deleteTable(String table)
+  void deleteLayer(String table)
   {
     if(table)
     {
@@ -149,13 +154,14 @@ class AccumuloApi implements InitializingBean
 //      g.dispose()
 //    }
 //  }
-  void writeTile(String table, byte[] tile, ImageTileKey key)//String hashId, String columnFamily, String columnQualifier)
+  void writeTile(String table, TileCacheImageTile tile)//Tile tile, String columnFamily, String columnQualifier)
   {
+    writeTile(table, tile.data, tile.key)
     def bwc = new BatchWriterConfig()
-    def row    = new Text(key.rowId)
+    def row    = new Text(tile.key.rowId)
     Mutation m = new Mutation(row);
-    def imgResult = tile//.image
-    m.put(key.family?.bytes, key.qualifier?.bytes, imgResult);
+    def imgResult = tile.data//.image
+    m.put(tile.key.family?.bytes, tile.key.qualifier?.bytes, imgResult);
     def batchWriter = createBatchWriter(table);
     try{
       batchWriter?.addMutation(m);
@@ -167,10 +173,6 @@ class AccumuloApi implements InitializingBean
     }
     batchWriter?.close()
 
-  }
-  void writeTile(String table, TileCacheImageTile tile)//Tile tile, String columnFamily, String columnQualifier)
-  {
-    writeTile(table, tile.data, tile.key)
   }
   void writeTiles(String table, TileCacheImageTile[] tileList)throws Exception//, String columnFamily, String columnQualifier)
   {
@@ -193,7 +195,7 @@ class AccumuloApi implements InitializingBean
     }
   }
 
-  TileCacheImageTile getTile(String table, ImageTileKey key)
+  TileCacheImageTile getTile(String table, ImageTileKey key, Polygon bounds)
   {
     BatchScanner scanner =createBatchScanner(table);
     TileCacheImageTile result
@@ -217,7 +219,7 @@ class AccumuloApi implements InitializingBean
     result
   }
 
-  def getTiles(String table, ImageTileKey[] keyList)
+  def getTiles(String table, ImageTileKey[] keyList, Polygon[] bounds)
   {
     def result = [:]
     BatchScanner scanner =createBatchScanner(table);
