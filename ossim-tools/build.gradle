@@ -111,9 +111,6 @@ allprojects {
       maven {
          url 'http://www.hibernatespatial.org/repository'
       }
-      maven {
-         url 'https://github.com/ElectronicChartCentre/ecc-mvn-repo/raw/master/releases'
-      }
 	  maven {
          url 'http://s3.amazonaws.com/geowave-maven/release'
       }
@@ -123,7 +120,7 @@ allprojects {
       }
       maven{
       // for java-vector
-         url 'https://github.com/ElectronicChartCentre/ecc-mvn-repo/tree/master/releases'
+         url 'https://github.com/ElectronicChartCentre/ecc-mvn-repo/raw/master/releases'
       }
       // this is our local repository for goovy-swt
       maven {  url "${rootDir}/../groovy-swt/src/repository" }
