@@ -36,8 +36,7 @@
             </div>
 
             <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
-                <div class="col-sm-8 col-md-8">
-
+                <div class="col-sm-4 col-md-4">
                     %{--<form class="navbar-form" role="search" id="zoomToForm">--}%
                         %{--<div class="form-group">--}%
                             %{--<div class="input-group">--}%
@@ -65,26 +64,37 @@
                     %{--</form>--}%
                 </div>
                 <div class="nav navbar-nav navbar-right">
-                    <form class="navbar-form navbar-left" role="search">
-                        <button type="button" id="navCreateTileLayer" class="btn btn-primary"
-                                data-toggle="tooltip" data-placement="bottom"
-                                title=""><i
-                                class="fa fa-th"></i>&nbsp;&nbsp;New</button>
-                        <button type="button" id="submitRenameTileLayer" class="btn btn-primary"
-                                data-toggle="tooltip" data-placement="bottom"
-                                title=""><i
-                                class="fa fa-th"></i>&nbsp;&nbsp;Rename</button>
-                        <button type="button" id="submitDeleteTileLayer" class="btn btn-primary"
-                                data-toggle="tooltip" data-placement="bottom"
-                                title=""><i
-                                class="fa fa-th"></i>&nbsp;&nbsp;Delete</button>
-                    </form>
+                    %{--<form class="navbar-form navbar-left" role="search">--}%
+                        %{--<button type="button" id="navCreateTileLayer" class="btn btn-primary"--}%
+                                %{--data-toggle="tooltip" data-placement="bottom"--}%
+                                %{--title=""><i--}%
+                                %{--class="fa fa-th"></i>&nbsp;&nbsp;New</button>--}%
+                        %{--<button type="button" id="submitRenameTileLayer" class="btn btn-primary"--}%
+                                %{--data-toggle="tooltip" data-placement="bottom"--}%
+                                %{--title=""><i--}%
+                                %{--class="fa fa-th"></i>&nbsp;&nbsp;Rename</button>--}%
+                        %{--<button type="button" id="submitDeleteTileLayer" class="btn btn-primary"--}%
+                                %{--data-toggle="tooltip" data-placement="bottom"--}%
+                                %{--title=""><i--}%
+                                %{--class="fa fa-th"></i>&nbsp;&nbsp;Delete</button>--}%
+                    %{--</form>--}%
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle fa fa-th" data-toggle="dropdown" role="button"
+                           aria-expanded="false">&nbsp; Manage Layers<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a id="navCreateLayer" class="fa fa-plus-square-o" href="#">&nbsp;Create Tile
+                            Layer</a></li>
+                            <li><a id="submitRenameLayer" class="fa fa-pencil" href="#">&nbsp;Rename Tile
+                            Layer</a></li>
+                            <li class="divider"></li>
+                            <li><a id="submitDeleteLayer" class="fa fa-trash" href="#">&nbsp;Delete Tile Layer</a></li>
+                        </ul>
+                    </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle fa fa-question-circle" data-toggle="dropdown">&nbsp;Help <b class="caret"></b></a>
                     </li>
-                    <li>
-                        <a href="#">About</a>
-                    </li>
+
                 </div>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
@@ -131,7 +141,7 @@
 
 </div>
 
-<!-- Export to Geopackage Form -->
+<!-- Create new tile layer modal -->
 <div class="modal fade" id="createTileLayerModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" Saria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -214,7 +224,7 @@
                                         <option value="256x256">256 x 256</option>
                                         <option value="512x512">512 x 512</option>
                                     </select><br><br>
-                                    <button type="button" id="submitCreateTile" class="btn btn-success">Submit</button>
+                                    <button type="button" id="submitCreateLayer" class="btn btn-success">Submit</button>
                                     <button type="button" id="cancelCreateTile" class="btn btn-default"
                                             data-dismiss="modal">Cancel</button>
 
