@@ -101,32 +101,30 @@ AppAdmin = (function () {
 
     mapOmar.getView().bindTo('center', mapTile.getView());
     var accessor = mapOmar.getView().bindTo('resolution', mapTile.getView());
-    accessor.transform(
-        function (sourceResolution) {
-            if ($('#twice').prop('checked')) {
-                return sourceResolution / 2;
-            }
-            else {
-                return sourceResolution;
-            }
-        },
-        function (targetResolution) {
-            if ($('#twice').prop('checked')) {
-                return targetResolution * 2;
-            }
-            else {
-                return targetResolution;
-            }
-        }
-    );
+    //accessor.transform(
+    //    function (sourceResolution) {
+    //        if ($('#twice').prop('checked')) {
+    //            return sourceResolution / 2;
+    //        }
+    //        else {
+    //            return sourceResolution;
+    //        }
+    //    },
+    //    function (targetResolution) {
+    //        if ($('#twice').prop('checked')) {
+    //            return targetResolution * 2;
+    //        }
+    //        else {
+    //            return targetResolution;
+    //        }
+    //    }
+    //);
 
-    $('#navCreateTileLayer').on('click', function(){
+    $('#navCreateLayer').click(function(){
         $( '#createTileLayerModal' ).modal( 'show' );
     });
 
-
-
-    $('#submitCreateTile').on('click', function () {
+    $('#submitCreateLayer').on('click', function () {
 
         layerMessage.name = $('#layerName').val();
         layerMessage.minLevel = $('#minTileLevel').val();
@@ -146,11 +144,11 @@ AppAdmin = (function () {
         });
     });
 
-    $('#submitRenameTile').on('click', function(oldName, newName){
-        oldName = "drake";
-        newName = "drake2";
+    $('#submitRenameLayer').click(function(oldName, newName){
+        oldName = "aaron_tile_layer";
+        newName = "aaron_tile_layer_GoT";
         $.ajax({
-            url: "/tilecache/accumulo/renameLayer?",
+            url: "/tilecache/layerManager/renameLayer?",
             type: 'POST',
             dataType: 'json',
             data: {'oldName': oldName, 'newName': newName},
@@ -161,10 +159,10 @@ AppAdmin = (function () {
 
     });
 
-    $('#submitDeleteTileLayer').on('click', function(layerToDelete){
-        layerToDelete = 'HumptyFratFTW';
+    $('#submitDeleteLayer').click(function(layerToDelete){
+        layerToDelete = 'aaron_tile_layer_GoT';
         $.ajax({
-            url: "/tilecache/accumulo/deleteLayer?",
+            url: "/tilecache/layerManager/deleteLayer?",
             type: 'POST',
             dataType: 'json',
             data: {'name': layerToDelete},
@@ -175,15 +173,10 @@ AppAdmin = (function () {
 
     });
 
-
-
-
-
-
-    $('#twice').on('click', function () {
-        mapTile.render();
-        mapOmar.render();
-    });
+    //$('#twice').on('click', function () {
+    //    mapTile.render();
+    //    mapOmar.render();
+    //});
 
     //Add Full Screen
     var fullScreenControl = new ol.control.FullScreen();
