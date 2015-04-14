@@ -36,22 +36,60 @@ class TileCacheFilters
       }
     }
 
-    createLayer( uri: '/layerManager/createLayer' ) {
-      before = {
-        //println "before: ${params}"
-        CreateLayerCommand.fixParamNames( params )
-        //println "after: ${params}"
-      }
-      after = { Map model ->
+     getActualBounds(uri:'/layerManager/getActualBounds'){
+        before={
+           response.setHeader( "Access-Control-Allow-Origin", "*" );
+           response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
+           response.setHeader( "Access-Control-Max-Age", "3600" );
+           response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
+        }
+        after={
 
-      }
-      afterView = { Exception e ->
+        }
+        afterView={
 
-      }
-    }
+        }
+     }
+
+     createOrUpdateLayer( uri: '/layerManager/createOrUpdateLayer' ) {
+        before = {
+           response.setHeader( "Access-Control-Allow-Origin", "*" );
+           response.setHeader( "Access-Control-Allow-Origin", "*" );
+           response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
+           response.setHeader( "Access-Control-Max-Age", "3600" );
+           response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
+           //println "before: ${params}"
+           CreateLayerCommand.fixParamNames( params )
+           //println "after: ${params}"
+        }
+        after = { Map model ->
+
+        }
+        afterView = { Exception e ->
+
+        }
+     }
+     deleteLayer( uri: '/layerManager/deleteLayer' ) {
+        before = {
+           response.setHeader( "Access-Control-Allow-Origin", "*" );
+           response.setHeader( "Access-Control-Allow-Origin", "*" );
+           response.setHeader( "Access-Control-Allow-Methods", "GET" );
+           response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
+        }
+        after = { Map model ->
+
+        }
+        afterView = { Exception e ->
+
+        }
+     }
 
      getLayers( uri: '/layerManager/getLayers' ) {
         before = {
+           response.setHeader( "Access-Control-Allow-Origin", "*" );
+           response.setHeader( "Access-Control-Allow-Origin", "*" );
+           response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
+           response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
            //println "before: ${params}"
            GetLayersCommand.fixParamNames( params )
            //println "after: ${params}"
@@ -63,8 +101,27 @@ class TileCacheFilters
 
         }
      }
+     getLayer( uri: '/layerManager/getLayer' ) {
+        before = {
+           response.setHeader( "Access-Control-Allow-Origin", "*" );
+           response.setHeader( "Access-Control-Allow-Origin", "*" );
+           response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
+           response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
+        }
+        after = { Map model ->
+
+        }
+        afterView = { Exception e ->
+
+        }
+     }
      renameLayer( uri: '/layerManager/renameLayer' ) {
         before = {
+           response.setHeader( "Access-Control-Allow-Origin", "*" );
+           response.setHeader( "Access-Control-Allow-Origin", "*" );
+           response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
+           response.setHeader( "Access-Control-Max-Age", "3600" );
+           response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
            //println "before: ${params}"
            RenameLayerCommand.fixParamNames( params )
            //println "after: ${params}"
@@ -94,7 +151,13 @@ class TileCacheFilters
 
     getFeature( uri: '/wfs/index' ) {
       before = {
-        //println "before: ${params}"
+         response.setHeader( "Access-Control-Allow-Origin", "*" );
+         //response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
+         response.setHeader( "Access-Control-Allow-Methods", "GET" );
+         response.setHeader( "Access-Control-Max-Age", "3600" );
+         response.setHeader( "Access-Control-Allow-Headers", "x-requested-with" );
+
+         //println "before: ${params}"
         WfsCommand.fixParamNames( params )
         //println "after: ${params}"
       }
