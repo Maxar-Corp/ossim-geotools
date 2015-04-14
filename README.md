@@ -30,9 +30,32 @@ A library that provides functions for putting imagery into postgres/accumulo
 
 ## Building
 
+### Build instruction for OSSIM.  
+
+[OSSIM](http://trac.osgeo.org/ossim/)
+
+The ossim-geotools distribution uses a lot of the JNI bindings of the OSSIM distribution and you will need to build the OSSIM distribution first before proceeding.
+
+
+### Using JOMS from RPM distribution
+
+
+If you have built the `joms-<version>.jar` and have packaged it into a oms RPM you can install the RPM and then 
+put the jar into a local maven cache.  The OMS rpm should intall the the joms jar file under the /usr/share/java location.  You should see a file there with the name `joms-<version>.jar`
+
+if `<version>` is 1.8.19 then you can issue the following command and install it:
+
+mvn install:install-file -Dfile=joms-1.8.19.jar -DgroupId=org.ossim -DartifactId=joms -Dversion=1.8.19 -Dpackaging=jar
+
+### Building JOMS
+
+The building is beyond the scope of this document and you should refere to the OSSIM build instructions.  But if you are building ossim distribution then there is a oms/joms directory that builds the JNI bindings to OSSIM.  Currently the build process uses the ant build process and you can install be doing ant mvn-install to install the built joms-<version>.jar file into the local maven cache directory.
+
+
+
 ### groovy-swt
 
-This is a dependency for many of the ossim-tools modules, and it's included
+This is a dependency for many of the ossim-tools kettle/data-integration plugin modules, and it's included
 within this repo for convenience.
 
 1. `$ cd groovy-swt`
@@ -75,6 +98,5 @@ For a quick build without copying to kettle location:
 
 - `$ gradle clean build -DhadoopDist=cdh4 common-libs:install kettle-libs:install kettle-plugins:install app:install app:shadowJar -x test
 
-Now you can build [OSSIM](http://trac.osgeo.org/ossim/)
 
 

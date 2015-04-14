@@ -114,6 +114,21 @@ class LayerManagerController
 
       render contentType: "application/json", (layerInfo as JSON).toString()
    }
+   def createLayer(CreateLayerCommand cmd)
+   {
+      if(request.JSON)
+      {
+         cmd.initFromJson(request.JSON)
+         if(!cmd.validate())
+         {
+            // need error
+         }
+      }
+
+      def layerInfo = layerManagerService.createLayer( cmd )
+
+      render contentType: "application/json", (layerInfo as JSON).toString()
+   }
    def deleteLayer(def params)
    {
       def name
