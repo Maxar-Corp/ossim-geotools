@@ -199,7 +199,7 @@ class DiskCacheService {
    }
    def list(FetchDataCommand cmd){
       println cmd
-      def result = [total: 0, rows: 0,
+      def result = [total: 0, rows: null,
                     status:HttpStatus.OK,
                     message:""];
 
@@ -229,7 +229,6 @@ class DiskCacheService {
                order(cmd.sortBy?:"id", cmd.order?:"asc")
                firstResult((cmd.page - 1) * cmd.rows)
             }
-            println "Collecting rows"
             rows = tempRows.collect { row ->
                columnNames.inject([:]) { a, b -> a[b] = row[b].toString(); a }
             }

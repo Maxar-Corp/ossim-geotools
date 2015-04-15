@@ -7,6 +7,7 @@ import groovy.xml.StreamingMarkupBuilder
 import joms.geotools.tileapi.hibernate.TileCacheHibernate
 import joms.geotools.tileapi.hibernate.controller.TileCacheServiceDAO
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
+import joms.geotools.web.HttpStatus
 import org.geotools.factory.Hints
 import org.geotools.gce.imagemosaic.jdbc.ImageMosaicJDBCFormat
 import org.springframework.beans.factory.InitializingBean
@@ -68,10 +69,14 @@ class LayerManagerService implements InitializingBean
     */
    def createOrUpdateLayer(CreateLayerCommand cmd)
    {
-      def result = daoTileCacheService.getLayerInfoByName( cmd.name )
-      if ( !result )
+      def result = [status:HttpStatus.OK,
+                     data:null,
+                     message:""]
+
+      result.data = daoTileCacheService.getLayerInfoByName( cmd.name )
+      if ( !result.data )
       {
-         result = daoTileCacheService.createOrUpdateLayer(
+         result.data = daoTileCacheService.createOrUpdateLayer(
                  new TileCacheLayerInfo( name: cmd.name,
                          bounds: cmd.clip,
                          epsgCode: cmd.epsgCode,
@@ -85,41 +90,48 @@ class LayerManagerService implements InitializingBean
       {
          if ( cmd.bbox != null )
          {
-            result.bounds = cmd.clip
+            result.data.bounds = cmd.clip
          }
          if ( cmd.tileWidth != null )
          {
-            result.tileWidth = cmd.tileWidth
+            result.data.tileWidth = cmd.tileWidth
          }
          if ( cmd.tileHeight != null )
          {
-            result.tileHeight = cmd.tileHeight
+            result.data.tileHeight = cmd.tileHeight
          }
          if ( cmd.epsgCode != null )
          {
-            result.epsgCode = cmd.epsgCode
+            result.data.epsgCode = cmd.epsgCode
          }
          if ( cmd.minLevel != null )
          {
-            result.minLevel = cmd.minLevel
+            result.data.minLevel = cmd.minLevel
          }
          if ( cmd.maxLevel != null )
          {
-            result.maxLevel = cmd.maxLevel
+            result.data.maxLevel = cmd.maxLevel
          }
 
-         result = daoTileCacheService.createOrUpdateLayer( result )
+         result.data = daoTileCacheService.createOrUpdateLayer( result.data )
       }
-
+      if(!result.data)
+      {
+         result.status = HttpStatus.NOT_FOUND
+         result.message = "Unable to update or create layer with name ${cmd.name}"
+      }
       result
    }
 
    def createLayer(CreateLayerCommand cmd)
    {
-      def result = daoTileCacheService.getLayerInfoByName( cmd.name )
-      if ( !result )
+      def result = [data:null,
+      status:HttpStatus.OK,
+      message:""]
+      def layer = daoTileCacheService.getLayerInfoByName( cmd.name )
+      if ( !layer )
       {
-         result = daoTileCacheService.createOrUpdateLayer(
+         TileCacheLayerInfo info= daoTileCacheService.createOrUpdateLayer(
                  new TileCacheLayerInfo( name: cmd.name,
                          bounds: cmd.clip,
                          epsgCode: cmd.epsgCode,
@@ -128,6 +140,30 @@ class LayerManagerService implements InitializingBean
                          minLevel: cmd.minLevel,
                          maxLevel: cmd.maxLevel )
          )
+
+         if ( info )
+         {
+            Bounds b = new Polygon( info.bounds ).bounds
+
+            result.data = [name: info.name,
+                           bbox: "${b.minX},${b.minY},${b.maxX},${b.maxY}", //new Projection( params.epsgCode ).bounds.polygon.g,
+                           epsgCode: info.epsgCode,
+                           tileHeight: info.tileHeight,
+                           tileWidth: info.tileWidth,
+                           minLevel: info.minLevel,
+                           maxLevel: info.maxLevel]
+         }
+         else
+         {
+            result.status = HttpStatus.BAD_REQUEST
+            result.message = "Unable to create layer name ${cmd.name}"
+         }
+
+      }
+      if(!result.data)
+      {
+         result.status = HttpStatus.BAD_REQUEST
+         result.message = "Unable create layer with name ${cmd.name}"
       }
 
       result
@@ -135,13 +171,13 @@ class LayerManagerService implements InitializingBean
 
    def getLayer(String name)
    {
-      def result = [:]
+      def result = [status:HttpStatus.OK,message:""]
       TileCacheLayerInfo info = daoTileCacheService.getLayerInfoByName( name )
       if ( info )
       {
          Bounds b = new Polygon( info.bounds ).bounds
 
-         result = [name: info.name,
+         result.data = [name: info.name,
                    bbox: "${b.minX},${b.minY},${b.maxX},${b.maxY}", //new Projection( params.epsgCode ).bounds.polygon.g,
                    epsgCode: info.epsgCode,
                    tileHeight: info.tileHeight,
@@ -149,13 +185,19 @@ class LayerManagerService implements InitializingBean
                    minLevel: info.minLevel,
                    maxLevel: info.maxLevel]
       }
+      else
+      {
+         result.status = HttpStatus.NOT_FOUND
+         result.message = "Unable to find layer name ${name}"
+      }
 
       result
    }
 
    def deleteLayer(String name)
    {
-      def result = [:]
+      def result = [status:HttpStatus.OK,
+                    message:""]
       TileCacheLayerInfo layerInfo =  daoTileCacheService.getLayerInfoByName(name)
       if(layerInfo)
       {
@@ -166,23 +208,56 @@ class LayerManagerService implements InitializingBean
       }
       else
       {
-         result.message = "Layer name ${name} does not exists so we did not delete"
+         result.status = HttpStatus.BAD_REQUEST
+         result.message = "Layer name '${name}' does not exist for deleting"
       }
 
       result
-
    }
 
    def getLayers()
    {
-      daoTileCacheService.listAllLayers().each {
+      def result = [data:[total: 0, rows: []],
+                    status:HttpStatus.OK,
+                    message:""];
+      daoTileCacheService.listAllLayers().each { info->
+         Bounds b
+         if(info.bounds) b = new Polygon( info.bounds ).bounds
 
+         def boundsStr  = ""
+         if(b)
+         {
+            boundsStr = "${b.minX},${b.minY},${b.maxX},${b.maxY}"
+         }
+         def tempInfoMap = [id:info.id,
+                            name: info.name,
+                            bbox: boundsStr,
+                            epsgCode: info.epsgCode,
+                            tileHeight: info.tileHeight,
+                            tileWidth: info.tileWidth,
+                            minLevel: info.minLevel,
+                            maxLevel: info.maxLevel]
+
+         result.data.rows<< tempInfoMap
       }
+
+      result
    }
 
    def renameLayer(String oldName, String newName)
    {
-      daoTileCacheService.renameLayer( oldName, newName )
+      def result = [status:HttpStatus.OK,message:""]
+      try
+      {
+         daoTileCacheService.renameLayer( oldName, newName )
+      }
+      catch(e)
+      {
+         result.status = HttpStatus.BAD_REQUEST
+         result.message = "${e}"
+      }
+
+      result
    }
 
    def tileAccess(def params)
@@ -261,28 +336,6 @@ class LayerManagerService implements InitializingBean
       }
 
       daoTileCacheService.getActualLayerBounds( params?.name, constraints )
-   }
-
-   def getLayers(GetLayersCommand cmd)
-   {
-      def response = [:]
-      if ( cmd.format )
-      {
-         switch ( cmd.format.toLowerCase() )
-         {
-            case "json":
-               def layers = daoTileCacheService.listAllLayers()
-               layers.each { layer ->
-
-               }
-               response.contentType = 'application/json'
-               response.buffer = []
-               break
-            default:
-               break
-         }
-      }
-      response
    }
 
    def createTileLayers(String[] layerNames)
