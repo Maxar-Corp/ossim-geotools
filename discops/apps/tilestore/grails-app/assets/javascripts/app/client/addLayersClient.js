@@ -1,56 +1,18 @@
 AddLayerClient = (function ()
 {
-    //var url ='http://10.0.10.184:8080/tilecache/wfs?request=GetFeature&typeName=tilecache:layers'
-    //var url = "../json_3857.txt"; // For testing while not on RBT network
     var wfsURL;
     var layersArray = [];
-
-    // This allows the client to request more tiles
-    var tileUrls = [
-        'http://s1:8080/tilecache/wms?',
-        'http://s2:8080/tilecache/wms?',
-        'http://s3:8080/tilecache/wms?',
-        'http://s4:8080/tilecache/wms?'
-    ];
 
     return {
         initialize: function ( addLayersClientParams )
         {
             wfsURL = addLayersClientParams.wfsURL;
 
-            //var osmAwsAerialGroup = new ol.layer.Group( {
-            //    layers: [
-            //        new ol.layer.Tile( {
-            //            style: 'Aerial',
-            //            //visible: false,
-            //            source: new ol.source.MapQuest( {layer: 'sat'} ),
-            //            name: 'Aerial'
-            //        } ),
-            //        new ol.layer.Tile( {
-            //            opacity: 1.0,
-            //            source: new ol.source.TileWMS( {
-            //                url: 'http://52.0.52.104/geoserver/ged/wms?',
-            //                params: {'LAYERS': 'planet_osm_line', 'TILED': true}
-            //            } ),
-            //            name: 'Labels'
-            //        } ),
-            //        new ol.layer.Tile( {
-            //            opacity: 1.0,
-            //            source: new ol.source.TileWMS( {
-            //                url: 'http://52.0.52.104/geoserver/ged/wms?',
-            //                params: {'LAYERS': 'ne_10m_populated_places_all', 'TILED': true}
-            //            } ),
-            //            name: 'Place Names'
-            //        } )
-            //    ],
-            //    name: 'Aerial and Labels'
+            //var tileBoundsVectorSource = new ol.source.GeoJSON( {
+            //    url: wfsURL,
+            //    crossOrigin: 'anonymous',
+            //    projection: 'EPSG:3857'
             //} );
-
-            var tileBoundsVectorSource = new ol.source.GeoJSON( {
-                url: wfsURL,
-                crossOrigin: 'anonymous',
-                projection: 'EPSG:3857'
-            } );
 
             // Tile sets extents layer
             //var tileBoundsVectorLayer = new ol.layer.Vector( {
