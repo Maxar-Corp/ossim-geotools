@@ -70,8 +70,9 @@
     </div>
 </div>
 
-<tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
-
+<!--<tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
+-->
+<tilestore:securityClassificationBanner class="navbar-default navbar-fixed-bottom text-center"/>
 <!--<nav class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom ">
     <div class="container " style="min-height:">
         Unclassified
