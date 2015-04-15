@@ -36,7 +36,7 @@
             </div>
 
             <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
-                <div class="col-sm-4 col-md-4">
+                %{--<div class="col-sm-2 col-md-2">--}%
                     %{--<form class="navbar-form" role="search" id="zoomToForm">--}%
                         %{--<div class="form-group">--}%
                             %{--<div class="input-group">--}%
@@ -62,38 +62,36 @@
                             %{--</div>--}%
                         %{--</div>--}%
                     %{--</form>--}%
-                </div>
+                %{--</div>--}%
                 <div class="nav navbar-nav navbar-right">
-                    %{--<form class="navbar-form navbar-left" role="search">--}%
-                        %{--<button type="button" id="navCreateTileLayer" class="btn btn-primary"--}%
-                                %{--data-toggle="tooltip" data-placement="bottom"--}%
-                                %{--title=""><i--}%
-                                %{--class="fa fa-th"></i>&nbsp;&nbsp;New</button>--}%
-                        %{--<button type="button" id="submitRenameTileLayer" class="btn btn-primary"--}%
-                                %{--data-toggle="tooltip" data-placement="bottom"--}%
-                                %{--title=""><i--}%
-                                %{--class="fa fa-th"></i>&nbsp;&nbsp;Rename</button>--}%
-                        %{--<button type="button" id="submitDeleteTileLayer" class="btn btn-primary"--}%
-                                %{--data-toggle="tooltip" data-placement="bottom"--}%
-                                %{--title=""><i--}%
-                                %{--class="fa fa-th"></i>&nbsp;&nbsp;Delete</button>--}%
-                    %{--</form>--}%
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle fa fa-th" data-toggle="dropdown" role="button"
+                       aria-expanded="false">&nbsp; Manage Layers<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a id="navCreateLayer" class="fa fa-plus-square-o" href="#">&nbsp;Create Tile
+                        Layer</a></li>
+                        <li><a id="submitRenameLayer" class="fa fa-pencil" href="#">&nbsp;Rename Tile
+                        Layer</a></li>
+                        <li class="divider"></li>
+                        <li><a id="submitDeleteLayer" class="fa fa-trash" href="#">&nbsp;Delete Tile Layer</a></li>
+                    </ul>
+                </li>
+                <div class="col-md-6 col-md-6">
+                        <form class="navbar-form">
+                            <div class="form-group">
+                                <div class="input-group" id="tileLayerInputGroup">
+                                    <div class="input-group-addon"><i class="fa fa-th"></i>&nbsp;&nbsp;Active
+                                    Tile Layer</div>
+                                    <select id="tileLayerSelect" class="form-control selectpicker">
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
 
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle fa fa-th" data-toggle="dropdown" role="button"
-                           aria-expanded="false">&nbsp; Manage Layers<span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a id="navCreateLayer" class="fa fa-plus-square-o" href="#">&nbsp;Create Tile
-                            Layer</a></li>
-                            <li><a id="submitRenameLayer" class="fa fa-pencil" href="#">&nbsp;Rename Tile
-                            Layer</a></li>
-                            <li class="divider"></li>
-                            <li><a id="submitDeleteLayer" class="fa fa-trash" href="#">&nbsp;Delete Tile Layer</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle fa fa-question-circle" data-toggle="dropdown">&nbsp;Help <b class="caret"></b></a>
-                    </li>
+                    %{--<li class="dropdown">--}%
+                        %{--<a href="#" class="dropdown-toggle fa fa-question-circle" data-toggle="dropdown">&nbsp;Help <b class="caret"></b></a>--}%
+                    %{--</li>--}%
 
                 </div>
             </div><!-- /.navbar-collapse -->
@@ -156,7 +154,8 @@
                             <form role="form">
                                 <div class="form-group">
                                     <label for="layerName">Tile Layer Name&nbsp;</label>
-                                    <input type="text" class="form-control " id="layerName"><br><br>
+                                    <input type="text" class="form-control " id="layerName">&nbsp;&nbsp;<small><em>Do
+                                not use dashes or or special characters.</em></small><br><br>
                                     <label for="minTileLevel">Min. Level</label>
                                     <select id="minTileLevel" class="form-control selectpicker" data-style="btn-primary">
                                         <option value="0">0&nbsp;</option>
