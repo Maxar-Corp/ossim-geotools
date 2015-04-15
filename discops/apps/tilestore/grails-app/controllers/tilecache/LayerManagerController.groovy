@@ -1,6 +1,7 @@
 package tilecache
 
 import grails.converters.JSON
+import joms.geotools.web.HttpStatus
 import org.apache.commons.collections.map.CaseInsensitiveMap
 
 class LayerManagerController
@@ -104,15 +105,27 @@ class LayerManagerController
          cmd.initFromJson(request.JSON)
          if(!cmd.validate())
          {
-            // need error
+            response.status = HttpStatus.BAD_REQUEST.value
+            render cmd.errors.allErrors.collect(){
+               message(error:it,encodeAs:'HTML')
+            } as JSON
          }
       }
 
       layerManagerService.createOrUpdateLayer( cmd )
 
-      def layerInfo = layerManagerService.getLayer(cmd.name)
+      def result = layerManagerService.getLayer(cmd.name)
 
-      render contentType: "application/json", (layerInfo as JSON).toString()
+      if(result.status != HttpStatus.OK)
+      {
+         response.status = result.status.value
+         render contentType: "application/json", ([message:result.message] as JSON).toString()
+      }
+      else
+      {
+         render contentType: "application/json", (result.data as JSON).toString()
+      }
+
    }
    def createLayer(CreateLayerCommand cmd)
    {
@@ -121,13 +134,24 @@ class LayerManagerController
          cmd.initFromJson(request.JSON)
          if(!cmd.validate())
          {
-            // need error
+            response.status = HttpStatus.BAD_REQUEST.value
+            render cmd.errors.allErrors.collect(){
+               message(error:it,encodeAs:'HTML')
+            } as JSON
          }
       }
 
-      def layerInfo = layerManagerService.createLayer( cmd )
+      def result = layerManagerService.createLayer( cmd )
 
-      render contentType: "application/json", (layerInfo as JSON).toString()
+      response.status = result.status.value
+      if(result.status != HttpStatus.OK)
+      {
+         render contentType: "application/json", ([message:result.message] as JSON).toString()
+      }
+      else
+      {
+         render contentType: "application/json", (result.data as JSON).toString()
+      }
    }
    def deleteLayer(def params)
    {
@@ -155,8 +179,15 @@ class LayerManagerController
       }
 
       def result = layerManagerService.deleteLayer(name)
-
-      render contentType: "application/json", (result as JSON).toString()
+      response.status = result.status.value
+      if(response.status != HttpStatus.OK)
+      {
+         render contentType: "application/json", ([message:result.message] as JSON).toString()
+      }
+      else
+      {
+         render contentType: "application/json", (result.data as JSON).toString()
+      }
    }
 
    def renameLayer(RenameLayerCommand cmd)//String oldName, String newName)
@@ -167,56 +198,52 @@ class LayerManagerController
          cmd.initFromJson(request.JSON)
          if(!cmd.validate())
          {
-            // need error
+            response.status = HttpStatus.BAD_REQUEST.value
+            render cmd.errors.allErrors.collect(){
+               message(error:it,encodeAs:'HTML')
+            } as JSON
          }
       }
       layerManagerService.renameLayer( cmd.oldName, cmd.newName)
 
       def result = layerManagerService.getLayer(cmd.newName?:"")
 
-      render contentType: "application/json", (result as JSON).toString()
+      response.status = result.status.value
+      if(result.status == HttpStatus.OK)
+      {
+         render contentType: "application/json", (result.data as JSON).toString()
+      }
+      else
+      {
+         render contentType: "text/plain", result.message
+      }
    }
-
 
    def getLayer()
    {
       def result = layerManagerService.getLayer(params.name?:"")
+      response.status = result.status.value
 
-      render contentType: "application/json", (result as JSON).toString()
+      if(result.status == HttpStatus.OK)
+      {
+         render contentType: "application/json", (result.data as JSON).toString()
+      }
+      else
+      {
+         render contentType: "text/plain", result.message
+      }
    }
    def getLayers()
    {
       def result = layerManagerService.getLayers()
 
-      render contentType: "application/json", (result as JSON).toString()
-   }
-/*
-   def getLayer(AccumuloProxyGetLayersCommand cmd)
-   {
-      if ( cmd.validate() )
+      if(result.status == HttpStatus.OK)
       {
-         def results = layerManagerService.getLayers( cmd )
-
-         render contentType: results.contentType, file: results.buffer
+         render contentType: "application/json", (result.data as JSON).toString()
       }
       else
       {
-         render ""
+         render contentType: "text/plain", result.message
       }
    }
-  */
-
-//  def tileAccess()
-//  {
-//    def xmlString = layerManagerService.tileAccess( params )
-//
-//    render contentType: 'application/xml', file: xmlString.bytes
-//  }
-
-
-//  def testAccess(){
-//
-//    render ""
-//    null
-//  }
 }

@@ -197,7 +197,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     sql.execute(sqlString)
   }
 
-  @Transactional renameLayer(String oldName, String newName)
+  @Transactional void renameLayer(String oldName, String newName) throws Exception
   {
     TileCacheLayerInfo layer = layerInfoTableDAO.findByName(oldName)
     if(layer)
@@ -209,6 +209,10 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
       layerInfoTableDAO.update(layer)
       sql.execute("ALTER TABLE ${oldTileStore} RENAME TO ${defaultTileStore}".toString());
       accumuloApi.renameTable(oldTileStore, defaultTileStore)
+    }
+    else
+    {
+      throw new Exception("Layer ${oldName} not found")
     }
   }
 
