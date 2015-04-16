@@ -11,7 +11,18 @@ import org.ossim.common.CaseInsensitiveBind
 @ToString(includeNames = true)
 class IngestCommand  implements CaseInsensitiveBind
 {
-   def layer
-   def aoi
+   String layer
+   String aoi
+   Integer minLevel
+   Integer maxLevel
+
+   static constraints ={
+      layer nullable: false, blank: false
+      aoi nullable: true  //validator: { val, cmd ->
+      minLevel nullable: true
+      maxLevel nullable: true
+      //}
+   }
+
 
 }

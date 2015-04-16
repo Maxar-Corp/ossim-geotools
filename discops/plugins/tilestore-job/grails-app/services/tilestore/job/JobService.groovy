@@ -1,6 +1,7 @@
 package tilestore.job
 
 import grails.transaction.Transactional
+import joms.geotools.web.HttpStatus
 import org.ossim.common.FetchDataCommand
 
 @Transactional
@@ -43,5 +44,19 @@ class JobService {
       }
 
       return [total: total, rows: rows]
+   }
+   def ingest(IngestCommand cmd)
+   {
+      def result = [status:HttpStatus.OK,
+                    message:"",
+                    data:[]
+         ]
+
+      // create rabbit message and post
+      // we can make this configurable and allow for quartz as well
+      // so if rabbit is not supported then add Quartz job.  Will think about it
+      //
+
+      result
    }
 }

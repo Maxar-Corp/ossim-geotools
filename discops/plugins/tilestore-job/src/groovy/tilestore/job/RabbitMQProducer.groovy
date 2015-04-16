@@ -19,7 +19,6 @@ class RabbitMQProducer
 
    void init()
    {
-      println "IN THE PRODUCER INIT!!!!!!"
       if(cf) this.destroy()
 
       password = (new TwoWayPasswordEncoder()).decryptPasswordOptionallyEncrypted(password)
@@ -33,7 +32,6 @@ class RabbitMQProducer
 
    void sendMessage(String queue, String message)
    {
-      // need to throw and exception if
       template?.convertAndSend(queue, message)
    }
 
