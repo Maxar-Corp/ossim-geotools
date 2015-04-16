@@ -22,5 +22,6 @@ trait CaseInsensitiveBind
 
       params.clear()
       params.putAll( newParams )
+      params
    }
 }

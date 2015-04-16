@@ -3,13 +3,75 @@ package tilecache.wms
 import geoscript.geom.Bounds
 import geoscript.render.Map as GeoScriptMap
 import grails.transaction.Transactional
+import groovy.xml.StreamingMarkupBuilder
 
-@Transactional
 class WebMappingService
 {
+  static transactional = false
+
+  def baseUrl = "http://localhost:8080/tilestore"
+  def wmsUrl = "${baseUrl}/wms"
+
+  def dtdUrl = "${baseUrl}/schemas/wms/1.1.1/WMS_MS_Capabilities.dtd"
+
+  def getMapFormats = [
+      'image/png',
+      'image/png8',
+      'image/png; mode=8bit',
+      'image/geotiff',
+      'image/geotiff8',
+      'image/gif',
+      'image/jpeg',
+      'image/tiff',
+      'image/tiff8'
+  ]
+
+  def getFeatureInfoFormats = [
+      'text/plain',
+      'application/vnd.ogc.gml',
+      'application/vnd.ogc.gml/3.1.1',
+      'text/html',
+      'application/json'
+  ]
+
+  def supportedProjections = [
+      'EPSG:3857',
+      'EPSG:4326'
+  ]
+
+  def layers = [[
+      queryable: '1',
+      opaque: '0',
+      name: '',
+      title: '',
+      description: '',
+      keywords: [],
+      projection: '',
+      geoMinX: '',
+      geoMinY: '',
+      geoMaxX: '',
+      geoMaxY: '',
+      minX: '',
+      minY: '',
+      maxX: '',
+      maxY: '',
+      styles: [[
+          name: '',
+          title: '',
+          description: '',
+          legend: [
+              width: '',
+              height: '',
+              format: '',
+              legendUrl: ''
+          ]
+      ]]
+  ]]
+
+
   def layerManagerService
 
-  def getMap(WmsCommand cmd/*, String tileAccessUrl*/)
+  def getMap(GetMapCommand cmd)
   {
     def startTime = System.currentTimeMillis()
     GeoScriptMap map
@@ -21,8 +83,8 @@ class WebMappingService
     //println "_______________________________"
     try
     {
-      def layers = layerManagerService.createTileLayers(cmd.layers?.split(','))
-     //def img = ImageIO.read("/Volumes/DataDrive/data/earth2.tif" as File)
+      def layers = layerManagerService.createTileLayers( cmd.layers?.split( ',' ) )
+      //def img = ImageIO.read("/Volumes/DataDrive/data/earth2.tif" as File)
       // BufferedImage dest = img.getSubimage(0, 0, cmd.width, cmd.height);
 
       // ImageIO.write(dest, cmd.format.split('/')[-1],response.outputStream)
@@ -55,7 +117,10 @@ class WebMappingService
     }
     finally
     {
-      if(element != null) layerManagerService.deleteSession( element )
+      if ( element != null )
+      {
+        layerManagerService.deleteSession( element )
+      }
 
       // map?.layers.each{it.dispose()}
       map?.close()
@@ -65,5 +130,183 @@ class WebMappingService
 
     [contentType: contentType, buffer: result.toByteArray()]
     // println "Done GetMap ${tempId}"
+  }
+
+  def getCapabilities(GetCapabilitiesCommand getMapCmd)
+  {
+    def x = {
+      mkp.xmlDeclaration()
+      mkp.yieldUnescaped """<!DOCTYPE WMT_MS_Capabilities SYSTEM "${dtdUrl}">"""
+      WMT_MS_Capabilities( version: '1.1.1' ) {
+        Servce {
+          Name()
+          Title()
+          Abstract()
+          KeywordList {
+            Keyword()
+          }
+          OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink", 'xlink:type': "simple",
+              'xlink:href': "${baseUrl}" )
+          ContactInformation {
+            ContactPersonPrimary {
+              ContactPerson()
+              ContactOrganization()
+            } /* ContactPersonPrimary */
+            ContactAddress {
+              AddressType()
+              Address()
+              City()
+              StateOrProvince()
+              PostCode()
+              Country()
+            } /* ContactAddress */
+            ContactVoiceTelephone()
+            ContactFacsimileTelephone()
+            ContactElectronicMailAddress()
+          } /* ContactInformation */
+          Fees()
+          AccessConstraints()
+        } /* Servce */
+        Capability {
+          Request {
+            GetCapabilities {
+              Format( 'application/vnd.ogc.wms_xml' )
+              DCPType {
+                HTTP {
+                  Get {
+                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
+                        'xlink:type': "simple", 'xlink:href': wmsUrl )
+                  } /* Get */
+                } /* HTTP */
+              } /* DCPType */
+              DCPType {
+                HTTP {
+                  Post {
+                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
+                        'xlink:type': "simple", 'xlink:href': wmsUrl )
+                  } /* Post */
+                } /* HTTP */
+              } /* DCPType */
+            } /* GetCapabilities */
+            GetMap {
+              getMapFormats.each { Format( it ) }
+              DCPType {
+                HTTP {
+                  Get {
+                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
+                        'xlink:type': "simple", 'xlink:href': wmsUrl )
+                  } /* Get */
+                } /* HTTP */
+              } /* DCPType */
+              DCPType {
+                HTTP {
+                  Post {
+                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
+                        'xlink:type': "simple", 'xlink:href': wmsUrl )
+                  } /* Post */
+                } /* HTTP */
+              } /* DCPType */
+            } /* GetMap */
+            GetFeatureInfo {
+              getFeatureInfoFormats.each { Format( it ) }
+              DCPType {
+                HTTP {
+                  Get {
+                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
+                        'xlink:type': "simple", 'xlink:href': wmsUrl )
+                  } /* Get */
+                } /* HTTP */
+              } /* DCPType */
+              DCPType {
+                HTTP {
+                  Post {
+                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
+                        'xlink:type': "simple", 'xlink:href': wmsUrl )
+                  } /* Post */
+                } /* HTTP */
+              } /* DCPType */
+            } /* GetFeatureInfo */
+            DescribeLayer {
+              Format( 'application/vnd.ogc.wms_xml' )
+              DCPType {
+                HTTP {
+                  Get {
+                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
+                        'xlink:type': "simple", 'xlink:href': wmsUrl )
+                  } /* Get */
+                } /* HTTP */
+              } /* DCPType */
+            } /* DescribeLayer */
+            GetLegendGraphic {
+              Format( 'image/png' )
+              Format( 'image/jpeg' )
+              Format( 'image/gif' )
+              DCPType {
+                HTTP {
+                  Get {
+                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
+                        'xlink:type': "simple", 'xlink:href': wmsUrl )
+                  } /* Get */
+                } /* HTTP */
+              } /* DCPType */
+            } /* GetLegendGraphic */
+            GetStyles {
+              Format( 'image/png' )
+              Format( 'image/jpeg' )
+              Format( 'image/gif' )
+              DCPType {
+                HTTP {
+                  Get {
+                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
+                        'xlink:type': "simple", 'xlink:href': wmsUrl )
+                  } /* Get */
+                } /* HTTP */
+              } /* DCPType */
+            } /* GetStyles */
+          } /* Request */
+        } /* Capability */
+        Exception {
+          Format( 'application/vnd.ogc.se_xml' )
+          Format( 'application/vnd.ogc.se_inimage' )
+        } /* Exception */
+        UserDefinedSymbolization( SupportSLD: '1', UserLayer: '1', UserStyle: '1', RemoteWFS: '1' )
+        Layer {
+          Title()
+          Abstract()
+          supportedProjections?.each { SRS( it ) }
+          LatLonBoundingBox( minx: '-180.0', miny: '-90.0', maxx: '180.0', maxy: '90.0' )
+          layers?.each { layer ->
+            Layer( queryable: layer?.queryable, opaque: layer?.opaque ) {
+              Name( layer?.name )
+              Title( layer?.title )
+              Abstract( layer?.description )
+              KeywordList {
+                layer?.keywords?.each { Keyword( it ) }
+              } /* KeywordList */
+              SRS( layer?.projection )
+              LatLonBoundingBox( minx: layer.geoMinX, miny: layer?.geoMinY, maxx: layer?.geoMaxX, maxy: layer?.geoMaxY )
+              BoundingBox( SRS: layer?.projection, minx: layer?.minX, miny: layer?.minY, maxx: layer?.maxX, maxy: layer?.maxY )
+              layer?.styles?.each { style ->
+                Style {
+                  Name( style?.name )
+                  Title( style?.title )
+                  Abstract( style?.description )
+                  LegendURL( width: style?.legend?.width, height: style?.legend?.height ) {
+                    Format( style?.legend?.format )
+                    OnlineResource( 'xmlns:xlink': 'http://www.w3.org/1999/xlink',
+                        'xlink:type': 'simple', 'xlink:href': "${wmsUrl}${style?.legend?.legendUrl}" )
+                  } /* LegendURL */
+                } /* Style */
+              } /* layer.styles */
+            } /* Layer */
+          } /* layers */
+        } /* Layer */
+      } /* WMT_MS_Capabilities */
+    }
+
+    def builder = new StreamingMarkupBuilder()
+    def doc = builder.bind( x )
+
+    [contentType: 'application/vnd.ogc.wms_xml', buffer: doc.toString().bytes]
   }
 }

@@ -1,6 +1,8 @@
 package tilecache
 
 import tilecache.wfs.WfsCommand
+import tilecache.wms.GetCapabilitiesCommand
+import tilecache.wms.GetMapCommand
 import tilecache.wms.WmsCommand
 import tilecache.wmts.WmtsCommand
 
@@ -151,10 +153,10 @@ class TileCacheFilters
      }
 
 
-    getMap( uri: '/wms/index' ) {
+    wms( uri: '/wms/index' ) {
       before = {
         //println "before: ${params}"
-        WmsCommand.fixParamNames( params )
+        new WmsCommand().fixParamNames( params )
         //println "after: ${params}"
       }
       after = { Map model ->
@@ -164,6 +166,35 @@ class TileCacheFilters
 
       }
     }
+
+    wms( uri: '/wms/getMap' ) {
+      before = {
+        //println "before: ${params}"
+        new GetMapCommand().fixParamNames( params )
+        //println "after: ${params}"
+      }
+      after = { Map model ->
+
+      }
+      afterView = { Exception e ->
+
+      }
+    }
+
+    wms( uri: '/wms/getCapabilities' ) {
+      before = {
+        //println "before: ${params}"
+        new GetCapabilitiesCommand().fixParamNames( params )
+        //println "after: ${params}"
+      }
+      after = { Map model ->
+
+      }
+      afterView = { Exception e ->
+
+      }
+    }
+
 
     getFeature( uri: '/wfs/index' ) {
       before = {
