@@ -9,22 +9,20 @@ class WmsController
     try
     {
       // need to support case insensitive data bindings
-     // println cmd
+      // println cmd
 
       if ( cmd.validate() )
       {
-        if ( cmd.request.toLowerCase() == "getmap" )
+        def results
+
+        switch ( cmd.request.toUpperCase() )
         {
-          def tileAccessUrl = createLink( absolute: true, controller: "layerManager", action: "tileAccess" ) as String
-
-          //println tileAccessUrl
-          def results = webMappingService.getMap( cmd/*, tileAccessUrl*/ )
-
-          // println bytes.size()
-          if ( results.buffer.size() > 0 )
-          {
-            render contentType: results.contentType, file: results.buffer
-          }
+        case 'GETMAP':
+          forward action: 'getMap', params: new GetMapCommand().fixParamNames( params )
+          break
+        case 'GETCAPABILITIES':
+          forward action: 'getCapabilities', params: new GetCapabilitiesCommand().fixParamNames( params )
+          break
         }
       }
       else
@@ -42,4 +40,19 @@ class WmsController
       //render e.toString()
     }
   }
+
+  def getCapabilities(GetCapabilitiesCommand cmd)
+  {
+    def results = webMappingService.getCapabilities( cmd )
+    render contentType: results.contentType, file: results.buffer
+  }
+
+  def getMap(GetMapCommand cmd)
+  {
+    //println params
+    //println cmd
+    def results = webMappingService.getMap( cmd )
+    render contentType: results.contentType, file: results.buffer
+  }
+
 }
