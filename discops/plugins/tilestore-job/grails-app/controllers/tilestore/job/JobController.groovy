@@ -1,6 +1,7 @@
 package tilestore.job
 
 import grails.converters.JSON
+import joms.geotools.web.HttpStatus
 import org.ossim.common.FetchDataCommand
 
 class JobController {
@@ -37,7 +38,24 @@ class JobController {
       }
       */
       // println "-------------------------${cmd.filter}"
-      def data = jobService.getData( cmd )
+      def data = jobService.listJobs( cmd )
       render contentType: 'application/json', text: data as JSON
    }
+   def ingest(IngestCommand cmd)
+   {
+      def result = jobService.ingest(cmd)
+
+      response.status = result.status.value
+
+      if(result.status != HttpStatus.OK)
+      {
+         render contentType: 'application/json', text: [message:result.message] as JSON
+      }
+      else
+      {
+         render contentType: 'application/json', text: result.data as JSON
+      }
+
+   }
+
 }

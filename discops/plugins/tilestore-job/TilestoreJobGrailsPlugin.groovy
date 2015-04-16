@@ -1,3 +1,5 @@
+import tilestore.job.RabbitMQProducer
+
 class TilestoreJobGrailsPlugin {
     // the plugin version
     def version = "0.1"
@@ -41,7 +43,20 @@ Brief summary/description of the plugin.
     }
 
     def doWithSpring = {
-        // TODO Implement runtime spring config (optional)
+       def grailsApplication = parentCtx?.getBean("grailsApplication")
+
+       if(grailsApplication)
+       {
+          rabbitProducer(RabbitMQProducer){ bean ->
+             bean.autowire      = 'rabbitProducer'
+             bean.initMethod    = 'init'
+             bean.destroyMethod = 'destroy'
+             host            = grailsApplication.config?.rabbitmq?.connection?.host?:""
+             port            = grailsApplication.config?.rabbitmq?.connection?.port?:5672
+             username        = grailsApplication.config?.rabbitmq?.connection?.username?:""
+             password        = grailsApplication.config?.rabbitmq?.connection?.password?:""
+          }
+       }
     }
 
     def doWithDynamicMethods = { ctx ->
@@ -49,7 +64,27 @@ Brief summary/description of the plugin.
     }
 
     def doWithApplicationContext = { ctx ->
+   /*    def grailsApplication = ctx.grailsApplication
+
         // TODO Implement post initialization spring config (optional)
+       def beanNames = ["rabbitProducer"]
+       def beans = beans {
+          rabbitProducer(RabbitMQProducer){ bean ->
+             bean.autowire      = 'rabbitProducer'
+             bean.initMethod    = 'init'
+             bean.destroyMethod = 'destroy'
+             host            = grailsApplication.config?.rabbitmq?.connection?.host?:""
+             port            = grailsApplication.config?.rabbitmq?.connection?.port?:5672
+             username        = grailsApplication.config?.rabbitmq?.connection?.username?:""
+             password        = grailsApplication.config?.rabbitmq?.connection?.password?:""
+          }
+       }
+       beanNames.each { beanName ->
+          println "REGISTER BEAN === ${beanName}"
+          ctx.registerBeanDefinition( beanName,
+                  beans.getBeanDefinition( beanName ) )
+       }
+     */
     }
 
     def onChange = { event ->
