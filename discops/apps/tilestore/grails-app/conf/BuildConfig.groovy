@@ -148,4 +148,5 @@ grails.project.dependency.resolution = {
 
 grails.plugin.location.ossimCommon = "../../plugins/ossim-common"
 grails.plugin.location.ossimDiskCache = "../../plugins/ossim-diskcache"
+grails.plugin.location.tilestoreJob = "../../plugins/tilestore-job"
 
