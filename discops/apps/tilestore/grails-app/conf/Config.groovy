@@ -145,7 +145,7 @@ accumulo {
    username = "root"
    password = "root"
 //  zooServers="accumulo-site.radiantblue.local"
-   zooServers = "sandbox.accumulo.radiantblue.local"
+//   zooServers = "sandbox.accumulo.radiantblue.local"
    zooServers = "sandbox.accumulo.radiantblue.local"
    instance = "accumulo"
    // tileAccessClass = "joms.geotools.tileapi.AccumuloTileAccess"
