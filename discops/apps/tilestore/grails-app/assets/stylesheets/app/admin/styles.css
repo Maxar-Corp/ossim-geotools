@@ -1,4 +1,4 @@
-body { 
+body {
   overflow: hidden;
 }
 
@@ -17,14 +17,20 @@ body {
   font-weight:bold
 }
 
-.navbar-offset { margin-top: 50px; }
+.navbar-offset { margin-top: 52px; }
+
+.shadow {
+    -webkit-box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
+    -moz-box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
+    box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
+}
 
 #titlesRow {
   margin-right: 15px;
 }
 
 #mapsRow {
-  margin-right: 15px;
+  /*margin-right: 15px;*/
 }
 
 #toc {
@@ -33,21 +39,30 @@ body {
 }
 
 .ol-viewport{
-  border: solid 1px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  -webkit-box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
-  -moz-box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
-  box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
+    border: solid 1px;
+    height: 100% !important;
+
+  /*-webkit-border-radius: 10px;*/
+  /*-moz-border-radius: 10px;*/
+  /*border-radius: 10px;*/
+  /*-webkit-box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);*/
+  /*-moz-box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);*/
+  /*box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);*/
+
 }
 
-#mapOmar { 
-  height: 580px;
+#mapOmar {
+    position: absolute;
+    top: 79px;
+    bottom: 29px;
+    left: 270px;
 }
 
-#mapTile { 
-  height: 580px; 
+#mapTile {
+    position: absolute;
+    top: 79px;
+    bottom: 29px;
+    right: -10px;
 }
 
 #mapOmar { z-index: 35; }
