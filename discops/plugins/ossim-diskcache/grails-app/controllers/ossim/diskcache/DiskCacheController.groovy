@@ -2,10 +2,10 @@ package ossim.diskcache
 
 import grails.converters.JSON
 import grails.converters.XML
-import joms.geotools.web.HttpStatus
 
 //import grails.plugins.springsecurity.Secured
 import org.apache.commons.collections.map.CaseInsensitiveMap
+import org.ossim.common.FetchDataCommand
 
 class DiskCacheController {
 

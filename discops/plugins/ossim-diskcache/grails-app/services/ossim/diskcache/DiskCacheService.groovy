@@ -2,6 +2,7 @@ package ossim.diskcache
 
 import grails.transaction.Transactional
 import joms.geotools.web.HttpStatus
+import org.ossim.common.FetchDataCommand
 
 @Transactional
 class DiskCacheService {
