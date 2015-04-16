@@ -45,7 +45,8 @@
                                 <div class="form-group">
                                     <div class="input-group">
                                         <div class="input-group-btn">
-                                            <select  class="form-control selectpicker" data-style="btn-primary" id="coordSelect" >
+                                            <select  class="form-control selectpicker show-tick" data-style="btn-primary"
+                                                     id="coordSelect" >
                                                 <option data-icon="glyphicon-map-marker" value="dd">DD&nbsp;&nbsp;&nbsp;</option>
                                                 <option data-icon="glyphicon-time" value="dms">DMS&nbsp;&nbsp;</option>
                                                 <option data-icon="glyphicon-th-large" value="mgrs">MGRS</option>
@@ -61,7 +62,7 @@
                                     <div class="input-group" id="tileLayerInputGroup">
                                         <div class="input-group-addon"><i class="fa fa-th"></i>&nbsp;&nbsp;Active
                                         Tile Layer</div>
-                                        <select class="form-control selectpicker" id="tileLayerSelect">
+                                        <select class="form-control selectpicker show-tick" id="tileLayerSelect">
                                         </select>
                                     </div>
                                 </div>

@@ -1,36 +1,8 @@
 AppAdmin = (function () {
     // 4326
-    var melbourneAustralia4326 = [145.079616, -37.8602828];
-    // 3857
-    var melbourneAustralia3857 = ol.proj.transform([145.079616, -37.8602828], 'EPSG:4326', 'EPSG:3857');
-
-    // 4326
-    var mexicoCityMexico4326 = [-99.1521845, 19.3200988];
-    // 3857
-    var mexicoCityMexico3857 = ol.proj.transform([99.1521845, 19.3200988], 'EPSG:4326', 'EPSG:3857');
-
-    // 4326
     var melbourneFlorida4326 = [-80.6552775, 28.1174805];
     // 3857
     var melbourneFlorida3857 = ol.proj.transform([-80.6552775, 28.1174805], 'EPSG:4326', 'EPSG:3857');
-
-    // 4326
-    var tampaFlorida4326 = [-82.5719968, 27.7670005];
-    // 3857
-    var tampaFlorida3857 = ol.proj.transform([-82.5719968, 27.7670005], 'EPSG:4326', 'EPSG:3857');
-
-    // 4326
-    var sanFranCali4326 = [-82.5719968, 27.7670005];
-    // 3857
-    var sanFranCali3857 = ol.proj.transform([-82.5719968, 27.7670005], 'EPSG:4326', 'EPSG:3857');
-
-    // 4326
-    var baghdadIraq4326 = [44.355905, 33.311686];
-    // 3857
-    var baghdadIraq3857 = ol.proj.transform([44.355905, 33.311686], 'EPSG:4326', 'EPSG:3857');
-
-    // 4326
-    var ftStoryImage4326 = [-76.328543005672, 36.933125884544]; //35.3386966201419,-116.514302051577
 
     var layerMessage = {
         minLevel: "0",
@@ -39,15 +11,15 @@ AppAdmin = (function () {
         epsgCode: "EPSG:3857"
     }
 
-    var mousePositionControl = new ol.control.MousePosition({
-        coordinateFormat: ol.coordinate.createStringXY(4),
-        projection: 'EPSG:4326',
-        // comment the following two lines to have the mouse position
-        // be placed within the map.
-        className: 'custom-mouse-position',
-        target: document.getElementById('mouse-position'),
-        undefinedHTML: '&nbsp;'
-    });
+    //var mousePositionControl = new ol.control.MousePosition({
+    //    coordinateFormat: ol.coordinate.createStringXY(4),
+    //    projection: 'EPSG:4326',
+    //    // comment the following two lines to have the mouse position
+    //    // be placed within the map.
+    //    className: 'custom-mouse-position',
+    //    target: document.getElementById('mouse-position'),
+    //    undefinedHTML: '&nbsp;'
+    //});
 
     var mapOmar = new ol.Map({
         controls: ol.control.defaults({
@@ -55,7 +27,7 @@ AppAdmin = (function () {
                 controlollapsible: false
             })
         }).extend([
-            mousePositionControl
+            //mousePositionControl
         ]),
         interactions: ol.interaction.defaults().extend([
             new ol.interaction.DragRotateAndZoom()
@@ -78,7 +50,7 @@ AppAdmin = (function () {
                 controlollapsible: false
             })
         }).extend([
-            mousePositionControl
+            //mousePositionControl
         ]),
         interactions: ol.interaction.defaults().extend([
             new ol.interaction.DragRotateAndZoom()
@@ -120,43 +92,18 @@ AppAdmin = (function () {
         $( '#createTileLayerModal' ).modal( 'show' );
     });
 
-    $('#submitCreateLayer').on('click', function () {
+    $('#navRenameLayer').click(function(){
+        $( '#renameTileLayerModal' ).modal( 'show' );
 
-        layerMessage.name = $('#layerName').val();
-        layerMessage.minLevel = $('#minTileLevel').val();
-        layerMessage.maxLevel = $('#maxTileLevel').val();
-        layerMessage.epsgCode = $('#epsgCode').val();
-
-        //alert(layerMessage.name + layerMessage.minLevel + layerMessage.maxLevel);
-
-        $.ajax({
-            url: "/tilecache/layerManager/createOrUpdateLayer",
-            type: 'POST',
-            dataType: 'json',
-            data: layerMessage,
-            success: function (data) {
-                alert(JSON.stringify(data));
-
-                // TODO: Refresh the tile layer list after creating a new layer
-
-                //$.each(initParams.tileCacheLayers, function(index, tileCacheLayer){
-                //    console.log(tileCacheLayer.name.toString());
-                //    $('#tileLayerSelect').append($('<option>', {
-                //        value: tileCacheLayer.name,
-                //        text : tileCacheLayer.name
-                //    }));
-                //});
-            }
-
-        });
-
-
+        // TODO: Add ajax call to populate the select list
 
     });
 
+
+
     $('#submitRenameLayer').click(function(oldName, newName){
 
-        console.log(initParams.wfsURL);
+        //console.log(initParams.wfsURL);
 
         // Grab these from a dropdown list
         oldName = "aaron_tile_layer";
@@ -176,10 +123,10 @@ AppAdmin = (function () {
 
     });
 
-    $('#submitDeleteLayer').click(function(layerToDelete){
+    $('#navDeleteLayer').click(function(layerToDelete){
 
         // Grab from dropdown box.  Use WFS query to get list
-        layerToDelete = 'kolie';
+        layerToDelete = 'ggfdfdfdfd';
 
         $.ajax({
             url: "/tilecache/layerManager/deleteLayer?",
@@ -187,9 +134,16 @@ AppAdmin = (function () {
             dataType: 'json',
             data: {'name': layerToDelete},
             success: function (data) {
+
                 alert(JSON.stringify(data));
+                setTimeout(function(){
+                    $('#tileLayerSelect').find('[value=' + layerToDelete + ']').remove();
+                    $('#tileLayerSelect').selectpicker('refresh');
+                    alert('refresh should have fired!');
+                }, 500)
             }
         });
+
 
     });
 
@@ -199,19 +153,19 @@ AppAdmin = (function () {
     //});
 
     //Add Full Screen
-    var fullScreenControl = new ol.control.FullScreen();
-    mapOmar.addControl(fullScreenControl);
-    mapTile.addControl(fullScreenControl);
+    //var fullScreenControl = new ol.control.FullScreen();
+    //mapOmar.addControl(fullScreenControl);
+    //mapTile.addControl(fullScreenControl);
 
     // Add Zoom Slider
-    var zoomslider = new ol.control.ZoomSlider();
-    mapOmar.addControl(zoomslider);
-    mapTile.addControl(zoomslider);
+    //var zoomslider = new ol.control.ZoomSlider();
+    //mapOmar.addControl(zoomslider);
+    //mapTile.addControl(zoomslider);
 
     // Add Scale bar
-    var scaleBar = new ol.control.ScaleLine();
-    mapOmar.addControl(scaleBar);
-    mapTile.addControl(scaleBar);
+    //var scaleBar = new ol.control.ScaleLine();
+    //mapOmar.addControl(scaleBar);
+    //mapTile.addControl(scaleBar);
 
     return {
         initialize: function (initParams) {
@@ -223,10 +177,50 @@ AppAdmin = (function () {
                     text : tileCacheLayer.name
                 }));
             });
+            $('.selectpicker').selectpicker('refresh');
 
-            $('#tileLayerSelect').on('click', function(){
-                alert('firing...');
-            })
+            $('#submitCreateLayer').on('click', function () {
+
+                layerMessage.name = $('#layerName').val();
+                layerMessage.minLevel = $('#minTileLevel').val();
+                layerMessage.maxLevel = $('#maxTileLevel').val();
+                layerMessage.epsgCode = $('#epsgCode').val();
+
+                //alert(layerMessage.name + layerMessage.minLevel + layerMessage.maxLevel);
+
+                $.ajax({
+                    url: "/tilecache/layerManager/createOrUpdateLayer",
+                    type: 'POST',
+                    dataType: 'json',
+                    data: layerMessage,
+                    success: successHandler
+                });
+
+                function successHandler(data, textStatus, jqXHR){
+                    console.log(JSON.stringify(data));
+                    console.log(textStatus);  // === success
+                    console.log(jqXHR.status); // === 200
+
+                    if(jqXHR.status === 200){
+
+                        // Done: 04-16-15 - Puts new tile layer into dropdown list, and sets it as the active layer
+                        var newTileLayerName = data.name;
+                        console.log(newTileLayerName);
+                        $('#tileLayerSelect').append('<option value="' + newTileLayerName + '" selected="selected">' + newTileLayerName + '</option>');
+                        $('#tileLayerSelect').selectpicker('refresh');
+
+                        // TODO: Add success message to banner, and close modal.  May need to add
+                        //       a spinner while creating the layer.  Once complete the toaster
+                        //       banner should appear.
+
+                        // TODO: Add logic for adding the new tile layer to the tile layer map
+
+                    }
+                    else{
+                        alert('Back to the drawing board for you!');
+                    }
+                };
+            });
 
         },
         mapOmar: mapOmar
