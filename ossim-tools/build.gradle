@@ -117,7 +117,7 @@ allprojects {
       }
       maven{
       // for java-vector
-         url 'https://github.com/ElectronicChartCentre/ecc-mvn-repo/raw/master'
+         url 'https://github.com/ElectronicChartCentre/ecc-mvn-repo/raw/master/releases'
       }
       // this is our local repository for goovy-swt
       maven {  url "${rootDir}/../groovy-swt/src/repository" }
