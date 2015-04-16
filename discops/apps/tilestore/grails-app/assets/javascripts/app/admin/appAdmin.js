@@ -33,13 +33,9 @@ AppAdmin = (function () {
     var ftStoryImage4326 = [-76.328543005672, 36.933125884544]; //35.3386966201419,-116.514302051577
 
     var layerMessage = {
-        type: "LayerMessage",
-        tileHeight: "",
-        tileWidth: "",
-        bBox: "Polygon((30 10, 40 40, 20 40, 10 20, 30 10))",
         minLevel: "0",
-        maxLevel: "16",
-        name: "TileLayer2",
+        maxLevel: "0",
+        name: "TileLayer",
         epsgCode: "EPSG:3857"
     }
 
@@ -66,12 +62,12 @@ AppAdmin = (function () {
         ]),
         layers: AddLayersAdmin.layers,
         view: new ol.View({
-            maxResolution: 0.5625,
+            //maxResolution: 0.5625,
             zoom: 14,
-            minZoom: 2,
-            maxZoom: 19,
-            projection: 'EPSG:4326',
-            center: ftStoryImage4326,
+            //minZoom: 2,
+            //maxZoom: 19,
+            //projection: 'EPSG:4326',
+            center: melbourneFlorida3857
         }),
         target: 'mapOmar'
     });
@@ -89,12 +85,12 @@ AppAdmin = (function () {
         ]),
         layers: AddLayersAdmin.layers,
         view: new ol.View({
-            maxResolution: 0.5625,
+            //maxResolution: 0.5625,
             zoom: 14,
-            minZoom: 2,
-            maxZoom: 19,
-            projection: 'EPSG:4326',
-            center: ftStoryImage4326,
+            //minZoom: 2,
+            //maxZoom: 19,
+            //projection: 'EPSG:4326',
+            center: melbourneFlorida3857
         }),
         target: 'mapTile'
     });
@@ -129,8 +125,9 @@ AppAdmin = (function () {
         layerMessage.name = $('#layerName').val();
         layerMessage.minLevel = $('#minTileLevel').val();
         layerMessage.maxLevel = $('#maxTileLevel').val();
+        layerMessage.epsgCode = $('#epsgCode').val();
 
-        alert(layerMessage.name + layerMessage.minLevel + layerMessage.maxLevel);
+        //alert(layerMessage.name + layerMessage.minLevel + layerMessage.maxLevel);
 
         $.ajax({
             url: "/tilecache/layerManager/createOrUpdateLayer",
@@ -139,14 +136,34 @@ AppAdmin = (function () {
             data: layerMessage,
             success: function (data) {
                 alert(JSON.stringify(data));
+
+                // TODO: Refresh the tile layer list after creating a new layer
+
+                //$.each(initParams.tileCacheLayers, function(index, tileCacheLayer){
+                //    console.log(tileCacheLayer.name.toString());
+                //    $('#tileLayerSelect').append($('<option>', {
+                //        value: tileCacheLayer.name,
+                //        text : tileCacheLayer.name
+                //    }));
+                //});
             }
 
         });
+
+
+
     });
 
     $('#submitRenameLayer').click(function(oldName, newName){
+
+        console.log(initParams.wfsURL);
+
+        // Grab these from a dropdown list
         oldName = "aaron_tile_layer";
+
+        // Grab this from a input box
         newName = "aaron_tile_layer_GoT";
+
         $.ajax({
             url: "/tilecache/layerManager/renameLayer?",
             type: 'POST',
@@ -160,7 +177,10 @@ AppAdmin = (function () {
     });
 
     $('#submitDeleteLayer').click(function(layerToDelete){
-        layerToDelete = 'aaron_tile_layer_GoT';
+
+        // Grab from dropdown box.  Use WFS query to get list
+        layerToDelete = 'kolie';
+
         $.ajax({
             url: "/tilecache/layerManager/deleteLayer?",
             type: 'POST',
@@ -195,6 +215,18 @@ AppAdmin = (function () {
 
     return {
         initialize: function (initParams) {
+
+            $.each(initParams.tileCacheLayers, function(index, tileCacheLayer){
+                console.log(tileCacheLayer.name.toString());
+                $('#tileLayerSelect').append($('<option>', {
+                    value: tileCacheLayer.name,
+                    text : tileCacheLayer.name
+                }));
+            });
+
+            $('#tileLayerSelect').on('click', function(){
+                alert('firing...');
+            })
 
         },
         mapOmar: mapOmar

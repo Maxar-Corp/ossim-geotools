@@ -51,6 +51,7 @@ enum HttpStatus {
    GATEWAY_TIMEOUT(504),
    HTTP_VERSION_NOT_SUPPORTED(505),
    private int value
+   int getValue(){this.value}
    HttpStatus(int value){this.value = value}
    static def valuesAsString(){this.values().collect(){it.toString()}}
 

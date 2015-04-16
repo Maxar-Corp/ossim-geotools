@@ -23,7 +23,7 @@ class CreateLayerCommand implements CaseInsensitiveBind
    // all tiles will adhere to this code
    String epsgCode = "EPSG:4326"
 
-   String bbox = "-180,-90,180,90"
+   String bbox
 
    Integer minLevel = 0
    Integer maxLevel = 24

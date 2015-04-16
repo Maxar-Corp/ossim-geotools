@@ -4,10 +4,10 @@
 
 //= require jquery.js
 //= require bootstrap.js
-//= require client/bootstrap-select.js
 //= require ../ol3/ol-debug.js
 
-/* App libs */
+/* Vendor libs */
+//= require client/bootstrap-select.js
 //= require client/bootstrap-filestyle.js
 //= require client/bootstrap-datepicker.js
 //= require client/bootstrap-slider.js
