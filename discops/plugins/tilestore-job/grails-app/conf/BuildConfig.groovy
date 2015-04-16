@@ -46,3 +46,5 @@ grails.project.dependency.resolution = {
         }
     }
 }
+grails.plugin.location.ossimCommon    = "../../plugins/ossim-common"
+grails.plugin.location.ossimDiskcache = "../../plugins/ossim-diskcache"
