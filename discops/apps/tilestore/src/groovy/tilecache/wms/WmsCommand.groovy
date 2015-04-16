@@ -5,40 +5,42 @@ import groovy.transform.ToString
 import org.ossim.common.CaseInsensitiveBind
 
 /**
- * Created by gpotts on 1/16/15.
+ * Created by sbortman on 4/15/15.
  */
 @Validateable
 @ToString( includeNames = true )
-class WmsCommand  implements CaseInsensitiveBind
+class WmsCommand //implements CaseInsensitiveBind
 {
   String service
   String version
   String request
-  String layers
-  String bbox
-  String srs
-  String format
-  Integer width
-  Integer height
-  String bgcolor = "#000000"
-  String transparent = true
 
   static constraints = {
-    version( nullable: true )
     service( nullable: true )
-    transparent( nullable: true )
-    bgcolor( nullable: true )
-    width( nullable: false, validator: { val, obj, errors ->
-      if ( ( val == null ) || ( val < 1 ) )
+    version( nullable: true )
+    request( nullable: false )
+  }
+
+  def fixParamNames(def params)
+  {
+    def names = getMetaClass().properties.grep { it.field }.name.sort() - ['class', 'constraints', 'errors']
+
+    def newParams = params.inject( [:] ) { a, b ->
+      def propName = names.find { it.equalsIgnoreCase( b.key ) && b.value != null }
+      if ( propName )
       {
-        errors.reject( "width", "bad value for width" )
+        //println "${propName}=${b.value}"
+        a[propName] = b.value
       }
-    } )
-    height( nullable: false, validator: { val, obj, errors ->
-      if ( ( val == null ) || ( val < 1 ) )
+      else
       {
-        errors.reject( "height", "bad value for height" )
+        a[b.key] = b.value
       }
-    } )
+      a
+    }
+
+    params.clear()
+    params.putAll( newParams )
+    params
   }
 }
