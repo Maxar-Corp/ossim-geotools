@@ -1,4 +1,4 @@
-package tilecache
+package tilestore.job
 
 import joms.geotools.tileapi.TwoWayPasswordEncoder
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory
@@ -19,6 +19,7 @@ class RabbitMQProducer
 
    void init()
    {
+      println "IN THE PRODUCER INIT!!!!!!"
       if(cf) this.destroy()
 
       password = (new TwoWayPasswordEncoder()).decryptPasswordOptionallyEncrypted(password)

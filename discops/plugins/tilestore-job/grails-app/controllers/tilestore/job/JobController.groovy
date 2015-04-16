@@ -37,7 +37,12 @@ class JobController {
       }
       */
       // println "-------------------------${cmd.filter}"
-      def data = jobService.getData( cmd )
+      def data = jobService.listJobs( cmd )
       render contentType: 'application/json', text: data as JSON
    }
+   def ingest()
+   {
+
+   }
+
 }
