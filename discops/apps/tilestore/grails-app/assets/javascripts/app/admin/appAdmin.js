@@ -1,15 +1,10 @@
 AppAdmin = (function () {
+
+    // Begin map stuff ##############################################################
     // 4326
     var melbourneFlorida4326 = [-80.6552775, 28.1174805];
     // 3857
     var melbourneFlorida3857 = ol.proj.transform([-80.6552775, 28.1174805], 'EPSG:4326', 'EPSG:3857');
-
-    var layerMessage = {
-        minLevel: "0",
-        maxLevel: "0",
-        name: "TileLayer",
-        epsgCode: "EPSG:3857"
-    }
 
     //var mousePositionControl = new ol.control.MousePosition({
     //    coordinateFormat: ol.coordinate.createStringXY(4),
@@ -88,9 +83,40 @@ AppAdmin = (function () {
     //    }
     //);
 
+    //$('#twice').on('click', function () {
+    //    mapTile.render();
+    //    mapOmar.render();
+    //});
+
+    //Add Full Screen
+    //var fullScreenControl = new ol.control.FullScreen();
+    //mapOmar.addControl(fullScreenControl);
+    //mapTile.addControl(fullScreenControl);
+
+    // Add Zoom Slider
+    //var zoomslider = new ol.control.ZoomSlider();
+    //mapOmar.addControl(zoomslider);
+    //mapTile.addControl(zoomslider);
+
+    // Add Scale bar
+    //var scaleBar = new ol.control.ScaleLine();
+    //mapOmar.addControl(scaleBar);
+    //mapTile.addControl(scaleBar);
+
+    // End map stuff #################################################################
+
+
+    // Begin CRUD stuff ##############################################################
+
+    // Our tile layer object
+    var objLayer = {
+        minLevel: "0",
+        maxLevel: "0",
+        name: "TileLayer",
+        epsgCode: "EPSG:3857"
+    }
 
     $('#navCreateLayer').click(function () {
-
         $('#createTileLayerModal').modal('show');
         $('#createTileLayerModal').on('shown.bs.modal', function () {
             $('#createLayerName').focus();
@@ -103,6 +129,86 @@ AppAdmin = (function () {
         // TODO: Add ajax call to populate the select list
 
     });
+
+    $('#submitCreateLayer').on('click', function () {
+
+        // Done: 04-16-15 - Prevent subimits/multiple ajax requests
+        $('#submitCreateLayer').removeClass('btn-primary').addClass('disabled btn-success');
+
+        // Done: 04-16-15 - Added Ladda UI and spinner capabilities for ajax calls
+        // Create and then start the spinner upon job submission
+        var l = Ladda.create(this);
+        l.start();
+
+        // Set our layer object to the parameters from the create layer form on the modal
+        objLayer.name = $('#createLayerName').val();
+        objLayer.minLevel = $('#minTileLevel').val();
+        objLayer.maxLevel = $('#maxTileLevel').val();
+        objLayer.epsgCode = $('#epsgCode').val();
+
+        // Done: 04-17-15
+        // Wrapping ajax request in a function to use deferred objects instead of
+        // passing a success callback: http://stackoverflow.com/a/14754681/4437795
+        // This decouples the callback handling from the AJAX handling, allows you
+        // to add multiple callbacks, failure callbacks, etc
+        function ajaxCreateLayer(){
+            return $.ajax({
+                url: "/tilecache/layerManager/createLayer",
+                type: 'POST',
+                dataType: 'json',
+                data: objLayer
+                //success: successHandlerCreate,
+                //error: errorHandler
+            });
+        }
+        ajaxCreateLayer().done(successHandlerCreate).fail(errorHandler);
+
+        function successHandlerCreate(data, textStatus, jqXHR) {
+            //console.log(JSON.stringify(data));
+            console.log(textStatus);  // === success
+            //console.log(jqXHR.status); // === 200
+
+            if (jqXHR.status === 200) {
+
+                // Done: 04-16-15 - Puts new tile layer into dropdown list, and sets it as the active layer
+                var newTileLayerName = data.name;
+                console.log(newTileLayerName);
+                $('#tileLayerSelect').append('<option value="' + newTileLayerName + '" selected="selected">' + newTileLayerName + '</option>');
+                $('#tileLayerSelect').selectpicker('refresh');
+
+                l.stop() // stop spinner from rotating
+
+                // Done 04-16-15 - close the modal if ajax request was successful
+                $('#createTileLayerModal').modal('hide');
+
+                // Done: 04-16-15 - create function for reseting modal form inputs.
+                resetCreateTileLayerForm();
+
+                // Done 04-16-15 - toastr message added on successful tile layer creation.
+
+                toastr.success(newTileLayerName + ' has been successfully created,' +
+                ' and is now the active tile layer', 'Tile Layer Created');
+
+                // TODO: Add logic for adding the new tile layer to the tile layer map
+
+            }
+            else {
+                toastr.warning('Could not create layer.')
+            }
+        };
+
+        function errorHandler(data){
+
+            l.stop() // stop spinner from rotating
+            //Done: 04-17-15 - functionality for handling error reporting from server
+            toastr.error(data.responseJSON.message + ' Please choose' +
+            ' another name and submit again.', 'Error');
+        };
+    });
+
+    $('#resetCreateTile').on('click', function (){
+        resetCreateTileLayerForm();
+    })
 
     $('#submitRenameLayer').click(function (oldName, newName) {
 
@@ -158,25 +264,17 @@ AppAdmin = (function () {
         $('#submitCreateLayer').removeClass('btn-success disabled').addClass('btn-primary');
     }
 
-    //$('#twice').on('click', function () {
-    //    mapTile.render();
-    //    mapOmar.render();
-    //});
+    // Parameters for the toastr banner
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-bottom-right",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut",
+        "timeOut": "10000"
+    }
+    // End CRUD stuff ##############################################################
 
-    //Add Full Screen
-    //var fullScreenControl = new ol.control.FullScreen();
-    //mapOmar.addControl(fullScreenControl);
-    //mapTile.addControl(fullScreenControl);
-
-    // Add Zoom Slider
-    //var zoomslider = new ol.control.ZoomSlider();
-    //mapOmar.addControl(zoomslider);
-    //mapTile.addControl(zoomslider);
-
-    // Add Scale bar
-    //var scaleBar = new ol.control.ScaleLine();
-    //mapOmar.addControl(scaleBar);
-    //mapTile.addControl(scaleBar);
 
     return {
         initialize: function (initParams) {
@@ -190,77 +288,6 @@ AppAdmin = (function () {
             });
             $('.selectpicker').selectpicker('refresh');
 
-            $('#submitCreateLayer').on('click', function () {
-
-                // Prevent subimits/multiple ajax requests
-                $('#submitCreateLayer').removeClass('btn-primary').addClass('disabled btn-success');
-
-
-                // Done: 04-16-15 - Added Ladda UI and spinner capabilities for ajax calls
-                // Create and then start the spinner upon job submission
-                var l = Ladda.create(this);
-                l.start();
-
-                layerMessage.name = $('#createLayerName').val();
-                layerMessage.minLevel = $('#minTileLevel').val();
-                layerMessage.maxLevel = $('#maxTileLevel').val();
-                layerMessage.epsgCode = $('#epsgCode').val();
-
-                $.ajax({
-                    url: "/tilecache/layerManager/createOrUpdateLayer",
-                    type: 'POST',
-                    dataType: 'json',
-                    data: layerMessage,
-                    success: successHandler
-                });
-
-                function successHandler(data, textStatus, jqXHR) {
-                    console.log(JSON.stringify(data));
-                    console.log(textStatus);  // === success
-                    console.log(jqXHR.status); // === 200
-
-                    if (jqXHR.status === 200) {
-
-                        // Done: 04-16-15 - Puts new tile layer into dropdown list, and sets it as the active layer
-                        var newTileLayerName = data.name;
-                        console.log(newTileLayerName);
-                        $('#tileLayerSelect').append('<option value="' + newTileLayerName + '" selected="selected">' + newTileLayerName + '</option>');
-                        $('#tileLayerSelect').selectpicker('refresh');
-
-                        l.stop() // stop spinner from rotating
-
-                        // Done 04-16-15 - close the modal if ajax request was successful
-                        $('#createTileLayerModal').modal('hide');
-
-                        // Done: 04-16-15 - create function for reseting modal form inputs.
-                        resetCreateTileLayerForm();
-                        
-                        // Done 04-16-15 - toastr message added on successful tile layer creation.
-                        toastr.options = {
-                            "closeButton": true,
-                            "progressBar": true,
-                            "positionClass": "toast-bottom-right",
-                            "showMethod": "fadeIn",
-                            "hideMethod": "fadeOut",
-                            "timeOut": "10000"
-
-                        }
-
-                        toastr.success(newTileLayerName + ' has been successfully created,' +
-                        ' and is now the active tile layer', 'Tile Layer Created');
-
-                        // TODO: Add logic for adding the new tile layer to the tile layer map
-
-                    }
-                    else {
-                        alert('Back to the drawing board for you!');
-                    }
-                };
-            });
-
-            $('#resetCreateTile').on('click', function (){
-                resetCreateTileLayerForm();
-            })
         },
         mapOmar: mapOmar
     };
