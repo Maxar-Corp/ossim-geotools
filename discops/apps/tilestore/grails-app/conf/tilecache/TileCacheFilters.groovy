@@ -13,7 +13,7 @@ class TileCacheFilters
     tileParamGrid( uri: '/wmts/tileParamGrid' ) {
       before = {
         //println "before: ${params}"
-        WmtsCommand.fixParamNames( params )
+        new WmtsCommand().fixParamNames( params )
         //println "after: ${params}"
       }
       after = { Map model ->
@@ -27,7 +27,7 @@ class TileCacheFilters
     getTile( uri: '/wmts/index' ) {
       before = {
         //println "before: ${params}"
-        WmtsCommand.fixParamNames( params )
+        new WmtsCommand().fixParamNames( params )
         //println "after: ${params}"
       }
       after = { Map model ->
@@ -61,7 +61,7 @@ class TileCacheFilters
            response.setHeader( "Access-Control-Max-Age", "3600" );
            response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
            //println "before: ${params}"
-           CreateLayerCommand.fixParamNames( params )
+           new CreateLayerCommand().fixParamNames( params )
            //println "after: ${params}"
         }
         after = { Map model ->
@@ -78,7 +78,7 @@ class TileCacheFilters
            response.setHeader( "Access-Control-Max-Age", "3600" );
            response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
            //println "before: ${params}"
-           CreateLayerCommand.fixParamNames( params )
+           new CreateLayerCommand().fixParamNames( params )
            //println "after: ${params}"
         }
         after = { Map model ->
@@ -109,7 +109,7 @@ class TileCacheFilters
            response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
            response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
            //println "before: ${params}"
-           GetLayersCommand.fixParamNames( params )
+           new GetLayersCommand().fixParamNames( params )
            //println "after: ${params}"
         }
         after = { Map model ->
@@ -141,7 +141,7 @@ class TileCacheFilters
            response.setHeader( "Access-Control-Max-Age", "3600" );
            response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
            //println "before: ${params}"
-           RenameLayerCommand.fixParamNames( params )
+           new RenameLayerCommand().fixParamNames( params )
            //println "after: ${params}"
         }
         after = { Map model ->
@@ -205,7 +205,7 @@ class TileCacheFilters
          response.setHeader( "Access-Control-Allow-Headers", "x-requested-with" );
 
          //println "before: ${params}"
-        WfsCommand.fixParamNames( params )
+        new WfsCommand().fixParamNames( params )
         //println "after: ${params}"
       }
       after = { Map model ->
@@ -218,7 +218,7 @@ class TileCacheFilters
     productExport(uri:'/product/export'){
       before = {
         //println "before: ${params}"
-        ProductExportCommand.fixParamNames( params )
+        new ProductExportCommand().fixParamNames( params )
         //println "after: ${params}"
       }
       after = { Map model ->

@@ -2,7 +2,6 @@ package tilecache.wms
 
 import grails.validation.Validateable
 import groovy.transform.ToString
-import org.ossim.common.CaseInsensitiveBind
 
 /**
  * Created by sbortman on 4/15/15.
@@ -10,6 +9,6 @@ import org.ossim.common.CaseInsensitiveBind
 
 @Validateable
 @ToString( includeNames = true, includeSuper = true )
-class GetCapabilitiesCommand extends WmsCommand //implements CaseInsensitiveBind
+class GetCapabilitiesCommand extends WmsCommand
 {
 }
