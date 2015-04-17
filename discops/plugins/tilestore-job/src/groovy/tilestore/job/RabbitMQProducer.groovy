@@ -1,4 +1,4 @@
-package tilecache
+package tilestore.job
 
 import joms.geotools.tileapi.TwoWayPasswordEncoder
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory
@@ -32,7 +32,6 @@ class RabbitMQProducer
 
    void sendMessage(String queue, String message)
    {
-      // need to throw and exception if
       template?.convertAndSend(queue, message)
    }
 
