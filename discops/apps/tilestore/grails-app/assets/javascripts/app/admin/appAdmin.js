@@ -155,6 +155,7 @@ AppAdmin = (function () {
         $('#minTileLevel').selectpicker('val', '0');
         $('#maxTileLevel').selectpicker('val', '0');
         $('#epsgCode').selectpicker('val', 'EPSG:3857');
+        $('#submitCreateLayer').removeClass('btn-success disabled').addClass('btn-primary');
     }
 
     //$('#twice').on('click', function () {
@@ -192,7 +193,8 @@ AppAdmin = (function () {
             $('#submitCreateLayer').on('click', function () {
 
                 // Prevent subimits/multiple ajax requests
-                $('#submitCreateLayer').addClass('disabled');
+                $('#submitCreateLayer').removeClass('btn-primary').addClass('disabled btn-success');
+
 
                 // Done: 04-16-15 - Added Ladda UI and spinner capabilities for ajax calls
                 // Create and then start the spinner upon job submission
@@ -230,17 +232,9 @@ AppAdmin = (function () {
                         // Done 04-16-15 - close the modal if ajax request was successful
                         $('#createTileLayerModal').modal('hide');
 
-                        // TODO: Create function for reseting modal form inputs.
-                        //$('.modal').on('hidden.bs.modal', function(){
-                        //    $(this).find('form')[0].reset();
-                        //    $('#minTileLevel').selectpicker('val', '0');
-                        //    $('#maxTileLevel').selectpicker('val', '0');
-                        //    $('#epsgCode').selectpicker('val', 'EPSG:3857');
-                        //    //$('#tileSize').selectpicker('val', '256x256');
-                        //});
+                        // Done: 04-16-15 - create function for reseting modal form inputs.
                         resetCreateTileLayerForm();
-
-
+                        
                         // Done 04-16-15 - toastr message added on successful tile layer creation.
                         toastr.options = {
                             "closeButton": true,
