@@ -4,6 +4,7 @@
 *= require font-awesome.css
 *= require admin/bootstrap-select.css
 *= require admin/toastr.css
+*= require admin/ladda-themeless.min.css
 *= require admin/styles.css
 *= require_self
 */
