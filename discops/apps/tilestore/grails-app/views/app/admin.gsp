@@ -139,84 +139,89 @@
                 <h3 class="modal-title fa fa-th">&nbsp;&nbsp;&nbsp;Create a New Tile Layer</h3>
             </div>
             <div class="modal-body">
-                <form class="form-inline">
+
                     <div class="container">
-                        <div class="row col-sm-6 col-md-6">
-                            <form role="form">
-                                <div class="form-group">
-                                    <label for="layerName">Tile Layer Name&nbsp;</label>
-                                    <input type="text" class="form-control " id="layerName">&nbsp;&nbsp;<small><em>Do
-                                not use dashes or or special characters.</em></small><br><br>
-                                    <label for="minTileLevel">Min. Level</label>
-                                    <select id="minTileLevel" class="form-control selectpicker">
-                                        <option value="0">0&nbsp;</option>
-                                        <option value="1">1&nbsp;</option>
-                                        <option value="2">2&nbsp;</option>
-                                        <option value="3">3&nbsp;</option>
-                                        <option value="4">4&nbsp;</option>
-                                        <option value="5">5&nbsp;</option>
-                                        <option value="6">6&nbsp;</option>
-                                        <option value="7">7&nbsp;</option>
-                                        <option value="8">8&nbsp;</option>
-                                        <option value="9">9&nbsp;</option>
-                                        <option value="10">10</option>
-                                        <option value="11">11</option>
-                                        <option value="12">12</option>
-                                        <option value="13">13</option>
-                                        <option value="14">14</option>
-                                        <option value="15">15</option>
-                                        <option value="16">16</option>
-                                        <option value="17">15</option>
-                                        <option value="18">15</option>
-                                        <option value="19">15</option>
-                                        <option value="20">20</option>
-                                        <option value="21">21</option>
-                                        <option value="22">22</option>
-                                    </select>
-                                    <label for="maxTileLevel">Max. Level</label>
-                                    <select id="maxTileLevel" class="form-control selectpicker">
-                                        <option value="0">0&nbsp;</option>
-                                        <option value="1">1&nbsp;</option>
-                                        <option value="2">2&nbsp;</option>
-                                        <option value="3">3&nbsp;</option>
-                                        <option value="4">4&nbsp;</option>
-                                        <option value="5">5&nbsp;</option>
-                                        <option value="6">6&nbsp;</option>
-                                        <option value="7">7&nbsp;</option>
-                                        <option value="8">8&nbsp;</option>
-                                        <option value="9">9&nbsp;</option>
-                                        <option value="10">10</option>
-                                        <option value="11">11</option>
-                                        <option value="12">12</option>
-                                        <option value="13">13</option>
-                                        <option value="14">14</option>
-                                        <option value="15">15</option>
-                                        <option value="16">16</option>
-                                        <option value="17">15</option>
-                                        <option value="18">15</option>
-                                        <option value="19">15</option>
-                                        <option value="20">20</option>
-                                        <option value="21">21</option>
-                                        <option value="22">22</option>
-                                    </select><br><br>
-                                    <label for="epsg">Projection</label>
-                                    <select id="epsgCode" class="form-control selectpicker" id="epsg">
-                                        <option value="EPSG:3857">EPSG: 3857</option>
-                                        <option value="EPSG:4326">EPSG: 4326</option>
-                                    </select>&nbsp;&nbsp;
-                                    <label for="tileSize">Tile Size</label>
-                                    <select class="form-control selectpicker" id="tileSize" disabled>
-                                        <option value="256x256">256 x 256</option>
-                                        <option value="512x512">512 x 512</option>
-                                    </select><br><br>
-                                    <button type="button" id="submitCreateLayer" class="btn btn-success">Submit</button>
-                                    <button type="button" id="cancelCreateTile" class="btn btn-default"
-                                            data-dismiss="modal">Cancel</button>
+                            <form name="createTileLayerForm" role="form">
+                                <div class="row col-sm-6 col-md-6">
+                                    <div class="form-group">
+                                        <label for="createLayerName">Tile Layer Name&nbsp;</label>
+                                        <input type="text" class="form-control"
+                                               id="createLayerName">&nbsp;&nbsp;<small><em>Do
+                                    not use dashes or or special characters.</em></small><br><br>
+                                        <label for="minTileLevel">Min. Level</label>
+                                        <select id="minTileLevel" class="form-control selectpicker">
+                                            <option value="0">0&nbsp;</option>
+                                            <option value="1">1&nbsp;</option>
+                                            <option value="2">2&nbsp;</option>
+                                            <option value="3">3&nbsp;</option>
+                                            <option value="4">4&nbsp;</option>
+                                            <option value="5">5&nbsp;</option>
+                                            <option value="6">6&nbsp;</option>
+                                            <option value="7">7&nbsp;</option>
+                                            <option value="8">8&nbsp;</option>
+                                            <option value="9">9&nbsp;</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                            <option value="16">16</option>
+                                            <option value="17">15</option>
+                                            <option value="18">15</option>
+                                            <option value="19">15</option>
+                                            <option value="20">20</option>
+                                            <option value="21">21</option>
+                                            <option value="22">22</option>
+                                        </select>
+                                        <label for="maxTileLevel">Max. Level</label>
+                                        <select id="maxTileLevel" class="form-control selectpicker">
+                                            <option value="0">0&nbsp;</option>
+                                            <option value="1">1&nbsp;</option>
+                                            <option value="2">2&nbsp;</option>
+                                            <option value="3">3&nbsp;</option>
+                                            <option value="4">4&nbsp;</option>
+                                            <option value="5">5&nbsp;</option>
+                                            <option value="6">6&nbsp;</option>
+                                            <option value="7">7&nbsp;</option>
+                                            <option value="8">8&nbsp;</option>
+                                            <option value="9">9&nbsp;</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                            <option value="16">16</option>
+                                            <option value="17">15</option>
+                                            <option value="18">15</option>
+                                            <option value="19">15</option>
+                                            <option value="20">20</option>
+                                            <option value="21">21</option>
+                                            <option value="22">22</option>
+                                        </select><br><br>
+                                        <label for="epsg">Projection</label>
+                                        <select id="epsgCode" class="form-control selectpicker" id="epsg">
+                                            <option value="EPSG:3857">EPSG: 3857</option>
+                                            <option value="EPSG:4326">EPSG: 4326</option>
+                                        </select>&nbsp;&nbsp;
+                                        <label for="tileSize">Tile Size</label>
+                                        <select class="form-control selectpicker" id="tileSize" disabled>
+                                            <option value="256x256">256 x 256</option>
+                                            <option value="512x512">512 x 512</option>
+                                        </select><br><br>
+                                        <div>
+                                            <button id="submitCreateLayer" class="btn btn-primary ladda-button"
+                                                    data-style="expand-left"><span class="ladda-label">Submit</span></button>
+                                            <button id="cancelCreateTile" type="button" class="btn btn-default"
+                                                data-dismiss="modal">Cancel</button>
+                                            <button id="resetCreateTile" type="button" class="btn btn-warning">Reset</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </form>
-                        </div>
+
                     </div>
-                </form>
             </div><!-- /.modal-body -->
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog modal-lg -->

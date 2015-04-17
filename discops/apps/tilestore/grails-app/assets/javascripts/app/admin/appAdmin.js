@@ -88,20 +88,23 @@ AppAdmin = (function () {
     //    }
     //);
 
-    $('#navCreateLayer').click(function(){
-        $( '#createTileLayerModal' ).modal( 'show' );
+
+    $('#navCreateLayer').click(function () {
+
+        $('#createTileLayerModal').modal('show');
+        $('#createTileLayerModal').on('shown.bs.modal', function () {
+            $('#createLayerName').focus();
+        })
     });
 
-    $('#navRenameLayer').click(function(){
-        $( '#renameTileLayerModal' ).modal( 'show' );
+    $('#navRenameLayer').click(function () {
+        $('#renameTileLayerModal').modal('show');
 
         // TODO: Add ajax call to populate the select list
 
     });
 
-
-
-    $('#submitRenameLayer').click(function(oldName, newName){
+    $('#submitRenameLayer').click(function (oldName, newName) {
 
         //console.log(initParams.wfsURL);
 
@@ -123,7 +126,7 @@ AppAdmin = (function () {
 
     });
 
-    $('#navDeleteLayer').click(function(layerToDelete){
+    $('#navDeleteLayer').click(function (layerToDelete) {
 
         // Grab from dropdown box.  Use WFS query to get list
         layerToDelete = 'ggfdfdfdfd';
@@ -136,7 +139,7 @@ AppAdmin = (function () {
             success: function (data) {
 
                 alert(JSON.stringify(data));
-                setTimeout(function(){
+                setTimeout(function () {
                     $('#tileLayerSelect').find('[value=' + layerToDelete + ']').remove();
                     $('#tileLayerSelect').selectpicker('refresh');
                     alert('refresh should have fired!');
@@ -146,6 +149,14 @@ AppAdmin = (function () {
 
 
     });
+
+    function resetCreateTileLayerForm (){
+        $('#createLayerName').val('');
+        $('#minTileLevel').selectpicker('val', '0');
+        $('#maxTileLevel').selectpicker('val', '0');
+        $('#epsgCode').selectpicker('val', 'EPSG:3857');
+        $('#submitCreateLayer').removeClass('btn-success disabled').addClass('btn-primary');
+    }
 
     //$('#twice').on('click', function () {
     //    mapTile.render();
@@ -170,23 +181,30 @@ AppAdmin = (function () {
     return {
         initialize: function (initParams) {
 
-            $.each(initParams.tileCacheLayers, function(index, tileCacheLayer){
-                console.log(tileCacheLayer.name.toString());
+            $.each(initParams.tileCacheLayers, function (index, tileCacheLayer) {
+                //console.log(tileCacheLayer.name.toString());
                 $('#tileLayerSelect').append($('<option>', {
                     value: tileCacheLayer.name,
-                    text : tileCacheLayer.name
+                    text: tileCacheLayer.name
                 }));
             });
             $('.selectpicker').selectpicker('refresh');
 
             $('#submitCreateLayer').on('click', function () {
 
-                layerMessage.name = $('#layerName').val();
+                // Prevent subimits/multiple ajax requests
+                $('#submitCreateLayer').removeClass('btn-primary').addClass('disabled btn-success');
+
+
+                // Done: 04-16-15 - Added Ladda UI and spinner capabilities for ajax calls
+                // Create and then start the spinner upon job submission
+                var l = Ladda.create(this);
+                l.start();
+
+                layerMessage.name = $('#createLayerName').val();
                 layerMessage.minLevel = $('#minTileLevel').val();
                 layerMessage.maxLevel = $('#maxTileLevel').val();
                 layerMessage.epsgCode = $('#epsgCode').val();
-
-                //alert(layerMessage.name + layerMessage.minLevel + layerMessage.maxLevel);
 
                 $.ajax({
                     url: "/tilecache/layerManager/createOrUpdateLayer",
@@ -196,12 +214,12 @@ AppAdmin = (function () {
                     success: successHandler
                 });
 
-                function successHandler(data, textStatus, jqXHR){
+                function successHandler(data, textStatus, jqXHR) {
                     console.log(JSON.stringify(data));
                     console.log(textStatus);  // === success
                     console.log(jqXHR.status); // === 200
 
-                    if(jqXHR.status === 200){
+                    if (jqXHR.status === 200) {
 
                         // Done: 04-16-15 - Puts new tile layer into dropdown list, and sets it as the active layer
                         var newTileLayerName = data.name;
@@ -209,19 +227,40 @@ AppAdmin = (function () {
                         $('#tileLayerSelect').append('<option value="' + newTileLayerName + '" selected="selected">' + newTileLayerName + '</option>');
                         $('#tileLayerSelect').selectpicker('refresh');
 
-                        // TODO: Add success message to banner, and close modal.  May need to add
-                        //       a spinner while creating the layer.  Once complete the toaster
-                        //       banner should appear.
+                        l.stop() // stop spinner from rotating
+
+                        // Done 04-16-15 - close the modal if ajax request was successful
+                        $('#createTileLayerModal').modal('hide');
+
+                        // Done: 04-16-15 - create function for reseting modal form inputs.
+                        resetCreateTileLayerForm();
+                        
+                        // Done 04-16-15 - toastr message added on successful tile layer creation.
+                        toastr.options = {
+                            "closeButton": true,
+                            "progressBar": true,
+                            "positionClass": "toast-bottom-right",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut",
+                            "timeOut": "10000"
+
+                        }
+
+                        toastr.success(newTileLayerName + ' has been successfully created,' +
+                        ' and is now the active tile layer', 'Tile Layer Created');
 
                         // TODO: Add logic for adding the new tile layer to the tile layer map
 
                     }
-                    else{
+                    else {
                         alert('Back to the drawing board for you!');
                     }
                 };
             });
 
+            $('#resetCreateTile').on('click', function (){
+                resetCreateTileLayerForm();
+            })
         },
         mapOmar: mapOmar
     };
