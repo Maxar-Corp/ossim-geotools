@@ -158,12 +158,16 @@ class LayerManagerService implements InitializingBean
             result.status = HttpStatus.BAD_REQUEST
             result.message = "Unable to create layer name ${cmd.name}"
          }
-
+         if(!result.data)
+         {
+            result.status = HttpStatus.BAD_REQUEST
+            result.message = "Unable create layer with name ${cmd.name}"
+         }
       }
-      if(!result.data)
+      else
       {
          result.status = HttpStatus.BAD_REQUEST
-         result.message = "Unable create layer with name ${cmd.name}"
+         result.message = "Unable to create a new layer.  Layer ${cmd.name} already exists."
       }
 
       result

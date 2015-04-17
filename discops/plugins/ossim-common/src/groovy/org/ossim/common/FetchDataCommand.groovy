@@ -1,4 +1,4 @@
-package ossim.diskcache
+package org.ossim.common
 
 import grails.validation.Validateable
 import groovy.transform.ToString

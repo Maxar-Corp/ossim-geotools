@@ -7,6 +7,9 @@
 //= require ../ol3/ol.js
 
 //= require admin/bootstrap-select.js
+//= require admin/toastr.js
+//= require admin/spin.js
+//= require admin/ladda.min.js
 
 //= require admin/addLayersAdmin.js
 //= require admin/appAdmin.js
