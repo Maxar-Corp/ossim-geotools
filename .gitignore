@@ -19,3 +19,4 @@ discops/apps/tilestore/target/
 *nohup.out
 *.class
 *.pid
+.vagrant
