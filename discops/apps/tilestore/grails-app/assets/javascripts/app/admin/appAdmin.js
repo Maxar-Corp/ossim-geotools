@@ -293,7 +293,7 @@ AppAdmin = (function () {
 
             l.stop() // stop spinner from rotating
             //Done: 04-19-15 - functionality for handling error reporting from server
-            toastr.error(data.responseJSON.message + ' Rename failed' +
+            toastr.error(data + ' Rename failed' +
             ' choose another name and submit again.', 'Error');
         };
 

@@ -192,7 +192,9 @@ class LayerManagerController
 
    def renameLayer(RenameLayerCommand cmd)//String oldName, String newName)
    {
-     // CaseInsensitiveMap map = new CaseInsensitiveMap(params)
+
+        println cmd
+        // CaseInsensitiveMap map = new CaseInsensitiveMap(params)
       if(request.JSON)
       {
          cmd.initFromJson(request.JSON)
