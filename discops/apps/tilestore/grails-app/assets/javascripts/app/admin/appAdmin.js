@@ -1,5 +1,6 @@
 AppAdmin = (function () {
-     var tileCacheLayers;
+    var tileCacheLayers;
+    var $select = $('.selectpicker').selectpicker();
 
     // Begin map stuff ##############################################################
     // 4326
@@ -182,7 +183,8 @@ AppAdmin = (function () {
                 var newTileLayerName = data.name;
                 console.log(newTileLayerName);
                 $('#tileLayerSelect').append('<option value="' + newTileLayerName + '" selected="selected">' + newTileLayerName + '</option>');
-                $('#tileLayerSelect').selectpicker('refresh');
+                $('#renameTileLayer').append('<option value="' + newTileLayerName + '" selected="selected">' + newTileLayerName + '</option>');
+                $select.selectpicker('refresh');
 
                 l.stop() // stop spinner from rotating
 
@@ -190,7 +192,7 @@ AppAdmin = (function () {
                 $('#createTileLayerModal').modal('hide');
 
                 // Done: 04-16-15 - create function for reseting modal form inputs.
-                resetCreateTileLayerForm();
+                resetForm('create');
 
                 // Done 04-16-15 - toastr message added on successful tile layer creation.
 
@@ -215,16 +217,28 @@ AppAdmin = (function () {
         };
     });
 
-    function resetCreateTileLayerForm (){
-        $('#createLayerName').val('');
-        $('#minTileLevel').selectpicker('val', '0');
-        $('#maxTileLevel').selectpicker('val', '0');
-        $('#epsgCode').selectpicker('val', 'EPSG:3857');
-        $('#submitCreateLayer').removeClass('btn-success disabled').addClass('btn-primary');
+    // Done 04-20-15 - Refactored so that this can be used for all forms
+    function resetForm(frm){
+        //console.log($(this));
+
+        if (frm === 'create'){
+            console.log('create');
+            $('#minTileLevel').selectpicker('val', '0');
+            $('#maxTileLevel').selectpicker('val', '0');
+            $('#epsgCode').selectpicker('val', 'EPSG:3857');
+            $select.selectpicker('render');
+            $("#createTileLayerForm").trigger('reset');
+            $('#submitCreateLayer').removeClass('btn-success disabled').addClass('btn-primary');
+        }
+        else if (frm === 'rename'){
+            $("#renameTileLayerForm").trigger('reset');
+            $('#submitRenameLayer').removeClass('btn-success disabled').addClass('btn-primary');
+        }
+
     }
 
     $('#resetCreateTile').on('click', function (){
-        resetCreateTileLayerForm();
+        resetForm('create');
     });
 
     $('#navRenameLayer').click(function () {
@@ -255,15 +269,14 @@ AppAdmin = (function () {
         // Grab this from a input box
         newName = $('#renameLayerName').val();;
 
-        $.ajax({
-            url: "/tilecache/layerManager/renameLayer?",
-            type: 'POST',
-            dataType: 'json',
-            data: {'oldName': oldName, 'newName': newName},
-            success: successHandlerRename,
-            error: errorHandlerRename
-
-        });
+        function ajaxRenameLayer(){
+            return $.ajax({
+                url: "/tilecache/layerManager/renameLayer?",
+                type: 'POST',
+                dataType: 'json',
+                data: {'oldName': oldName, 'newName': newName}
+            });
+        }
 
         // Done: 04-19-15
         function successHandlerRename(data, textStatus, jqXHR) {
@@ -271,16 +284,19 @@ AppAdmin = (function () {
             console.log(textStatus);
 
             if (jqXHR.status === 200) {
-                console.log('We have 200!');
+                //console.log('We have 200!');
                 console.log(data);
 
-                // TODO: This isn't working yet.  Need to have the layer name change to reflect the
-                //       new name from the input box.
-                $('#submitRenameLayer').find('[value=' + oldName + ']').remove();
-                $('#submitRenameLayer').selectpicker('refresh');
+                // Done 04-20-15 -
+                $select.find('[value=' + oldName + ']').remove();
+                $('#renameTileLayer').append('<option value="' + newName + '" selected="selected">' + newName + '</option>');
+                $('#tileLayerSelect').append('<option value="' + newName + '" selected="selected">' + newName + '</option>');
+                $select.selectpicker('refresh');
+
                 toastr.success('Layer ' + oldName + ' was renamed to ' + newName, 'Success');
+                resetForm('rename');
+
                 l.stop() // stop spinner from rotating
-                $('#submitRenameLayer').removeClass('btn-success disabled').addClass('btn-primary');
 
             }
             else {
@@ -297,11 +313,16 @@ AppAdmin = (function () {
             ' choose another name and submit again.', 'Error');
         };
 
+        ajaxRenameLayer().done(successHandlerRename).fail(errorHandlerRename);
+
+    });
+
+    $('#resetRenameTile').on('click', function (){
+        resetForm('rename');
     });
 
     $('#navDeleteLayer').click(function () {
         getTileLayers(tileCacheLayers.tileCacheLayers, '#deleteTileLayer');
-        //console.log(tileCacheLayers);
         $('#deleteTileLayerModal').modal('show');
         $('#deleteTileLayerModal').on('shown.bs.modal', function () {
             $('#deleteLayerName').focus();
@@ -325,17 +346,14 @@ AppAdmin = (function () {
         l.start();
 
         function ajaxDeleteLayer() {
-            $.ajax({
+            return $.ajax({
                 url: "/tilecache/layerManager/deleteLayer?",
                 type: 'POST',
                 dataType: 'json',
-                data: {'name': objLayer.name},
-                success: successHandlerDelete,
-                error: errorHandlerDelete
-
+                data: {'name': objLayer.name}
             });
         }
-
+        ajaxDeleteLayer().done(successHandlerDelete).fail(errorHandlerDelete);
         // Done: 04-19-15
         function successHandlerDelete(data, textStatus, jqXHR) {
             console.log(jqXHR.status);
@@ -344,8 +362,8 @@ AppAdmin = (function () {
             if (jqXHR.status === 200) {
                 //console.log('We have 200!');
                 console.log(data);
-                $('.selectpicker').find('[value=' + objLayer.name + ']').remove();
-                $('.selectpicker').selectpicker('refresh');
+                $select.find('[value=' + objLayer.name + ']').remove();
+                $select.selectpicker('refresh');
                 toastr.success('Layer ' + objLayer.name + ' was deleted.', 'Success');
                 l.stop() // stop spinner from rotating
                 $('#submitDeleteLayer').removeClass('btn-success disabled').addClass('btn-primary');
@@ -361,8 +379,7 @@ AppAdmin = (function () {
             //Done: 04-17-15 - functionality for handling error reporting from server
             toastr.error(data.message, 'Error');
         }
-        // Done: 04-19-15
-        ajaxDeleteLayer().done(successHandlerDelete).fail(errorHandlerDelete);
+
     });
 
     // Parameters for the toastr banner
@@ -379,20 +396,11 @@ AppAdmin = (function () {
     return {
         initialize: function (initParams) {
 
-            tileCacheLayers = initParams; //
+            tileCacheLayers = initParams;
 
             getTileLayers(tileCacheLayers.tileCacheLayers, '#tileLayerSelect');
 
-            //$.each(initParams.tileCacheLayers, function (index, tileCacheLayer) {
-            //    //console.log(tileCacheLayer.name.toString());
-            //    $('#tileLayerSelect').append($('<option>', {
-            //        value: tileCacheLayer.name,
-            //        text: tileCacheLayer.name
-            //    }));
-            //});
-            //$('.selectpicker').selectpicker('refresh');
-
-        },
+        }
         //mapOmar: mapOmar,
         //mapTile: mapTile
     };
