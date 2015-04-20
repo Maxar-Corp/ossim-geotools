@@ -17,21 +17,25 @@ class WmtsController
     */
     // need to support case insensitive data bindings
     //println cmd
-
     if ( cmd.validate() )
     {
-      if ( cmd.request.toLowerCase() == "gettile" )
+
+      switch ( cmd.request?.toUpperCase() )
       {
-
-        def tile = webMapTileService.getTile( cmd )
-
-        render contentType: tile.contentType, file: tile.buffer
+      case 'GETCAPABILITIES':
+        forward action: 'getCapabilities', params: new GetCapabilitiesCommand().fixParamNames( params )
+        break
+      case 'GETTILE':
+        forward action: 'getTile', params: new GetTileCommand().fixParamNames( params )
+        break
       }
     }
     else
     {
-      render ""
+      render "${cmd.errors}"
+      println cmd.errors
     }
+
   }
 
   def tileParamGrid(WmtsCommand cmd)
@@ -41,4 +45,15 @@ class WmtsController
     render contentType: results.contentType, file: results.buffer
   }
 
+  def getCapabilities(GetCapabilitiesCommand cmd)
+  {
+    def results = webMapTileService.getCapabilities( cmd )
+    render contentType: results.contentType, file: results.buffer
+  }
+
+  def getTile(GetTileCommand cmd)
+  {
+    def results = webMapTileService.getTile( cmd )
+    render contentType: results.contentType, file: results.buffer
+  }
 }

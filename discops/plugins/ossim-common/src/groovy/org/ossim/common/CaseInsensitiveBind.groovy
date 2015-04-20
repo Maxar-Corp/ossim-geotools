@@ -2,7 +2,7 @@ package org.ossim.common
 
 trait CaseInsensitiveBind
 {
-   static def fixParamNames(def params)
+   def fixParamNames(def params)
    {
       def names = ( getMetaClass()?.properties*.name ).sort() - ['class', 'constraints', 'errors']
 
