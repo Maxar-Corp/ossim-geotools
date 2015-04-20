@@ -18,7 +18,7 @@ class WebMappingService implements InitializingBean
 
   def dataSourceUnproxied
 
-  LinkGenerator grailsLinkGenerator
+  def grailsLinkGenerator
   def layerManagerService
 
   private static final def getMapFormats = [
@@ -189,14 +189,14 @@ class WebMappingService implements InitializingBean
                   } /* Get */
                 } /* HTTP */
               } /* DCPType */
-              DCPType {
-                HTTP {
-                  Post {
-                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
-                        'xlink:type': "simple", 'xlink:href': wmsUrl )
-                  } /* Post */
-                } /* HTTP */
-              } /* DCPType */
+//              DCPType {
+//                HTTP {
+//                  Post {
+//                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
+//                        'xlink:type': "simple", 'xlink:href': wmsUrl )
+//                  } /* Post */
+//                } /* HTTP */
+//              } /* DCPType */
             } /* GetCapabilities */
             GetMap {
               getMapFormats.each { Format( it ) }
@@ -208,71 +208,71 @@ class WebMappingService implements InitializingBean
                   } /* Get */
                 } /* HTTP */
               } /* DCPType */
-              DCPType {
-                HTTP {
-                  Post {
-                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
-                        'xlink:type': "simple", 'xlink:href': wmsUrl )
-                  } /* Post */
-                } /* HTTP */
-              } /* DCPType */
+//              DCPType {
+//                HTTP {
+//                  Post {
+//                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
+//                        'xlink:type': "simple", 'xlink:href': wmsUrl )
+//                  } /* Post */
+//                } /* HTTP */
+//              } /* DCPType */
             } /* GetMap */
-            GetFeatureInfo {
-              getFeatureInfoFormats.each { Format( it ) }
-              DCPType {
-                HTTP {
-                  Get {
-                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
-                        'xlink:type': "simple", 'xlink:href': wmsUrl )
-                  } /* Get */
-                } /* HTTP */
-              } /* DCPType */
-              DCPType {
-                HTTP {
-                  Post {
-                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
-                        'xlink:type': "simple", 'xlink:href': wmsUrl )
-                  } /* Post */
-                } /* HTTP */
-              } /* DCPType */
-            } /* GetFeatureInfo */
-            DescribeLayer {
-              Format( 'application/vnd.ogc.wms_xml' )
-              DCPType {
-                HTTP {
-                  Get {
-                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
-                        'xlink:type': "simple", 'xlink:href': wmsUrl )
-                  } /* Get */
-                } /* HTTP */
-              } /* DCPType */
-            } /* DescribeLayer */
-            GetLegendGraphic {
-              Format( 'image/png' )
-              Format( 'image/jpeg' )
-              Format( 'image/gif' )
-              DCPType {
-                HTTP {
-                  Get {
-                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
-                        'xlink:type': "simple", 'xlink:href': wmsUrl )
-                  } /* Get */
-                } /* HTTP */
-              } /* DCPType */
-            } /* GetLegendGraphic */
-            GetStyles {
-              Format( 'image/png' )
-              Format( 'image/jpeg' )
-              Format( 'image/gif' )
-              DCPType {
-                HTTP {
-                  Get {
-                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
-                        'xlink:type': "simple", 'xlink:href': wmsUrl )
-                  } /* Get */
-                } /* HTTP */
-              } /* DCPType */
-            } /* GetStyles */
+//            GetFeatureInfo {
+//              getFeatureInfoFormats.each { Format( it ) }
+//              DCPType {
+//                HTTP {
+//                  Get {
+//                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
+//                        'xlink:type': "simple", 'xlink:href': wmsUrl )
+//                  } /* Get */
+//                } /* HTTP */
+//              } /* DCPType */
+////              DCPType {
+////                HTTP {
+////                  Post {
+////                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
+////                        'xlink:type': "simple", 'xlink:href': wmsUrl )
+////                  } /* Post */
+////                } /* HTTP */
+////              } /* DCPType */
+//            } /* GetFeatureInfo */
+//            DescribeLayer {
+//              Format( 'application/vnd.ogc.wms_xml' )
+//              DCPType {
+//                HTTP {
+//                  Get {
+//                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
+//                        'xlink:type': "simple", 'xlink:href': wmsUrl )
+//                  } /* Get */
+//                } /* HTTP */
+//              } /* DCPType */
+//            } /* DescribeLayer */
+//            GetLegendGraphic {
+//              Format( 'image/png' )
+//              Format( 'image/jpeg' )
+//              Format( 'image/gif' )
+//              DCPType {
+//                HTTP {
+//                  Get {
+//                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
+//                        'xlink:type': "simple", 'xlink:href': wmsUrl )
+//                  } /* Get */
+//                } /* HTTP */
+//              } /* DCPType */
+//            } /* GetLegendGraphic */
+//            GetStyles {
+//              Format( 'image/png' )
+//              Format( 'image/jpeg' )
+//              Format( 'image/gif' )
+//              DCPType {
+//                HTTP {
+//                  Get {
+//                    OnlineResource( 'xmlns:xlink': "http://www.w3.org/1999/xlink",
+//                        'xlink:type': "simple", 'xlink:href': wmsUrl )
+//                  } /* Get */
+//                } /* HTTP */
+//              } /* DCPType */
+//            } /* GetStyles */
           } /* Request */
         } /* Capability */
         "Exception" {
