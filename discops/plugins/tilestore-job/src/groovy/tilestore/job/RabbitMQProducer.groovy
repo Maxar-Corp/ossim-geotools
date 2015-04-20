@@ -16,6 +16,8 @@ class RabbitMQProducer
    String  password
    def cf
    def template
+   def ingest
+   def product
 
    void init()
    {
@@ -28,11 +30,13 @@ class RabbitMQProducer
       cf.host=host
       cf.port=port?:5672
       template = new RabbitTemplate(cf);
+
+      println cf
    }
 
-   void sendMessage(String queue, String message)
+   void sendIngestMessage(String message)
    {
-      template?.convertAndSend(queue, message)
+      template?.convertAndSend(ingest.queue, message)
    }
 
    void destroy()

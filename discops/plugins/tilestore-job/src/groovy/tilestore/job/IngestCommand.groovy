@@ -11,6 +11,7 @@ import org.ossim.common.CaseInsensitiveBind
 @ToString(includeNames = true)
 class IngestCommand  implements CaseInsensitiveBind
 {
+   String jobName
    String layer
    String aoi
    Integer minLevel
@@ -18,6 +19,7 @@ class IngestCommand  implements CaseInsensitiveBind
    HashMap input
 
    static constraints ={
+      jobName nullable: true
       layer nullable: false, blank: false
       input nullable:false
       aoi nullable: true  //validator: { val, cmd ->
@@ -26,5 +28,14 @@ class IngestCommand  implements CaseInsensitiveBind
       //}
    }
 
+   HashMap toMap()
+   {
+      [jobName:jobName,
+       layer:layer,
+       aoi:aoi,
+       minLevel:minLevel,
+       maxLevel:maxLevel,
+       input:input]
+   }
 
 }

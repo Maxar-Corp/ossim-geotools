@@ -178,7 +178,7 @@ security {
 }
 
 rabbitmq{
-   enabled=false
+   enabled=true
    product{
       queue = "omar.tilecache.product"
    }
