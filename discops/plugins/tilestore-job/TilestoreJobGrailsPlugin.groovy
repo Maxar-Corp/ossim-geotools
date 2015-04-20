@@ -55,6 +55,8 @@ Brief summary/description of the plugin.
              port            = grailsApplication.config?.rabbitmq?.connection?.port?:5672
              username        = grailsApplication.config?.rabbitmq?.connection?.username?:""
              password        = grailsApplication.config?.rabbitmq?.connection?.password?:""
+             ingest          = grailsApplication.config?.rabbitmq?.ingest?:null
+             product          = grailsApplication.config?.rabbitmq?.ingest?:null
           }
        }
     }

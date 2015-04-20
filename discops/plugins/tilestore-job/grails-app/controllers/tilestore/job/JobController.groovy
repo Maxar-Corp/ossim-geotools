@@ -6,7 +6,7 @@ import org.ossim.common.FetchDataCommand
 
 class JobController {
    def jobService
-
+   static allowedMethods = [ingest:['POST'], list:['GET']]
    def index() { }
    //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
    def list(FetchDataCommand cmd)

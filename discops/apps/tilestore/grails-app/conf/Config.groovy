@@ -190,18 +190,18 @@ security {
   sessionTimeout = 60
 }
 
-rabbitmq {
-  enabled = false
-  product {
-    queue = "omar.tilecache.product"
-  }
-  ingest {
-    queue = "omar.tilecache.ingest"
-  }
+rabbitmq{
+   enabled=true
+   product{
+      queue = "omar.tilecache.product"
+   }
+   ingest{
+      queue = "omar.tilecache.ingest"
+   }
 
-  connection {
-    host = "localhost"
-    username = "omar"
-    password = "Encrypted 2be98afc86aa7f285a91aff228dd38f99"
-  }
+   connection{
+      host = "localhost"
+      username = "omar"
+      password = "Encrypted 2be98afc86aa7f285a91aff228dd38f99"
+   }
 }
