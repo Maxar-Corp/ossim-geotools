@@ -5,7 +5,7 @@ class TilestoreJobFilters {
    def filters = {
       ingest(controller:"job", action:"ingest"){
          before = {
-            IngestCommand.fixParamNames( params )
+            new IngestCommand().fixParamNames( params )
          }
          after = { Map model ->
 
@@ -14,6 +14,22 @@ class TilestoreJobFilters {
 
          }
       }
+      removeJob(controller:"job", action:"remove"){
+         before = {
+            new RemoveJobCommand().fixParamNames( params )
+         }
+      }
+      getJob(controller:"job", action:"getJob"){
+         before = {
+            new GetJobCommand().fixParamNames( params )
+         }
+      }
+      create(controller:"job", action:"create"){
+         before = {
+            new CreateJobCommand().fixParamNames( params )
+         }
+      }
+
 /*      all(controller:'*', action:'*') {
          before = {
 
