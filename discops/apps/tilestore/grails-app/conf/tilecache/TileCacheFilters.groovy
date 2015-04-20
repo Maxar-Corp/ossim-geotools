@@ -11,7 +11,7 @@ class TileCacheFilters
 {
 
   def filters = {
-    wmts( uri: '/wmts/index' ) {
+    wmts( uri: '/wmts' ) {
       before = {
         //println "before: ${params}"
         new WmtsCommand().fixParamNames( params )
@@ -183,7 +183,7 @@ class TileCacheFilters
     }
 
 
-    wms( uri: '/wms/index' ) {
+    wms( uri: '/wms' ) {
       before = {
         //println "before: ${params}"
         new WmsCommand().fixParamNames( params )
