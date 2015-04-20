@@ -1,20 +1,27 @@
 package tilecache.wms
 
 import geoscript.geom.Bounds
+import geoscript.geom.io.WktReader
 import geoscript.render.Map as GeoScriptMap
-import grails.transaction.Transactional
+import groovy.sql.Sql
 import groovy.xml.StreamingMarkupBuilder
+import org.codehaus.groovy.grails.web.mapping.LinkGenerator
+import org.springframework.beans.factory.InitializingBean
 
-class WebMappingService
+class WebMappingService implements InitializingBean
 {
   static transactional = false
 
-  def baseUrl = "http://localhost:8080/tilestore"
-  def wmsUrl = "${baseUrl}/wms"
+  def baseUrl
+  def wmsUrl
+  def dtdUrl
 
-  def dtdUrl = "${baseUrl}/schemas/wms/1.1.1/WMS_MS_Capabilities.dtd"
+  def dataSourceUnproxied
 
-  def getMapFormats = [
+  LinkGenerator grailsLinkGenerator
+  def layerManagerService
+
+  private static final def getMapFormats = [
       'image/png',
       'image/png8',
       'image/png; mode=8bit',
@@ -26,7 +33,7 @@ class WebMappingService
       'image/tiff8'
   ]
 
-  def getFeatureInfoFormats = [
+  private static final getFeatureInfoFormats = [
       'text/plain',
       'application/vnd.ogc.gml',
       'application/vnd.ogc.gml/3.1.1',
@@ -34,42 +41,44 @@ class WebMappingService
       'application/json'
   ]
 
-  def supportedProjections = [
+  private static final supportedProjections = [
       'EPSG:3857',
       'EPSG:4326'
   ]
 
-  def layers = [[
-      queryable: '1',
-      opaque: '0',
-      name: '',
-      title: '',
-      description: '',
-      keywords: [],
-      projection: '',
-      geoMinX: '',
-      geoMinY: '',
-      geoMaxX: '',
-      geoMaxY: '',
-      minX: '',
-      minY: '',
-      maxX: '',
-      maxY: '',
-      styles: [[
-          name: '',
-          title: '',
-          description: '',
-          legend: [
-              width: '',
-              height: '',
-              format: '',
-              legendUrl: ''
-          ]
-      ]]
-  ]]
+  private static final exceptionFormats = [
+      'application/vnd.ogc.se_xml',
+      'application/vnd.ogc.se_inimage'
+  ]
 
-
-  def layerManagerService
+//  private static final layers = [[
+//      queryable: '1',
+//      opaque: '0',
+//      name: '',
+//      title: '',
+//      description: '',
+//      keywords: [],
+//      projection: '',
+//      geoMinX: '',
+//      geoMinY: '',
+//      geoMaxX: '',
+//      geoMaxY: '',
+//      minX: '',
+//      minY: '',
+//      maxX: '',
+//      maxY: '',
+//      styles: [[
+//          name: '',
+//          title: '',
+//          description: '',
+//          legend: [
+//              width: '',
+//              height: '',
+//              format: '',
+//              legendUrl: ''
+//          ]
+//      ]]
+//  ]]
 
   def getMap(GetMapCommand cmd)
   {
@@ -134,6 +143,7 @@ class WebMappingService
 
   def getCapabilities(GetCapabilitiesCommand getMapCmd)
   {
+
     def x = {
       mkp.xmlDeclaration()
       mkp.yieldUnescaped """<!DOCTYPE WMT_MS_Capabilities SYSTEM "${dtdUrl}">"""
@@ -265,9 +275,8 @@ class WebMappingService
             } /* GetStyles */
           } /* Request */
         } /* Capability */
-        Exception {
-          Format( 'application/vnd.ogc.se_xml' )
-          Format( 'application/vnd.ogc.se_inimage' )
+        "Exception" {
+          exceptionFormats.each { Format( it ) }
         } /* Exception */
         UserDefinedSymbolization( SupportSLD: '1', UserLayer: '1', UserStyle: '1', RemoteWFS: '1' )
         Layer {
@@ -275,7 +284,7 @@ class WebMappingService
           Abstract()
           supportedProjections?.each { SRS( it ) }
           LatLonBoundingBox( minx: '-180.0', miny: '-90.0', maxx: '180.0', maxy: '90.0' )
-          layers?.each { layer ->
+          getLayers()?.each { layer ->
             Layer( queryable: layer?.queryable, opaque: layer?.opaque ) {
               Name( layer?.name )
               Title( layer?.title )
@@ -308,5 +317,53 @@ class WebMappingService
     def doc = builder.bind( x )
 
     [contentType: 'application/vnd.ogc.wms_xml', buffer: doc.toString().bytes]
+  }
+
+  private def getLayers()
+  {
+    def sql = Sql.newInstance(dataSourceUnproxied)
+    def wktReader = new WktReader()
+
+    def q = """
+    select id, name, st_astext(bounds) as bounds, epsg_code,
+        min_level, max_level, tile_width, tile_height, tile_store_table
+    from tile_cache_layer_info
+    """
+
+    def layers = []
+
+    sql.eachRow(q) { row ->
+      def geom = wktReader.read(row.bounds)
+      def bounds = geom.bounds
+
+      bounds.proj = row.epsg_code
+
+      def layerInfo = [
+          queryable: '1',
+          opaque: '0',
+          name: row.name,
+          title: row.name,
+          description: '',
+          keywords: [],
+          projection: row.epsg_code,
+          geoMinX: '-180', geoMinY: '-90', geoMaxX: '180', geoMaxY: '90',
+          minX: bounds.minX, minY: bounds.minY, maxX: bounds.maxX, maxY: bounds.maxY,
+          styles: []
+      ]
+
+      layers << layerInfo
+    }
+
+    sql?.close()
+
+    layers
+  }
+
+  @Override
+  void afterPropertiesSet() throws Exception
+  {
+    baseUrl = grailsLinkGenerator.serverBaseURL
+    wmsUrl = "${baseUrl}/wms"
+    dtdUrl = "${baseUrl}/schemas/wms/1.1.1/WMS_MS_Capabilities.dtd"
   }
 }

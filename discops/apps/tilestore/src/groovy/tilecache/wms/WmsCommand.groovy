@@ -9,7 +9,7 @@ import org.ossim.common.CaseInsensitiveBind
  */
 @Validateable
 @ToString( includeNames = true )
-class WmsCommand //implements CaseInsensitiveBind
+class WmsCommand implements CaseInsensitiveBind
 {
   String service
   String version
@@ -19,28 +19,5 @@ class WmsCommand //implements CaseInsensitiveBind
     service( nullable: true )
     version( nullable: true )
     request( nullable: false )
-  }
-
-  def fixParamNames(def params)
-  {
-    def names = getMetaClass().properties.grep { it.field }.name.sort() - ['class', 'constraints', 'errors']
-
-    def newParams = params.inject( [:] ) { a, b ->
-      def propName = names.find { it.equalsIgnoreCase( b.key ) && b.value != null }
-      if ( propName )
-      {
-        //println "${propName}=${b.value}"
-        a[propName] = b.value
-      }
-      else
-      {
-        a[b.key] = b.value
-      }
-      a
-    }
-
-    params.clear()
-    params.putAll( newParams )
-    params
   }
 }
