@@ -82,7 +82,7 @@
                                 <div class="input-group" id="tileLayerInputGroup">
                                     <div class="input-group-addon"><i class="fa fa-th"></i>&nbsp;&nbsp;Active
                                     Tile Layer</div>
-                                    <select id="tileLayerSelect" class="form-control selectpicker show-tick">
+                                    <select id="tileLayerSelect" class="form-control selectpicker show-tick tile-select">
                                     </select>
                                 </div>
                             </div>
@@ -142,7 +142,7 @@
             </div>
             <div class="modal-body">
                 <div class="container">
-                    <form name="createTileLayerForm" role="form">
+                    <form id="createTileLayerForm" role="form">
                         <div class="row col-sm-6 col-md-6">
                             <div class="form-group">
                                 <label for="createLayerName">Tile Layer Name&nbsp;</label>
@@ -237,20 +237,19 @@
                 <h3 class="modal-title fa fa-pencil">&nbsp;&nbsp;&nbsp;Rename Tile Layers</h3>
             </div>
             <div class="modal-body">
-                <form class="form-inline">
+                <form id="renameTileLayerForm" class="form">
                     <div class="container">
                         <div class="row col-sm-6 col-md-6">
                             <p>Select a layer from the list below, and then type the new layer name
                             in the input box (<em>dashes and special characters are not permitted in the names</em>).
                             </p>
-                            <form class="form-inline">
+
                                 <div class="form-group">
                                     <label for="renameTileLayer">Available Layers</label>
-                                    <select id="renameTileLayer" class="form-control selectpicker">
+                                    <select id="renameTileLayer"
+                                            class="form-control selectpicker show-tick tile-select">
                                     </select>
                                 </div>
-                                <br>
-                                <br>
                                 <div class="form-group">
                                     <label for="renameLayerName">New Name&nbsp;</label>
                                     <input type="text" class="form-control" id="renameLayerName"
@@ -266,7 +265,7 @@
                                     <button id="resetRenameTile" type="button" class="btn btn-warning">Reset
                                     </button>
                                 </div>
-                            </form>
+
                         </div>
                     </div>
                 </form>
@@ -288,6 +287,9 @@
                 <div class="container">
                     <form name="deleteTileLayerForm" role="form">
                         <div class="row col-sm-6 col-md-6">
+                            <p>Select a layer from the list below, and then hit delete to remove the tile layer from
+                            the server.
+                            </p>
                             <div class="form-group">
                                 <label for="deleteTileLayer">Available Layers</label>
                                 <select id="deleteTileLayer" class="form-control selectpicker">
@@ -298,9 +300,7 @@
                                     <button id="submitDeleteLayer" class="btn btn-primary ladda-button"
                                             data-style="expand-left"><span class="ladda-label">Delete</span></button>
                                     <button id="cancelDeleteTile" type="button" class="btn btn-default"
-                                            data-dismiss="modal">Cancel</button>
-                                    <button id="resetDeleteTile" type="button" class="btn btn-warning">Reset
-                                    </button>
+                                            data-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>
