@@ -2,7 +2,6 @@ package tilecache.wms
 
 import grails.validation.Validateable
 import groovy.transform.ToString
-import org.ossim.common.CaseInsensitiveBind
 
 /**
  * Created by gpotts on 1/16/15.
