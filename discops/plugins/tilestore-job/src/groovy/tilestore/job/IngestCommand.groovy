@@ -15,9 +15,11 @@ class IngestCommand  implements CaseInsensitiveBind
    String aoi
    Integer minLevel
    Integer maxLevel
+   HashMap input
 
    static constraints ={
       layer nullable: false, blank: false
+      input nullable:false
       aoi nullable: true  //validator: { val, cmd ->
       minLevel nullable: true
       maxLevel nullable: true
