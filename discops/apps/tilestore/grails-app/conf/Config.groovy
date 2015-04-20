@@ -158,8 +158,16 @@ log4j.main = {
 accumulo {
   username = "root"
   password = "root"
+<<<<<<< Updated upstream
   zooServers = "sandbox.accumulo.radiantblue.local"
   instance = "accumulo"
+=======
+//  zooServers="accumulo-site.radiantblue.local"
+  zooServers = "sandbox.accumulo.radiantblue.local"
+  zooServers = "sandbox.accumulo.radiantblue.local"
+  instance = "accumulo"
+  // tileAccessClass = "joms.geotools.tileapi.AccumuloTileAccess"
+>>>>>>> Stashed changes
 }
 
 tilecache {
@@ -178,14 +186,17 @@ tilecache {
 }
 
 security {
-//  level = 'UNCLASS'
+  level = "UNCLASS"
 //level = 'SECRET'
 //level = 'TOPSECRET'
   UNCLASS = [description: "Unclassified", color: "green"]
   SECRET = [description: "Secret // NOFORN", color: "red"]
   TOPSECRET = [description: "Top Secret", color: "yellow"]
   sessionTimeout = 60
+<<<<<<< Updated upstream
   level = "UNCLASS"
+=======
+>>>>>>> Stashed changes
 }
 
 rabbitmq {
