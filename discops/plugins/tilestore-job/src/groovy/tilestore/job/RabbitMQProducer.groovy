@@ -30,8 +30,6 @@ class RabbitMQProducer
       cf.host=host
       cf.port=port?:5672
       template = new RabbitTemplate(cf);
-
-      println cf
    }
 
    void sendIngestMessage(String message)
