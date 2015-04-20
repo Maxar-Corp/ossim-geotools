@@ -157,9 +157,6 @@ ZoomToClient = (function () {
 // [0-9]{1,2}[:|°][0-9]{1,2}[:|'](?:\b[0-9]+(?:\.[0-9]*)?|\.[0-9]+\b)"?(|\s)[N|n|S|s|E|e|W|w]
 
 
-
-
-
     return {
 
         initialize: function () {
