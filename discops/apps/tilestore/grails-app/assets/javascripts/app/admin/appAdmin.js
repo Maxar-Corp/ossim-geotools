@@ -184,6 +184,7 @@ AppAdmin = (function () {
                 console.log(newTileLayerName);
                 $('#tileLayerSelect').append('<option value="' + newTileLayerName + '" selected="selected">' + newTileLayerName + '</option>');
                 $('#renameTileLayer').append('<option value="' + newTileLayerName + '" selected="selected">' + newTileLayerName + '</option>');
+                $('#deleteTileLayer').append('<option value="' + newTileLayerName + '" selected="selected">' + newTileLayerName + '</option>');
                 $select.selectpicker('refresh');
 
                 l.stop() // stop spinner from rotating
@@ -287,10 +288,11 @@ AppAdmin = (function () {
                 //console.log('We have 200!');
                 console.log(data);
 
-                // Done 04-20-15 -
+                // Done 04-20-15
                 $select.find('[value=' + oldName + ']').remove();
                 $('#renameTileLayer').append('<option value="' + newName + '" selected="selected">' + newName + '</option>');
                 $('#tileLayerSelect').append('<option value="' + newName + '" selected="selected">' + newName + '</option>');
+                $('#deleteTileLayer').append('<option value="' + newName + '" selected="selected">' + newName + '</option>');
                 $select.selectpicker('refresh');
 
                 toastr.success('Layer ' + oldName + ' was renamed to ' + newName, 'Success');
@@ -323,6 +325,7 @@ AppAdmin = (function () {
 
     $('#navDeleteLayer').click(function () {
         getTileLayers(tileCacheLayers.tileCacheLayers, '#deleteTileLayer');
+
         $('#deleteTileLayerModal').modal('show');
         $('#deleteTileLayerModal').on('shown.bs.modal', function () {
             $('#deleteLayerName').focus();
