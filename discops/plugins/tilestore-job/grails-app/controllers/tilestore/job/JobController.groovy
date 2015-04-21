@@ -43,8 +43,17 @@ class JobController {
       }
       */
       // println "-------------------------${cmd.filter}"
-      def data = jobService.listJobs( cmd )
-      render contentType: 'application/json', text: data as JSON
+      def result = jobService.listJobs( cmd )
+
+
+      if(result.status != HttpStatus.OK)
+      {
+         render contentType: 'application/json', text: [message:result.message] as JSON
+      }
+      else
+      {
+         render contentType: 'application/json', text: result.data as JSON
+      }
    }
    def create(CreateJobCommand cmd)
    {

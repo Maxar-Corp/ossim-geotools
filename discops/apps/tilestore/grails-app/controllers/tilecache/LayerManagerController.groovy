@@ -16,7 +16,6 @@ class LayerManagerController
    def getActualBounds(){
       def bounds = layerManagerService.getActualBounds(params)
 
-      println bounds
       render contentType: "application/json", (bounds as JSON).toString()
    }
 
@@ -193,7 +192,7 @@ class LayerManagerController
    def renameLayer(RenameLayerCommand cmd)//String oldName, String newName)
    {
 
-        println cmd
+       // println cmd
         // CaseInsensitiveMap map = new CaseInsensitiveMap(params)
       if(request.JSON)
       {
@@ -217,7 +216,7 @@ class LayerManagerController
       }
       else
       {
-         render contentType: "text/plain", result.message
+         render contentType: "application/json", ([message:result.message] as JSON).toString()
       }
    }
 
@@ -232,7 +231,7 @@ class LayerManagerController
       }
       else
       {
-         render contentType: "text/plain", result.message
+         render contentType: "application/json", ([message:result.message] as JSON).toString()
       }
    }
    def getLayers()
@@ -245,7 +244,7 @@ class LayerManagerController
       }
       else
       {
-         render contentType: "text/plain", result.message
+         render contentType: "application/json", ([message:result.message] as JSON).toString()
       }
    }
 }
