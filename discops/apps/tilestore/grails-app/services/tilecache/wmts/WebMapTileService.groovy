@@ -111,19 +111,19 @@ class WebMapTileService implements InitializingBean
               } /* HTTP */
             } /* DCP */
           } /* Operation */
-          ows.Operation( name: "GetFeatureInfo" ) {
-            ows.DCP {
-              ows.HTTP {
-                ows.Get( 'xlink:href': wmtsUrl ) {
-                  ows.Constraint( name: "GetEncoding" ) {
-                    ows.AllowedValues {
-                      ows.Value( 'KVP' )
-                    } /* AllowedValues */
-                  } /* Constraint */
-                } /* Get */
-              } /* HTTP */
-            } /* DCP */
-          } /* Operation */
+//          ows.Operation( name: "GetFeatureInfo" ) {
+//            ows.DCP {
+//              ows.HTTP {
+//                ows.Get( 'xlink:href': wmtsUrl ) {
+//                  ows.Constraint( name: "GetEncoding" ) {
+//                    ows.AllowedValues {
+//                      ows.Value( 'KVP' )
+//                    } /* AllowedValues */
+//                  } /* Constraint */
+//                } /* Get */
+//              } /* HTTP */
+//            } /* DCP */
+//          } /* Operation */
         } /* OperationsMetadata */
         Contents {
           layers.each { layer ->
