@@ -16,36 +16,48 @@ class JobService
 
    def listJobs(FetchDataCommand cmd)
    {
+      def result = [status : HttpStatus.OK,
+                    message: "",
+                    data   : []
+      ]
       def total = 0
       def rows = [:]
-      Job.withTransaction {
-         total = Job.createCriteria().count {
-            if (cmd.filter)
-            {
-               sqlRestriction cmd.filter
+      try{
+         Job.withTransaction {
+            total = Job.createCriteria().count {
+               if (cmd.filter)
+               {
+                  sqlRestriction cmd.filter
+               }
             }
-         }
 
-         def tempRows = Job.withCriteria {
-            if (cmd.filter)
-            {
-               sqlRestriction cmd.filter
+            def tempRows = Job.withCriteria {
+               if (cmd.filter)
+               {
+                  sqlRestriction cmd.filter
+               }
+               //      projections {
+               //        columnNames.each {
+               //          property(it)
+               //        }
+               //      }
+               maxResults(cmd.rows)
+               order(cmd.sortBy, cmd.order)
+               firstResult((cmd.page - 1) * cmd.rows)
             }
-            //      projections {
-            //        columnNames.each {
-            //          property(it)
-            //        }
-            //      }
-            maxResults(cmd.rows)
-            order(cmd.sortBy, cmd.order)
-            firstResult((cmd.page - 1) * cmd.rows)
-         }
-         rows = tempRows.collect { row ->
-            columnNames.inject([:]) { a, b -> a[b] = row[b].toString(); a }
+            rows = tempRows.collect { row ->
+               columnNames.inject([:]) { a, b -> a[b] = row[b].toString(); a }
+            }
          }
       }
+      catch(e)
+      {
+         result.status = HttpStatus.BAD_REQUEST
+         result.message = "Exception: ${e.toString}"
+      }
+      result.data = [total: total, rows: rows]
 
-      return [total: total, rows: rows]
+      result
    }
    def remove(RemoveJobCommand cmd)
    {
@@ -77,7 +89,7 @@ class JobService
       catch(e)
       {
          result.status = HttpStatus.BAD_REQUEST;
-         result.message = e.toString()
+         result.message = "Exception: ${e.toString}"
       }
       if(result.status == HttpStatus.OK)
       {
@@ -102,7 +114,7 @@ class JobService
          {
             //println "ERROR!!!!!!!!!!!!!!!! ${e}"
             result.status = HttpStatus.BAD_REQUEST;
-            result.message = e.toString()
+            result.message = "Exception: ${e.toString}"
          }
       }
 
@@ -172,40 +184,50 @@ class JobService
       {
          cmd.submitDate = new Date()
       }
-      Job.withTransaction {
-         def job = new Job(cmd.toMap())
+      try{
+         Job.withTransaction {
+            def job = new Job(cmd.toMap())
 
-         if (!job.validate())
-         {
-            def fieldErrors = []
-            job.errors.each { error ->
-               error.getFieldErrors().each { fieldError ->
-                  //println field.field
-                  fieldErrors << fieldError.field
-               }
-            }
-
-            result.status = HttpStatus.BAD_REQUEST
-            result.message = "Bad field value for fields: ${fieldErrors}"
-         }
-         else
-         {
-            if (job.save())
+            if (!job.validate())
             {
-               if (grailsApplication.config.rabbitmq.enabled)
-               {
-                  rabbitProducer.sendIngestMessage(job.message)
+               def fieldErrors = []
+               job.errors.each { error ->
+                  error.getFieldErrors().each { fieldError ->
+                     //println field.field
+                     fieldErrors << fieldError.field
+                  }
                }
+
+               result.status = HttpStatus.BAD_REQUEST
+               result.message = "Bad field value for fields: ${fieldErrors}"
             }
             else
             {
-               result.status = HttpStatus.BAD_REQUEST
-               result.message = "Unable to save job"
+               if (job.save())
+               {
+                  if (grailsApplication.config.rabbitmq.enabled)
+                  {
+                     rabbitProducer.sendIngestMessage(job.message)
+                  }
+               }
+               else
+               {
+                  result.status = HttpStatus.BAD_REQUEST
+                  result.message = "Unable to save job"
+               }
             }
-         }
 
-         result
+         }
       }
+      catch(e)
+      {
+         //println "ERROR!!!!!!!!!!!!!!!! ${e}"
+         result.status = HttpStatus.BAD_REQUEST;
+         result.message = "Exception: ${e.toString}"
+      }
+
+      result
+
    }
 
    def ingest(IngestCommand cmd)
