@@ -2,12 +2,6 @@ class UrlMappings
 {
 
   static mappings = {
-    // remove the format overide for the getTile action
-    "/wmts/getTile/$id?"( action: "getTile", controller: "layerManager" ) {
-    }
-    "/accumulo/getTiles/$id?"( action: "getTiles", controller: "layerManager" ) {
-    }
-
     "/wms/$action" {
       controller = 'wms'
       constraints {
