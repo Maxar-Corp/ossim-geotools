@@ -1,4 +1,4 @@
-package tilecache
+package tilestore.database
 
 import com.vividsolutions.jts.geom.Envelope
 import com.vividsolutions.jts.geom.GeometryFactory
