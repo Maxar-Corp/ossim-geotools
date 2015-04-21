@@ -183,7 +183,7 @@ class TileCacheFilters
     }
 
 
-    wms( uri: '/wms' ) {
+    wms( controller: 'wms', action: 'index' ) {
       before = {
         //println "before: ${params}"
         new WmsCommand().fixParamNames( params )
