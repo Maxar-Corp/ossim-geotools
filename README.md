@@ -80,6 +80,10 @@ within this repo for convenience.
 1. `$ cd groovy-swt`
 2. `$ gradle clean install`
 
+### ossim-tools
+
+1. In the `ossim-tools` directory, use gradle: `$ gradle clean build -DhadoopDist=cdh4 common-libs:install kettle-libs:install kettle-plugins:install app:install app:shadowJar -x test`
+
 ### Tilestore 
 
 *You'll need at least [Grails 2.5.0](https://grails.org/download.html) installed.*
@@ -88,15 +92,3 @@ within this repo for convenience.
 2. `$ grails clean`
 3. `$ grails compile`
 
-## Running
-
-### Maven
-
-If you haven't already, install [Maven >= 3](https://maven.apache.org/).
-
-2. `$ mvn clean install`
-
-
-For a quick build without copying to kettle location:
-
-- `$ gradle clean build -DhadoopDist=cdh4 common-libs:install kettle-libs:install kettle-plugins:install app:install app:shadowJar -x test`
