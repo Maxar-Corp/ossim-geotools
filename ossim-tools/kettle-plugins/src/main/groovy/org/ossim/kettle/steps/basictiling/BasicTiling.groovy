@@ -171,8 +171,6 @@ class BasicTiling extends BaseStep implements StepInterface
                def summaryTileHeightIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_tile_height"])
                def summaryDeltaxLevelZeroIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_deltax_level_zero"])
                def summaryDeltayLevelZeroIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_deltay_level_zero"])
-               ValueMetaInterface valueMetaInterface = selectedRowMeta.getValueMeta(tileSummaryLevelInfoIdx)
-               println  valueMetaInterface.properties
                if(numberOfOutputFields)
                {
                   def resultArray = new Object[numberOfOutputFields]
