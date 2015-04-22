@@ -1,6 +1,10 @@
 AppAdmin = (function () {
+    //TODO: Cache jquery selectors.  Possibly use this solution:
+    //      http://ttmm.io/tech/selector-caching-jquery/
     var tileCacheLayers;
     var $select = $('.selectpicker').selectpicker();
+    var $minTileLevel = $('#minTileLevel');
+    var $maxTileLevel = $('#maxTileLevel');
 
     // Begin map stuff ##############################################################
     // 4326
@@ -111,7 +115,7 @@ AppAdmin = (function () {
 
     // Done: 04-19-15 - Create a function that gets the tile cache layers from the initParams
     //       passed in from the AppController
-    function getTileLayers(params, elem){
+    function getTileLayers(params, elem) {
         return $.each(params, function (index, tileCacheLayer) {
             $(elem).append($('<option>', {
                 value: tileCacheLayer.name,
@@ -138,6 +142,28 @@ AppAdmin = (function () {
         });
     });
 
+    $('#navCreateLayer').one('click', function () {
+
+        //TODO: We need to read in the layer active layers min and max tile levels here, instead
+        //      of 0 to 22.  The tile layer might not have all of these layers available.
+
+
+
+        // Done - 04-21-15 - Replace HTML option/values on min/max levels with dynamically generated
+        //        from js
+        for (var i = 0; i < 23; i++) {
+            //console.log(i);
+            $('#minTileLevel').append('<option value="' + i + '">' + i + '</option>');
+            $('#minTileLevel').selectpicker('refresh');
+        }
+        for (var i = 0; i < 23; i++) {
+            //console.log(i);
+            $('#maxTileLevel').append('<option value="' + i + '">' + i + '</option>');
+            $('#maxTileLevel').selectpicker('val', '20');  // intial value for max level
+            $('#maxTileLevel').selectpicker('refresh');
+        }
+    });
+
     $('#submitCreateLayer').on('click', function () {
 
         // TODO: Dynamically populate the min and max level selects with their appropriate
@@ -162,7 +188,7 @@ AppAdmin = (function () {
         // passing a success callback: http://stackoverflow.com/a/14754681/4437795
         // This decouples the callback handling from the AJAX handling, allows you
         // to add multiple callbacks, failure callbacks, etc
-        function ajaxCreateLayer(){
+        function ajaxCreateLayer() {
             return $.ajax({
                 url: "/tilecache/layerManager/createLayer",
                 type: 'POST',
@@ -170,7 +196,6 @@ AppAdmin = (function () {
                 data: objLayer
             });
         }
-        ajaxCreateLayer().done(successHandlerCreate).fail(errorHandlerCreate);
 
         function successHandlerCreate(data, textStatus, jqXHR) {
             //console.log(JSON.stringify(data));
@@ -209,42 +234,52 @@ AppAdmin = (function () {
         };
 
         // TODO: Test errors for this
-        function errorHandlerCreate(data){
+        function errorHandlerCreate(data) {
 
             l.stop() // stop spinner from rotating
             //Done: 04-19-15 - functionality for handling error reporting from server
             toastr.error(data.responseJSON.message + ' Please choose' +
             ' another name and submit again.', 'Error');
         };
+
+        ajaxCreateLayer().done(successHandlerCreate).fail(errorHandlerCreate);
     });
 
-    // Done 04-20-15 - Refactored so that this can be used for all forms
-    function resetForm(frm){
-        //console.log($(this));
+    $('#minTileLevel').on('change', function () {
 
-        if (frm === 'create'){
-            console.log('create');
-            $('#minTileLevel').selectpicker('val', '0');
-            $('#maxTileLevel').selectpicker('val', '0');
-            $('#epsgCode').selectpicker('val', 'EPSG:3857');
-            $select.selectpicker('render');
-            $("#createTileLayerForm").trigger('reset');
-            $('#submitCreateLayer').removeClass('btn-success disabled').addClass('btn-primary');
+        // Done - 04-22-15 - Refactored $maxTileLevel <select> on create layer modal so that
+        //        the user it is updated to reflect only the levels that are available after
+        //        a minTileLevel has been select.  Restricts user from choosing a level lower
+        //        than is available.
+        console.log($maxTileLevel);
+
+        for (var i = 0; i < 23; i++) {
+            //console.log(i);
+            $maxTileLevel.find('[value=' + i + ']').remove();
+            $maxTileLevel.selectpicker('refresh');
         }
-        else if (frm === 'rename'){
-            $("#renameTileLayerForm").trigger('reset');
-            $('#submitRenameLayer').removeClass('btn-success disabled').addClass('btn-primary');
+        var counter = $('#minTileLevel').val();
+
+        for (counter; counter < 23; counter++) {
+            //console.log(i);
+            $maxTileLevel.append('<option value="' + counter + '">' + counter + '</option>');
+            $maxTileLevel.selectpicker('val', '20');  // intial value for max level
+            $maxTileLevel.selectpicker('refresh');
         }
 
-    }
 
-    $('#resetCreateTile').on('click', function (){
+    });
+
+    $('#resetCreateTile').on('click', function () {
         resetForm('create');
     });
 
-    $('#navRenameLayer').click(function () {
-
+    // Done - 04-21-15 - Bind the list of tile layers to the select element one time only
+    $('#navRenameLayer').one('click', function () {
         getTileLayers(tileCacheLayers.tileCacheLayers, '#renameTileLayer');
+    });
+
+    $('#navRenameLayer').click(function () {
 
         $('#renameTileLayerModal').modal('show');
         $('#renameTileLayerModal').on('shown.bs.modal', function () {
@@ -265,12 +300,14 @@ AppAdmin = (function () {
 
         // Done: 04-19-15
         // Grab these from a dropdown list
-        oldName = $('#renameTileLayer option:selected').val();;
+        oldName = $('#renameTileLayer option:selected').val();
+        ;
 
         // Grab this from a input box
-        newName = $('#renameLayerName').val();;
+        newName = $('#renameLayerName').val();
+        ;
 
-        function ajaxRenameLayer(){
+        function ajaxRenameLayer() {
             return $.ajax({
                 url: "/tilecache/layerManager/renameLayer?",
                 type: 'POST',
@@ -307,11 +344,12 @@ AppAdmin = (function () {
         }
 
         // TODO: Test errors for this
-        function errorHandlerRename(data){
-
+        function errorHandlerRename(data) {
+            console.log(data);
             l.stop() // stop spinner from rotating
+            $('#submitRenameLayer').removeClass('btn-success disabled').addClass('btn-primary');
             //Done: 04-19-15 - functionality for handling error reporting from server
-            toastr.error(data + ' Rename failed' +
+            toastr.error(data.responseJSON.message + ' Rename failed' +
             ' choose another name and submit again.', 'Error');
         };
 
@@ -319,12 +357,16 @@ AppAdmin = (function () {
 
     });
 
-    $('#resetRenameTile').on('click', function (){
+    $('#resetRenameTile').on('click', function () {
         resetForm('rename');
     });
 
-    $('#navDeleteLayer').click(function () {
+    // Done - 04-21-15 - Bind the list of tile layers to the select element one time only.
+    $('#navDeleteLayer').one('click', function () {
         getTileLayers(tileCacheLayers.tileCacheLayers, '#deleteTileLayer');
+    });
+
+    $('#navDeleteLayer').click(function () {
 
         $('#deleteTileLayerModal').modal('show');
         $('#deleteTileLayerModal').on('shown.bs.modal', function () {
@@ -333,12 +375,11 @@ AppAdmin = (function () {
 
     });
 
-    $('#submitDeleteLayer').on('click', function(layerToDelete){
+    $('#submitDeleteLayer').on('click', function () {
 
         // TODO: 04-19-15 - Set the delete layer to the selected value
         //       in deleteTileLayer dropdown.
         objLayer.name = $('#deleteTileLayer option:selected').val();
-        //console.log(layerToDelete);
 
         // Done: 04-19-15 - Prevent submits/multiple ajax requests
         $('#submitDeleteLayer').removeClass('btn-primary').addClass('disabled btn-success');
@@ -356,7 +397,7 @@ AppAdmin = (function () {
                 data: {'name': objLayer.name}
             });
         }
-        ajaxDeleteLayer().done(successHandlerDelete).fail(errorHandlerDelete);
+
         // Done: 04-19-15
         function successHandlerDelete(data, textStatus, jqXHR) {
             console.log(jqXHR.status);
@@ -372,18 +413,43 @@ AppAdmin = (function () {
                 $('#submitDeleteLayer').removeClass('btn-success disabled').addClass('btn-primary');
 
             }
-            else{
+            else {
                 toastr.error(data.message, 'Error');
             }
         }
+
         // Done: 04-19-15
-        function errorHandlerDelete(data){
+        function errorHandlerDelete(data) {
             l.stop() // stop spinner from rotating
             //Done: 04-17-15 - functionality for handling error reporting from server
-            toastr.error(data.message, 'Error');
+            console.log(data);
+            // Fixed - 04-21-15 - Added data.responseJSON.message to display error to user
+            toastr.error(data.responseJSON.message, 'Error');
         }
 
+        ajaxDeleteLayer().done(successHandlerDelete).fail(errorHandlerDelete);
+
     });
+
+    // Done 04-20-15 - Refactored so that this can be used for all forms
+    function resetForm(frm) {
+        //console.log($(this));
+
+        if (frm === 'create') {
+            console.log('create');
+            $('#minTileLevel').selectpicker('val', '0');
+            $('#maxTileLevel').selectpicker('val', '20');
+            $('#epsgCode').selectpicker('val', 'EPSG:3857');
+            $select.selectpicker('render');
+            $("#createTileLayerForm").trigger('reset');
+            $('#submitCreateLayer').removeClass('btn-success disabled').addClass('btn-primary');
+        }
+        else if (frm === 'rename') {
+            $("#renameTileLayerForm").trigger('reset');
+            $('#submitRenameLayer').removeClass('btn-success disabled').addClass('btn-primary');
+        }
+
+    }
 
     // Parameters for the toastr banner
     toastr.options = {
