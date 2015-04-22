@@ -1,6 +1,8 @@
 package org.ossim.kettle.steps.basictiling
 
+import geoscript.geom.Bounds
 import geoscript.layer.Pyramid
+import joms.geotools.tileapi.BoundsUtil
 
 import java.util.List;
 import java.util.Map;
@@ -57,8 +59,8 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 	Integer targetTileWidth	= 256
 	Integer targetTileHeight= 256
 
-	Integer clampMinLevel   = null
-	Integer clampMaxLevel   = null
+	String clampMinLevel   = ""
+	String clampMaxLevel   = ""
 	String inputFilenameField = ""
 	String inputEntryField    = ""
 	Boolean mosaicInput       = false
@@ -172,7 +174,15 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 	{
 //		println "SETTING PROJECTION TYPE ${type}"
 		this.projectionType = type
+		Bounds b = BoundsUtil.getDefaultBounds(new Projection(type.toUpperCase()))
 
+		projectionMinx = b.minX
+		projectionMiny = b.minY
+		projectionMaxx = b.maxX
+		projectionMaxy = b.maxY
+
+
+		/*
 		switch(type.toUpperCase())
 		{
 			case "EPSG:3857":
@@ -190,6 +200,7 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 				projectionMaxy = bounds.maxY
 			break
 		}
+		*/
 	}
 	def getOriginAsInteger(){
     def result =  Pyramid.Origin.TOP_LEFT
@@ -331,8 +342,8 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 		{
 			mosaicInput = mosaicInputValue.toBoolean()
 		}
-		def clampMinLevelString = XMLHandler.getTagValue(values, "clampMinLevel");
-		def clampMaxLevelString = XMLHandler.getTagValue(values, "clampMaxLevel");
+		def clampMinLevel = XMLHandler.getTagValue(values, "clampMinLevel");
+		def clampMaxLevel = XMLHandler.getTagValue(values, "clampMaxLevel");
 
 		projectionType             = XMLHandler.getTagValue(values, "projectionType");
 		def tileIdNameMaskString   = XMLHandler.getTagValue(values, "tileIdNameMask");
@@ -349,8 +360,6 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
       tileGenerationOrder        = XMLHandler.getTagValue( values, "tileGenerationOrder");
 
 
-      if(clampMinLevelString) clampMinLevel = clampMinLevelString.toInteger()
-      if(clampMaxLevelString) clampMaxLevel = clampMaxLevelString.toInteger()
 
       targetTileWidth = targetTileWidthString?targetTileWidthString.toInteger():512
       targetTileHeight = targetTileHeightString?targetTileHeightString.toInteger():256
@@ -403,8 +412,8 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 	}
 	void setDefault()
 	{
-		clampMinLevel = null
-		clampMaxLevel = null
+		clampMinLevel = ""
+		clampMaxLevel = ""
 		targetTileWidth  = 256
 		targetTileHeight = 256
 		mosaicInput      = false
@@ -432,8 +441,8 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 		{
 
 		}
-		def clampMinLevelString       = rep.getStepAttributeString(id_step, "clampMinLevel");
-		def clampMaxLevelString       = rep.getStepAttributeString(id_step, "clampMaxLevel");
+		clampMinLevel       = rep.getStepAttributeString(id_step, "clampMinLevel");
+		clampMaxLevel       = rep.getStepAttributeString(id_step, "clampMaxLevel");
 		def projectionTypeString      = rep.getStepAttributeString(id_step, "projectionType");
 		def projectionMinxString      = rep.getStepAttributeString(id_step, "projectionMinx");
 		def projectionMinyString      = rep.getStepAttributeString(id_step, "projectionMiny");
@@ -448,8 +457,6 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 		def inputEntryFieldString     = rep.getStepAttributeString(id_step, "inputEntryField");
 		def selectedFieldNamesString  = rep.getStepAttributeString(id_step, "selectedFieldNames");
 		
-		if(clampMinLevelString) clampMinLevel = clampMinLevelString.toInteger();
-		if(clampMaxLevelString) clampMaxLevel = clampMaxLevelString.toInteger();
 		if(projectionTypeString)
 		{
 			projectionType = projectionTypeString
