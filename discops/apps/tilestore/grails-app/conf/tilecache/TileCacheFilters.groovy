@@ -1,19 +1,23 @@
 package tilecache
 
 import tilecache.wfs.WfsCommand
-import tilecache.wms.GetCapabilitiesCommand
+import tilecache.wms.GetCapabilitiesCommand as WmsGetCaps
 import tilecache.wms.GetMapCommand
 import tilecache.wms.WmsCommand
 import tilecache.wmts.WmtsCommand
+import tilecache.wmts.GetCapabilitiesCommand as WmtsGetCaps
+import tilestore.database.CreateLayerCommand
+import tilestore.database.GetLayersCommand
+import tilestore.database.RenameLayerCommand
 
 class TileCacheFilters
 {
 
   def filters = {
-    tileParamGrid( uri: '/wmts/tileParamGrid' ) {
+    wmts( uri: '/wmts' ) {
       before = {
         //println "before: ${params}"
-        WmtsCommand.fixParamNames( params )
+        new WmtsCommand().fixParamNames( params )
         //println "after: ${params}"
       }
       after = { Map model ->
@@ -24,10 +28,10 @@ class TileCacheFilters
       }
     }
 
-    getTile( uri: '/wmts/index' ) {
+    wmtsGetTile( uri: '/wmts/geTile' ) {
       before = {
         //println "before: ${params}"
-        WmtsCommand.fixParamNames( params )
+        new GetTileCommand().fixParamNames( params )
         //println "after: ${params}"
       }
       after = { Map model ->
@@ -38,122 +42,37 @@ class TileCacheFilters
       }
     }
 
-     getActualBounds(uri:'/layerManager/getActualBounds'){
-        before={
-           response.setHeader( "Access-Control-Allow-Origin", "*" );
-           response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
-           response.setHeader( "Access-Control-Max-Age", "3600" );
-           response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
-        }
-        after={
+    wtmsGetCapabilities( uri: '/wmts/getCapabilities' ) {
+      before = {
+        //println "before: ${params}"
+        new WmtsGetCaps().fixParamNames( params )
+        //println "after: ${params}"
+      }
+      after = { Map model ->
 
-        }
-        afterView={
+      }
+      afterView = { Exception e ->
 
-        }
-     }
+      }
+    }
 
-     createOrUpdateLayer( uri: '/layerManager/createOrUpdateLayer' ) {
-        before = {
-           response.setHeader( "Access-Control-Allow-Origin", "*" );
-           response.setHeader( "Access-Control-Allow-Origin", "*" );
-           response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
-           response.setHeader( "Access-Control-Max-Age", "3600" );
-           response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
-           //println "before: ${params}"
-           CreateLayerCommand.fixParamNames( params )
-           //println "after: ${params}"
-        }
-        after = { Map model ->
+    wmtsTileGrid( uri: '/wmts/tileGrid' ) {
+      before = {
+        //println "before: ${params}"
+        new WmtsCommand().fixParamNames( params )
+        //println "after: ${params}"
+      }
+      after = { Map model ->
 
-        }
-        afterView = { Exception e ->
+      }
+      afterView = { Exception e ->
 
-        }
-     }
-     createLayer(controller:"layerManager", action:"createLayer" ) {
-        before = {
-           response.setHeader( "Access-Control-Allow-Origin", "*" );
-           response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
-           response.setHeader( "Access-Control-Max-Age", "3600" );
-           response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
-           //println "before: ${params}"
-           CreateLayerCommand.fixParamNames( params )
-           //println "after: ${params}"
-        }
-        after = { Map model ->
-
-        }
-        afterView = { Exception e ->
-
-        }
-     }
-     deleteLayer( uri: '/layerManager/deleteLayer' ) {
-        before = {
-           response.setHeader( "Access-Control-Allow-Origin", "*" );
-           response.setHeader( "Access-Control-Allow-Origin", "*" );
-           response.setHeader( "Access-Control-Allow-Methods", "GET" );
-           response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
-        }
-        after = { Map model ->
-
-        }
-        afterView = { Exception e ->
-
-        }
-     }
-
-     getLayers( uri: '/layerManager/getLayers' ) {
-        before = {
-           response.setHeader( "Access-Control-Allow-Origin", "*" );
-           response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
-           response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
-           //println "before: ${params}"
-           GetLayersCommand.fixParamNames( params )
-           //println "after: ${params}"
-        }
-        after = { Map model ->
-
-        }
-        afterView = { Exception e ->
-
-        }
-     }
-     getLayer( uri: '/layerManager/getLayer' ) {
-        before = {
-           response.setHeader( "Access-Control-Allow-Origin", "*" );
-           response.setHeader( "Access-Control-Allow-Origin", "*" );
-           response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
-           response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
-        }
-        after = { Map model ->
-
-        }
-        afterView = { Exception e ->
-
-        }
-     }
-     renameLayer( uri: '/layerManager/renameLayer' ) {
-        before = {
-           response.setHeader( "Access-Control-Allow-Origin", "*" );
-           response.setHeader( "Access-Control-Allow-Origin", "*" );
-           response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
-           response.setHeader( "Access-Control-Max-Age", "3600" );
-           response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
-           //println "before: ${params}"
-           RenameLayerCommand.fixParamNames( params )
-           //println "after: ${params}"
-        }
-        after = { Map model ->
-
-        }
-        afterView = { Exception e ->
-
-        }
-     }
+      }
+    }
 
 
-    wms( uri: '/wms/index' ) {
+
+    wms( controller: 'wms', action: 'index' ) {
       before = {
         //println "before: ${params}"
         new WmsCommand().fixParamNames( params )
@@ -167,7 +86,7 @@ class TileCacheFilters
       }
     }
 
-    wms( uri: '/wms/getMap' ) {
+    wmsGetMap( uri: '/wms/getMap' ) {
       before = {
         //println "before: ${params}"
         new GetMapCommand().fixParamNames( params )
@@ -181,10 +100,10 @@ class TileCacheFilters
       }
     }
 
-    wms( uri: '/wms/getCapabilities' ) {
+    wmsGetCapabilities( uri: '/wms/getCapabilities' ) {
       before = {
         //println "before: ${params}"
-        new GetCapabilitiesCommand().fixParamNames( params )
+        new WmsGetCaps().fixParamNames( params )
         //println "after: ${params}"
       }
       after = { Map model ->
@@ -198,14 +117,14 @@ class TileCacheFilters
 
     getFeature( uri: '/wfs/index' ) {
       before = {
-         response.setHeader( "Access-Control-Allow-Origin", "*" );
-         //response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
-         response.setHeader( "Access-Control-Allow-Methods", "GET" );
-         response.setHeader( "Access-Control-Max-Age", "3600" );
-         response.setHeader( "Access-Control-Allow-Headers", "x-requested-with" );
+        response.setHeader( "Access-Control-Allow-Origin", "*" );
+        //response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
+        response.setHeader( "Access-Control-Allow-Methods", "GET" );
+        response.setHeader( "Access-Control-Max-Age", "3600" );
+        response.setHeader( "Access-Control-Allow-Headers", "x-requested-with" );
 
-         //println "before: ${params}"
-        WfsCommand.fixParamNames( params )
+        //println "before: ${params}"
+        new WfsCommand().fixParamNames( params )
         //println "after: ${params}"
       }
       after = { Map model ->
@@ -215,10 +134,10 @@ class TileCacheFilters
 
       }
     }
-    productExport(uri:'/product/export'){
+    productExport( uri: '/product/export' ) {
       before = {
         //println "before: ${params}"
-        ProductExportCommand.fixParamNames( params )
+        new ProductExportCommand().fixParamNames( params )
         //println "after: ${params}"
       }
       after = { Map model ->

@@ -13,8 +13,6 @@ class WmsController
 
       if ( cmd.validate() )
       {
-        def results
-
         switch ( cmd.request.toUpperCase() )
         {
         case 'GETMAP':
@@ -44,13 +42,13 @@ class WmsController
   def getCapabilities(GetCapabilitiesCommand cmd)
   {
     def results = webMappingService.getCapabilities( cmd )
-    render contentType: results.contentType, file: results.buffer
+    render contentType: results.contentType, text: results.buffer
   }
 
   def getMap(GetMapCommand cmd)
   {
-    //println params
-    //println cmd
+//    println params
+//    println cmd
     def results = webMappingService.getMap( cmd )
     render contentType: results.contentType, file: results.buffer
   }

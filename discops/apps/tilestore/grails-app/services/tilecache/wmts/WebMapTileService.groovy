@@ -1,6 +1,12 @@
 package tilecache.wmts
 
-import grails.transaction.Transactional
+import geoscript.geom.Bounds
+import geoscript.layer.Grid
+import geoscript.layer.Pyramid
+import geoscript.proj.Projection
+import geoscript.workspace.PostGIS
+import groovy.xml.StreamingMarkupBuilder
+import org.springframework.beans.factory.InitializingBean
 
 import javax.imageio.ImageIO
 import javax.media.jai.JAI
@@ -9,12 +15,204 @@ import java.awt.Font
 import java.awt.font.TextLayout
 import java.awt.image.BufferedImage
 
-@Transactional
-class WebMapTileService
+class WebMapTileService implements InitializingBean
 {
-  def layerManagerService
+  static transactional = false
 
-  def getTile(WmtsCommand cmd)
+  def layerManagerService
+  def grailsLinkGenerator
+
+  def minLevel = 0
+  def maxLevel = 20
+
+  def tileMatrixSets = []
+
+  def baseUrl
+  def wmtsUrl
+
+  private static final def infoFormats = [
+      'text/plain',
+      'application/vnd.ogc.gml',
+      'application/vnd.ogc.gml/3.1.1',
+      'text/html',
+      'application/json'
+  ]
+
+  private static final def formats = [
+      'image/png',
+      'image/jpeg'
+  ]
+
+  def getCapabilities(GetCapabilitiesCommand cmd)
+  {
+    def postgis = new PostGIS( [user: 'postgres'], 'raster-test' )
+
+    def layers = postgis['tile_cache_layer_info'].collectFromFeature { f ->
+      [
+          name: f['name'],
+          title: f['title'],
+          geoMinX: -180.0,
+          geoMinY: -90.0,
+          geoMaxX: 180.0,
+          geoMaxY: 90.0,
+          projection: new Projection( f['epsg_code'] ),
+          minLevel: f['min_level'],
+          maxLevel: f['max_level'],
+          bounds: f['bounds'].bounds
+
+      ]
+    }
+
+    def x = {
+      mkp.xmlDeclaration()
+      mkp.declareNamespace( ows: "http://www.opengis.net/ows/1.1" )
+      mkp.declareNamespace( xlink: "http://www.w3.org/1999/xlink" )
+      mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
+      mkp.declareNamespace( gml: "http://www.opengis.net/gml" )
+      Capabilities( xmlns: "http://www.opengis.net/wmts/1.0",
+          'xsi:schemaLocation': "http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd",
+          version: "1.0.0" ) {
+        ows.ServiceIdentification {
+          ows.Title()
+          ows.ServiceType()
+          ows.ServiceTypeVersion()
+        } /* ServiceIdentification */
+        ows.ServiceProvider {
+          ows.ProviderName()
+          ows.ProviderSite()
+          ows.ServiceContact {
+            ows.IndividualName()
+          } /* ServiceContact */
+        } /* ServiceProvider */
+        ows.OperationsMetadata {
+          ows.Operation( name: 'GetCapabilities' ) {
+            ows.DCP {
+              ows.HTTP {
+                ows.Get( 'xlink:href': wmtsUrl ) {
+                  ows.Constraint( name: "GetEncoding" ) {
+                    ows.AllowedValues {
+                      ows.Value( 'KVP' )
+                    } /* AllowedValues */
+                  } /* Constraint */
+                } /* Get */
+              } /* HTTP */
+            } /* DCP */
+          } /* Operation */
+          ows.Operation( name: "GetTile" ) {
+            ows.DCP {
+              ows.HTTP {
+                ows.Get( 'xlink:href': wmtsUrl ) {
+                  ows.Constraint( name: "GetEncoding" ) {
+                    ows.AllowedValues {
+                      ows.Value( 'KVP' )
+                    } /* AllowedValues */
+                  } /* Constraint */
+                } /* Get */
+              } /* HTTP */
+            } /* DCP */
+          } /* Operation */
+//          ows.Operation( name: "GetFeatureInfo" ) {
+//            ows.DCP {
+//              ows.HTTP {
+//                ows.Get( 'xlink:href': wmtsUrl ) {
+//                  ows.Constraint( name: "GetEncoding" ) {
+//                    ows.AllowedValues {
+//                      ows.Value( 'KVP' )
+//                    } /* AllowedValues */
+//                  } /* Constraint */
+//                } /* Get */
+//              } /* HTTP */
+//            } /* DCP */
+//          } /* Operation */
+        } /* OperationsMetadata */
+        Contents {
+          layers.each { layer ->
+            Layer {
+              ows.Title( layer.title )
+              ows.WGS84BoundingBox {
+                ows.LowerCorner( "${layer.geoMinX} ${layer.geoMinY}" )
+                ows.UpperCorner( "${layer.geoMaxX} ${layer.geoMaxY}" )
+              } /* WGS84BoundingBox */
+              ows.Identifier( layer.name )
+              Style( isDefault: "true" ) {
+                ows.Identifier()
+              } /* Style */
+              formats.each { Format( it ) }
+              infoFormats.each { InfoFormat( it ) }
+              TileMatrixSetLink {
+                TileMatrixSet( layer.projection )
+                TileMatrixSetLimits {
+
+                  def bounds = layer.bounds
+
+                  bounds.proj = layer.projection
+
+                  def pyramid = createPyramid( bounds, layer.minLevel, layer.maxLevel )
+
+                  for ( def z in ( layer.minLevel )..( layer.maxLevel ) )
+                  {
+                    def grid = pyramid.grid( z )
+                    TileMatrixLimits {
+                      TileMatrix( "${layer.projection}:${z}" )
+                      MinTileRow( 0 )
+                      MaxTileRow( grid.height - 1 )
+                      MinTileCol( 0 )
+                      MaxTileCol( grid.width - 1 )
+                    } /* TileMatrixLimits */
+                  } /* minLevel..maxLevel */
+                } /* TileMatrixLimits */
+              } /* TileMatrixSetLink */
+            } /* Layer */
+          } /* each layer */
+          tileMatrixSets.each { tileMatrixSet ->
+            TileMatrixSet {
+              tileMatrixSet.tileMatrices.each { tileMatrix ->
+                TileMatrix {
+                  ows.Identifier( tileMatrix.identifier )
+                  ScaleDenominator( tileMatrix.scaleDenominator )
+                  TopLeftCorner( "${tileMatrix.topLeftCorner.x} ${tileMatrix.topLeftCorner.y}" )
+                  TileWidth( tileMatrix.tileWidth )
+                  TileHeight( tileMatrix.tileHeight )
+                  MatrixWidth( tileMatrix.matrixWidth )
+                  MatrixHeight( tileMatrix.matrixHeight )
+                } /* TileMatrix */
+              } /* tileMatrices.each */
+            } /* TileMatrixSet */
+          } /* tileMatrixSets.each */
+        } /* Contents */
+        ServiceMetadataURL( 'xlink:href': "${wmtsUrl}?reqest=Getcapabilities&version=1.0.0" )
+      } /* Capabilities */
+    }
+
+    def builder = new StreamingMarkupBuilder()
+    def data = builder.bind( x )
+
+//    println XmlUtil.serialize( data )
+
+//println createPyramid()
+
+    postgis.close()
+
+    [contentType: '', buffer: data.toString().bytes]
+  }
+
+  private def createPyramid(def bounds, def minLevel, def maxLevel)
+  {
+    def pyramid = new Pyramid( bounds: bounds, proj: bounds.proj, origin: Pyramid.Origin.TOP_LEFT )
+    def zeroRes = bounds.width / pyramid.tileWidth
+    def numberTilesAtRes0 = ( bounds.proj.epsg == 4326 ) ? 2 : 1
+
+    pyramid.grids = ( minLevel..maxLevel ).collect { z ->
+      def n = ( 2**z )
+      def res = zeroRes / n
+      //println "${z} ${res}"
+      //println "${res}"
+      new Grid( z, numberTilesAtRes0 * n, n, res / pyramid.tileWidth, res / pyramid.tileWidth )
+    }
+    pyramid
+  }
+
+  def getTile(GetTileCommand cmd)
   {
     def x = cmd.tileCol
     def y = cmd.tileRow
@@ -64,7 +262,7 @@ class WebMapTileService
       // exception output
     }
 
-    [contentType: contentType, buffer: ostream.toByteArray()]
+    [contentType: 'application/vnd.ogc.wms_xml', buffer: ostream.toByteArray()]
   }
 
   def getTileGridOverlay(WmtsCommand cmd)
@@ -95,4 +293,15 @@ class WebMapTileService
     [contentType: 'image/png', buffer: ostream.toByteArray()]
   }
 
+  @Override
+  void afterPropertiesSet() throws Exception
+  {
+    baseUrl = grailsLinkGenerator.serverBaseURL
+    wmtsUrl = "${baseUrl}/wmts"
+
+    tileMatrixSets = [
+        new TileMatrixSet( new Bounds( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892, 'epsg:3857' ), minLevel, maxLevel ),
+        new TileMatrixSet( new Bounds( -180, -90, 180, 90, 'epsg:4326' ), minLevel, maxLevel )
+    ]
+  }
 }

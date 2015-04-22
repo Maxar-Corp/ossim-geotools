@@ -2,9 +2,9 @@ package org.ossim.common
 
 trait CaseInsensitiveBind
 {
-   static def fixParamNames(def params)
+   def fixParamNames(def params)
    {
-      def names = ( getMetaClass()?.properties*.name ).sort() - ['class', 'constraints', 'errors']
+      def names = getMetaClass()?.properties?.grep { it.field }?.name?.sort() - ['class', 'constraints', 'errors']
 
       def newParams = params.inject( [:] ) { a, b ->
          def propName = names.find { it.equalsIgnoreCase( b.key ) && b.value != null }

@@ -11,19 +11,13 @@ import org.ossim.common.CaseInsensitiveBind
 @ToString( includeNames = true )
 class WmtsCommand implements CaseInsensitiveBind
 {
-  String version = "1.0.0"
-  String service = "WMTS"
-  String request = "GetTile"
-  String layer
-  String format
-  String tileMatrixSet = "WholeWorld"
-  Integer tileRow
-  Integer tileCol
-  String tileMatrix = ""
+  String service// = "WMTS"
+  String version// = "1.0.0"
+  String request// = "GetTile"
 
   static constraints = {
-    version( nullable: true )
     service( nullable: true )
-    tileMatrix( nullable: false )
+    version( nullable: true )
+    request( nullable: true )
   }
 }
