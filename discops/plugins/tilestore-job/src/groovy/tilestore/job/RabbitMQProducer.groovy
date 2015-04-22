@@ -34,9 +34,17 @@ class RabbitMQProducer
 
    void sendIngestMessage(String message)
    {
-      template?.convertAndSend(ingest.queue, message)
+      this.sendMessage(ingest?.queue, message)
    }
 
+   void sendProductMessage(String message)
+   {
+      this.sendMessage(product?.queue, message)
+   }
+   void sendMessage(String queue, String message)
+   {
+      template?.convertAndSend(product?.queue, message)
+   }
    void destroy()
    {
       cf?.destroy()
