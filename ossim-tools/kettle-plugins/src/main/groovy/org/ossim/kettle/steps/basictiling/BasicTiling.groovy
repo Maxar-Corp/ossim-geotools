@@ -92,13 +92,13 @@ class BasicTiling extends BaseStep implements StepInterface
       if(meta?.clampMinLevel)
       {
          def minLevel = environmentSubstitute(meta?.clampMinLevel)
-         if(minLevel) campMinLevel = minLevel.toInteger()
+         if(minLevel) clampMinLevel = minLevel.toInteger()
       }
 
       if(meta?.clampMaxLevel)
       {
          def maxLevel = environmentSubstitute(meta?.clampMaxLevel)
-         if(maxLevel) campMaxLevel = maxLevel.toInteger()
+         if(maxLevel) clampMaxLevel = maxLevel.toInteger()
       }
       int entry = entryString?entryString.toInteger():0
       if(inputFilename)
@@ -116,7 +116,7 @@ class BasicTiling extends BaseStep implements StepInterface
                     tileHeight: 256
             )
             // println "INITIALIZING GRID!!!!"
-            if(clampMinLevel!=null&&clampMaxLevel!=null)
+            if(clampMinLevel>=0&&clampMaxLevel>=0)
             {
                pyramid.initializeGrids(new TileCacheHints(minLevel:clampMinLevel, maxLevel:clampMaxLevel))
             }
@@ -124,7 +124,6 @@ class BasicTiling extends BaseStep implements StepInterface
                pyramid.initializeGrids(new TileCacheHints(minLevel:0, maxLevel:24))
             }
 
-            println "****************************:${pyramid.bounds}"
             // println "GRIDS: ${pyramid.grids*.yResolution as double[]}"
             int nEntries = tileCacheSupport.getNumberOfEntries()
             // println "nentries === ${nEntries}"
