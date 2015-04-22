@@ -2,17 +2,19 @@ class UrlMappings
 {
 
   static mappings = {
-    "/wms/$action" {
-      controller = 'wms'
-      constraints {
-        // apply constraints here
-      }
+
+    group "/wms", {
+      "/" { controller = "wms"; action = "index" }
+      "/getCapabilities" { controller = "wms"; action = "getCapabilities" }
+      "/getMap" { controller = "wms"; action = "getMap" }
     }
 
-    "/wmts/index/$id?"( action: "index", controller: "wmts" ) {
-    }
-
-    "/wmts/tileParamGrid"( action: "tileParamGrid", controller: "wmts" ) {
+    group "/wmts", {
+      "/" { controller = "wmts"; action = "index" }
+      "/getCapabilities" { controller = "wmts"; action = "getCapabilities" }
+      "/getTile" { controller = "wmts"; action = "getTile" }
+      "/tileParamGrid" { controller = "wmts"; action = "tileParamGrid" }
+      "/parseWMTS" { controller = "wmts"; action = "parseWMTS" }
     }
 
     "/$controller/$action?/$id?(.$format)?" {

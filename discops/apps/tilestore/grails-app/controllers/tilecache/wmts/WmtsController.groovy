@@ -56,4 +56,9 @@ class WmtsController
     def results = webMapTileService.getTile( cmd )
     render contentType: results.contentType, file: results.buffer
   }
+
+  def parseWMTS()
+  {
+
+  }
 }
