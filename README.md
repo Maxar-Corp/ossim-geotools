@@ -31,10 +31,12 @@ A library that provides functions for putting imagery into postgres/accumulo
 ## Building
 
 Here's the condensed steps:
+
 1. Install OSSIM
 2. Install the joms.jar to the local maven cache for the next step.
 3. Build groovy-swt
-4. Use grails to build the tilestore app
+4. Build ossim-tools
+5. Use grails to build the tilestore app
 
 ### OSSIM
 
@@ -88,7 +90,12 @@ within this repo for convenience.
 
 *You'll need at least [Grails 2.5.0](https://grails.org/download.html) installed.*
 
-1. `$ cd discops/apps/tilestore`
-2. `$ grails clean`
-3. `$ grails compile`
+In the `discops/apps/tilestore` directory:
+
+1. `$ grails clean`
+2. `$ grails compile`
+
+To build the grails application.
+
+
 
