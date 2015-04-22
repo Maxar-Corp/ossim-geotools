@@ -144,11 +144,6 @@ AppAdmin = (function () {
 
     $('#navCreateLayer').one('click', function () {
 
-        //TODO: We need to read in the layer active layers min and max tile levels here, instead
-        //      of 0 to 22.  The tile layer might not have all of these layers available.
-
-
-
         // Done - 04-21-15 - Replace HTML option/values on min/max levels with dynamically generated
         //        from js
         for (var i = 0; i < 23; i++) {
