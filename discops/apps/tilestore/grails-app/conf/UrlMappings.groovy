@@ -2,23 +2,19 @@ class UrlMappings
 {
 
   static mappings = {
-    // remove the format overide for the getTile action
-    "/wmts/getTile/$id?"( action: "getTile", controller: "layerManager" ) {
-    }
-    "/accumulo/getTiles/$id?"( action: "getTiles", controller: "layerManager" ) {
+
+    group "/wms", {
+      "/" { controller = "wms"; action = "index" }
+      "/getCapabilities" { controller = "wms"; action = "getCapabilities" }
+      "/getMap" { controller = "wms"; action = "getMap" }
     }
 
-    "/wms/$action" {
-      controller = 'wms'
-      constraints {
-        // apply constraints here
-      }
-    }
-
-    "/wmts/index/$id?"( action: "index", controller: "wmts" ) {
-    }
-
-    "/wmts/tileParamGrid"( action: "tileParamGrid", controller: "wmts" ) {
+    group "/wmts", {
+      "/" { controller = "wmts"; action = "index" }
+      "/getCapabilities" { controller = "wmts"; action = "getCapabilities" }
+      "/getTile" { controller = "wmts"; action = "getTile" }
+      "/tileParamGrid" { controller = "wmts"; action = "tileParamGrid" }
+      "/parseWMTS" { controller = "wmts"; action = "parseWMTS" }
     }
 
     "/$controller/$action?/$id?(.$format)?" {
