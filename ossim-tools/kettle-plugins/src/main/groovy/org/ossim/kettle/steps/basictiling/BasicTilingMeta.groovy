@@ -1,6 +1,8 @@
 package org.ossim.kettle.steps.basictiling
 
+import geoscript.geom.Bounds
 import geoscript.layer.Pyramid
+import joms.geotools.tileapi.BoundsUtil
 
 import java.util.List;
 import java.util.Map;
@@ -172,7 +174,15 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 	{
 //		println "SETTING PROJECTION TYPE ${type}"
 		this.projectionType = type
+		Bounds b = BoundsUtil.getDefaultBounds(new Projection(type.toUpperCase()))
 
+		projectionMinx = b.minX
+		projectionMiny = b.minY
+		projectionMaxx = b.maxX
+		projectionMaxy = b.maxY
+
+
+		/*
 		switch(type.toUpperCase())
 		{
 			case "EPSG:3857":
@@ -190,6 +200,7 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 				projectionMaxy = bounds.maxY
 			break
 		}
+		*/
 	}
 	def getOriginAsInteger(){
     def result =  Pyramid.Origin.TOP_LEFT
