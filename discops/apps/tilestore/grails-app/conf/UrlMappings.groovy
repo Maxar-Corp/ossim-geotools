@@ -2,12 +2,13 @@ class UrlMappings
 {
 
   static mappings = {
-    "/wms/$action" {
-      controller = 'wms'
-      constraints {
-        // apply constraints here
-      }
+
+    group "/wms", {
+      "/" { controller = "wms"; action = "index" }
+      "/getCapabilities" { controller = "wms"; action = "getCapabilities" }
+      "/getMap" { controller = "wms"; action = "getMap" }
     }
+
 
     "/wmts/index/$id?"( action: "index", controller: "wmts" ) {
     }
