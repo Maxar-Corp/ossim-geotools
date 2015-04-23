@@ -22,16 +22,13 @@ ZoomToClient = (function () {
 
         switch (coordSelect) {
             case 'dd':
-                //console.log('We have dd');
-                getDd(zoomLat,zoomLon);
+                cycleRegExs(coordInput);
                 break;
             case 'dms':
-                //console.log('We have dms');
-                getDms(zoomLat,zoomLon);
+                cycleRegExs(coordInput);
                 break;
-            case 'mgms':
-                //console.log('We have mgrs');
-                getMgrs(coordInput);
+            case 'mgrs':
+                cycleRegExs(coordInput);
                 break;
             default:
                 console.log('No match');
@@ -45,7 +42,7 @@ ZoomToClient = (function () {
     //       for there not being a comma in the input.
 
     //      Possible if...then that checks the content of the string
-//          to see if there is a comma.  If not execute using a "space"
+    //      to see if there is a comma.  If not execute using a "space"
     //      as the split.
     function splitCoords(zoomLocation){
         //console.log('calling splitCoords function');
@@ -65,7 +62,7 @@ ZoomToClient = (function () {
             console.log(zoomLocationSplit);
             zoomLat = zoomLocationSplit[0].trim();
             zoomLon = zoomLocationSplit[1].trim();
-;        }
+        }
         else {
             console.log('No comma, or space present.');
             // Error handling...
@@ -73,51 +70,95 @@ ZoomToClient = (function () {
 
     }
 
-    function getDd(lat, lon) {
+    var convert = new CoordinateConversion();    
 
-        console.log('Using getDd(): ' + zoomLat + ' ' + zoomLon);
+    var ddRegExp = /^\s*(\-?\d{1,2}\.\d*)\s*\°?\s*([NnSs])?\s*\,?\s*(\-?\d{1,3}\.\d*)\s*\°?\s*([WwEe])?\s*$/
+    var dmsRegExp = /^(\d{1,2})\s?\°?\s?\:?\s?(\d{1,2})\s?\'?\s?\:?\s?(\d{1,2})(\.\d*)?\s?([NnSs])\s?(\d{1,3})\s?\°?\s?\:?\s?(\d{1,2})\s?\'?\s?\:?\s?(\d{1,2})(\.\d*)?\s?([EeWw])$/
+    var mgrsRegExp = /^(\d{1,2})\s?([A-Za-z])\s?([A-Za-z])\s?([A-Za-z])\s?(\d{1,5})\s?(\d{1,5})$/
 
-        // TODO: Placeholder for RegEx.  If needed...
-        // RegExp goes here...
+    function cycleRegExs(coordInput)
+    {
+        if (coordInput.match(ddRegExp)) {
+            console.log('DD Match');
 
-        // Fire zoomTo
-        zoomTo(lat, lon);
+            // ^(\-?\d{1,2}\.\d*)\s?\°?\s?([NnSs])?\s?\,?\s?(\-?\d{1,3}\.\d*)\s?\°?\s?([EeWw])?$
 
-    }
+            var lat;
+            var lon;
+            
+            // validate lat
+            if (RegExp.$1 <= 90 && RegExp.$1 >= -90) {
 
-    function getDms(lat, lon) {
+                if(RegExp.$2 == "S" || RegExp.$2 == "s") {
+                    lat = -RegExp.$1;
+                }
+                else {
+                    lat = RegExp.$1;
+                }
+            }
 
-        // TODO: Finish DMS to DD with validation
-        // var lon = "24° 43' 30.16\"";
-        // var lat = "58° 44' 43.97\"";
+            // validate lon
+            if (RegExp.$3 <= 180 && RegExp.$3 >= -180) {
 
-        // console.log (lon + '' + lat);
+                if(RegExp.$4 == "W" || RegExp.$4 == "w") {
+                    lon = -RegExp.$3;
+                }
+                else {
+                    lon = RegExp.$3;
+                }
+            }
 
-        //zoomLocationSplit = coords.split(',');
+            zoomTo(lat, lon);
 
-        lat = zoomLocationSplit[0];
-        lon = zoomLocationSplit[1];
+            $('#coordSelect').selectpicker('val', 'dd');
+        }
 
-        console.log(lat + ' ' + lon);
+        else if (coordInput.match(dmsRegExp)) {
+            console.log('DMS Match');
+            
+            // ^(\d{1,2})\s?\°?\s?\:?\s?(\d{1,2})\s?\'?\s?\:?\s?(\d{1,2})(\.\d*)?\s?([NnSs])\s?
+            //      (\d{1,3})\s?\°?\s?\:?\s?(\d{1,2})\s?\'?\s?\:?\s?(\d{1,2})(\.\d*)?\s?([EeWw])$
 
-        var point = new GeoPoint(lon, lat);
+            var latDeg = RegExp.$1;
+            var latMin = RegExp.$2;
+            var latSec = RegExp.$3 + RegExp.$4;
+            var latHem = RegExp.$5;
 
-        // console.log(point.getLonDec()); // 24.725044444444443
-        // console.log(point.getLatDec()); // 58.74554722222222
+            var lonDeg = RegExp.$6;
+            var lonMin = RegExp.$7;
+            var lonSec = RegExp.$8 + RegExp.$9;
+            var lonHem = RegExp.$10;
 
-        var zoomLat = point.getLatDec();
-        var zoomLon = point.getLonDec();
+            var lat = convert.dmsToDd(latDeg, latMin, latSec, latHem);
+            var lon = convert.dmsToDd(lonDeg, lonMin, lonSec, lonHem);
+            
 
-        console.log(zoomLat + ' ' + zoomLon);
+            zoomTo(lat, lon);
 
-        zoomTo(zoomLat, zoomLon);
+            $('#coordSelect').selectpicker('val', 'dms');    
+        }
+        
+        else if (coordInput.match(mgrsRegExp)) {
+            console.log('MGRS Match');
 
-    }
+            // ^(\d{1,2})\s?([A-Za-z])\s?([A-Za-z])\s?([A-Za-z])\s?(\d{1,5})\s?(\d{1,5})$
 
-    function getMgrs(coords){
-        // TODO: Need to scrub the input coming in, and set it as
-        //         valid MGRS data
-        console.log('getMgrs firing!');
+            var mgrs = convert.mgrsToDd(RegExp.$1, RegExp.$2, RegExp.$3, RegExp.$4, RegExp.$5, RegExp.$6)
+
+            // strip lat, lon
+            if(mgrs.match(ddRegExp)) {
+                var lat = RegExp.$1;
+                var lon = RegExp.$3;
+
+                zoomTo(lat, lon);
+
+                $('#coordSelect').selectpicker('val', 'mgrs');
+            }
+       }
+
+       else {
+            console.log('No Match')
+       }
     }
 
     function zoomTo(lat, lon) {
@@ -155,7 +196,6 @@ ZoomToClient = (function () {
 
 
 // [0-9]{1,2}[:|°][0-9]{1,2}[:|'](?:\b[0-9]+(?:\.[0-9]*)?|\.[0-9]+\b)"?(|\s)[N|n|S|s|E|e|W|w]
-
 
     return {
 

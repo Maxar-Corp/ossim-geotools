@@ -274,8 +274,8 @@ class TileCachePyramid extends Pyramid
 
     if(!clippedBounds) clippedBounds = this.bounds
 
-    int minLevel = hints.minLevel?:0
-    int maxLevel = hints.maxLevel?:22
+    Integer minLevel = hints.minLevel?:0
+    Integer maxLevel = hints.maxLevel?:22
 
     if((minLevel!=null)&&(maxLevel!=null))
     {

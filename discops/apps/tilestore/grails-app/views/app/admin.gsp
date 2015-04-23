@@ -82,7 +82,9 @@
                                 <div class="input-group" id="tileLayerInputGroup">
                                     <div class="input-group-addon"><i class="fa fa-th"></i>&nbsp;&nbsp;Active
                                     Tile Layer</div>
-                                    <select id="tileLayerSelect" class="form-control selectpicker show-tick tile-select">
+                                    <select id="tileLayerSelect"
+                                            class="form-control selectpicker show-tick" maxOptions="10"
+                                            data-live-search="true">
                                     </select>
                                 </div>
                             </div>
@@ -142,64 +144,24 @@
             </div>
             <div class="modal-body">
                 <div class="container">
-                    <form id="createTileLayerForm" role="form">
+                    <form id="createTileLayerForm" data-toggle="validator" role="form">
                         <div class="row col-sm-6 col-md-6">
                             <div class="form-group">
                                 <label for="createLayerName">Tile Layer Name&nbsp;</label>
-                                <input type="text" class="form-control"
-                                       id="createLayerName">&nbsp;&nbsp;<small><em>Do
-                            not use dashes or or special characters.</em></small><br><br>
+                                <input id="createLayerName" type="text" pattern="^[A-Za-z](?:_?[A-Za-z0-9]+)*$"
+                                       maxlength="50"
+                                       class="form-control" required>
+                                <span class="help-block with-errors"><small><em>Start with alphabetic, up to 50
+                                 letters, numbers and underscores (case insensitive).  No spaces.</em></small></span>
+                            </div>
+                            <div class="form-group">
                                 <label for="minTileLevel">Min. Level</label>
-                                <select id="minTileLevel" class="form-control selectpicker">
-                                    <option value="0">0&nbsp;</option>
-                                    <option value="1">1&nbsp;</option>
-                                    <option value="2">2&nbsp;</option>
-                                    <option value="3">3&nbsp;</option>
-                                    <option value="4">4&nbsp;</option>
-                                    <option value="5">5&nbsp;</option>
-                                    <option value="6">6&nbsp;</option>
-                                    <option value="7">7&nbsp;</option>
-                                    <option value="8">8&nbsp;</option>
-                                    <option value="9">9&nbsp;</option>
-                                    <option value="10">10</option>
-                                    <option value="11">11</option>
-                                    <option value="12">12</option>
-                                    <option value="13">13</option>
-                                    <option value="14">14</option>
-                                    <option value="15">15</option>
-                                    <option value="16">16</option>
-                                    <option value="17">17</option>
-                                    <option value="18">18</option>
-                                    <option value="19">19</option>
-                                    <option value="20">20</option>
-                                    <option value="21">21</option>
-                                    <option value="22">22</option>
+                                <select id="minTileLevel" class="form-control selectpicker show-tick"
+                                        maxOptions="10" data-live-search="true">
                                 </select>
                                 <label for="maxTileLevel">Max. Level</label>
-                                <select id="maxTileLevel" class="form-control selectpicker">
-                                    <option value="0">0&nbsp;</option>
-                                    <option value="1">1&nbsp;</option>
-                                    <option value="2">2&nbsp;</option>
-                                    <option value="3">3&nbsp;</option>
-                                    <option value="4">4&nbsp;</option>
-                                    <option value="5">5&nbsp;</option>
-                                    <option value="6">6&nbsp;</option>
-                                    <option value="7">7&nbsp;</option>
-                                    <option value="8">8&nbsp;</option>
-                                    <option value="9">9&nbsp;</option>
-                                    <option value="10">10</option>
-                                    <option value="11">11</option>
-                                    <option value="12">12</option>
-                                    <option value="13">13</option>
-                                    <option value="14">14</option>
-                                    <option value="15">15</option>
-                                    <option value="16">16</option>
-                                    <option value="17">17</option>
-                                    <option value="18">18</option>
-                                    <option value="19">19</option>
-                                    <option value="20">20</option>
-                                    <option value="21">21</option>
-                                    <option value="22">22</option>
+                                <select id="maxTileLevel" class="form-control selectpicker show-tick" maxOptions="10"
+                                        data-live-search="true">
                                 </select><br><br>
                                 <label for="epsg">Projection</label>
                                 <select id="epsgCode" class="form-control selectpicker" id="epsg">
@@ -237,11 +199,11 @@
                 <h3 class="modal-title fa fa-pencil">&nbsp;&nbsp;&nbsp;Rename Tile Layers</h3>
             </div>
             <div class="modal-body">
-                <form id="renameTileLayerForm" class="form">
+                <form id="renameTileLayerForm" data-toggle="validator" class="form">
                     <div class="container">
                         <div class="row col-sm-6 col-md-6">
                             <p>Select a layer from the list below, and then type the new layer name
-                            in the input box (<em>dashes and special characters are not permitted in the names</em>).
+                            in the input box.
                             </p>
 
                                 <div class="form-group">
@@ -252,8 +214,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="renameLayerName">New Name&nbsp;</label>
-                                    <input type="text" class="form-control" id="renameLayerName"
-                                           placeholder="NewLayerName">
+                                    <input id="renameLayerName" type="text" pattern="^[A-Za-z](?:_?[A-Za-z0-9]+)*$"
+                                           maxlength="50"
+                                           class="form-control" required>
+                                    <span class="help-block with-errors"><small><em>Start with alphabetic, up to 50
+                                    letters, numbers and underscores (case insensitive).  No spaces.</em></small></span>
                                 </div>
                                 <br>
                                 <br>

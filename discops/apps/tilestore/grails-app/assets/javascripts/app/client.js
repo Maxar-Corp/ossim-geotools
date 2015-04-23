@@ -19,6 +19,7 @@
 //= require client/appClient.js
 //= require client/dragboxClient.js
 //= require client/layerManagerClient.js
+//= require client/coordinateConversion.js
 //= require client/zoomToClient.js
 //= require client/sidebars.js
 
