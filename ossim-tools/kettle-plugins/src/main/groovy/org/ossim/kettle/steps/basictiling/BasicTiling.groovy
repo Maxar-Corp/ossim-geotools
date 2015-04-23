@@ -86,6 +86,20 @@ class BasicTiling extends BaseStep implements StepInterface
          entryString = getInputRowMeta().getString(r,entryIdx)
       }
 
+      Integer clampMinLevel = -1
+      Integer clampMaxLevel = -1
+
+      if(meta?.clampMinLevel)
+      {
+         def minLevel = environmentSubstitute(meta?.clampMinLevel)
+         if(minLevel) clampMinLevel = minLevel.toInteger()
+      }
+
+      if(meta?.clampMaxLevel)
+      {
+         def maxLevel = environmentSubstitute(meta?.clampMaxLevel)
+         if(maxLevel) clampMaxLevel = maxLevel.toInteger()
+      }
       int entry = entryString?entryString.toInteger():0
       if(inputFilename)
       {
@@ -102,9 +116,14 @@ class BasicTiling extends BaseStep implements StepInterface
                     tileHeight: 256
             )
             // println "INITIALIZING GRID!!!!"
-            pyramid.initializeGrids(new TileCacheHints(minLevel:0, maxLevel:24))
+            if(clampMinLevel>=0&&clampMaxLevel>=0)
+            {
+               pyramid.initializeGrids(new TileCacheHints(minLevel:clampMinLevel, maxLevel:clampMaxLevel))
+            }
+            else {
+               pyramid.initializeGrids(new TileCacheHints(minLevel:0, maxLevel:24))
+            }
 
-            println "****************************:${pyramid.bounds}"
             // println "GRIDS: ${pyramid.grids*.yResolution as double[]}"
             int nEntries = tileCacheSupport.getNumberOfEntries()
             // println "nentries === ${nEntries}"
@@ -171,8 +190,6 @@ class BasicTiling extends BaseStep implements StepInterface
                def summaryTileHeightIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_tile_height"])
                def summaryDeltaxLevelZeroIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_deltax_level_zero"])
                def summaryDeltayLevelZeroIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_deltay_level_zero"])
-               ValueMetaInterface valueMetaInterface = selectedRowMeta.getValueMeta(tileSummaryLevelInfoIdx)
-               println  valueMetaInterface.properties
                if(numberOfOutputFields)
                {
                   def resultArray = new Object[numberOfOutputFields]

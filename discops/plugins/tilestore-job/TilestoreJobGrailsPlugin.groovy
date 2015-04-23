@@ -56,7 +56,7 @@ Brief summary/description of the plugin.
              username        = grailsApplication.config?.rabbitmq?.connection?.username?:""
              password        = grailsApplication.config?.rabbitmq?.connection?.password?:""
              ingest          = grailsApplication.config?.rabbitmq?.ingest?:null
-             product          = grailsApplication.config?.rabbitmq?.ingest?:null
+             product          = grailsApplication.config?.rabbitmq?.product?:null
           }
        }
     }
