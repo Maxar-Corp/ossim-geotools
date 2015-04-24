@@ -1,42 +1,26 @@
 package tilecache.wfs
 
-import grails.converters.JSON
-import joms.geotools.web.HttpStatus
-
 class WfsController
 {
   def webFeatureService
 
   def index(WfsCommand cmd)
   {
+    println params
+    println cmd
+
     if ( cmd.validate() )
     {
-      switch ( cmd.request.toLowerCase() )
+      switch ( cmd.request.toUpperCase() )
       {
-      case "getfeature":
-        def result
-        if(request.method.toLowerCase() == "get")
-        {
-           result = webFeatureService.wfsGetFeature( cmd )
-           render contentType: result.contentType, file: result.buffer
-        }
-        else
-        {
-           response.status = HttpStatus.METHOD_NOT_ALLOWED
-           render([error: 'Only HTTP GET requests are accepted at this time.'] as JSON)
-        }
-       // if ( params.callback )
-       // {
-       //   result = "${params.callback}(${result});";
-       // }
-        // allow cross domain
-        // println output
+      case "GETFEATURE":
+        forward action: 'getFeature', params: new GetFeatureCommand().fixParamNames( params )
         break
-      case "getcapabilities":
+      case "GETCAPABILITIES":
+        forward action: 'getCapabilities', params: new GetCapabilitiesCommand().fixParamNames( params )
         break
-      case "DescribeFeatureType":
-        break
-      default:
+      case "DESCRIBEFEATURETYPE":
+        forward action: 'describeFeatureType', params: new DescribeFeatureTypeCommand().fixParamNames( params )
         break
       }
       // response.outputStream.close()
@@ -46,4 +30,25 @@ class WfsController
       render "${cmd.errors}"
     }
   }
+
+  def getCapabilities(GetCapabilitiesCommand cmd)
+  {
+    println cmd
+    def results = webFeatureService.getCapabilities( cmd )
+    render contentType: results.contentType, text: results.buffer
+  }
+
+  def describeFeatureType(DescribeFeatureTypeCommand cmd)
+  {
+    println cmd
+    def results = webFeatureService.describeFeatureType( cmd )
+    render contentType: results.contentType, text: results.buffer
+  }
+
+  def getFeature(GetFeatureCommand cmd)
+  {
+    def results = webFeatureService.getFeature( cmd )
+    render contentType: results.contentType, file: results.buffer
+  }
+
 }

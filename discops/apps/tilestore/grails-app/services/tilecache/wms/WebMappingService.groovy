@@ -1,11 +1,10 @@
 package tilecache.wms
 
 import geoscript.geom.Bounds
-import geoscript.geom.io.WktReader
 import geoscript.render.Map as GeoScriptMap
-import groovy.sql.Sql
+
 import groovy.xml.StreamingMarkupBuilder
-import org.codehaus.groovy.grails.web.mapping.LinkGenerator
+
 import org.springframework.beans.factory.InitializingBean
 
 class WebMappingService implements InitializingBean
@@ -15,8 +14,6 @@ class WebMappingService implements InitializingBean
   def baseUrl
   def wmsUrl
   def dtdUrl
-
-  def dataSourceUnproxied
 
   def grailsLinkGenerator
   def layerManagerService
@@ -322,22 +319,13 @@ class WebMappingService implements InitializingBean
 
   private def getLayers()
   {
-    def sql = Sql.newInstance( dataSourceUnproxied )
-    def wktReader = new WktReader()
-
-    def q = """
-    select id, name, st_astext(bounds) as bounds, epsg_code,
-        min_level, max_level, tile_width, tile_height, tile_store_table
-    from tile_cache_layer_info
-    """
 
     def layers = []
 
-    sql.eachRow( q ) { row ->
-      def geom = wktReader.read( row.bounds )
-      def bounds = geom.bounds
+    layerManagerService?.layers?.data?.rows?.each { row ->
+      def bounds = row?.bbox?.split( ',' )*.toDouble() as Bounds
 
-      bounds.proj = row.epsg_code
+      bounds.proj = row.epsgCode
 
       def layerInfo = [
           queryable: '1',
@@ -346,7 +334,7 @@ class WebMappingService implements InitializingBean
           title: row.name,
           description: '',
           keywords: [],
-          projection: row.epsg_code,
+          projection: bounds.proj.id,
           geoMinX: '-180', geoMinY: '-90', geoMaxX: '180', geoMaxY: '90',
           minX: bounds.minX, minY: bounds.minY, maxX: bounds.maxX, maxY: bounds.maxY,
           styles: []
@@ -354,8 +342,6 @@ class WebMappingService implements InitializingBean
 
       layers << layerInfo
     }
-
-    sql?.close()
 
     layers
   }
