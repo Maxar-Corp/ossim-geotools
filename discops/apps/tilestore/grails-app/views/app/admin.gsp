@@ -65,15 +65,16 @@
                 %{--</div>--}%
                 <div class="nav navbar-nav navbar-right">
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle fa fa-server" data-toggle="dropdown" role="button"
-                       aria-expanded="false">&nbsp; Manage Layers<span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                       aria-expanded="false"><span class="fa fa-server"></span>&nbsp;Manage Layers</a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a id="navCreateLayer" class="fa fa-plus-square-o" href="#">&nbsp;Create Tile
+                        <li><a id="navCreateLayer" href="#"><span class="fa fa-plus-square-o"></span>&nbsp;Create Tile
                         Layer</a></li>
-                        <li><a id="navRenameLayer" class="fa fa-pencil" href="#">&nbsp;Rename Tile
+                        <li><a id="navRenameLayer" href="#"><span class="fa fa-pencil"></span>&nbsp;Rename Tile
                         Layer</a></li>
                         <li class="divider"></li>
-                        <li><a id="navDeleteLayer" class="fa fa-trash" href="#">&nbsp;Delete Tile Layer</a></li>
+                        <li><a id="navDeleteLayer" href="#"><span class="fa fa-trash"></span>&nbsp;Delete Tile
+                        Layer</a></li>
                     </ul>
                 </li>
                 <div class="col-md-6 col-md-6">
