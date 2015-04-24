@@ -1,4 +1,4 @@
-package tilecache
+package tilestore
 
 class TileCacheFilters
 {

@@ -48,7 +48,7 @@ class LayerManagerService implements InitializingBean
         ] )
         daoTileCacheService = hibernate.applicationContext.getBean( "tileCacheServiceDAO" );
 
-        getMapBlockingQueue = new LinkedBlockingQueue( grailsApplication.config.tilecache.maxTileConnections?:20 )
+        getMapBlockingQueue = new LinkedBlockingQueue( grailsApplication.config.tilestore.maxTileConnections?:20 )
         ( 0..<10 ).each { getMapBlockingQueue.put( 0 ) }
 
         // println "DATA SOURCE ===== ${dataSource}"
@@ -346,7 +346,7 @@ class LayerManagerService implements InitializingBean
     {
         def layers = []
         //def gridFormat = new ImageMosaicJDBCFormat()
-        //GridFormatFinder.findFormat(new URL("http://localhost:8080/tilecache/accumuloProxy/tileAccess?layer=BMNG"))
+        //GridFormatFinder.findFormat(new URL("http://localhost:8080/tilestore/accumuloProxy/tileAccess?layer=BMNG"))
         layerNames.each { layer ->
             //   def gridReader = gridFormat.getReader( new URL( "${tileAccessUrl}?layer=${layer}" ) )
             //   def mosaic = new GridReaderLayer( gridReader, new RasterSymbolizer().gtStyle )

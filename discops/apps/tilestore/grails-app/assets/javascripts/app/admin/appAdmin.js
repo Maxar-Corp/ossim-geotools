@@ -185,7 +185,7 @@ AppAdmin = (function () {
         // to add multiple callbacks, failure callbacks, etc
         function ajaxCreateLayer() {
             return $.ajax({
-                url: "/tilecache/layerManager/createLayer",
+                url: "/tilestore/layerManager/createLayer",
                 type: 'POST',
                 dataType: 'json',
                 data: objLayer
@@ -304,7 +304,7 @@ AppAdmin = (function () {
 
         function ajaxRenameLayer() {
             return $.ajax({
-                url: "/tilecache/layerManager/renameLayer?",
+                url: "/tilestore/layerManager/renameLayer?",
                 type: 'POST',
                 dataType: 'json',
                 data: {'oldName': oldName, 'newName': newName}
@@ -386,7 +386,7 @@ AppAdmin = (function () {
 
         function ajaxDeleteLayer() {
             return $.ajax({
-                url: "/tilecache/layerManager/deleteLayer?",
+                url: "/tilestore/layerManager/deleteLayer?",
                 type: 'POST',
                 dataType: 'json',
                 data: {'name': objLayer.name}

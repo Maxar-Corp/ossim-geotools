@@ -1,4 +1,4 @@
-package tilecache
+package tilestore
 
 import grails.converters.JSON
 import joms.geotools.tileapi.job.TileCacheMessage

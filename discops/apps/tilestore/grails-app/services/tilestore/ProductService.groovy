@@ -1,4 +1,4 @@
-package tilecache
+package tilestore
 
 import grails.transaction.Transactional
 import joms.geotools.tileapi.job.TileCacheMessage

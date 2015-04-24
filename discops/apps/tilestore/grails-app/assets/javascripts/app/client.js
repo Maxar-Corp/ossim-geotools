@@ -22,5 +22,5 @@
 //= require common/coordinate.js
 //= require common/zoomTo.js
 //= require client/sidebars.js
-
+//= require client/zoomToClient.js
 //= require_self
