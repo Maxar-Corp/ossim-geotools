@@ -4,7 +4,6 @@ import geoscript.geom.Bounds
 import geoscript.layer.Grid
 import geoscript.layer.Pyramid
 import geoscript.proj.Projection
-import geoscript.workspace.PostGIS
 import groovy.xml.StreamingMarkupBuilder
 import org.springframework.beans.factory.InitializingBean
 
@@ -45,21 +44,22 @@ class WebMapTileService implements InitializingBean
 
   def getCapabilities(GetCapabilitiesCommand cmd)
   {
-    def postgis = new PostGIS( [user: 'postgres'], 'raster-test' )
+    def layers = layerManagerService?.layers?.data?.rows?.collect { row ->
+      def bounds = row.bbox?.split( ',' )*.toDouble() as Bounds
 
-    def layers = postgis['tile_cache_layer_info'].collectFromFeature { f ->
+      bounds.proj = row.epsgCode
+
       [
-          name: f['name'],
-          title: f['title'],
+          name: row.name,
+          title: row.name,
           geoMinX: -180.0,
           geoMinY: -90.0,
           geoMaxX: 180.0,
           geoMaxY: 90.0,
-          projection: new Projection( f['epsg_code'] ),
-          minLevel: f['min_level'],
-          maxLevel: f['max_level'],
-          bounds: f['bounds'].bounds
-
+          projection: bounds.proj.id,
+          minLevel: row.minLevel,
+          maxLevel: row.maxLevel,
+          bounds: bounds
       ]
     }
 
@@ -127,6 +127,7 @@ class WebMapTileService implements InitializingBean
         } /* OperationsMetadata */
         Contents {
           layers.each { layer ->
+            println layer
             Layer {
               ows.Title( layer.title )
               ows.WGS84BoundingBox {
@@ -191,9 +192,7 @@ class WebMapTileService implements InitializingBean
 
 //println createPyramid()
 
-    postgis.close()
-
-    [contentType: '', buffer: data.toString().bytes]
+    [contentType: 'application/vnd.ogc.wms_xml', buffer: data.toString().bytes]
   }
 
   private def createPyramid(def bounds, def minLevel, def maxLevel)
@@ -262,7 +261,7 @@ class WebMapTileService implements InitializingBean
       // exception output
     }
 
-    [contentType: 'application/vnd.ogc.wms_xml', buffer: ostream.toByteArray()]
+    [contentType: contentType, buffer: ostream.toByteArray()]
   }
 
   def getTileGridOverlay(WmtsCommand cmd)

@@ -1,19 +1,77 @@
 package tilecache
 
 import tilecache.wfs.WfsCommand
+import tilecache.wfs.GetCapabilitiesCommand as WfsGetCaps
+import tilecache.wfs.DescribeFeatureTypeCommand
+import tilecache.wfs.GetFeatureCommand
 import tilecache.wms.GetCapabilitiesCommand as WmsGetCaps
 import tilecache.wms.GetMapCommand
 import tilecache.wms.WmsCommand
 import tilecache.wmts.WmtsCommand
 import tilecache.wmts.GetCapabilitiesCommand as WmtsGetCaps
-import tilestore.database.CreateLayerCommand
-import tilestore.database.GetLayersCommand
-import tilestore.database.RenameLayerCommand
 
 class TileCacheFilters
 {
 
   def filters = {
+
+    wfs( uri: '/wfs' ) {
+      before = {
+        //println "before: ${params}"
+        new WfsCommand().fixParamNames( params )
+        //println "after: ${params}"
+      }
+      after = { Map model ->
+
+      }
+      afterView = { Exception e ->
+
+      }
+    }
+
+    wfsGetCapabilities( uri: '/wfs/getCapabilities' ) {
+      before = {
+        //println "before: ${params}"
+        new WfsGetCaps().fixParamNames( params )
+        //println "after: ${params}"
+      }
+      after = { Map model ->
+
+      }
+      afterView = { Exception e ->
+
+      }
+    }
+
+    wfsDescribeFeatureType( uri: '/wfs/describeFeatureType' ) {
+      before = {
+        //println "before: ${params}"
+        new DescribeFeatureTypeCommand().fixParamNames( params )
+        //println "after: ${params}"
+      }
+      after = { Map model ->
+
+      }
+      afterView = { Exception e ->
+
+      }
+    }
+
+    wfsGetFeature( uri: '/wfs/getFeature' ) {
+      before = {
+        //println "before: ${params}"
+        new GetFeatureCommand().fixParamNames( params )
+        //println "after: ${params}"
+      }
+      after = { Map model ->
+
+      }
+      afterView = { Exception e ->
+
+      }
+    }
+
+
     wmts( uri: '/wmts' ) {
       before = {
         //println "before: ${params}"
