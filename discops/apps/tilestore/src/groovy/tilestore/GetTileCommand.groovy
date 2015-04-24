@@ -1,4 +1,4 @@
-package tilecache
+package tilestore
 
 import grails.validation.Validateable
 import groovy.transform.ToString

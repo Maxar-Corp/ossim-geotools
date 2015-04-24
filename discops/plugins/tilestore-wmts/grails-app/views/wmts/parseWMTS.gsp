@@ -31,7 +31,7 @@
     {
         var parser = new ol.format.WMTSCapabilities();
 
-        $.ajax( '/tilecache/wmts/getCapabilities' ).then( function ( response )
+        $.ajax( '/tilestore/wmts/getCapabilities' ).then( function ( response )
         {
             var result = parser.read( response );
             $( '#log' ).html( window.JSON.stringify( result, null, 2 ) );

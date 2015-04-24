@@ -42,9 +42,9 @@ if ( new File( "${userHome}/.grails/${appName}-config.groovy" ).exists() )
 {
   grails.config.locations << "file:${userHome}/.grails/${appName}-config.groovy"
 }
-if ( System.env.TILECACHE_CONFIG )
+if ( System.env.TILESTORE_ECACHE_CONFIG )
 {
-  grails.config.locations << "file:${System.env.TILECACHE_CONFIG}"
+  grails.config.locations << "file:${System.env.TILESTORE_CONFIG}"
 }
 
 
@@ -165,7 +165,7 @@ accumulo {
   // tileAccessClass = "joms.geotools.tileapi.AccumuloTileAccess"
 }
 
-tilecache {
+tilestore {
   maxTileConnections = 50
   wmtsTileGrid = false
   referenceLayers = [
@@ -193,10 +193,10 @@ security {
 rabbitmq{
    enabled=true
    product{
-      queue = "omar.tilecache.product"
+      queue = "omar.tilestore.product"
    }
    ingest{
-      queue = "omar.tilecache.ingest"
+      queue = "omar.tilestore.ingest"
    }
 
    connection{

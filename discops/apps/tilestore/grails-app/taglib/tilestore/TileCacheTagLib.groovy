@@ -1,4 +1,4 @@
-package tilecache
+package tilestore
 
 /**
  * Created by gpotts on 4/8/15.
