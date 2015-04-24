@@ -22,7 +22,7 @@
 
 <div class="content">
     <h1>WMTS GetCapabilities</h1>
-    <pre id="log"></pre>
+    <pre><code id="log"></code></pre>
 </div>
 <asset:javascript src="ol3/ol.js"/>
 <asset:javascript src="jquery.js"/>

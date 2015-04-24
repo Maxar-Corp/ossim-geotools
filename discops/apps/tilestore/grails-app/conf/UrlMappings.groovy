@@ -17,6 +17,14 @@ class UrlMappings
       "/parseWMTS" { controller = "wmts"; action = "parseWMTS" }
     }
 
+    group "/wfs", {
+      "/" { controller = "wfs"; action = "index" }
+      "/getCapabilities" { controller = "wfs"; action = "getCapabilities" }
+      "/describeFeatureType" { controller = "wfs"; action = "describeFeatureType" }
+      "/getFeature" { controller = "wfs"; action = "getFeature" }
+    }
+
+
     "/$controller/$action?/$id?(.$format)?" {
       constraints {
         // apply constraints here
