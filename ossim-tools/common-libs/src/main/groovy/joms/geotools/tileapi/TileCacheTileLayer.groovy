@@ -3,10 +3,12 @@ package joms.geotools.tileapi
 import geoscript.layer.ImageTile
 import geoscript.layer.ImageTileLayer
 import geoscript.layer.Pyramid
+import groovy.transform.ToString
 
 /**
  * Created by gpotts on 3/18/15.
  */
+@ToString(includeNames = true)
 class TileCacheTileLayer  extends ImageTileLayer{
   Pyramid pyramid
   Pyramid getPyramid()

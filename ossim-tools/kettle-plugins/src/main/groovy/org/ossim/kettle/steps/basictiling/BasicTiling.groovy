@@ -80,7 +80,6 @@ class BasicTiling extends BaseStep implements StepInterface
          inputFilename = getInputRowMeta().getString(r,fileIdx)
       }
 
-
       if(entryIdx >=0)
       {
          entryString = getInputRowMeta().getString(r,entryIdx)
@@ -89,16 +88,19 @@ class BasicTiling extends BaseStep implements StepInterface
       Integer clampMinLevel = -1
       Integer clampMaxLevel = -1
 
+      def options = [:]
       if(meta?.clampMinLevel)
       {
          def minLevel = environmentSubstitute(meta?.clampMinLevel)
          if(minLevel) clampMinLevel = minLevel.toInteger()
+         options.minLevel = clampMinLevel
       }
 
       if(meta?.clampMaxLevel)
       {
          def maxLevel = environmentSubstitute(meta?.clampMaxLevel)
          if(maxLevel) clampMaxLevel = maxLevel.toInteger()
+         options.maxLevel = clampMaxLevel
       }
       int entry = entryString?entryString.toInteger():0
       if(inputFilename)
@@ -107,32 +109,34 @@ class BasicTiling extends BaseStep implements StepInterface
          TileCacheSupport tileCacheSupport = new TileCacheSupport()
          if(tileCacheSupport.openImage(inputFilename))
          {
+            Projection proj = new Projection(meta.projectionType)
             //   println "SHOULD HAVE THIS TYPE OF PROJECTION!!!!!!!!!!! ${meta.projectionType}"
             TileCachePyramid pyramid = new TileCachePyramid(
-                    proj:new Projection(meta.projectionType),
+                    proj:proj,
                     bounds:null,
                     origin: meta.originAsInteger,//Pyramid.Origin.TOP_LEFT,
                     tileWidth: 256,
                     tileHeight: 256
             )
             // println "INITIALIZING GRID!!!!"
-            if(clampMinLevel>=0&&clampMaxLevel>=0)
-            {
-               pyramid.initializeGrids(new TileCacheHints(minLevel:clampMinLevel, maxLevel:clampMaxLevel))
-            }
-            else {
+            //if(clampMinLevel>=0&&clampMaxLevel>=0)
+            //{
+               //pyramid.initializeGrids(new TileCacheHints(minLevel:clampMinLevel, maxLevel:clampMaxLevel))
+            //}
+           // else {
                pyramid.initializeGrids(new TileCacheHints(minLevel:0, maxLevel:24))
-            }
+            //}
 
             // println "GRIDS: ${pyramid.grids*.yResolution as double[]}"
             int nEntries = tileCacheSupport.getNumberOfEntries()
             // println "nentries === ${nEntries}"
             //(0..<nEntries).each{entry->
-            def intersection = pyramid.findIntersections(tileCacheSupport, entry)
+            def intersection = pyramid.findIntersections(tileCacheSupport, entry, options)
 
             if(intersection)
             {
                TileCacheTileLayer layer = new TileCacheTileLayer(
+                       proj:proj,
                        bounds:pyramid.bounds,
                        pyramid:pyramid
                )
@@ -195,7 +199,7 @@ class BasicTiling extends BaseStep implements StepInterface
                   def resultArray = new Object[numberOfOutputFields]
                   if(tileSummaryLevelInfoIdx>-1)
                   {
-                     println tileIterator.levelInformationAsJSON.toString()
+                     //println tileIterator.levelInformationAsJSON.toString()
                 //     resultArray[tileSummaryLevelInfoIdx] = tileIterator.levelInformationAsJSON.toString()
                      resultArray[tileSummaryLevelInfoIdx] = tileIterator.levelInformationAsXML
                   }
