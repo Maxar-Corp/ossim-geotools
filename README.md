@@ -4,7 +4,7 @@
 Is a library that provides the user with a web accessible graphical interface
 that makes it easier to manage geospatial imagery within PostgreSQL and Accumulo. 
 It also allows users to view geospatially encoded tiles and serve them 
-via Open Geospatial Consortium Standards, [OGC Standards](http://www.opengeospatial.org/standards).
+via Open Geospatial Consortium Standards, [(OGC)](http://www.opengeospatial.org/standards).
 
 **Not Complete**
 
@@ -28,59 +28,47 @@ A library that provides functions for putting imagery into postgres/accumulo
 - [Maven >= 3](https://maven.apache.org/)
 - [Gradle](http://gradle.org/)
 
-## Building
+## Installing from RPM
+
+This is the recommended installation method.
 
 Here's the condensed steps:
 
-1. Install OSSIM
+1. Install OSSIM.
 2. Install the joms.jar to the local maven cache for the next step.
-3. Build groovy-swt
-4. Build ossim-tools
-5. Use grails to build the tilestore app
+3. Build groovy-swt.
+4. Build ossim-tools.
+5. Build the tilestore app.
 
-### OSSIM
+### Install [OSSIM](http://trac.osgeo.org/ossim/)
 
-This application uses [OSSIM](http://trac.osgeo.org/ossim/) for a lot of functionality. These are the steps you'll need to follow:
+This application uses OSSIM for a lot of functionality, including JNI bindings.
+        
+1. Add the `ossim` repo to `/etc/yum.repos.d/ossim.repo`:
 
-1. Install [OSSIM](http://trac.osgeo.org/ossim/):
-    - The ossim-geotools distribution uses a lot of the JNI bindings     of the OSSIM distribution and you will need to build the OSSIM distribution or install it from RPM first before proceeding.
-    - You can either build it from source or Install it from our provided RPMs
-        - Instructions for Building [OSSIM](http://trac.osgeo.org/ossim/) from source can be found in the [osgeo repository](http://download.osgeo.org/ossim/docs/doc/) for OSSIM.
-        - Or, add the repo to `/etc/yum.repos.d/ossim.repo`:
-
-        ```
+  
         [ossim]
         gpgcheck=0
         humanname=OSSIM-Yum-Repo
         baseurl=https://s3.amazonaws.com/yumrepos-dev-rbtcloud/CentOS/6/dev/x86_64
         name=ossim
-        ```
-        - Install OSSIM `# yum -y install ossim`
+  
 
-***Perhaps this is obsolete ??***
+2. Install OSSIM with `# yum -y install ossim`
 
-### Using JOMS from RPM distribution
+### joms
 
+You'll need to first install `joms`. If you've previously added the `OSSIM` repo, you can simply install from the RPM:
 
-If you have built the `joms-<version>.jar` and have packaged it into a oms RPM you can install the RPM and then 
-put the jar into a local maven cache.  The OMS rpm should intall the the joms jar file under the /usr/share/java location.  You should see a file there with the name `joms-<version>.jar`
-
-if `<version>` is 1.8.19 then you can issue the following command and install it:
-
-`$ mvn install:install-file -Dfile=joms-1.8.19.jar -DgroupId=org.ossim -DartifactId=joms -Dversion=1.8.19 -Dpackaging=jar`
-
-### Building JOMS
-
-The building is beyond the scope of this document and you should refere to the OSSIM build instructions.  But if you are building ossim distribution then there is a oms/joms directory that builds the JNI bindings to OSSIM.  Currently the build process uses the ant build process and you can install be doing ant mvn-install to install the built joms-<version>.jar file into the local maven cache directory.
-
+1. `# yum -y install liboms`
+2. You'll then need to add the provided jar file to your local MAVEN cache so that gradle can find it in the next step from `/usr/share/java`: `$ mvn install:install-file -Dfile=joms-1.8.19.jar -DgroupId=org.ossim -DartifactId=joms -Dversion=1.8.19 -Dpackaging=jar`
 
 ### groovy-swt
 
 This is a dependency for many of the ossim-tools kettle/data-integration plugin modules, and it's included
 within this repo for convenience.
 
-1. `$ cd groovy-swt`
-2. `$ gradle clean install`
+1. In `groovy-swt`: `$ gradle clean install`
 
 ### ossim-tools
 
@@ -96,6 +84,27 @@ In the `discops/apps/tilestore` directory:
 2. `$ grails compile`
 
 To build the grails application.
+
+## Building from Source
+
+
+### Building JOMS
+
+The building is beyond the scope of this document and you should refere to the OSSIM build instructions.  But if you are building ossim distribution then there is a oms/joms directory that builds the JNI bindings to OSSIM.  Currently the build process uses the ant build process and you can install be doing ant mvn-install to install the built joms-<version>.jar file into the local maven cache directory.
+
+If you have built the `joms-<version>.jar` and have packaged it into a oms RPM you can install the RPM and then 
+put the jar into a local maven cache.  The OMS rpm should intall the the joms jar file under the /usr/share/java location.  You should see a file there with the name `joms-<version>.jar`
+
+if `<version>` is 1.8.19 then you can issue the following command and install it:
+
+### Groovy SWT
+*ADD SOMETHING HERE*
+
+### ossim-tools
+*Add SOMETHING HERE*
+
+### TILESTORE
+*ADD SOMETHING HERE*
 
 
 
