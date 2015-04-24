@@ -305,6 +305,7 @@ class TileCachePyramid extends Pyramid
       }
       int n = 0
       this.grids = (minLevel..maxLevel).collect { long z ->
+
         n = 2**z
         double res = modelSize/n
         new Grid(z,numberTilesAtRes0*n,n,res/tileWidth,res/tileWidth)

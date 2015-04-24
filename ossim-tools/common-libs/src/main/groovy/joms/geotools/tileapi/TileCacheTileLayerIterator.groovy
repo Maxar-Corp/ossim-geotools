@@ -21,19 +21,24 @@ class TileCacheTileLayerIterator {
    private int currentLevel=-1
    private TileCursor tiles
 
+   //private minLevelIndex
+   //private maxLevelIndex
+
    void reset()
    {
       currentLevel = -1
+    //  minLevelIndex = 0
+    //  maxLevelIndex = (maxLevel-minLevel) + 1
    }
    Bounds getBounds(def z)
    {
       if(!bounds)
       {
-         tiles = layer.tiles(z);
+         tiles = layer.tiles(minLevel);
       }
       else
       {
-         tiles = layer.tiles(bounds, z);
+         tiles = layer.tiles(bounds, minLevel);
       }
 
       tiles.bounds
@@ -42,20 +47,21 @@ class TileCacheTileLayerIterator {
    {
       Tile result
 
+     // if(!minLevelIndex) reset()
       if(!tiles?.hasNext())
       {
          if(currentLevel<0) currentLevel=minLevel
          else ++currentLevel
-
+         //if(currentLevel <= maxLevel)
          if(currentLevel <= maxLevel)
          {
             if(!bounds)
             {
-               tiles = layer.tiles(currentLevel);
+               tiles = layer?.tiles(currentLevel);
             }
             else
             {
-               tiles = layer.tiles(bounds, currentLevel);
+               tiles = layer?.tiles(bounds, currentLevel);
             }
          }
          else
@@ -68,7 +74,6 @@ class TileCacheTileLayerIterator {
       {
          result = tiles?.next()
       }
-
       result
    }
    boolean isTileWithin(Tile t)

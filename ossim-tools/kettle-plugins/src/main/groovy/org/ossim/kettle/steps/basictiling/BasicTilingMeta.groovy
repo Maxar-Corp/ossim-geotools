@@ -342,8 +342,8 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 		{
 			mosaicInput = mosaicInputValue.toBoolean()
 		}
-		def clampMinLevel = XMLHandler.getTagValue(values, "clampMinLevel");
-		def clampMaxLevel = XMLHandler.getTagValue(values, "clampMaxLevel");
+		clampMinLevel = XMLHandler.getTagValue(values, "clampMinLevel");
+		clampMaxLevel = XMLHandler.getTagValue(values, "clampMaxLevel");
 
 		projectionType             = XMLHandler.getTagValue(values, "projectionType");
 		def tileIdNameMaskString   = XMLHandler.getTagValue(values, "tileIdNameMask");
