@@ -59,6 +59,8 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 	Integer targetTileWidth	= 256
 	Integer targetTileHeight= 256
 
+	String clampWktField        = ""
+	String clampWktEpsgField    = ""
 	String clampMinLevel   = ""
 	String clampMaxLevel   = ""
 	String inputFilenameField = ""
@@ -93,6 +95,7 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 									tile_level:"tile_level",
 									tile_row:"tile_row",
 									tile_col:"tile_col",
+									tile_mask_aoi:"tile_mask_aoi",
 									//tile_global_row:"tile_global_row",
 									//tile_global_col:"tile_global_col",
 									tile_epsg:"tile_epsg",
@@ -137,6 +140,7 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 									//		tile_global_col:[type:ValueMetaInterface.TYPE_INTEGER],
 											tile_row:[type:ValueMetaInterface.TYPE_INTEGER],
 											tile_col:[type:ValueMetaInterface.TYPE_INTEGER],
+											tile_mask_aoi:[type:ValueMetaInterface.TYPE_STRING],
 											tile_epsg:[type:ValueMetaInterface.TYPE_STRING],
 											tile_minx:[type:ValueMetaInterface.TYPE_NUMBER , len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
 											tile_miny:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
@@ -265,10 +269,9 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 		{
 			retval.append("    ").append(XMLHandler.addTagValue("clampMinLevel", clampMinLevel))
 		}
-		if(clampMaxLevel!=null)
-		{
-			retval.append("    ").append(XMLHandler.addTagValue("clampMaxLevel", clampMaxLevel))
-		}
+		if(clampMaxLevel!=null) retval.append("    ").append(XMLHandler.addTagValue("clampMaxLevel", clampMaxLevel))
+		if(clampWktField) retval.append("    ").append(XMLHandler.addTagValue("clampWktField", clampWktField))
+		if(clampWktEpsgField) retval.append("    ").append(XMLHandler.addTagValue("clampWktEpsgField", clampWktEpsgField))
 
 		if(mosaicInput != null)    retval.append("    ").append(XMLHandler.addTagValue("mosaicInput", mosaicInput))
 		if(projectionType != null) retval.append("    ").append(XMLHandler.addTagValue("projectionType", projectionType))
@@ -344,6 +347,8 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 		}
 		clampMinLevel = XMLHandler.getTagValue(values, "clampMinLevel");
 		clampMaxLevel = XMLHandler.getTagValue(values, "clampMaxLevel");
+		clampWktField      = XMLHandler.getTagValue(values, "clampWktField");
+		clampWktEpsgField  = XMLHandler.getTagValue(values, "clampWktEpsgField");
 
 		projectionType             = XMLHandler.getTagValue(values, "projectionType");
 		def tileIdNameMaskString   = XMLHandler.getTagValue(values, "tileIdNameMask");
@@ -414,6 +419,8 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 	{
 		clampMinLevel = ""
 		clampMaxLevel = ""
+		clampWktField      = ""
+		clampWktEpsgField  = ""
 		targetTileWidth  = 256
 		targetTileHeight = 256
 		mosaicInput      = false
@@ -443,6 +450,8 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 		}
 		clampMinLevel       = rep.getStepAttributeString(id_step, "clampMinLevel");
 		clampMaxLevel       = rep.getStepAttributeString(id_step, "clampMaxLevel");
+		clampWktField            = rep.getStepAttributeString(id_step, "clampWktField");
+		clampWktEpsgField        = rep.getStepAttributeString(id_step, "clampWktEpsgField");
 		def projectionTypeString      = rep.getStepAttributeString(id_step, "projectionType");
 		def projectionMinxString      = rep.getStepAttributeString(id_step, "projectionMinx");
 		def projectionMinyString      = rep.getStepAttributeString(id_step, "projectionMiny");
@@ -492,16 +501,29 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 		 {
 		 	if(clampMinLevel != null)
 		 	{
-				rep.saveStepAttribute(id_transformation, 
-									id_step, "clampMinLevel", 
+				rep.saveStepAttribute(id_transformation,
+									id_step, "clampMinLevel",
 									"${clampMinLevel}".toString()) //$NON-NLS-1$
 		 	}
 		 	if(clampMaxLevel != null)
 		 	{
-				rep.saveStepAttribute(id_transformation, 
-									id_step, "clampMaxLevel", 
+				rep.saveStepAttribute(id_transformation,
+									id_step, "clampMaxLevel",
 									"${clampMaxLevel}".toString()) //$NON-NLS-1$
 		 	}
+			 if(clampWktField != null)
+			 {
+				 rep.saveStepAttribute(id_transformation,
+							id_step, "clampWktField",
+							clampWktField.toString()) //$NON-NLS-1$
+			 }
+			 if(clampWktEpsgField != null)
+			 {
+				 rep.saveStepAttribute(id_transformation,
+							id_step, "clampWktEpsgField",
+							clampWktEpsgField.toString()) //$NON-NLS-1$
+			 }
+
 			rep.saveStepAttribute(id_transformation, 
 								id_step, "mosaicInput", 
 								mosaicInput) //$NON-NLS-1$
