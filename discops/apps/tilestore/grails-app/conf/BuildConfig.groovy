@@ -151,3 +151,8 @@ grails.plugin.location.ossimDiskCache = "../../plugins/ossim-diskcache"
 grails.plugin.location.tilestoreJob = "../../plugins/tilestore-job"
 grails.plugin.location.tilestoreDatabase = "../../plugins/tilestore-database"
 
+grails.plugin.location.tilestoreWFS = "../../plugins/tilestore-wfs"
+grails.plugin.location.tilestoreWMS = "../../plugins/tilestore-wms"
+grails.plugin.location.tilestoreWMTS = "../../plugins/tilestore-wmts"
+
+
