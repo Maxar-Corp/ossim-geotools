@@ -5,9 +5,15 @@
 //= require jquery.js
 //= require bootstrap.js
 //= require ../ol3/ol.js
-//= require bootstrap-select.js
+//= require common/validator.js
+
+//= require admin/bootstrap-select.js
+//= require admin/toastr.js
+//= require admin/spin.js
+//= require admin/ladda.min.js
 
 //= require admin/addLayersAdmin.js
-// require admin/layerManagerAdmin.js
 //= require admin/appAdmin.js
+//= require common/coordinate.js
+//= require common/zoomTo.js
 //= require_self

@@ -24,19 +24,19 @@ environments {
   development {
     dataSource {
       dbCreate = "update" // one of 'create', 'create-drop', 'update', 'validate', ''
-      //url = "jdbc:postgresql://localhost:5432/tilecache-${appVersion}-dev"
+      //url = "jdbc:postgresql://localhost:5432/tilestore-${appVersion}-dev"
       url = "jdbc:postgresql://localhost:5432/raster-test"
     }
   }
   test {
     dataSource {
       dbCreate = "update"
-      url = "jdbc:postgresql:tilecache-${appVersion}-test"
+      url = "jdbc:postgresql:tilestore-${appVersion}-test"
     }
   }
   production {
     dbCreate = "update"
-    url = "jdbc:postgresql:tilecache-${appVersion}-prod"
+    url = "jdbc:postgresql:tilestore-${appVersion}-prod"
     pooled = true
     properties {
       maxActive = -1

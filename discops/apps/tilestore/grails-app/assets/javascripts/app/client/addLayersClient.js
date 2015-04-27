@@ -1,56 +1,18 @@
 AddLayerClient = (function ()
 {
-    //var url ='http://10.0.10.184:8080/tilecache/wfs?request=GetFeature&typeName=tilecache:layers'
-    //var url = "../json_3857.txt"; // For testing while not on RBT network
     var wfsURL;
     var layersArray = [];
-
-    // This allows the client to request more tiles
-    var tileUrls = [
-        'http://s1:8080/tilecache/wms?',
-        'http://s2:8080/tilecache/wms?',
-        'http://s3:8080/tilecache/wms?',
-        'http://s4:8080/tilecache/wms?'
-    ];
 
     return {
         initialize: function ( addLayersClientParams )
         {
             wfsURL = addLayersClientParams.wfsURL;
 
-            //var osmAwsAerialGroup = new ol.layer.Group( {
-            //    layers: [
-            //        new ol.layer.Tile( {
-            //            style: 'Aerial',
-            //            //visible: false,
-            //            source: new ol.source.MapQuest( {layer: 'sat'} ),
-            //            name: 'Aerial'
-            //        } ),
-            //        new ol.layer.Tile( {
-            //            opacity: 1.0,
-            //            source: new ol.source.TileWMS( {
-            //                url: 'http://52.0.52.104/geoserver/ged/wms?',
-            //                params: {'LAYERS': 'planet_osm_line', 'TILED': true}
-            //            } ),
-            //            name: 'Labels'
-            //        } ),
-            //        new ol.layer.Tile( {
-            //            opacity: 1.0,
-            //            source: new ol.source.TileWMS( {
-            //                url: 'http://52.0.52.104/geoserver/ged/wms?',
-            //                params: {'LAYERS': 'ne_10m_populated_places_all', 'TILED': true}
-            //            } ),
-            //            name: 'Place Names'
-            //        } )
-            //    ],
-            //    name: 'Aerial and Labels'
+            //var tileBoundsVectorSource = new ol.source.GeoJSON( {
+            //    url: wfsURL,
+            //    crossOrigin: 'anonymous',
+            //    projection: 'EPSG:3857'
             //} );
-
-            var tileBoundsVectorSource = new ol.source.GeoJSON( {
-                url: wfsURL,
-                crossOrigin: 'anonymous',
-                projection: 'EPSG:3857'
-            } );
 
             // Tile sets extents layer
             //var tileBoundsVectorLayer = new ol.layer.Vector( {
@@ -148,9 +110,9 @@ AddLayerClient = (function ()
             var tileParamGrid = new ol.layer.Tile({
               extent: projectionExtent,
               source: new ol.source.WMTS({
-//                url: '/tilecache/wmts',
+//                url: '/tilestore/wmts',
                 layer: 'highres_3857',
-                url: '/tilecache/wmts/tileParamGrid',
+                url: '/tilestore/wmts/tileParamGrid',
 //                layer: '0',
                 matrixSet: 'EPSG:3857',
                 format: 'image/png',
@@ -180,21 +142,23 @@ AddLayerClient = (function ()
 
             } );
 
-            $.each( addLayersClientParams.tileCacheLayers, function ( idx, tileCacheLayer )
+            //console.log(addLayersClientParams);
+
+            $.each( addLayersClientParams.tilestoreLayers, function ( idx, tilestoreLayer )
             {
                 var tileLayer = new ol.layer.Tile( {
                     opacity: 1.0,
                     source: new ol.source.TileWMS( {
-                        url: addLayersClientParams.tileCacheWmsURL,
-                        params: {'LAYERS': tileCacheLayer.name, 'TILED': true, 'VERSION': '1.1.1'}
+                        url: addLayersClientParams.tilestoreWmsURL,
+                        params: {'LAYERS': tilestoreLayer.name, 'TILED': true, 'VERSION': '1.1.1'}
                     } ),
-                    name: tileCacheLayer.name
+                    name: tilestoreLayer.name
                 } );
 
-                //console.log(tileCacheLayer.name);
+                //console.log(tilestoreLayer.name);
                 $('#tileLayerSelect').append($('<option>', {
-                    value: tileCacheLayer.name,
-                    text : tileCacheLayer.name
+                    value: tilestoreLayer.name,
+                    text : tilestoreLayer.name
                 }));
 
                 layersArray.push( tileLayer ); //highres_us

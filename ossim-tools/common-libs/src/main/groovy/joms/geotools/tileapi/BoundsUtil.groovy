@@ -30,10 +30,15 @@ class BoundsUtil {
   }
   static Polygon polygonFromEpsg(String epsg)
   {
+     def b = getDefaultBounds(new Projection(epsg))
+
+     b.geometry.g as Polygon
+     /*
     Projection proj = new Projection(epsg)
     Bounds bounds = proj.bounds
 
     bounds.geometry.g as Polygon
+   */
   }
   static Bounds getDefaultBounds(Projection proj)
   {

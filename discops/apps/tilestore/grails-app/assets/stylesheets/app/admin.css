@@ -2,7 +2,9 @@
 *= require ../ol3/ol.css
 *= require bootstrap.css
 *= require font-awesome.css
-*= require admin/jquery.dataTables.css
+*= require admin/bootstrap-select.css
+*= require admin/toastr.css
+*= require admin/ladda-themeless.min.css
 *= require admin/styles.css
 *= require_self
 */

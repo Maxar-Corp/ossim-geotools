@@ -274,8 +274,8 @@ class TileCachePyramid extends Pyramid
 
     if(!clippedBounds) clippedBounds = this.bounds
 
-    int minLevel = hints.minLevel?:0
-    int maxLevel = hints.maxLevel?:22
+    Integer minLevel = hints.minLevel?:0
+    Integer maxLevel = hints.maxLevel?:22
 
     if((minLevel!=null)&&(maxLevel!=null))
     {
@@ -305,6 +305,7 @@ class TileCachePyramid extends Pyramid
       }
       int n = 0
       this.grids = (minLevel..maxLevel).collect { long z ->
+
         n = 2**z
         double res = modelSize/n
         new Grid(z,numberTilesAtRes0*n,n,res/tileWidth,res/tileWidth)
