@@ -46,7 +46,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   TileCacheLayerInfoDAO layerInfoTableDAO
   Sql sql
   def sqlSession
-
+  def tableNamePrefix = "tilestore_"
 
   void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
@@ -186,16 +186,17 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
    // Sql sql = new Sql(tempSession.connection())
      //create_table_if_not_exists
     //CREATE TABLE ${target} as select * from tile_cache_tile_table_template with no data;
-    String createStmt =  "CREATE TABLE ${target} as select * from tile_cache_tile_table_template with no data;"
+//    String createStmt =  "CREATE TABLE ${target} as select * from tile_cache_tile_table_template with no data;"
 //
+    String createStmt = "CREATE TABLE ${target} ( LIKE tile_cache_tile_table_template, PRIMARY KEY (hash_id));"
     String sqlString = """
         SELECT create_table_if_not_exists('${target}','${createStmt}');
         SELECT create_index_if_not_exists('${target}', 'bounds_idx', 'USING GIST(bounds)');
-        SELECT create_index_if_not_exists('${target}', 'hash_id_idx', '(hash_id)');
         SELECT create_index_if_not_exists('${target}', 'res_idx', '(res)');
     """.toString()
     sql.execute(sqlString)
   }
+//        SELECT create_index_if_not_exists('${target}', 'hash_id_idx', '(hash_id)');
 
   @Transactional void renameLayer(String oldName, String newName) throws Exception
   {
@@ -203,7 +204,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     if(layer)
     {
       def oldTileStore = layer.tileStoreTable
-      String defaultTileStore = "omar_tilecache_${newName.toLowerCase()}_tiles"
+      String defaultTileStore = "${tableNamePrefix}${newName.toLowerCase()}_tiles"
       layer.tileStoreTable = defaultTileStore
       layer.name = newName
       layerInfoTableDAO.update(layer)
@@ -219,7 +220,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   @Transactional
   TileCacheLayerInfo createOrUpdateLayer(TileCacheLayerInfo layerInfo)
   {
-    String defaultTileStore = "omar_tilecache_${layerInfo.name.toLowerCase()}_tiles"
+    String defaultTileStore = "${tableNamePrefix}${layerInfo.name.toLowerCase()}_tiles"
     TileCacheLayerInfo layer = layerInfoTableDAO.findByName(layerInfo.name)
 
    //println "TABLE ${defaultTileStore} Exists???? ${tableExists(defaultTileStore)}"
