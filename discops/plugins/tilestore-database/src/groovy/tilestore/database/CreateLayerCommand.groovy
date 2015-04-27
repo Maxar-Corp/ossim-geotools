@@ -37,7 +37,7 @@ class CreateLayerCommand implements CaseInsensitiveBind
 
    String getTilesTableName()
    {
-      "omar_tilecache_${name.toLowerCase()}_tiles".toString()
+      "tilestore_${name.toLowerCase()}_tiles".toString()
    }
    void initFromJson(def jsonObj)
    {
