@@ -60,6 +60,10 @@ class TileCacheLayerInfo {
   @Pattern(regexp="^[a-zA-Z]+[a-zA-Z0-9_]*", message="layer names must start with Alphabetic followed by alphanumeric and underscores")
   String name
 
+  @Column(name = "description")
+  @Type(type="text")
+  String description
+
   @Column(name = "tile_store_table")
   String tileStoreTable
 
