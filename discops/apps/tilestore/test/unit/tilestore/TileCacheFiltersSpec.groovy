@@ -1,4 +1,4 @@
-package tilecache
+package tilestore
 
 import grails.test.mixin.Mock
 import spock.lang.Specification

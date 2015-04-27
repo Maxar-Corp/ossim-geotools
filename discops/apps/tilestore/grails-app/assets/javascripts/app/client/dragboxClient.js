@@ -3,8 +3,8 @@ DragBoxClient = (function ()
 
     var output, outputWkt, formatWkt, aoiLodSlider;
 
-    var urlProductExport; // = "http://10.0.10.181:8080/tilecache/product/export/";
-    var urlLayerActualBounds; // = "http://10.0.10.181:8080/tilecache/accumuloProxy/actualBounds?"
+    var urlProductExport; // = "http://10.0.10.181:8080/tilestore/product/export/";
+    var urlLayerActualBounds; // = "http://10.0.10.181:8080/tilestore/accumuloProxy/actualBounds?"
 
     var aoiFeature = new ol.Feature();
 

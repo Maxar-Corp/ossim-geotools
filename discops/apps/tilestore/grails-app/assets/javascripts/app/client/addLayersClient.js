@@ -110,9 +110,9 @@ AddLayerClient = (function ()
             var tileParamGrid = new ol.layer.Tile({
               extent: projectionExtent,
               source: new ol.source.WMTS({
-//                url: '/tilecache/wmts',
+//                url: '/tilestore/wmts',
                 layer: 'highres_3857',
-                url: '/tilecache/wmts/tileParamGrid',
+                url: '/tilestore/wmts/tileParamGrid',
 //                layer: '0',
                 matrixSet: 'EPSG:3857',
                 format: 'image/png',
@@ -142,21 +142,23 @@ AddLayerClient = (function ()
 
             } );
 
-            $.each( addLayersClientParams.tileCacheLayers, function ( idx, tileCacheLayer )
+            //console.log(addLayersClientParams);
+
+            $.each( addLayersClientParams.tilestoreLayers, function ( idx, tilestoreLayer )
             {
                 var tileLayer = new ol.layer.Tile( {
                     opacity: 1.0,
                     source: new ol.source.TileWMS( {
-                        url: addLayersClientParams.tileCacheWmsURL,
-                        params: {'LAYERS': tileCacheLayer.name, 'TILED': true, 'VERSION': '1.1.1'}
+                        url: addLayersClientParams.tilestoreWmsURL,
+                        params: {'LAYERS': tilestoreLayer.name, 'TILED': true, 'VERSION': '1.1.1'}
                     } ),
-                    name: tileCacheLayer.name
+                    name: tilestoreLayer.name
                 } );
 
-                //console.log(tileCacheLayer.name);
+                //console.log(tilestoreLayer.name);
                 $('#tileLayerSelect').append($('<option>', {
-                    value: tileCacheLayer.name,
-                    text : tileCacheLayer.name
+                    value: tilestoreLayer.name,
+                    text : tilestoreLayer.name
                 }));
 
                 layersArray.push( tileLayer ); //highres_us
