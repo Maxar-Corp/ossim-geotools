@@ -1,6 +1,6 @@
 package org.ossim.kettle.steps.jobmessage
 
-import org.ossim.oms.job.MessageFactory
+import org.ossim.oms.job.MessageHandlerFactory
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.row.RowDataUtil;

@@ -264,7 +264,6 @@ project( ':kettle-libs' ) {
       compile 'org.springframework:spring-beans:4.1.4.RELEASE'
       compile 'javax.validation:validation-api:1.1.0.Final'
       compile 'org.hibernate:hibernate-validator:4.3.2.Final'
-      compile "org.ossim:joms:${JOMS_VERSION}"
       compile group: 'groovy-swt', name:'groovy-swt', version: '0.8', classifier: "without-swt"
 
       switch ( accumuloTarget )
