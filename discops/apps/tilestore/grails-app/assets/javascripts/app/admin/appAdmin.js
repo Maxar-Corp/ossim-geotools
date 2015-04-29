@@ -121,7 +121,7 @@ AppAdmin = (function () {
         addNewLayer = new ol.layer.Tile( {
             opacity: 1.0,
             source: new ol.source.TileWMS( {
-                url: loadParams.tileCacheWmsURL,
+                url: loadParams.tilestoreWmsURL,
                 params: {'LAYERS': addNewLayer, 'TILED': true, 'VERSION': '1.1.1'}
             } ),
             name: addNewLayer
