@@ -1,10 +1,14 @@
 AppAdmin = (function () {
     //TODO: Cache jquery selectors.  Possibly use this solution:
     //      http://ttmm.io/tech/selector-caching-jquery/
-    var tileCacheLayers;
+    var loadParams;
     var $select = $('.selectpicker').selectpicker();
+    var $tileLayerSelect = $('#tileLayerSelect');
     var $minTileLevel = $('#minTileLevel');
     var $maxTileLevel = $('#maxTileLevel');
+
+    var currentTileLayer;
+    var initLayer;
 
     // Begin map stuff ##############################################################
     // 4326
@@ -98,8 +102,8 @@ AppAdmin = (function () {
     //var fullScreenControl = new ol.control.FullScreen();
     //mapOmar.addControl(fullScreenControl);
     //mapTile.addControl(fullScreenControl);
-
-    // Add Zoom Slider
+    //
+    //// Add Zoom Slider
     //var zoomslider = new ol.control.ZoomSlider();
     //mapOmar.addControl(zoomslider);
     //mapTile.addControl(zoomslider);
@@ -109,6 +113,24 @@ AppAdmin = (function () {
     //mapOmar.addControl(scaleBar);
     //mapTile.addControl(scaleBar);
 
+    function switchCurrentLayer(removeOldLayer, addNewLayer){
+
+        mapTile.removeLayer(removeOldLayer);
+
+        console.log('Now loading: ' + addNewLayer);
+        addNewLayer = new ol.layer.Tile( {
+            opacity: 1.0,
+            source: new ol.source.TileWMS( {
+                url: loadParams.tileCacheWmsURL,
+                params: {'LAYERS': addNewLayer, 'TILED': true, 'VERSION': '1.1.1'}
+            } ),
+            name: addNewLayer
+        } );
+        mapTile.addLayer(addNewLayer);
+        initLayer = addNewLayer;
+
+    }
+
     // End map stuff #################################################################
 
     // Begin CRUD stuff ##############################################################
@@ -116,15 +138,17 @@ AppAdmin = (function () {
     // Done: 04-19-15 - Create a function that gets the tile cache layers from the initParams
     //       passed in from the AppController
     function getTileLayers(params, elem) {
-        return $.each(params, function (index, tileCacheLayer) {
+        //Note: was a return on $.each
+        var dfd = $.Deferred();
+        $.each(params, function (index, tileCacheLayer) {
+            var deffered = $.Deferred();
             $(elem).append($('<option>', {
                 value: tileCacheLayer.name,
                 text: tileCacheLayer.name
             }));
             $(elem).selectpicker('refresh');
-            //console.log('getTileLayers fired!');
         });
-
+        return dfd.promise();
     }
 
     // The tile layer object
@@ -134,6 +158,13 @@ AppAdmin = (function () {
         name: "TileLayer",
         epsgCode: "EPSG:3857"
     }
+
+    $tileLayerSelect.on('change', function() {
+        console.log('select on change:' + $tileLayerSelect.val())
+        switchCurrentLayer(initLayer, $tileLayerSelect.val());
+        // Remove current function
+        // Add new function
+    });
 
     $('#navCreateLayer').click(function () {
         $('#createTileLayerModal').modal('show');
@@ -174,8 +205,8 @@ AppAdmin = (function () {
 
         // Set our layer object to the parameters from the create layer form on the modal
         objLayer.name = $('#createLayerName').val();
-        objLayer.minLevel = $('#minTileLevel').val();
-        objLayer.maxLevel = $('#maxTileLevel').val();
+        objLayer.minLevel = $minTileLevel.val();
+        objLayer.maxLevel = $maxTileLevel.val();
         objLayer.epsgCode = $('#epsgCode').val();
 
         // Done: 04-17-15
@@ -194,15 +225,18 @@ AppAdmin = (function () {
 
         function successHandlerCreate(data, textStatus, jqXHR) {
             //console.log(JSON.stringify(data));
-            console.log(textStatus);  // === success
+            //console.log(textStatus);  // === success
             //console.log(jqXHR.status); // === 200
 
             if (jqXHR.status === 200) {
 
                 // Done: 04-16-15 - Puts new tile layer into dropdown list, and sets it as the active layer
+                var oldTileLayerName = $tileLayerSelect.val();
+                console.log(oldTileLayerName);
+
                 var newTileLayerName = data.name;
-                console.log(newTileLayerName);
-                $('#tileLayerSelect').append('<option value="' + newTileLayerName + '" selected="selected">' + newTileLayerName + '</option>');
+                //console.log(newTileLayerName);
+                $tileLayerSelect.append('<option value="' + newTileLayerName + '" selected="selected">' + newTileLayerName + '</option>');
                 $('#renameTileLayer').append('<option value="' + newTileLayerName + '" selected="selected">' + newTileLayerName + '</option>');
                 $('#deleteTileLayer').append('<option value="' + newTileLayerName + '" selected="selected">' + newTileLayerName + '</option>');
                 $select.selectpicker('refresh');
@@ -219,8 +253,11 @@ AppAdmin = (function () {
 
                 toastr.success(newTileLayerName + ' has been successfully created,' +
                 ' and is now the active tile layer', 'Tile Layer Created');
+                
+                // Done - 04-24-15 - Add logic for adding the new tile layer to the tile layer map
+                //console.log($tileLayerSelect.val());
+                switchCurrentLayer(initLayer, $tileLayerSelect.val());
 
-                // TODO: Add logic for adding the new tile layer to the tile layer map
 
             }
             else {
@@ -240,14 +277,13 @@ AppAdmin = (function () {
         ajaxCreateLayer().done(successHandlerCreate).fail(errorHandlerCreate);
     });
 
-    $('#minTileLevel').on('change', function () {
+    $minTileLevel.on('change', function () {
 
         // Done - 04-22-15 - Refactored $maxTileLevel <select> on create layer modal so that
         //        the user it is updated to reflect only the levels that are available after
         //        a minTileLevel has been select.  Restricts user from choosing a level lower
         //        than is available.
-        console.log($maxTileLevel);
-
+        //console.log($maxTileLevel);
         for (var i = 0; i < 23; i++) {
             //console.log(i);
             $maxTileLevel.find('[value=' + i + ']').remove();
@@ -271,7 +307,7 @@ AppAdmin = (function () {
 
     // Done - 04-21-15 - Bind the list of tile layers to the select element one time only
     $('#navRenameLayer').one('click', function () {
-        getTileLayers(tileCacheLayers.tileCacheLayers, '#renameTileLayer');
+        getTileLayers(loadParams.tilestoreLayers, '#renameTileLayer');
     });
 
     $('#navRenameLayer').click(function () {
@@ -323,7 +359,7 @@ AppAdmin = (function () {
                 // Done 04-20-15
                 $select.find('[value=' + oldName + ']').remove();
                 $('#renameTileLayer').append('<option value="' + newName + '" selected="selected">' + newName + '</option>');
-                $('#tileLayerSelect').append('<option value="' + newName + '" selected="selected">' + newName + '</option>');
+                $tileLayerSelect.append('<option value="' + newName + '" selected="selected">' + newName + '</option>');
                 $('#deleteTileLayer').append('<option value="' + newName + '" selected="selected">' + newName + '</option>');
                 $select.selectpicker('refresh');
 
@@ -358,7 +394,7 @@ AppAdmin = (function () {
 
     // Done - 04-21-15 - Bind the list of tile layers to the select element one time only.
     $('#navDeleteLayer').one('click', function () {
-        getTileLayers(tileCacheLayers.tileCacheLayers, '#deleteTileLayer');
+        getTileLayers(loadParams.tilestoreLayers, '#deleteTileLayer');
     });
 
     $('#navDeleteLayer').click(function () {
@@ -395,8 +431,8 @@ AppAdmin = (function () {
 
         // Done: 04-19-15
         function successHandlerDelete(data, textStatus, jqXHR) {
-            console.log(jqXHR.status);
-            console.log(textStatus);
+            //console.log(jqXHR.status);
+            //console.log(textStatus);
 
             if (jqXHR.status === 200) {
                 //console.log('We have 200!');
@@ -431,9 +467,34 @@ AppAdmin = (function () {
         //console.log($(this));
 
         if (frm === 'create') {
-            console.log('create');
-            $('#minTileLevel').selectpicker('val', '0');
-            $('#maxTileLevel').selectpicker('val', '20');
+            //console.log('create');
+
+            // Done: 04-23-15 - Added ability to reset the form elements back to
+            //       their original state.
+            // TODO: Need to refactor this into a function
+            for (var i = 0; i < 23; i++) {
+                //console.log(i);
+                $maxTileLevel.find('[value=' + i + ']').remove();
+                $maxTileLevel.selectpicker('refresh');
+            }
+            for (var i = 0; i < 23; i++) {
+                //console.log(i);
+                $maxTileLevel.append('<option value="' + i + '">' + i + '</option>');
+                $maxTileLevel.selectpicker('val', '20');  // intial value for max level
+                $maxTileLevel.selectpicker('refresh');
+            }
+            for (var i = 0; i < 23; i++) {
+                //console.log(i);
+                $minTileLevel.find('[value=' + i + ']').remove();
+                $minTileLevel.selectpicker('refresh');
+            }
+            for (var i = 0; i < 23; i++) {
+                //console.log(i);
+                $minTileLevel.append('<option value="' + i + '">' + i + '</option>');
+                $minTileLevel.selectpicker('val', '0');  // intial value for max level
+                $minTileLevel.selectpicker('refresh');
+            }
+
             $('#epsgCode').selectpicker('val', 'EPSG:3857');
             $select.selectpicker('render');
             $("#createTileLayerForm").trigger('reset');
@@ -446,6 +507,10 @@ AppAdmin = (function () {
 
     }
 
+    function getCurrentTileLayer(){
+        currentTileLayer = $tileLayerSelect.val();
+    }
+
     // Parameters for the toastr banner
     toastr.options = {
         "closeButton": true,
@@ -455,14 +520,36 @@ AppAdmin = (function () {
         "hideMethod": "fadeOut",
         "timeOut": "10000"
     }
+
     // End CRUD stuff ##############################################################
 
     return {
         initialize: function (initParams) {
 
-            tileCacheLayers = initParams;
+            loadParams = initParams;
+            console.log(loadParams);
 
-            getTileLayers(tileCacheLayers.tileCacheLayers, '#tileLayerSelect');
+            //console.log(initParams.omarWmsUrl);
+            //console.log(tilestoreLayers);
+            // Done: 04-23-05 Add .done via a $.Deffered() to grab the value of the $tileLayerSelect
+            //       This is needed, because the select options are populated after the DOM is loaded.
+            getTileLayers(loadParams.tilestoreLayers, $tileLayerSelect)
+                .done(
+                    getCurrentTileLayer()
+                );
+            function addInitialLayer(){
+                console.log(currentTileLayer);
+                initLayer = new ol.layer.Tile( {
+                    opacity: 1.0,
+                    source: new ol.source.TileWMS( {
+                        url: loadParams.tilestoreWmsURL,
+                        params: {'LAYERS': currentTileLayer, 'TILED': true, 'VERSION': '1.1.1'}
+                    } ),
+                    name: currentTileLayer
+                } );
+                mapTile.addLayer(initLayer);
+            }
+            addInitialLayer();
 
         }
         //mapOmar: mapOmar,
