@@ -16,7 +16,9 @@ class TileCacheTagLib
       def id = attrs.id ? "id=\"${attrs.id}\"" : ''
       def style = attrs.style?:""
       def classString = "class=\"${attrs.class?:''.toString()}\""
-      if ( !style ) style = "style=\"background: ${levelMap.color}; color: black; font-size:${fontSize}; font-weight:${fontWeight}\""
+      if ( !style ) style = "style=\"background: ${levelMap.color}; color: black; text-shadow: 0px .5px .5px #fff; " +
+              "font-size:${fontSize}; " +
+              "font-weight:${fontWeight};\""
      // println style
       out << """<div ${id} ${style} ${classString}>
        ${levelMap.description}
