@@ -1,6 +1,7 @@
 package tilestore.wfs
 
 import com.vividsolutions.jts.geom.Envelope
+import geoscript.GeoScript
 import geoscript.geom.Bounds
 import grails.converters.JSON
 import grails.transaction.Transactional
@@ -569,6 +570,12 @@ class WebFeatureService implements InitializingBean
       // application/javascript if callback is available
       response.contentType = "application/json"
       def layers = layerManagerService.daoTileCacheService.listAllLayers()
+
+
+      println layers
+
+//      def layers = layerManagerService.getLayers()
+
       def result = [type: "FeatureCollection", features: []]
       layers.each { layer ->
         TileCacheLayerInfo inf;
@@ -606,24 +613,22 @@ class WebFeatureService implements InitializingBean
 
   private def getFeatureTypes()
   {
-    def featureTypes = layerManagerService?.layers?.data?.rows?.collect { row ->
-      def bounds = row?.bbox?.split( ',' )*.toDouble() as Bounds
+    layerManagerService.getTileCacheLayers().collect { row ->
+      Bounds bounds = GeoScript.wrap( row.bounds )?.bounds
 
-      bounds.proj = row.epsgCode
+      bounds?.proj = row?.epsgCode
+
       [
           namespace: [id: 'tilestore', uri: 'http://tilestore.ossim.org'],
           name: row.name,
           title: row.name,
-          description: '',
+          description: row.description,
           keywords: [],
           projection: bounds.proj.id,
           bounds: bounds
       ]
     }
-
-    featureTypes
   }
-
 
   private def convertToXsdType(def inputType)
   {
