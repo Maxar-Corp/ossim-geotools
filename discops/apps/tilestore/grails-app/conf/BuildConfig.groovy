@@ -100,6 +100,7 @@ grails.project.dependency.resolution = {
 
     mavenRepo 'http://www.hibernatespatial.org/repository'
     mavenRepo 'http://www.terracotta.org/download/reflector/releases'
+    mavenRepo "http://oss.sonatype.org/content/repositories/snapshots" 
   }
 
   dependencies {
@@ -119,6 +120,9 @@ grails.project.dependency.resolution = {
     //  compile 'org.springframework:spring-core:4.1.4.RELEASE'
     //  compile 'org.springframework:spring-context:4.1.4.RELEASE'
     //  compile 'org.springframework:spring-orm:4.1.4.RELEASE'
+    test("org.seleniumhq.selenium:selenium-firefox-driver:2.45.0")
+    test "org.gebish:geb-spock:0.10.0"
+    test "org.gebish:geb-junit4:0.10.0"
   }
 
   plugins {
@@ -143,6 +147,7 @@ grails.project.dependency.resolution = {
     //compile ":less-asset-pipeline:1.10.0"
     //compile ":coffee-asset-pipeline:1.8.0"
     //compile ":handlebars-asset-pipeline:1.3.0.3"
+    test ":geb:0.10.0"
   }
 }
 
