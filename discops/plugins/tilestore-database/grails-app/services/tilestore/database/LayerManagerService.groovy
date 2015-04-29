@@ -33,20 +33,23 @@ class LayerManagerService implements InitializingBean
   {
     Hints.putSystemDefault( Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE )
 
-    hibernate = new TileCacheHibernate()
-    dataSourceProps = grailsApplication.config.dataSource.toProperties()
-    hibernate.initialize( [
-        dbCreate: dataSourceProps.dbCreate,
-        driverClassName: dataSourceProps.driverClassName,
-        username: dataSourceProps.username,
-        password: dataSourceProps.password,
-        url: dataSourceProps.url,
-        accumuloInstanceName: grailsApplication.config.accumulo.instance,
-        accumuloPassword: grailsApplication.config.accumulo.password,
-        accumuloUsername: grailsApplication.config.accumulo.username,
-        accumuloZooServers: grailsApplication.config.accumulo.zooServers
-    ] )
-    daoTileCacheService = hibernate.applicationContext.getBean( "tileCacheServiceDAO" );
+    if ( ! grailsApplication.config.tilestore.disableAccumulo  )
+    {
+      hibernate = new TileCacheHibernate()
+      dataSourceProps = grailsApplication.config.dataSource.toProperties()
+      hibernate.initialize( [
+          dbCreate: dataSourceProps.dbCreate,
+          driverClassName: dataSourceProps.driverClassName,
+          username: dataSourceProps.username,
+          password: dataSourceProps.password,
+          url: dataSourceProps.url,
+          accumuloInstanceName: grailsApplication.config.accumulo.instance,
+          accumuloPassword: grailsApplication.config.accumulo.password,
+          accumuloUsername: grailsApplication.config.accumulo.username,
+          accumuloZooServers: grailsApplication.config.accumulo.zooServers
+      ] )
+      daoTileCacheService = hibernate.applicationContext.getBean( "tileCacheServiceDAO" );
+    }
 
     getMapBlockingQueue = new LinkedBlockingQueue( grailsApplication.config.tilestore.maxTileConnections ?: 20 )
     ( 0..<10 ).each { getMapBlockingQueue.put( 0 ) }
