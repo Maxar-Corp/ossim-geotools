@@ -91,12 +91,19 @@ public class ImageInfoDialog extends BaseStepDialog implements
 					onEvent(type:'Modify') { input.setChanged() }
 				}
 				label Messages.getString("ImageInfoDialog.inputFilenameField.Label")
-				cCombo(id:"inputFilenameField", 
-					   items:SwtUtilities.previousStepFields(transMeta, stepname), 
-					   layoutData:"span,growx")
-				{
-					onEvent(type:'FocusIn') { input.setChanged(); }
-				}
+				cCombo(id:"inputFilenameField",
+						  items:SwtUtilities.previousStepFields(transMeta, stepname),
+						  layoutData:"span,growx")
+						  {
+							  onEvent(type:'FocusIn') { input.setChanged(); }
+						  }
+				label Messages.getString("ImageInfoDialog.inputEntryField.Label")
+				cCombo(id:"inputEntryField",
+						  items:SwtUtilities.previousStepFields(transMeta, stepname),
+						  layoutData:"span,growx")
+						  {
+							  onEvent(type:'FocusIn') { input.setChanged(); }
+						  }
 			}
 			group(id:"outputFields",layoutData:"grow, spanx, wrap"){
 				migLayout(layoutConstraints:"insets 2", columnConstraints: "[grow]")
@@ -191,6 +198,7 @@ public class ImageInfoDialog extends BaseStepDialog implements
 	{
 		swt.stepName.selectAll();
 		swt.inputFilenameField.text = input.inputFilenameField as String
+		swt.inputEntryField.text = input.inputEntryField as String
 		loadSelectedFields();
 
 		//swt.fileFieldName.text = Const.NVL((String)input.fileFieldName, "")
@@ -210,6 +218,7 @@ public class ImageInfoDialog extends BaseStepDialog implements
 		if (Const.isEmpty(swt.stepName.text)) return;
 		def tableView = swt.fieldSelection
 		input.inputFilenameField = swt.inputFilenameField.text
+		input.inputEntryField = swt.inputEntryField.text
 
 		input.selectedFieldNames = [] as Set
 		stepname = swt.stepName.text

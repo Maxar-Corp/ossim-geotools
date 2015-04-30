@@ -33,6 +33,61 @@ class ImageInfo extends BaseStep implements StepInterface
 		super(stepMeta, stepDataInterface, copyNr, transMeta, trans);
 	}
 
+	private def rasterEntryInfo(def rasterEntry)
+	{
+		def resultArray = []
+
+		meta.selectedFieldNames.each{key->
+			def fieldName = meta?.fieldNameDefinitions?."${key}".rasterEntryName
+
+			if(fieldName)
+			{
+				def value = rasterEntry."${fieldName}"
+				switch(meta.fieldNameDefinitions."${key}".type)
+				{
+					case ValueMetaInterface.TYPE_INTEGER:
+						resultArray << (Long)value
+						break
+					default:
+						resultArray << value
+						break
+				}
+			}
+			else
+			{
+				def tempValue
+				switch(key)
+				{
+					case "overviewFile":
+						tempValue = rasterEntry.getFileNameOfType("overview")
+						break
+					case "histogramFile":
+						tempValue = rasterEntry.getFileNameOfType("histogram")
+						break
+					case "validVerticesFile":
+						tempValue = rasterEntry.getFileNameOfType("valid_vertices")
+						break
+					case "ossimMetaDataFile":
+						tempValue = rasterEntry.getFileNameOfType("omd")
+						break
+					case "kmlFile":
+						tempValue = rasterEntry.getFileNameOfType("kml")
+						break
+					case "thumbnailFile":
+						tempValue = rasterEntry.getFileNameOfType("thumbnail")
+						break
+					case "geomFile":
+						tempValue = rasterEntry.getFileNameOfType("geom")
+						break
+					default:
+						break
+				}
+				resultArray << tempValue
+			}
+
+		}
+		resultArray
+	}
 	public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws KettleException {
 
 		meta = (ImageInfoMeta) smi;
@@ -52,12 +107,16 @@ class ImageInfo extends BaseStep implements StepInterface
 			data.outputRowMeta = getInputRowMeta().clone()
 			meta.getFields(data.outputRowMeta, getStepname(), null, null, this)
 		}
+		String filename
+		String entry
 		int fileIdx =  getInputRowMeta().indexOfValue(meta.inputFilenameField)
+		int entryIdx = -1
+		if(meta.inputEntryField) entryIdx = getInputRowMeta().indexOfValue(meta.inputEntryField)
+		if(fileIdx >=0) filename = getInputRowMeta().getString(row,fileIdx)
+		if(entryIdx>=0) entry =  getInputRowMeta().getString(row,entryIdx)
 
-		if(fileIdx >= 0 && (meta.selectedFieldNames))
+		if(filename && (meta.selectedFieldNames))
 		{
-			def filename = getInputRowMeta().getString(row,fileIdx)
-
 			def omsInfo = new DataInfo();
 
 			if(omsInfo.open(filename))
@@ -72,64 +131,33 @@ class ImageInfo extends BaseStep implements StepInterface
 						hints.set(XmlIoHints.COLLAPSE_META|XmlIoHints.STORE_META)
 					}
 					hibernateDataInfo.initFromString(info, hints)
-					hibernateDataInfo.rasterEntries.each{rasterEntry->
-					def resultArray = []
 
-						meta.selectedFieldNames.each{key->
-							def fieldName = meta?.fieldNameDefinitions?."${key}".rasterEntryName
-							
-							if(fieldName)
-							{
-								def value = rasterEntry."${fieldName}"
-								switch(meta.fieldNameDefinitions."${key}".type)
-								{
-									case ValueMetaInterface.TYPE_INTEGER:
-										resultArray << (Long)value
-										break
-									default:
-										resultArray << value
-										break
-								}
-							}
-							else
-							{
-								def tempValue
-								switch(key)
-								{
-									case "overviewFile":
-										 tempValue = rasterEntry.getFileNameOfType("overview")
-										break
-									case "histogramFile":
-										tempValue = rasterEntry.getFileNameOfType("histogram")
-										break
-									case "validVerticesFile":
-										tempValue = rasterEntry.getFileNameOfType("valid_vertices")
-										break
-									case "ossimMetaDataFile":
-										tempValue = rasterEntry.getFileNameOfType("omd")
-										break
-									case "kmlFile":
-										tempValue = rasterEntry.getFileNameOfType("kml")
-										break
-									case "thumbnailFile":
-										tempValue = rasterEntry.getFileNameOfType("thumbnail")
-										break
-									case "geomFile":
-										tempValue = rasterEntry.getFileNameOfType("geom")
-										break
-									default:
-										break
-								}
-								resultArray << tempValue
-							}
-
-						}
-						if(resultArray)
+					if(entry)
+					{
+					  def rasterEntry = hibernateDataInfo.rasterEntries.find{it.entryId == entry}
+						if(rasterEntry)
 						{
-							Object[] outputRow = RowDataUtil.addRowData(row, 
-								                                          data.outputRowMeta.size()-(resultArray.size()), 
-								                                          resultArray as Object []);
-							putRow(data.outputRowMeta, outputRow);
+							def resultArray = rasterEntryInfo(rasterEntry)
+							if(resultArray)
+							{
+								Object[] outputRow = RowDataUtil.addRowData(row,
+										  data.outputRowMeta.size()-(resultArray.size()),
+										  resultArray as Object []);
+								putRow(data.outputRowMeta, outputRow);
+							}
+						}
+					}
+					else
+					{
+						hibernateDataInfo.rasterEntries.each{rasterEntry->
+							def resultArray = rasterEntryInfo(rasterEntry)
+							if(resultArray)
+							{
+								Object[] outputRow = RowDataUtil.addRowData(row,
+										  data.outputRowMeta.size()-(resultArray.size()),
+										  resultArray as Object []);
+								putRow(data.outputRowMeta, outputRow);
+							}
 						}
 					}
 				}

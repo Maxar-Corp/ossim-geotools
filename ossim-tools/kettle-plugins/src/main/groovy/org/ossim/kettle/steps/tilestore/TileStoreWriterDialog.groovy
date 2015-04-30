@@ -362,7 +362,7 @@ class TileStoreWriterDialog extends BaseStepDialog implements
       }
       if(input.tileStoreCommon.clusterName)
       {
-         swt.namedClusterWidgetId.selectedNamedCluster = input.tileStoreCommon.clusterName
+         swt.namedClusterWidgetId.setSelectedNamedCluster(input.tileStoreCommon.clusterName)
       }
 
       def tableView = swt.fieldMappings

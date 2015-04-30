@@ -112,24 +112,32 @@ public class BasicTilingDialog extends BaseStepDialog implements
             label Messages.getString("BasicTilingDialog.TileNameMask.Label")
 
             //text(id:"stepName", text: stepname ,layoutData:"span, growx"){
-            text(id:"tileNameMask", layoutData:"span,growx", text:input.tileIdNameMask){
+            text(id:"tileNameMask", layoutData:"span,growx"){
                onEvent(type:'Modify') { input.setChanged() }
             }
-            label (id:"clampWktFieldLabel", text:"Clamp Wkt")
-            cCombo(id:"clampWktField",
-                    items:SwtUtilities.previousStepFields(transMeta, stepname, [OssimValueMetaBase.TYPE_GEOMETRY_2D,
-                                                                                ValueMetaInterface.TYPE_STRING]),
-                    layoutData:"span,growx")
+            label (id:"clampWktLabel", text:"Clamp Wkt")
+            text(id:"clampWkt", layoutData:"span,growx")
                     {
-                       onEvent(type:'Modify') { input.setChanged(); }
+                       onEvent(type: "Modify"){input.setChanged() }
                     }
-            label (id:"clampWktEpsgFieldLabel", text:"Clamp Wkt EPSG")
-            cCombo(id:"clampWktEpsgField",
-                    items:SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING]),
-                    layoutData:"span,growx")
+            //cCombo(id:"clampWktField",
+            //        items:SwtUtilities.previousStepFields(transMeta, stepname, [OssimValueMetaBase.TYPE_GEOMETRY_2D,
+            //                                                                    ValueMetaInterface.TYPE_STRING]),
+            //        layoutData:"span,growx")
+            //        {
+            //           onEvent(type:'Modify') { input.setChanged(); }
+            //        }
+            label (id:"clampWktEpsgLabel", text:"Clamp Wkt EPSG")
+            text(id:"clampWktEpsg", layoutData:"span,growx")
                     {
-                       onEvent(type:'Modify') { input.setChanged(); }
+                       onEvent(type: "Modify"){input.setChanged() }
                     }
+           // cCombo(id:"clampWktEpsg",
+           //         items:SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING]),
+           //         layoutData:"span,growx")
+           //         {
+           //            onEvent(type:'Modify') { input.setChanged(); }
+           //         }
             label Messages.getString("BasicTilingDialog.MinLevel.Label")
             text(id:"clampMinLevel"){
                onEvent(type:'Modify') { input.setChanged() }
@@ -300,11 +308,9 @@ public class BasicTilingDialog extends BaseStepDialog implements
       swt.mosaicInputCheckbox.selection = input.mosaicInput
       swt.clampMinLevel.text = input.clampMinLevel!=null?input.clampMinLevel.toString():""
       swt.clampMaxLevel.text = input.clampMaxLevel!=null?input.clampMaxLevel.toString():""
-      swt.clampWktField.text = input.clampWktField!=null?input.clampWktField.toString():""
-      swt.clampWktEpsgField.text = input.clampWktEpsgField!=null?input.clampWktEpsgField.toString():""
+      swt.clampWkt.text = input.clampWkt!=null?input.clampWkt.toString():""
+      swt.clampWktEpsg.text = input.clampWktEpsg!=null?input.clampWktEpsg.toString():""
 
-      //swt.fileFieldName.text = Const.NVL((String)input.fileFieldName, "")
-      //swt.infoFieldName.text = Const.NVL((String)input.omsInfoFieldName, "")
       loadSelectedFields();
 
       switch(input.getOriginAsInteger())
@@ -408,19 +414,19 @@ public class BasicTilingDialog extends BaseStepDialog implements
       }
       if(swt.clampMinLevel.text)
       {
-         input.clampMinLevel = swt.clampMinLevel.text.toInteger()
+         input.clampMinLevel = swt.clampMinLevel.text
       }
       else
       {
          input.clampMinLevel = null
       }
 
-      input.clampWktField     = swt.clampWktField.text
-      input.clampWktEpsgField = swt.clampWktEpsgField.text
+      input.clampWkt     = swt.clampWkt.text
+      input.clampWktEpsg = swt.clampWktEpsg.text
 
       if(swt.clampMaxLevel.text)
       {
-         input.clampMaxLevel = swt.clampMaxLevel.text.toInteger()
+         input.clampMaxLevel = swt.clampMaxLevel.text
       }
       else
       {
