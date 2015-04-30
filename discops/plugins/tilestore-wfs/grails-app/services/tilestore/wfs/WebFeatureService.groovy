@@ -548,10 +548,21 @@ class WebFeatureService implements InitializingBean
 
     def (workspaceId, layerName) = cmd.typeName.split( ':' )
 
+    def tileStoreLayerNames = layerManagerService?.getTileCacheLayers()*.name
+
     Workspace.withWorkspace( workspaces[workspaceId] ) { workspace ->
-      //workspace.ds.properties.sort().each { println it }
-      results = generateSchema( workspace['tile_cache_layer_info'], workspaceId )
-      results = results.replace( 'tile_cache_layer_info', layerName )
+
+      if ( layerName in tileStoreLayerNames )
+      {
+        def actualLayerName = "${workspaceId}_${layerName}_tiles"
+
+        results = generateSchema( workspace[actualLayerName].schema, workspaceId )
+        results = results.replace( actualLayerName, layerName )
+      }
+      else
+      {
+        results = generateSchema( workspace[layerName].schema, workspaceId )
+      }
     }
 
     [contentType: 'text/xml', buffer: results]
@@ -613,21 +624,33 @@ class WebFeatureService implements InitializingBean
 
   private def getFeatureTypes()
   {
-    layerManagerService.getTileCacheLayers().collect { row ->
+    def featureList = [[
+        namespace: [id: 'tilestore', uri: 'http://tilestore.ossim.org'],
+        name: 'tile_cache_layer_info',
+        title: 'List of Tile Layers',
+        description: 'List of Tile Layers',
+        keywords: [],
+        projection: 'EPSG:404000',
+        bounds: new Bounds( 0, 0, 0, 0 )
+    ]]
+
+    layerManagerService.getTileCacheLayers().each { row ->
       Bounds bounds = GeoScript.wrap( row.bounds )?.bounds
 
       bounds?.proj = row?.epsgCode
 
-      [
+      featureList << [
           namespace: [id: 'tilestore', uri: 'http://tilestore.ossim.org'],
           name: row.name,
-          title: row.name,
+          title: row?.name,
           description: row.description,
           keywords: [],
           projection: bounds.proj.id,
           bounds: bounds
       ]
     }
+
+    featureList
   }
 
   private def convertToXsdType(def inputType)
@@ -667,7 +690,7 @@ class WebFeatureService implements InitializingBean
     dataType
   }
 
-  private def generateSchema(def layer, def workspaceId)
+  private def generateSchema(def schema, def workspaceId)
   {
     def xml = new StreamingMarkupBuilder( encoding: "UTF-8" ).bind {
 
@@ -687,16 +710,16 @@ class WebFeatureService implements InitializingBean
 //        topp: "http://www.openplans.org/topp"
       ]
 
-      namespaces << ["${workspaceId}": layer.schema.uri]
+      namespaces << ["${workspaceId}": layschema.uri]
       namespaces.each { mkp.declareNamespace( "${it.key}": "${it.value}" ) }
 
-      xsd.schema( elementFormDefault: "qualified", targetNamespace: layer.schema.uri ) {
+      xsd.schema( elementFormDefault: "qualified", targetNamespace: schema.uri ) {
         xsd.import( namespace: namespaces['gml'], schemaLocation: "http://schemas.opengis.net/gml/2.1.2/feature.xsd" )
-        xsd.complexType( name: "${layer.name}Type" ) {
+        xsd.complexType( name: "${schema.name}Type" ) {
           xsd.complexContent {
             xsd.extension( base: "gml:AbstractFeatureType" ) {
               xsd.sequence {
-                layer.schema.featureType.attributeDescriptors.each {
+                schema.featureType.attributeDescriptors.each {
                   def dataType = convertToXsdType( it.type.binding )
                   xsd.element( maxOccurs: it.maxOccurs, minOccurs: it.minOccurs, name: it.localName, nillable: it.nillable, type: dataType )
                 }
@@ -705,7 +728,7 @@ class WebFeatureService implements InitializingBean
           }
         }
 
-        xsd.element( name: layer.name, substitutionGroup: "gml:_Feature", type: "${workspaceId}:${layer.name}Type" )
+        xsd.element( name: schema.name, substitutionGroup: "gml:_Feature", type: "${workspaceId}:${schema.name}Type" )
       }
     }
 
