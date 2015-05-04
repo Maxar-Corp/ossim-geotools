@@ -230,40 +230,8 @@ class JobService
 
    }
 
-   def ingest(IngestCommand cmd)
-   {
-      def result = [status : HttpStatus.OK,
-                    message: "",
-                    data   : []
-      ]
-      String jobId = UUID.randomUUID().toString()
-      HashMap ingestCommand = cmd.toMap();
-      ingestCommand.jobName = ingestCommand.jobName?:"Ingest"
-      ingestCommand.jobId = jobId
-      ingestCommand.type = "TileServerIngestMessage"
-      CreateJobCommand jobCommand = new CreateJobCommand(
-              jobId: jobId,
-              type: "TileServerIngestMessage",
-              jobDir: "",
-              name: cmd.jobName,
-              username: "anonymous",
-              status: JobStatus.READY.toString(),
-              statusMessage: "",
-              message: (ingestCommand as JSON).toString(),
-              jobCallback: null,
-              percentComplete: 0.0,
-      )
 
-      result = create(jobCommand)
-      // create rabbit message and post
-      // we can make this configurable and allow for quartz as well
-      // so if rabbit is not supported then add Quartz job.  Will think about it
-      //
-
-      result
-   }
-
-   def getJob(GetJobCommand cmd)
+   def show(GetJobCommand cmd)
    {
       def result = [status : HttpStatus.OK,
                     message: "",
