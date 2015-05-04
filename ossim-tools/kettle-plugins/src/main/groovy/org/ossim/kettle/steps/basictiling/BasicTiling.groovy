@@ -49,12 +49,19 @@ class BasicTiling extends BaseStep implements StepInterface
       data = (BasicTilingData) sdi;
 
       Object[] r = getRow();
+
       if (r==null)
       {
          setOutputDone()
          return false
       }
+      String projectionType
+      Integer clampMinLevel = -1
+      Integer clampMaxLevel = -1
+      String clampWkt        = ""
+      String clampWktEpsg    = ""
 
+      def options = [:]
       if (first)
       {
          first=false
@@ -70,6 +77,22 @@ class BasicTiling extends BaseStep implements StepInterface
          meta.getFields(data.outputRowMeta, getStepname(), null, null, this)
          //}
 
+         if(meta?.clampMinLevel)
+         {
+            def minLevel = environmentSubstitute(meta?.clampMinLevel?:"")
+            if(minLevel) clampMinLevel = minLevel.toInteger()
+            options.minLevel = clampMinLevel
+         }
+
+         if(meta?.clampMaxLevel)
+         {
+            def maxLevel = environmentSubstitute(meta?.clampMaxLevel?:"")
+            if(maxLevel) clampMaxLevel = maxLevel.toInteger()
+            options.maxLevel = clampMaxLevel
+         }
+         projectionType  = environmentSubstitute(meta?.projectionType?:"")
+         clampWkt        = environmentSubstitute(meta?.clampWkt?:"")
+         clampWktEpsg    = environmentSubstitute(meta?.clampWktEpsg?:"")
       }
       int fileIdx   =  getInputRowMeta().indexOfValue(meta.inputFilenameField)
       int entryIdx  =  getInputRowMeta().indexOfValue(meta.inputEntryField)
@@ -85,31 +108,14 @@ class BasicTiling extends BaseStep implements StepInterface
          entryString = getInputRowMeta().getString(r,entryIdx)
       }
 
-      Integer clampMinLevel = -1
-      Integer clampMaxLevel = -1
-
-      def options = [:]
-      if(meta?.clampMinLevel)
-      {
-         def minLevel = environmentSubstitute(meta?.clampMinLevel)
-         if(minLevel) clampMinLevel = minLevel.toInteger()
-         options.minLevel = clampMinLevel
-      }
-
-      if(meta?.clampMaxLevel)
-      {
-         def maxLevel = environmentSubstitute(meta?.clampMaxLevel)
-         if(maxLevel) clampMaxLevel = maxLevel.toInteger()
-         options.maxLevel = clampMaxLevel
-      }
       int entry = entryString?entryString.toInteger():0
+
       if(inputFilename)
       {
-         //   println "INPUT FILE ========== ${inputFilename}"
          TileCacheSupport tileCacheSupport = new TileCacheSupport()
          if(tileCacheSupport.openImage(inputFilename))
          {
-            Projection proj = new Projection(meta.projectionType)
+            Projection proj = new Projection(projectionType)
             //   println "SHOULD HAVE THIS TYPE OF PROJECTION!!!!!!!!!!! ${meta.projectionType}"
             TileCachePyramid pyramid = new TileCachePyramid(
                     proj:proj,

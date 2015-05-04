@@ -52,15 +52,15 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 	def outputSummaryOnly   = false
 
 	String projectionType   = "EPSG:4326"// epsg code representing the tiling plane
-	double projectionMinx   = -180.0
-	double projectionMiny   = -90.0
-	double projectionMaxx   = 180.0
-	double projectionMaxy   = 90.0
+	//double e   = -180.0
+	//double projectionMiny   = -90.0
+	//double projectionMaxx   = 180.0
+	//double projectionMaxy   = 90.0
 	Integer targetTileWidth	= 256
 	Integer targetTileHeight= 256
 
-	String clampWktField        = ""
-	String clampWktEpsgField    = ""
+	String clampWkt        = ""
+	String clampWktEpsg    = ""
 	String clampMinLevel   = ""
 	String clampMaxLevel   = ""
 	String inputFilenameField = ""
@@ -174,16 +174,17 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 											summary_tile_width:[type:ValueMetaInterface.TYPE_INTEGER],
 											summary_tile_height:[type:ValueMetaInterface.TYPE_INTEGER]
 										]
-	def setProjectionType(type)
+	def getProjectionBounds(def type)
 	{
 //		println "SETTING PROJECTION TYPE ${type}"
-		this.projectionType = type
+//		this.projectionType = type
 		Bounds b = BoundsUtil.getDefaultBounds(new Projection(type.toUpperCase()))
 
-		projectionMinx = b.minX
-		projectionMiny = b.minY
-		projectionMaxx = b.maxX
-		projectionMaxy = b.maxY
+		b
+		//projectionMinx = b.minX
+		//projectionMiny = b.minY
+		//projectionMaxx = b.maxX
+		//projectionMaxy = b.maxY
 
 
 		/*
@@ -270,15 +271,11 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 			retval.append("    ").append(XMLHandler.addTagValue("clampMinLevel", clampMinLevel))
 		}
 		if(clampMaxLevel!=null) retval.append("    ").append(XMLHandler.addTagValue("clampMaxLevel", clampMaxLevel))
-		if(clampWktField) retval.append("    ").append(XMLHandler.addTagValue("clampWktField", clampWktField))
-		if(clampWktEpsgField) retval.append("    ").append(XMLHandler.addTagValue("clampWktEpsgField", clampWktEpsgField))
+		if(clampWkt) retval.append("    ").append(XMLHandler.addTagValue("clampWkt", clampWkt))
+		if(clampWktEpsg) retval.append("    ").append(XMLHandler.addTagValue("clampWktEpsg", clampWktEpsg))
 
 		if(mosaicInput != null)    retval.append("    ").append(XMLHandler.addTagValue("mosaicInput", mosaicInput))
 		if(projectionType != null) retval.append("    ").append(XMLHandler.addTagValue("projectionType", projectionType))
-		if(projectionMinx != null) retval.append("    ").append(XMLHandler.addTagValue("projectionMinx", projectionMinx))
-		if(projectionMiny != null) retval.append("    ").append(XMLHandler.addTagValue("projectionMiny", projectionMiny))
-		if(projectionMaxx != null) retval.append("    ").append(XMLHandler.addTagValue("projectionMaxx", projectionMaxx))
-		if(projectionMaxy != null) retval.append("    ").append(XMLHandler.addTagValue("projectionMaxy", projectionMaxy))
 		if(targetTileWidth != null) retval.append("    ").append(XMLHandler.addTagValue("targetTileWidth", targetTileWidth))
 		if(targetTileHeight != null) retval.append("    ").append(XMLHandler.addTagValue("targetTileHeight", targetTileHeight))
 		if(tileIdNameMask != null) retval.append("    ").append(XMLHandler.addTagValue("tileIdNameMask",tileIdNameMask))
@@ -311,14 +308,6 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 			r.addValueMeta(field);
 		}
 	}
-	double getProjectionDeltaX()
-	{
-		return projectionMaxx - projectionMinx
-	}
-	double getProjectionDeltaY()
-	{
-		return projectionMaxy - projectionMiny
-	}
 
 	Object clone()
 	{
@@ -347,15 +336,11 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 		}
 		clampMinLevel = XMLHandler.getTagValue(values, "clampMinLevel");
 		clampMaxLevel = XMLHandler.getTagValue(values, "clampMaxLevel");
-		clampWktField      = XMLHandler.getTagValue(values, "clampWktField");
-		clampWktEpsgField  = XMLHandler.getTagValue(values, "clampWktEpsgField");
+		clampWkt      = XMLHandler.getTagValue(values, "clampWkt");
+		clampWktEpsg  = XMLHandler.getTagValue(values, "clampWktEpsg");
 
 		projectionType             = XMLHandler.getTagValue(values, "projectionType");
 		def tileIdNameMaskString   = XMLHandler.getTagValue(values, "tileIdNameMask");
-		def projectionMinxString   = XMLHandler.getTagValue(values, "projectionMinx");
-		def projectionMinyString   = XMLHandler.getTagValue(values, "projectionMiny");
-		def projectionMaxxString   = XMLHandler.getTagValue(values, "projectionMaxx");
-		def projectionMaxyString   = XMLHandler.getTagValue(values, "projectionMaxy");
 		inputEntryField            = XMLHandler.getTagValue(values, "inputEntryField");
 		inputFilenameField         = XMLHandler.getTagValue(values, "inputFilenameField");
 		def testSelectedFieldNames = XMLHandler.getTagValue(values, "selectedFieldNames")
@@ -373,30 +358,9 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
       if(!projectionType)
       {
       	projectionType = "EPSG:4326"
-			projectionMinx   = -180.0
-			projectionMiny   = -90.0
-			projectionMaxx   = 180.0
-			projectionMaxy   = 90.0
       }
       else
       {
-      	if(projectionMinxString)
-      	{
-      		projectionMinx = projectionMinxString.toDouble()
-      	}
-      	if(projectionMinyString)
-      	{
-      		projectionMiny = projectionMinyString.toDouble()
-      	}
-      	if(projectionMaxxString)
-      	{
-      		projectionMaxx = projectionMaxxString.toDouble()
-      	}
-      	if(projectionMaxyString)
-      	{
-      		projectionMaxy = projectionMaxyString.toDouble()
-      	}
-
       }
       if(!origin) origin = "LOWER_LEFT"
       if(!tileGenerationOrder) tileGenerationOrder = "LOWEST_TO_HIGHEST"
@@ -419,17 +383,13 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 	{
 		clampMinLevel = ""
 		clampMaxLevel = ""
-		clampWktField      = ""
-		clampWktEpsgField  = ""
+		clampWkt      = ""
+		clampWktEpsg  = ""
 		targetTileWidth  = 256
 		targetTileHeight = 256
 		mosaicInput      = false
 		tileGenerationOrder = "LOWEST_TO_HIGHEST"
 		projectionType   = "EPSG:4326"// epsg code representing the tiling plane
-		projectionMinx   = -180.0
-		projectionMiny   = -90.0
-		projectionMaxx   = 180.0
-		projectionMaxy   = 90.0
 
 		mosaicInput      = false
 		tileIdNameMask     = "%l%/%r%/%c%"
@@ -450,13 +410,9 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 		}
 		clampMinLevel       = rep.getStepAttributeString(id_step, "clampMinLevel");
 		clampMaxLevel       = rep.getStepAttributeString(id_step, "clampMaxLevel");
-		clampWktField            = rep.getStepAttributeString(id_step, "clampWktField");
-		clampWktEpsgField        = rep.getStepAttributeString(id_step, "clampWktEpsgField");
+		clampWkt            = rep.getStepAttributeString(id_step, "clampWkt");
+		clampWktEpsg        = rep.getStepAttributeString(id_step, "clampWktEpsg");
 		def projectionTypeString      = rep.getStepAttributeString(id_step, "projectionType");
-		def projectionMinxString      = rep.getStepAttributeString(id_step, "projectionMinx");
-		def projectionMinyString      = rep.getStepAttributeString(id_step, "projectionMiny");
-		def projectionMaxxString      = rep.getStepAttributeString(id_step, "projectionMaxx");
-		def projectionMaxyString      = rep.getStepAttributeString(id_step, "projectionMaxy");
 		def targetTileWidthString     = rep.getStepAttributeString(id_step, "targetTileWidth");
 		def targetTileHeightString    = rep.getStepAttributeString(id_step, "targetTileHeight");
 		def tileIdNameMaskString      = rep.getStepAttributeString(id_step, "tileIdNameMask");
@@ -471,14 +427,6 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 			projectionType = projectionTypeString
 //			println "PROJECTION TYPE:        ${projectionType}"
 //			println "${projectionMinxString}, ${projectionMinyString}, ${projectionMaxxString}, ${projectionMaxyString}"
-			if(projectionMinxString&&projectionMinyString&&projectionMaxxString&&projectionMaxyString)
-			{
-				projectionMinx = projectionMinxString.toDouble()
-				projectionMiny = projectionMinyString.toDouble()
-				projectionMaxx = projectionMaxxString.toDouble()
-				projectionMaxy = projectionMaxyString.toDouble()
-//				println "${projectionMinx},${projectionMiny},${projectionMaxx},${projectionMaxy}"
-			}
 		}
 		if(tileIdNameMaskString!=null) tileIdNameMask = tileIdNameMaskString    
 		if(targetTileWidthString) targetTileWidth   = targetTileWidthString.toInteger()
@@ -511,17 +459,17 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 									id_step, "clampMaxLevel",
 									"${clampMaxLevel}".toString()) //$NON-NLS-1$
 		 	}
-			 if(clampWktField != null)
+			 if(clampWkt != null)
 			 {
 				 rep.saveStepAttribute(id_transformation,
-							id_step, "clampWktField",
-							clampWktField.toString()) //$NON-NLS-1$
+							id_step, "clampWkt",
+							clampWkt.toString()) //$NON-NLS-1$
 			 }
-			 if(clampWktEpsgField != null)
+			 if(clampWktEpsg != null)
 			 {
 				 rep.saveStepAttribute(id_transformation,
-							id_step, "clampWktEpsgField",
-							clampWktEpsgField.toString()) //$NON-NLS-1$
+							id_step, "clampWktEpsg",
+							clampWktEpsg.toString()) //$NON-NLS-1$
 			 }
 
 			rep.saveStepAttribute(id_transformation, 
@@ -533,19 +481,7 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 			rep.saveStepAttribute(id_transformation, 
 								id_step, "projectionType", 
 								projectionType) //$NON-NLS-1$
-			rep.saveStepAttribute(id_transformation, 
-								id_step, "projectionMinx", 
-								"${projectionMinx}".toString()) //$NON-NLS-1$
-			rep.saveStepAttribute(id_transformation, 
-								id_step, "projectionMiny", 
-								"${projectionMiny}".toString()) //$NON-NLS-1$
-			rep.saveStepAttribute(id_transformation, 
-								id_step, "projectionMaxx", 
-								"${projectionMaxx}".toString()) //$NON-NLS-1$
-			rep.saveStepAttribute(id_transformation, 
-								id_step, "projectionMaxy", 
-								"${projectionMaxy}".toString()) //$NON-NLS-1$
-			rep.saveStepAttribute(id_transformation, 
+			rep.saveStepAttribute(id_transformation,
 								id_step, "targetTileWidth", 
 								targetTileWidth) //$NON-NLS-1$
 			rep.saveStepAttribute(id_transformation, 
