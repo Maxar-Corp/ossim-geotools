@@ -46,7 +46,7 @@ class TileStoreCommon
          if ( entrynode != null ) {
             this.clusterName = XMLHandler.getTagValue( entrynode, "clusterName" )
          } else if ( rep != null ) {
-            this.clusterName = rep.getJobEntryAttributeString( id_jobentry, "clusterName" )
+            this.clusterName = rep.getStepAttributeString( id_jobentry, "clusterName" )?:""
          }
 
          // load from system first, then fall back to copy stored with job (AbstractMeta)
@@ -129,7 +129,6 @@ class TileStoreCommon
    }
    void saveRep(Repository rep, ObjectId id_transformation, ObjectId id_step) throws KettleException
    {
-      rep.saveStepAttribute( id_transformation, getObjectId(), "clusterName", clusterName ); //$NON-NLS-1$
       try
       {
          if ( (clusterName!=null ) &&
@@ -146,19 +145,23 @@ class TileStoreCommon
          //logDebug( e.getMessage(), e )
       }
       rep.saveDatabaseMetaStepAttribute(id_transformation, id_step, "id_connection", databaseMeta);
-      if ( !Const.isEmpty( zookeeperHosts ) ) {
+      if(clusterName)
+      {
+         rep.saveStepAttribute( id_transformation, id_step, 0, "clusterName", clusterName );
+      }
+      if ( zookeeperHosts ) {
          rep.saveStepAttribute( id_transformation, id_step, 0, "zookeeperHosts", zookeeperHosts );
       }
-      if ( !Const.isEmpty( zookeeperPort ) ) {
+      if ( zookeeperPort ) {
          rep.saveStepAttribute( id_transformation, id_step, 0, "zookeeperPort", zookeeperPort );
       }
-      if ( !Const.isEmpty( accumuloInstance ) ) {
+      if ( accumuloInstance ) {
          rep.saveStepAttribute( id_transformation, id_step, 0, "accumuloInstance", accumuloInstance );
       }
-      if ( !Const.isEmpty( accumuloUsername ) ) {
+      if ( accumuloUsername ) {
          rep.saveStepAttribute( id_transformation, id_step, 0, "accumuloUsername", accumuloUsername );
       }
-      if ( !Const.isEmpty( accumuloPassword ) ) {
+      if ( accumuloPassword ) {
          rep.saveStepAttribute( id_transformation, id_step, 0, "accumuloPassword",encr.encryptPasswordIfNotUsingVariables(accumuloPassword?:"")  );
       }
 
@@ -177,6 +180,7 @@ class TileStoreCommon
       zookeeperPort     = rep.getStepAttributeString(id_step, "zookeeperPort")?:""
       zookeeperHosts    = rep.getStepAttributeString(id_step, "zookeeperHosts")?:""
       accumuloPassword = encr.decryptPasswordOptionallyEncrypted(accumuloPassword)
+      println "CHECKING HERE!!!!!!!! ${clusterName}"
    }
 
    void setDefault()

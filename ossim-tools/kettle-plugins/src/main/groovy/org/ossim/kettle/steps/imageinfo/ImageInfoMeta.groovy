@@ -45,6 +45,7 @@ import org.ossim.core.SynchOssimInit
 public class ImageInfoMeta extends BaseStepMeta implements StepMetaInterface
 {
 	String inputFilenameField			 = "filename"
+	String inputEntryField            = "entry"
 	def fieldNames = [
 							entry:"entry",
 							width:"width",
