@@ -166,6 +166,7 @@ accumulo {
 }
 
 tilestore {
+  //disableAccumulo = true
   maxTileConnections = 50
   wmtsTileGrid = false
   referenceLayers = [
@@ -190,18 +191,18 @@ security {
   sessionTimeout = 60
 }
 
-rabbitmq{
-   enabled=true
-   product{
-      queue = "omar.tilestore.product"
-   }
-   ingest{
-      queue = "omar.tilestore.ingest"
-   }
+rabbitmq {
+  enabled = true
+  product {
+    queue = "omar.tilestore.product"
+  }
+  ingest {
+    queue = "omar.tilestore.ingest"
+  }
 
-   connection{
-      host = "localhost"
-      username = "omar"
-      password = "Encrypted 2be98afc86aa7f285a91aff228dd38f99"
-   }
+  connection {
+    host = "localhost"
+    username = "omar"
+    password = "Encrypted 2be98afc86aa7f285a91aff228dd38f99"
+  }
 }
