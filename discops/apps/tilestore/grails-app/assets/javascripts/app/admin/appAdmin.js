@@ -1,6 +1,24 @@
 AppAdmin = (function () {
     //TODO: Cache jquery selectors.  Possibly use this solution:
     //      http://ttmm.io/tech/selector-caching-jquery/
+    var helloAdmin = {
+        response: function(){
+            return "Hello from appAdmin!"
+        }
+    }
+    function switchUp(){
+        return "switchUp fired!";
+    }
+
+    function ajaxCreateLayer() {
+        return $.ajax({
+            url: "/tilestore/layerManager/createLayer",
+            type: 'POST',
+            dataType: 'json',
+            data: objLayer
+        });
+    }
+
     var loadParams;
     var $select = $('.selectpicker').selectpicker();
     var $tileLayerSelect = $('#tileLayerSelect');
@@ -550,10 +568,7 @@ AppAdmin = (function () {
                 mapTile.addLayer(initLayer);
             }
             addInitialLayer();
-
         }
-        //mapOmar: mapOmar,
-        //mapTile: mapTile
     };
 })();
 
