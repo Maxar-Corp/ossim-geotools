@@ -1,23 +1,22 @@
 AppAdmin = (function () {
     //TODO: Cache jquery selectors.  Possibly use this solution:
     //      http://ttmm.io/tech/selector-caching-jquery/
-    var helloAdmin = {
-        response: function(){
-            return "Hello from appAdmin!"
-        }
-    }
-    function switchUp(){
-        return "switchUp fired!";
-    }
 
-    function ajaxCreateLayer() {
-        return $.ajax({
-            url: "/tilestore/layerManager/createLayer",
-            type: 'POST',
-            dataType: 'json',
-            data: objLayer
-        });
-    }
+    // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    // TODO: Delete
+    //var helloAdmin = {
+    //    response: function(){
+    //        return "Hello from appAdmin!"
+    //    }
+    //}
+    //function switchUp(){
+    //    return "switchUp fired!";
+    //}
+    //
+    //var search = function(book){
+    //    return [1];
+    //};
+    // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     var loadParams;
     var $select = $('.selectpicker').selectpicker();
@@ -170,11 +169,12 @@ AppAdmin = (function () {
     }
 
     // The tile layer object
+    // TODO: 05-04-15 verify that objLayer is still working...
     var objLayer = {
-        minLevel: "0",
-        maxLevel: "0",
-        name: "TileLayer",
-        epsgCode: "EPSG:3857"
+        //minLevel: "0",
+        //maxLevel: "0",
+        //name: "TileLayer",
+        //epsgCode: "EPSG:3857"
     }
 
     $tileLayerSelect.on('change', function() {
@@ -208,6 +208,15 @@ AppAdmin = (function () {
         }
     });
 
+    function ajaxCreateLayer(obj) {
+        return $.ajax({
+            url: "/tilestore/layerManager/createLayer",
+            type: 'POST',
+            dataType: 'json',
+            data: obj
+        });
+    }
+
     $('#submitCreateLayer').on('click', function () {
 
         // TODO: Dynamically populate the min and max level selects with their appropriate
@@ -227,19 +236,22 @@ AppAdmin = (function () {
         objLayer.maxLevel = $maxTileLevel.val();
         objLayer.epsgCode = $('#epsgCode').val();
 
-        // Done: 04-17-15
+
         // Wrapping ajax request in a function to use deferred objects instead of
         // passing a success callback: http://stackoverflow.com/a/14754681/4437795
         // This decouples the callback handling from the AJAX handling, allows you
         // to add multiple callbacks, failure callbacks, etc
-        function ajaxCreateLayer() {
-            return $.ajax({
-                url: "/tilestore/layerManager/createLayer",
-                type: 'POST',
-                dataType: 'json',
-                data: objLayer
-            });
-        }
+
+        // WorkingOn - 05-04-2015 - Moved this function out of the click event so that we could test it
+        //function ajaxCreateLayer() {
+        //    return $.ajax({
+        //        url: "/tilestore/layerManager/createLayer",
+        //        type: 'POST',
+        //        dataType: 'json',
+        //        data: objLayer
+        //    });
+        //}
+        //ajaxCreateLayer(objLayer);
 
         function successHandlerCreate(data, textStatus, jqXHR) {
             //console.log(JSON.stringify(data));
@@ -276,7 +288,6 @@ AppAdmin = (function () {
                 //console.log($tileLayerSelect.val());
                 switchCurrentLayer(initLayer, $tileLayerSelect.val());
 
-
             }
             else {
                 toastr.error(data.message, 'Error');
@@ -292,7 +303,9 @@ AppAdmin = (function () {
             ' another name and submit again.', 'Error');
         };
 
-        ajaxCreateLayer().done(successHandlerCreate).fail(errorHandlerCreate);
+        //
+        ajaxCreateLayer(objLayer).done(successHandlerCreate).fail(errorHandlerCreate);
+
     });
 
     $minTileLevel.on('change', function () {
