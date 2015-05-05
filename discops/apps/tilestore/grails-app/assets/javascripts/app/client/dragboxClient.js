@@ -25,7 +25,7 @@ DragBoxClient = (function ()
 
     // A DragBox interaction used to pass the geometry to the aoiFeatureOverlay
     var dragBoxControl = new ol.interaction.DragBox( {
-        condition: ol.events.condition.altKeyOnly,
+        condition: ol.events.condition.altShiftKeysOnly,
         style: new ol.style.Style( {
             stroke: new ol.style.Stroke( {
                 color: '#ffcc33',
