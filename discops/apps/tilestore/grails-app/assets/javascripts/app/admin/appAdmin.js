@@ -170,12 +170,7 @@ AppAdmin = (function () {
 
     // The tile layer object
     // TODO: 05-04-15 verify that objLayer is still working...
-    var objLayer = {
-        //minLevel: "0",
-        //maxLevel: "0",
-        //name: "TileLayer",
-        //epsgCode: "EPSG:3857"
-    }
+    var objLayer = {}
 
     $tileLayerSelect.on('change', function() {
         console.log('select on change:' + $tileLayerSelect.val())
@@ -336,7 +331,7 @@ AppAdmin = (function () {
         resetForm('create');
     });
 
-    // Done - 04-21-15 - Bind the list of tile layers to the select element one time only
+    // Bind the list of tile layers to the select element one time only
     $('#navRenameLayer').one('click', function () {
         getTileLayers(loadParams.tilestoreLayers, '#renameTileLayer');
     });
@@ -350,7 +345,16 @@ AppAdmin = (function () {
 
     });
 
-    $('#submitRenameLayer').on('click', function (oldName, newName) {
+    function ajaxRenameLayer(oldName, newName) {
+        return $.ajax({
+            url: "/tilestore/layerManager/renameLayer",
+            type: 'POST',
+            dataType: 'json',
+            data: {'oldName': oldName, 'newName': newName}
+        });
+    }
+
+    $('#submitRenameLayer').on('click', function () {
 
         // Done: 04-19-15 - Prevent submits/multiple ajax requests
         $('#submitRenameLayer').removeClass('btn-primary').addClass('disabled btn-success');
@@ -362,21 +366,19 @@ AppAdmin = (function () {
 
         // Done: 04-19-15
         // Grab these from a dropdown list
-        oldName = $('#renameTileLayer option:selected').val();
-        ;
+        var oldLayerName = $('#renameTileLayer option:selected').val();
 
         // Grab this from a input box
-        newName = $('#renameLayerName').val();
-        ;
+        var newLayerName = $('#renameLayerName').val();
 
-        function ajaxRenameLayer() {
-            return $.ajax({
-                url: "/tilestore/layerManager/renameLayer?",
-                type: 'POST',
-                dataType: 'json',
-                data: {'oldName': oldName, 'newName': newName}
-            });
-        }
+        //function ajaxRenameLayer() {
+        //    return $.ajax({
+        //        url: "/tilestore/layerManager/renameLayer?",
+        //        type: 'POST',
+        //        dataType: 'json',
+        //        data: {'oldName': oldName, 'newName': newName}
+        //    });
+        //}
 
         // Done: 04-19-15
         function successHandlerRename(data, textStatus, jqXHR) {
@@ -388,13 +390,13 @@ AppAdmin = (function () {
                 console.log(data);
 
                 // Done 04-20-15
-                $select.find('[value=' + oldName + ']').remove();
-                $('#renameTileLayer').append('<option value="' + newName + '" selected="selected">' + newName + '</option>');
-                $tileLayerSelect.append('<option value="' + newName + '" selected="selected">' + newName + '</option>');
-                $('#deleteTileLayer').append('<option value="' + newName + '" selected="selected">' + newName + '</option>');
+                $select.find('[value=' + oldLayerName + ']').remove();
+                $('#renameTileLayer').append('<option value="' + newLayerName + '" selected="selected">' + newLayerName + '</option>');
+                $tileLayerSelect.append('<option value="' + newLayerName + '" selected="selected">' + newLayerName + '</option>');
+                $('#deleteTileLayer').append('<option value="' + newLayerName + '" selected="selected">' + newLayerName + '</option>');
                 $select.selectpicker('refresh');
 
-                toastr.success('Layer ' + oldName + ' was renamed to ' + newName, 'Success');
+                toastr.success('Layer ' + oldLayerName + ' was renamed to ' + newLayerName, 'Success');
                 resetForm('rename');
 
                 l.stop() // stop spinner from rotating
@@ -415,7 +417,7 @@ AppAdmin = (function () {
             ' choose another name and submit again.', 'Error');
         };
 
-        ajaxRenameLayer().done(successHandlerRename).fail(errorHandlerRename);
+        ajaxRenameLayer(oldLayerName, newLayerName).done(successHandlerRename).fail(errorHandlerRename);
 
     });
 
@@ -423,7 +425,7 @@ AppAdmin = (function () {
         resetForm('rename');
     });
 
-    // Done - 04-21-15 - Bind the list of tile layers to the select element one time only.
+    // Bind the list of tile layers to the select element one time only.
     $('#navDeleteLayer').one('click', function () {
         getTileLayers(loadParams.tilestoreLayers, '#deleteTileLayer');
     });
@@ -437,28 +439,36 @@ AppAdmin = (function () {
 
     });
 
+    function ajaxDeleteLayer(name) {
+        return $.ajax({
+            url: "/tilestore/layerManager/deleteLayer?",
+            type: 'POST',
+            dataType: 'json',
+            data: {'name': name}
+        });
+    }
+
     $('#submitDeleteLayer').on('click', function () {
 
-        // TODO: 04-19-15 - Set the delete layer to the selected value
-        //       in deleteTileLayer dropdown.
+        // Delete layer to the selected value in deleteTileLayer dropdown.
         objLayer.name = $('#deleteTileLayer option:selected').val();
 
-        // Done: 04-19-15 - Prevent submits/multiple ajax requests
+        // Prevent submits/multiple ajax requests
         $('#submitDeleteLayer').removeClass('btn-primary').addClass('disabled btn-success');
 
-        // Done: 04-19-15 - Added Ladda UI and spinner capabilities for ajax calls
+        // Ladda UI and spinner capabilities for ajax calls
         // Create and then start the spinner upon job submission
         var l = Ladda.create(this);
         l.start();
 
-        function ajaxDeleteLayer() {
-            return $.ajax({
-                url: "/tilestore/layerManager/deleteLayer?",
-                type: 'POST',
-                dataType: 'json',
-                data: {'name': objLayer.name}
-            });
-        }
+        //function ajaxDeleteLayer() {
+        //    return $.ajax({
+        //        url: "/tilestore/layerManager/deleteLayer?",
+        //        type: 'POST',
+        //        dataType: 'json',
+        //        data: {'name': objLayer.name}
+        //    });
+        //}
 
         // Done: 04-19-15
         function successHandlerDelete(data, textStatus, jqXHR) {
@@ -493,7 +503,7 @@ AppAdmin = (function () {
 
     });
 
-    // Done 04-20-15 - Refactored so that this can be used for all forms
+    // This can be used for all forms
     function resetForm(frm) {
         //console.log($(this));
 
