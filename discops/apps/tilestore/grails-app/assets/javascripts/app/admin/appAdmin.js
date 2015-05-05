@@ -52,28 +52,28 @@ AppAdmin = (function () {
     //    undefinedHTML: '&nbsp;'
     //});
 
-    var mapOmar = new ol.Map({
-        controls: ol.control.defaults({
-            attributionOptions: ({
-                controlollapsible: false
-            })
-        }).extend([
-            //mousePositionControl
-        ]),
-        interactions: ol.interaction.defaults().extend([
-            new ol.interaction.DragRotateAndZoom()
-        ]),
-        layers: AddLayersAdmin.layers,
-        view: new ol.View({
-            //maxResolution: 0.5625,
-            zoom: 14,
-            //minZoom: 2,
-            //maxZoom: 19,
-            //projection: 'EPSG:4326',
-            center: melbourneFlorida3857
-        }),
-        target: 'mapOmar'
-    });
+    //var mapOmar = new ol.Map({
+    //    controls: ol.control.defaults({
+    //        attributionOptions: ({
+    //            controlollapsible: false
+    //        })
+    //    }).extend([
+    //        //mousePositionControl
+    //    ]),
+    //    interactions: ol.interaction.defaults().extend([
+    //        new ol.interaction.DragRotateAndZoom()
+    //    ]),
+    //    layers: AddLayersAdmin.layers,
+    //    view: new ol.View({
+    //        //maxResolution: 0.5625,
+    //        zoom: 14,
+    //        //minZoom: 2,
+    //        //maxZoom: 19,
+    //        //projection: 'EPSG:4326',
+    //        center: melbourneFlorida3857
+    //    }),
+    //    target: 'mapOmar'
+    //});
 
     var mapTile = new ol.Map({
         controls: ol.control.defaults({
@@ -98,8 +98,8 @@ AppAdmin = (function () {
         target: 'mapTile'
     });
 
-    mapOmar.getView().bindTo('center', mapTile.getView());
-    var accessor = mapOmar.getView().bindTo('resolution', mapTile.getView());
+    //mapOmar.getView().bindTo('center', mapTile.getView());
+    //var accessor = mapOmar.getView().bindTo('resolution', mapTile.getView());
     //accessor.transform(
     //    function (sourceResolution) {
     //        if ($('#twice').prop('checked')) {
@@ -239,7 +239,6 @@ AppAdmin = (function () {
         objLayer.minLevel = $minTileLevel.val();
         objLayer.maxLevel = $maxTileLevel.val();
         objLayer.epsgCode = $epsgCode.val();
-
 
         // Wrapping ajax request in a function to use deferred objects instead of
         // passing a success callback: http://stackoverflow.com/a/14754681/4437795
