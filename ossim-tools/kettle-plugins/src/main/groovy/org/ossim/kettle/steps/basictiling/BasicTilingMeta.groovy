@@ -3,6 +3,7 @@ package org.ossim.kettle.steps.basictiling
 import geoscript.geom.Bounds
 import geoscript.layer.Pyramid
 import joms.geotools.tileapi.BoundsUtil
+import org.ossim.kettle.types.OssimValueMetaBase
 
 import java.util.List;
 import java.util.Map;
@@ -94,7 +95,7 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 									tile_level:"tile_level",
 									tile_row:"tile_row",
 									tile_col:"tile_col",
-									tile_mask_aoi:"tile_mask_aoi",
+                           tile_mask_aoi:"tile_mask_aoi",
 									//tile_global_row:"tile_global_row",
 									//tile_global_col:"tile_global_col",
 									tile_epsg:"tile_epsg",
@@ -139,7 +140,7 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 									//		tile_global_col:[type:ValueMetaInterface.TYPE_INTEGER],
 											tile_row:[type:ValueMetaInterface.TYPE_INTEGER],
 											tile_col:[type:ValueMetaInterface.TYPE_INTEGER],
-											tile_mask_aoi:[type:ValueMetaInterface.TYPE_STRING],
+											tile_mask_aoi:[type:OssimValueMetaBase.TYPE_GEOMETRY_2D],
 											tile_epsg:[type:ValueMetaInterface.TYPE_STRING],
 											tile_minx:[type:ValueMetaInterface.TYPE_NUMBER , len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
 											tile_miny:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],

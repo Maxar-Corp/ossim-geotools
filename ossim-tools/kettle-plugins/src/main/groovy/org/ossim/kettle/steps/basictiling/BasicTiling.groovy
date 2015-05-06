@@ -1,7 +1,7 @@
 package org.ossim.kettle.steps.basictiling
 
-import com.vividsolutions.jts.geom.Geometry
 import geoscript.geom.Bounds
+import geoscript.geom.Geometry
 import geoscript.geom.io.WktReader
 import geoscript.layer.Pyramid
 import geoscript.proj.Projection
@@ -118,6 +118,8 @@ class BasicTiling extends BaseStep implements StepInterface
       String inputFilename
       String entryString = ""
       Integer entry
+      Geometry regionsOfInterest
+
       if(meta.inputFilenameField)
       {
          inputFilename = this.getFieldValueAsString(meta?.inputFilenameField, r, meta, data)//environmentSubstitute(meta?.clampMinLevel?:"")
@@ -142,13 +144,14 @@ class BasicTiling extends BaseStep implements StepInterface
               tileHeight: tileHeight.toInteger()
       )
       pyramid.initializeGrids(new TileCacheHints(minLevel:0, maxLevel:24))
+      if(options.minLevel < 0) options.minLevel = pyramid.grids[0].z
+      if(options.maxLevel < 0) options.maxLevel = pyramid.grids[-1].z
 
       TileCacheTileLayer layer = new TileCacheTileLayer(
               proj:proj,
               bounds:pyramid.bounds,
               pyramid:pyramid
       )
-
       //-----------------------------------
       // now find the clamp set to iterate of the global tiling scheme
       //
@@ -159,6 +162,10 @@ class BasicTiling extends BaseStep implements StepInterface
          {
             def intersection = pyramid.findIntersections(tileCacheSupport, entry, options)
 
+            if(intersection.clippedBounds)
+            {
+               regionsOfInterest = intersection.clippedBounds?.geometry
+            }
             if(intersection)
             {
                tileIterator = layer.createIterator(new TileCacheHints(
@@ -183,7 +190,8 @@ class BasicTiling extends BaseStep implements StepInterface
 
             if(geometryString&&geometryEpsg)
             {
-               geoscript.geom.Geometry clipeGeometry = new WktReader().read(geometryString)
+               Geometry clipeGeometry = new WktReader().read(geometryString)
+
                if(clipeGeometry)
                {
                   def epsg = geometryEpsg.split(":")[-1].toInteger()
@@ -193,7 +201,7 @@ class BasicTiling extends BaseStep implements StepInterface
                      Projection geometryProj = new Projection(geometryEpsg)
 
                      // need to reproject geometry
-                     geoscript.geom.Geometry value =geometryProj.transform(clipeGeometry,
+                     Geometry value =geometryProj.transform(clipeGeometry,
                              pyramid.proj)
 
                      tileIterator = layer.createIterator(new TileCacheHints(
@@ -201,7 +209,8 @@ class BasicTiling extends BaseStep implements StepInterface
                              minLevel: options.minLevel,
                              maxLevel: options.maxLevel
                      ))
-
+                     tileIterator.regionOfInterest = value
+                     regionsOfInterest = value
                   }
                }
             }
@@ -235,6 +244,7 @@ class BasicTiling extends BaseStep implements StepInterface
          Integer tileNameIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_name"])
          Integer tileWidthIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_width"])
          Integer tileHeightIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_height"])
+         Integer tileMaskAoiIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_mask_aoi"])
          Integer tileWithinIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_within"])
          Integer tileSummaryLevelInfoIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_level_info"])
          Integer tileSummaryMinxdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_epsg_minx"])
@@ -360,6 +370,7 @@ class BasicTiling extends BaseStep implements StepInterface
                {
                   def tileBounds = pyramid.bounds(tile)
 
+
                   def needToOutputTile = true
 
                   if(needToOutputTile)
@@ -389,6 +400,16 @@ class BasicTiling extends BaseStep implements StepInterface
                      if(tileColIdx >-1)
                      {
                         resultArray[tileColIdx] = (Long)tile.x
+                     }
+                     if(tileMaskAoiIdx > -1)
+                     {
+                        Geometry geomMask  = tileBounds.geometry
+
+                        if(regionsOfInterest)
+                        {
+                           geomMask = regionsOfInterest.intersection(geomMask)
+                        }
+                        resultArray[tileMaskAoiIdx] = geomMask.g
                      }
                      //if(tileGlobalRowIdx >-1)
                      //{
