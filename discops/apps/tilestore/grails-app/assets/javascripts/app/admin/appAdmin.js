@@ -1,5 +1,5 @@
 AppAdmin = (function () {
-    //TODO: Cache jquery selectors.  Possibly use this solution:
+    // TODO: Cache jquery selectors.  Possibly use this solution:
     //      http://ttmm.io/tech/selector-caching-jquery/
 
     var loadParams;
@@ -32,7 +32,6 @@ AppAdmin = (function () {
     var $deleteLayerName = $('#deleteLayerName');
     var $submitDeleteLayer = $('#submitDeleteLayer');
 
-
     var currentTileLayer;
     var initLayer;
 
@@ -52,30 +51,7 @@ AppAdmin = (function () {
     //    undefinedHTML: '&nbsp;'
     //});
 
-    //var mapOmar = new ol.Map({
-    //    controls: ol.control.defaults({
-    //        attributionOptions: ({
-    //            controlollapsible: false
-    //        })
-    //    }).extend([
-    //        //mousePositionControl
-    //    ]),
-    //    interactions: ol.interaction.defaults().extend([
-    //        new ol.interaction.DragRotateAndZoom()
-    //    ]),
-    //    layers: AddLayersAdmin.layers,
-    //    view: new ol.View({
-    //        //maxResolution: 0.5625,
-    //        zoom: 14,
-    //        //minZoom: 2,
-    //        //maxZoom: 19,
-    //        //projection: 'EPSG:4326',
-    //        center: melbourneFlorida3857
-    //    }),
-    //    target: 'mapOmar'
-    //});
-
-    var mapTile = new ol.Map({
+    var mapOmar = new ol.Map({
         controls: ol.control.defaults({
             attributionOptions: ({
                 controlollapsible: false
@@ -95,11 +71,36 @@ AppAdmin = (function () {
             //projection: 'EPSG:4326',
             center: melbourneFlorida3857
         }),
+        target: 'mapOmar'
+    });
+
+    var mapTile = new ol.Map({
+        controls: ol.control.defaults({
+            attributionOptions: ({
+                controlollapsible: false
+            })
+        }).extend([
+            //mousePositionControl
+        ]),
+        interactions: ol.interaction.defaults().extend([
+            new ol.interaction.DragRotateAndZoom()
+        ]),
+        layers: AddLayersAdmin.layers,
+        //view: new ol.View({
+        //    //maxResolution: 0.5625,
+        //    zoom: 14,
+        //    //minZoom: 2,
+        //    //maxZoom: 19,
+        //    //projection: 'EPSG:4326',
+        //    center: melbourneFlorida3857
+        //}),
+        view: mapOmar.getView(),
         target: 'mapTile'
     });
 
     //mapOmar.getView().bindTo('center', mapTile.getView());
     //var accessor = mapOmar.getView().bindTo('resolution', mapTile.getView());
+
     //accessor.transform(
     //    function (sourceResolution) {
     //        if ($('#twice').prop('checked')) {
@@ -576,7 +577,7 @@ AppAdmin = (function () {
         initialize: function (initParams) {
 
             loadParams = initParams;
-            console.log(loadParams);
+            //console.log(loadParams);
 
             //console.log(initParams.omarWmsUrl);
             //console.log(tilestoreLayers);
@@ -587,7 +588,7 @@ AppAdmin = (function () {
                     getCurrentTileLayer()
                 );
             function addInitialLayer(){
-                console.log(currentTileLayer);
+                //console.log(currentTileLayer);
                 initLayer = new ol.layer.Tile( {
                     opacity: 1.0,
                     source: new ol.source.TileWMS( {
