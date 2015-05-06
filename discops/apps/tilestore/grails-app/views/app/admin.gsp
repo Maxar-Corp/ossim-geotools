@@ -9,6 +9,12 @@
 
     <title>RBT | Tiles Administrator</title>
 
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
     <asset:stylesheet src="app/admin.css"/>
 
 </head>
@@ -118,18 +124,18 @@
 
 <div id="mapsRow" class="">
 
-    <div id="toc" class="col-md-2" style="width: 280px; overflow: auto; overflow-x: hidden;">
+    <div id="toc" class="col-md-3" style="width: 355px; overflow: auto; overflow-x: hidden;">
         <h4 class="text-center">OMAR Feed</h4>
-        <img class="thumbnail" src="http://placehold.it/225x125">
-        <img class="thumbnail" src="http://placehold.it/225x125">
-        <img class="thumbnail" src="http://placehold.it/225x125">
-        <img class="thumbnail" src="http://placehold.it/225x125">
-        <img class="thumbnail" src="http://placehold.it/225x125">
+        <img class="thumbnail" src="http://placehold.it/300x125">
+        <img class="thumbnail" src="http://placehold.it/300x125">
+        <img class="thumbnail" src="http://placehold.it/300x125">
+        <img class="thumbnail" src="http://placehold.it/300x125">
+        <img class="thumbnail" src="http://placehold.it/300x125">
     </div>
 
-    <div id="mapOmar" class="col-md-5"></div>
+    %{--<div id="mapOmar" class="col-md-5"></div>--}%
 
-    <div id="mapTile" class="col-md-5"></div>
+    <div id="mapTile" class="col-md-9"></div>
 
 </div>
 
