@@ -449,7 +449,6 @@ AppAdmin = (function () {
     });
 
     function ajaxDeleteLayer(name) {
-        alert("adsflkjasdflkjasdf");
         return $.ajax({
             url: "/tilestore/layerManager/delete?",
             type: 'POST',
