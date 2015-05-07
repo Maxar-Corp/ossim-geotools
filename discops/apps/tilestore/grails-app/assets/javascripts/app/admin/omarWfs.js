@@ -135,6 +135,9 @@ AppOmarWfs = (function () {
         alert('ingestToCurrentTileLayer clicked');
         alert('map: ' + AppAdmin.mapOmar);
         alert('this: ' + this);
+
+        // TODO: Add ingest layer code here
+
     });
 
     //$('#testMe').on('click', function(){
@@ -144,11 +147,11 @@ AppOmarWfs = (function () {
         initialize: function (initParams) {
 
             loadParams = initParams;
-            //console.log(loadParams);
+            console.log(loadParams);
 
-            function ingestCurrentImage(imageId, filePath){
-                alert('you called ingestCurrentImage with value: ' + imageId);
-            }
+            //function ingestCurrentImage(imageId, filePath){
+            //    alert('you called ingestCurrentImage with value: ' + imageId);
+            //}
 
         }
     };
