@@ -41,7 +41,7 @@ import org.ossim.core.SynchOssimInit
 		  description="description",
 		  categoryDescription="categoryDescription",
 		  image="org/ossim/kettle/steps/chipper/icon.png",
-		  i18nPackageName="org.ossim.steps.kettle.chipper"
+		  i18nPackageName="org.ossim.kettle.steps.chipper"
 )
 public class ChipperMeta extends BaseStepMeta implements StepMetaInterface
 {
