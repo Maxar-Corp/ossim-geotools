@@ -64,11 +64,7 @@ AppAdmin = (function () {
         ]),
         layers: AddLayersAdmin.layers,
         view: new ol.View({
-            //maxResolution: 0.5625,
             zoom: 14,
-            //minZoom: 2,
-            //maxZoom: 19,
-            //projection: 'EPSG:4326',
             center: melbourneFlorida3857
         }),
         target: 'mapOmar'
@@ -86,44 +82,9 @@ AppAdmin = (function () {
             new ol.interaction.DragRotateAndZoom()
         ]),
         layers: AddLayersAdmin.layers,
-        //view: new ol.View({
-        //    //maxResolution: 0.5625,
-        //    zoom: 14,
-        //    //minZoom: 2,
-        //    //maxZoom: 19,
-        //    //projection: 'EPSG:4326',
-        //    center: melbourneFlorida3857
-        //}),
         view: mapOmar.getView(),
         target: 'mapTile'
     });
-
-    //mapOmar.getView().bindTo('center', mapTile.getView());
-    //var accessor = mapOmar.getView().bindTo('resolution', mapTile.getView());
-
-    //accessor.transform(
-    //    function (sourceResolution) {
-    //        if ($('#twice').prop('checked')) {
-    //            return sourceResolution / 2;
-    //        }
-    //        else {
-    //            return sourceResolution;
-    //        }
-    //    },
-    //    function (targetResolution) {
-    //        if ($('#twice').prop('checked')) {
-    //            return targetResolution * 2;
-    //        }
-    //        else {
-    //            return targetResolution;
-    //        }
-    //    }
-    //);
-
-    //$('#twice').on('click', function () {
-    //    mapTile.render();
-    //    mapOmar.render();
-    //});
 
     //Add Full Screen
     //var fullScreenControl = new ol.control.FullScreen();
@@ -165,7 +126,6 @@ AppAdmin = (function () {
     // Function that gets the tile cache layers from the initParams
     // passed in from the AppController
     function getTileLayers(params, elem) {
-        //Note: was a return on $.each
         var dfd = $.Deferred();
         $.each(params, function (index, tileCacheLayer) {
             var deffered = $.Deferred();
@@ -562,6 +522,22 @@ AppAdmin = (function () {
         currentTileLayer = $tileLayerSelect.val();
     }
 
+    function resizeMapRow(){
+        console.log('resizing')
+        $('#mapOmar').animate({height:$(window).height()- 112}, 100, function(){
+            mapOmar.updateSize();
+        });
+        $('#mapTile').animate({height:$(window).height()- 112}, 100, function(){
+            mapTile.updateSize();
+        });
+        $('#toc').animate({height:$(window).height()- 112}, 100, function(){
+        });
+    }
+
+    $(window).resize(function(){
+        resizeMapRow();
+    });
+
     // Parameters for the toastr banner
     toastr.options = {
         "closeButton": true,
@@ -601,6 +577,9 @@ AppAdmin = (function () {
                 mapTile.addLayer(initLayer);
             }
             addInitialLayer();
+
+            resizeMapRow();
+
         }
     };
 })();

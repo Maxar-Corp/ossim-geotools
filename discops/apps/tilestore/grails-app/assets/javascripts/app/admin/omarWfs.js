@@ -72,10 +72,13 @@ AppOmarWfs = (function () {
         }
     });
 
-    Handlebars.registerHelper("addToOmarMap", function addWmsToOmarMap(wmsId){
-        alert(wmsId);
-    });
-
+    //Handlebars.registerHelper("addToOmarMap", function addWmsToOmarMap(wmsId){
+    //    //alert(wmsId);
+    //    url="http://www.google.com";
+    //    return new Handlebars.SafeString(
+    //        "<a href='" + url + "'>" + wmsId + "</a>"
+    //    );
+    //});
 
     $.ajax({
         url: wfsUrl,
@@ -102,31 +105,48 @@ AppOmarWfs = (function () {
         alert('Adding current image to Omar Map');
     });
 
-    $('a.panel').click(function() {
-        var $target = $($(this).attr('href')),
-            $other = $target.siblings('.active');
 
-        if (!$target.hasClass('active')) {
-            $other.each(function(index, self) {
-                var $this = $(this);
-                $this.removeClass('active').animate({
-                    left: $this.width()
-                }, 100);
-            });
 
-            $target.addClass('active').show().css({
-                left: -($target.width())
-            }).animate({
-                left: 0
-            }, 100);
-        }
+    //$('a.panel').click(function() {
+    //    var $target = $($(this).attr('href')),
+    //        $other = $target.siblings('.active');
+    //
+    //    if (!$target.hasClass('active')) {
+    //        $other.each(function(index, self) {
+    //            var $this = $(this);
+    //            $this.removeClass('active').animate({
+    //                left: $this.width()
+    //            }, 100);
+    //        });
+    //
+    //        $target.addClass('active').show().css({
+    //            left: -($target.width())
+    //        }).animate({
+    //            left: 0
+    //        }, 100);
+    //    }
+    //});
+    //$('#testMe').on('click', function (){
+    //    alert('event click!');
+    //});
+
+    $(document).on('click', '.ingestToCurrentTileLayer', function(){
+        alert('test me event click!');
+        alert(this);
     });
 
+    //$('#testMe').on('click', function(){
+    //    alert('event click!');
+    //});
     return {
         initialize: function (initParams) {
 
             loadParams = initParams;
             //console.log(loadParams);
+
+            function ingestCurrentImage(imageId, filePath){
+                alert('you called ingestCurrentImage with value: ' + imageId);
+            }
 
         }
     };
