@@ -57,7 +57,7 @@ class TilestoreDatabaseFilters {
             before = {
                 response.setHeader( "Access-Control-Allow-Origin", "*" );
                 response.setHeader( "Access-Control-Allow-Origin", "*" );
-                response.setHeader( "Access-Control-Allow-Methods", "GET" );
+                response.setHeader( "Access-Control-Allow-Methods", "GET, POST" );
                 response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
             }
             after = { Map model ->
