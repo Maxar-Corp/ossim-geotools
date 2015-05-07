@@ -172,7 +172,7 @@ AppAdmin = (function () {
             $maxTileLevel.selectpicker('refresh');
         }
     });
-
+    
     function ajaxCreateLayer(obj) {
         return $.ajax({
             url: "/tilestore/layerManager/create",
@@ -579,8 +579,9 @@ AppAdmin = (function () {
             addInitialLayer();
 
             resizeMapRow();
-
-        }
+        },
+        mapOmar: mapOmar,
+        mapTile: mapTile
     };
 })();
 
