@@ -44,7 +44,9 @@ class AppController
         initParams: [
 //            wmtsTileGrid: grailsApplication.config.tilestore.wmtsTileGrid ?: false,
             wfsURL: grailsLinkGenerator.link( action: 'testWFS' ),
-            omarWmsUrl: grailsApplication.config.omar.wmsUrl,
+            omarWms: grailsApplication.config.omar.wms,
+            omarWfs: grailsApplication.config.omar.wfs,
+            omarUrl: grailsApplication.config.omar.url,
 //            urlProductExport: grailsLinkGenerator.link( controller: 'product', action: 'export' ),
 //            urlLayerActualBounds: grailsLinkGenerator.link( controller: 'accumuloProxy', action: 'actualBounds' ),
             tilestoreWmsURL: grailsLinkGenerator.link( controller: 'wms', action: 'index', absolute: true ),
