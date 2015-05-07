@@ -41,7 +41,7 @@ import org.ossim.kettle.steps.geomop.GeomOpData.GeomOpType
 		  description="description",
 		  categoryDescription="categoryDescription",
 		  image="org/ossim/kettle/steps/geomop/icon.png",
-		  i18nPackageName="org.ossim.steps.kettle.geomop"
+		  i18nPackageName="org.ossim.kettle.steps.geomop"
 )
 public class GeomOpMeta extends BaseStepMeta implements StepMetaInterface
 {
