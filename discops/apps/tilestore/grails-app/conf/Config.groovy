@@ -160,9 +160,15 @@ accumulo {
   password = "root"
   zooServers = "sandbox.accumulo.radiantblue.local"
 //  zooServers="accumulo-site.radiantblue.local"
-  zooServers = "sandbox.accumulo.radiantblue.local"
+//  zooServers = "sandbox.accumulo.radiantblue.local"
   instance = "accumulo"
   // tileAccessClass = "joms.geotools.tileapi.AccumuloTileAccess"
+}
+
+omar{
+   url = "http://localhost:9999/omar"
+   wfs = "${omar.url}/wfs"
+   wms = "${omar.url}/wms"
 }
 
 tilestore {
