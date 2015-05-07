@@ -126,6 +126,7 @@
 
         <div id="toc" class="col-md-2" style="overflow-x: hidden;">
             <h4 class="text-center">OMAR Feed</h4>
+
             <div id="omarImageList"></div>
         </div>
 
@@ -324,8 +325,6 @@
         AddLayersAdmin.initialize(initParams);
         AppAdmin.initialize(initParams);
         AppOmarWfs.initialize(initParams);
-
-
 
     } );
 </g:javascript>

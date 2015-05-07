@@ -523,7 +523,7 @@ AppAdmin = (function () {
     }
 
     function resizeMapRow(){
-        console.log('resizing')
+        //console.log('resizing')
         $('#mapOmar').animate({height:$(window).height()- 112}, 100, function(){
             mapOmar.updateSize();
         });
