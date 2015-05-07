@@ -43,7 +43,7 @@ class RabbitMQProducer
    }
    void sendMessage(String queue, String message)
    {
-      template?.convertAndSend(product?.queue, message)
+      template?.convertAndSend(queue, message)
    }
    void destroy()
    {
