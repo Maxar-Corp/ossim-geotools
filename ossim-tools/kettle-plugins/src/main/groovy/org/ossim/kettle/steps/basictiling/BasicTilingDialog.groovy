@@ -158,7 +158,36 @@ public class BasicTilingDialog extends BaseStepDialog implements
                           input.setChanged();
                        }
                     }
+            label(id: "cropLabel", text: "Crop")
+            cCombo(id: "crop",
+                    items: SwtUtilities.previousStepFields(transMeta, stepname, [OssimValueMetaBase.TYPE_GEOMETRY_2D]),
+                    layoutData: "span,growx")
+                    {
+                       onEvent(type: 'Modify') { input.setChanged(); }
+                    }
+            label(id: "cropEpsgLabel", text: "Crop EPSG")
+            cCombo(id: "cropEpsg",
+                    items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING]),
+                    layoutData: "span,growx")
+                    {
+                       onEvent(type: 'Modify') { input.setChanged(); }
+                    }
+            label(id: "inputFileNameFieldLabel", text: "Filename Field")
+            cCombo(id: "inputFilenameField",
+                    items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING]),
+                    layoutData: "span,growx")
+                    {
+                       onEvent(type: 'Modify') { input.setChanged(); }
+                    }
+            label(text: "Entry Field")
+            cCombo(id: "inputEntryField",
+                    items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING, ValueMetaInterface.TYPE_INTEGER]),
+                    layoutData: "span,growx")
+                    {
+                       onEvent(type: 'Modify') { input.setChanged(); }
+                    }
          }
+         /*
          group("AOI From", layoutData:"grow, spanx, wrap", style:"SHADOW_NONE,NO_BACKGROUND"){
             migLayout(layoutConstraints:"insets 2, wrap 1", columnConstraints: "[grow]")
             radioButton (id:"inputFileNameRadioButton", text:"File", layoutData:"split 2", selection:true){
@@ -175,9 +204,9 @@ public class BasicTilingDialog extends BaseStepDialog implements
                   swt.inputGeometryGroup.visible = true
                }
             }
-
             composite(style:"none", layoutData:"span,growx"){
-               stackLayout(id:"stackLayout");
+              // stackLayout(id:"stackLayout");
+
                composite(id:"inputFilenameGroup", style:"none", layoutData:"insets 0, span,growx"){
                   migLayout(layoutConstraints:"insets 0, wrap 2", columnConstraints: "[][grow]")
                   label (id:"inputFileNameFieldLabel", text:"Filename Field")
@@ -220,7 +249,8 @@ public class BasicTilingDialog extends BaseStepDialog implements
                   //label (id:"testLabel2", text:"Not implemented yet",layoutData:"span,growx")
                }
             }
-         }
+        }
+             */
          group(text:"Output Fields", layoutData:"grow, spanx"){
             migLayout(layoutConstraints:"insets 2", columnConstraints: "[grow]")
             tableView(id:"fieldSelection",
@@ -263,7 +293,7 @@ public class BasicTilingDialog extends BaseStepDialog implements
          }
       }
       changed = input.hasChanged();
-      swt.stackLayout.topControl = swt.inputFilenameGroup
+      //swt.stackLayout.topControl = swt.inputFilenameGroup
       shell.text = Messages.getString("BasicTilingDialog.Shell.Title")
       getData(); // initialize data fields
       setSize(); // shrink and fit dialog to fit inputs
@@ -282,8 +312,8 @@ public class BasicTilingDialog extends BaseStepDialog implements
       swt.tileHeight.text          = input.targetTileHeight?:""
       swt.inputFilenameField.text  = input.inputFilenameField?:""
       swt.inputEntryField.text     = input.inputEntryField?:""
-      swt.geometry.text            = input.geometry?:""
-      swt.geometryEpsg.text        = input.geometryEpsg?:""
+      swt.crop.text                = input.crop?:""
+      swt.cropEpsg.text            = input.cropEpsg?:""
       swt.projectionType.text      = input.projectionType.toString()
       swt.clampMinLevel.text       = input.clampMinLevel!=null?input.clampMinLevel.toString():""
       swt.clampMaxLevel.text       = input.clampMaxLevel!=null?input.clampMaxLevel.toString():""
@@ -293,7 +323,7 @@ public class BasicTilingDialog extends BaseStepDialog implements
       loadSelectedFields();
 
       swt.origin.text = input.origin
-
+/*
       if(input.inputFilenameField)
       {
          swt.inputFileNameRadioButton.selection = true
@@ -307,7 +337,7 @@ public class BasicTilingDialog extends BaseStepDialog implements
          swt.geometryRadioButton.selection = true
          swt.stackLayout.topControl = swt.inputGeometryGroup
       }
-
+*/
 
 
    }
@@ -419,21 +449,27 @@ public class BasicTilingDialog extends BaseStepDialog implements
       if(swt.tileWidth.text)  input.targetTileWidth  = swt.tileWidth.text
       if(swt.tileHeight.text) input.targetTileHeight = swt.tileHeight.text
 
+      /*
       if(swt.inputFileNameRadioButton.selection)
       {
          input.inputFilenameField = swt.inputFilenameField.text
          input.inputEntryField    = swt.inputEntryField.text
-         input.geometry = ""
-         input.geometryEpsg = ""
+         input.crop = ""
+         input.cropEpsg = ""
       }
       else if(swt.geometryRadioButton.selection)
       {
          input.inputFilenameField = ""
          input.inputEntryField    = ""
-         input.geometry = swt.geometry.text
-         input.geometryEpsg = swt.geometryEpsg.text
+         input.crop = swt.crop.text
+         input.cropEpsg = swt.cropEpsg.text
 
       }
+      */
+      input.inputFilenameField = swt.inputFilenameField.text
+      input.inputEntryField    = swt.inputEntryField.text
+      input.crop               = swt.crop.text
+      input.cropEpsg           = swt.cropEpsg.text
 
       input.setProjectionType(swt.projectionType.text)
       dispose();
