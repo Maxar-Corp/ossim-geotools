@@ -118,7 +118,7 @@ class BasicTiling extends BaseStep implements StepInterface
       String inputFilename
       String entryString = ""
       Integer entry
-      Geometry regionsOfInterest
+      Geometry regionOfInterest
 
       if(meta.inputFilenameField)
       {
@@ -164,7 +164,7 @@ class BasicTiling extends BaseStep implements StepInterface
 
             if(intersection.clippedBounds)
             {
-               regionsOfInterest = intersection.clippedBounds?.geometry
+               regionOfInterest = intersection.clippedBounds?.geometry
             }
             if(intersection)
             {
@@ -210,7 +210,7 @@ class BasicTiling extends BaseStep implements StepInterface
                              maxLevel: options.maxLevel
                      ))
                      tileIterator.regionOfInterest = value
-                     regionsOfInterest = value
+                     regionOfInterest = value
                   }
                }
             }
@@ -403,13 +403,13 @@ class BasicTiling extends BaseStep implements StepInterface
                      }
                      if(tileMaskAoiIdx > -1)
                      {
-                        Geometry geomMask  = tileBounds.geometry
+                      //  Geometry geomMask  = tileBounds.geometry
 
-                        if(regionsOfInterest)
+                        if(regionOfInterest)
                         {
-                           geomMask = regionsOfInterest.intersection(geomMask)
+                           //geomMask = regionOfInterest.intersection(geomMask)
                         }
-                        resultArray[tileMaskAoiIdx] = geomMask.g
+                        resultArray[tileMaskAoiIdx] = regionOfInterest.g //geomMask.g
                      }
                      //if(tileGlobalRowIdx >-1)
                      //{
