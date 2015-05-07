@@ -112,7 +112,7 @@ class LayerManagerController
          }
       }
 
-      layerManagerService.createOrUpdateLayer( cmd )
+      layerManagerService.createOrUpdate( cmd )
 
       def result = layerManagerService.show(cmd.name)
 
@@ -141,7 +141,7 @@ class LayerManagerController
          }
       }
 
-      def result = layerManagerService.createLayer( cmd )
+      def result = layerManagerService.create( cmd )
 
       response.status = result.status.value
       if(result.status != HttpStatus.OK)
@@ -177,8 +177,7 @@ class LayerManagerController
             name = map.name
             break
       }
-
-      def result = layerManagerService.deleteLayer(name)
+      def result = layerManagerService.delete(name)
       response.status = result.status.value
       if(response.status != HttpStatus.OK)
       {
