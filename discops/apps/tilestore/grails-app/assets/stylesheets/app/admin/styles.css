@@ -25,44 +25,37 @@ body {
     box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
 }
 
-#titlesRow {
-  margin-right: 15px;
-}
+/*#titlesRow {*/
+  /*margin-right: 15px;*/
+/*}*/
 
 #mapsRow {
   /*margin-right: 15px;*/
 }
 
 #toc {
-  height: 642px;
-  bottom: 0px; 
+  /*height: 642px;*/
+  /*bottom: 0px; */
 }
 
 .ol-viewport{
     border: solid 1px;
     height: 100% !important;
 
-  /*-webkit-border-radius: 10px;*/
-  /*-moz-border-radius: 10px;*/
-  /*border-radius: 10px;*/
-  /*-webkit-box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);*/
-  /*-moz-box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);*/
-  /*box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);*/
-
 }
 
 #mapOmar {
-    position: absolute;
-    top: 79px;
-    bottom: 29px;
-    left: 270px;
+    /*position: absolute;*/
+    top: 0px;
+    /*bottom: 29px;*/
+    /*left: 270px;*/
 }
 
 #mapTile {
-    position: absolute;
-    top: 79px;
-    bottom: 29px;
-    right: -10px;
+    /*position: absolute;*/
+    top: 0px;
+    /*bottom: 29px;*/
+    /*right: -10px;*/
 }
 
 #mapOmar { z-index: 35; }
@@ -183,71 +176,68 @@ body {
 
 /* BEGIN OMAR WFS Feed */
 #image-card {
-    border-top: 1px solid #eee;
-    border-left: 1px solid #eee;
-    border-right: 1px solid #eee;
+    /*margin-left: 5px;*/
+    border-top: 1px solid #57a3ff;
+    border-left: 1px solid #57a3ff;
+    border-right: 1px solid #57a3ff;
     margin-bottom: 0px;
     border-radius: 6px;
-
-    /*background-color: #ededed;*/
+    background-color: red;
 }
 
-#image-card:hover {
-    background-color: #eeeeee;
-    border: 1px solid #57a3ff;
-    -webkit-box-shadow: 3px 3px 3px 0px rgba(50, 50, 50, 0.75);
-    -moz-box-shadow:    3px 3px 3px 0px rgba(50, 50, 50, 0.75);
-    box-shadow:         3px 3px 3px 0px rgba(50, 50, 50, 0.75);
+/*#image-card:hover {*/
+    /*background-color: #eeeeee;*/
+    /*border: 1px solid #57a3ff;*/
+    /*-webkit-box-shadow: 3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
+    /*-moz-box-shadow:    3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
+    /*box-shadow:         3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
 
-}
+/*}*/
 
-.col-md-4 {
-    padding-left: 5px;
-    padding-right: 0px;
-}
 
-.col-md-8 {
-    padding-left: 12px;
-    padding-right: 0px;
-}
-
-#image-card-thumb{
+.image-card-thumb {
+    margin-left: -8px;
     cursor: pointer;
 }
 
-#image-card-info {
+.omar-thumb {
+    width: 75px;
+    height: 75px;
+    margin-top: 10px;
+}
+
+.image-card-info {
+    margin-left: 42px;
     padding-top: 8px;
-    font-size: 11px;
+    padding-right: 0px;
+    font-size: 9.5px;
 }
 
-#image-card-info {
-    font-size: 11px;
-}
 
-#image-card-info hr {
+.image-card-info hr {
     margin-top: 5px;
     margin-bottom: 5px;
 }
 
-#image-card-info .fa {
+.image-card-info .fa {
     color: #57a3ff;
     cursor: pointer;
 }
 
-#left, #right {
-    position: relative;
-    float: left;
-    margin: 0 5px 0 0;
-    border: 1px solid #337ab7;
-    width: 200px;
-    height: 400px;
-    overflow: hidden;
-}
+/*#left, #right {*/
+    /*position: relative;*/
+    /*float: left;*/
+    /*margin: 0 5px 0 0;*/
+    /*border: 1px solid #337ab7;*/
+    /*width: 200px;*/
+    /*height: 400px;*/
+    /*overflow: hidden;*/
+/*}*/
 
-div.panel {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    display: none;
-}
+/*div.panel {*/
+    /*position: absolute;*/
+    /*height: 100%;*/
+    /*width: 100%;*/
+    /*display: none;*/
+/*}*/
 /* END OMAR WFS Feed */
