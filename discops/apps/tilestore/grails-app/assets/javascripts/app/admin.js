@@ -18,7 +18,7 @@
 
 //= require admin/addLayersAdmin.js
 //= require admin/appAdmin.js
-//= require admin/appOmarWfs.js
+//= require admin/omarWfs.js
 //= require common/coordinate.js
 //= require common/zoomTo.js
 //= require_self
