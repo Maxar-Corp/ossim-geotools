@@ -100,25 +100,9 @@ class JobController {
          render contentType: 'application/json', text: result.data as JSON
       }
    }
-   def ingest(IngestCommand cmd)
+   def show(GetJobCommand cmd)
    {
-      def result = jobService.ingest(cmd)
-
-      response.status = result.status.value
-
-      if(result.status != HttpStatus.OK)
-      {
-         render contentType: 'application/json', text: [message:result.message] as JSON
-      }
-      else
-      {
-         render contentType: 'application/json', text: result.data as JSON
-      }
-
-   }
-   def getJob(GetJobCommand cmd)
-   {
-      def result = jobService.getJob(cmd)
+      def result = jobService.show(cmd)
 
       response.status = result.status.value
 

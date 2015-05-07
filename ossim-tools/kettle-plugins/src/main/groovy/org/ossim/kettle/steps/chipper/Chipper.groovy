@@ -1,5 +1,8 @@
 package org.ossim.kettle.steps.chipper
 
+import com.vividsolutions.jts.geom.Geometry
+import com.vividsolutions.jts.io.WKTReader
+import geoscript.proj.Projection
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.row.RowDataUtil;
@@ -38,6 +41,8 @@ class Chipper extends BaseStep implements StepInterface
    private ChipperData data = null;
    def chipper
    def degreesPerMeter;
+   Projection cutEpsg
+   Projection geographicProjection = new Projection("EPSG:4326")
    public Chipper(StepMeta stepMeta, StepDataInterface stepDataInterface,
                   int copyNr, TransMeta transMeta, Trans trans) {
       super(stepMeta, stepDataInterface, copyNr, transMeta, trans);
@@ -48,8 +53,8 @@ class Chipper extends BaseStep implements StepInterface
       meta = (ChipperMeta) smi;
       data = (ChipperData) sdi;
 
-      Object[] row = getRow();
-      if (row==null)
+      Object[] r = getRow();
+      if (r==null)
       {
          setOutputDone()
          return false
@@ -60,7 +65,14 @@ class Chipper extends BaseStep implements StepInterface
 
          data.outputRowMeta = getInputRowMeta().clone()
          meta.getFields(data.outputRowMeta, getStepname(), null, null, this)
+         int cutEpsgIdx   =  getInputRowMeta().indexOfValue(meta.inputCutGeometryEpsgField)
+         if(cutEpsgIdx >=0)
+         {
+            def cutEpsgString = getInputRowMeta().getString(r,cutEpsgIdx);
+            cutEpsg = new Projection(cutEpsgString)
+         }
       }
+      int cutIdx   =  getInputRowMeta().indexOfValue(meta.inputCutGeometryField)
       int filenameIdx   =  getInputRowMeta().indexOfValue(meta.inputFilenameField)
       int entryIdx      =  getInputRowMeta().indexOfValue(meta.inputEntryField)
       int tileMinxIdx   =  getInputRowMeta().indexOfValue(meta.inputTileMinXField)
@@ -84,16 +96,30 @@ class Chipper extends BaseStep implements StepInterface
       //def tileRow     = getInputRowMeta().getString(row, tileRowIdx)
       //def tileCol     = getInputRowMeta().getString(row, tileColIdx)
 
-      def filename = getInputRowMeta().getString(row,filenameIdx);
-      def entry    = getInputRowMeta().getString(row,entryIdx);
-      def minx     = getInputRowMeta().getString(row,tileMinxIdx);
-      def miny     = getInputRowMeta().getString(row,tileMinyIdx);
-      def maxx     = getInputRowMeta().getString(row,tileMaxxIdx);
-      def maxy     = getInputRowMeta().getString(row,tileMaxyIdx);
-      def epsg     = getInputRowMeta().getString(row,epsgCodeIdx);
-      def wString  = getInputRowMeta().getString(row,tileWidthIdx);
-      def hString  = getInputRowMeta().getString(row,tileHeightIdx);
+      def filename = getInputRowMeta().getString(r,filenameIdx);
+      def entry    = getInputRowMeta().getString(r,entryIdx);
+      def minx     = getInputRowMeta().getString(r,tileMinxIdx);
+      def miny     = getInputRowMeta().getString(r,tileMinyIdx);
+      def maxx     = getInputRowMeta().getString(r,tileMaxxIdx);
+      def maxy     = getInputRowMeta().getString(r,tileMaxyIdx);
+      def epsg     = getInputRowMeta().getString(r,epsgCodeIdx);
+      def wString  = getInputRowMeta().getString(r,tileWidthIdx);
+      def hString  = getInputRowMeta().getString(r,tileHeightIdx);
 
+      def cutGeom
+      if((cutIdx >= 0)&&(r[cutIdx]))
+      {
+         if(r[cutIdx] instanceof String)
+         {
+           cutGeom = new WKTReader().read(r[cutIdx])
+         }
+         else if(r[cutIdx] instanceof Geometry)
+         {
+           cutGeom = r[cutIdx]
+         }
+
+
+      }
       def w = wString.toInteger()
       def h = hString.toInteger()
       def arrayOfFiles   = filename.split(",")
@@ -118,6 +144,16 @@ class Chipper extends BaseStep implements StepInterface
                  three_band_out: 'true',
                  resampler_filter: meta.resampleFilterType
          ]
+         if(cutGeom)
+         {
+            if(cutEpsg&&(cutEpsg.epsg!=geographicProjection.epsg)) cutGeom = cutEpsg.transform(geoscript.geom.Geometry.wrap(cutGeom), geographicProjection)?.g
+
+            def geom = cutGeom.getGeometryN(0)
+            def geomColl = geom?.coordinates.collect{ "(${it.y},${it.x})" }
+
+            if(geomColl) chipperOptionsMap.clip_poly_lat_lon = "(${geomColl.join(",")})".toString()
+         }
+        // println chipperOptionsMap.clip_poly_lat_lon
          //println chipperOptionsMap
          if(arrayOfFiles.size() == arrayOfEntries.size())
          {
@@ -191,7 +227,7 @@ class Chipper extends BaseStep implements StepInterface
                   break
                default:
                   break
-            //Object[] outputRow = RowDataUtil.addRowData(row,
+            //Object[] outputRow = RowDataUtil.addRowData(r,
             //		                                          data.outputRowMeta.size()-(resultArray.size()),
             //		                                          resultArray as Object []);
 
@@ -200,7 +236,7 @@ class Chipper extends BaseStep implements StepInterface
             }
             if(resultArray)
             {
-               Object[] outputRow = RowDataUtil.addRowData(row,
+               Object[] outputRow = RowDataUtil.addRowData(r,
                        data.outputRowMeta.size()-(resultArray.size()),
                        resultArray as Object []);
                putRow(data.outputRowMeta, outputRow);
@@ -208,7 +244,7 @@ class Chipper extends BaseStep implements StepInterface
          }
       }
 
-      //putRow(data.outputRowMeta, row);
+      //putRow(data.outputRowMeta, r);
 
       return true; // finished with this row, process the next row
    }

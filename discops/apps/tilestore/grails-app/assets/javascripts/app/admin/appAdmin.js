@@ -1,5 +1,5 @@
 AppAdmin = (function () {
-    //TODO: Cache jquery selectors.  Possibly use this solution:
+    // TODO: Cache jquery selectors.  Possibly use this solution:
     //      http://ttmm.io/tech/selector-caching-jquery/
 
     var loadParams;
@@ -32,7 +32,6 @@ AppAdmin = (function () {
     var $deleteLayerName = $('#deleteLayerName');
     var $submitDeleteLayer = $('#submitDeleteLayer');
 
-
     var currentTileLayer;
     var initLayer;
 
@@ -52,28 +51,24 @@ AppAdmin = (function () {
     //    undefinedHTML: '&nbsp;'
     //});
 
-    //var mapOmar = new ol.Map({
-    //    controls: ol.control.defaults({
-    //        attributionOptions: ({
-    //            controlollapsible: false
-    //        })
-    //    }).extend([
-    //        //mousePositionControl
-    //    ]),
-    //    interactions: ol.interaction.defaults().extend([
-    //        new ol.interaction.DragRotateAndZoom()
-    //    ]),
-    //    layers: AddLayersAdmin.layers,
-    //    view: new ol.View({
-    //        //maxResolution: 0.5625,
-    //        zoom: 14,
-    //        //minZoom: 2,
-    //        //maxZoom: 19,
-    //        //projection: 'EPSG:4326',
-    //        center: melbourneFlorida3857
-    //    }),
-    //    target: 'mapOmar'
-    //});
+    var mapOmar = new ol.Map({
+        controls: ol.control.defaults({
+            attributionOptions: ({
+                controlollapsible: false
+            })
+        }).extend([
+            //mousePositionControl
+        ]),
+        interactions: ol.interaction.defaults().extend([
+            new ol.interaction.DragRotateAndZoom()
+        ]),
+        layers: AddLayersAdmin.layers,
+        view: new ol.View({
+            zoom: 14,
+            center: melbourneFlorida3857
+        }),
+        target: 'mapOmar'
+    });
 
     var mapTile = new ol.Map({
         controls: ol.control.defaults({
@@ -87,42 +82,9 @@ AppAdmin = (function () {
             new ol.interaction.DragRotateAndZoom()
         ]),
         layers: AddLayersAdmin.layers,
-        view: new ol.View({
-            //maxResolution: 0.5625,
-            zoom: 14,
-            //minZoom: 2,
-            //maxZoom: 19,
-            //projection: 'EPSG:4326',
-            center: melbourneFlorida3857
-        }),
+        view: mapOmar.getView(),
         target: 'mapTile'
     });
-
-    //mapOmar.getView().bindTo('center', mapTile.getView());
-    //var accessor = mapOmar.getView().bindTo('resolution', mapTile.getView());
-    //accessor.transform(
-    //    function (sourceResolution) {
-    //        if ($('#twice').prop('checked')) {
-    //            return sourceResolution / 2;
-    //        }
-    //        else {
-    //            return sourceResolution;
-    //        }
-    //    },
-    //    function (targetResolution) {
-    //        if ($('#twice').prop('checked')) {
-    //            return targetResolution * 2;
-    //        }
-    //        else {
-    //            return targetResolution;
-    //        }
-    //    }
-    //);
-
-    //$('#twice').on('click', function () {
-    //    mapTile.render();
-    //    mapOmar.render();
-    //});
 
     //Add Full Screen
     //var fullScreenControl = new ol.control.FullScreen();
@@ -164,7 +126,6 @@ AppAdmin = (function () {
     // Function that gets the tile cache layers from the initParams
     // passed in from the AppController
     function getTileLayers(params, elem) {
-        //Note: was a return on $.each
         var dfd = $.Deferred();
         $.each(params, function (index, tileCacheLayer) {
             var deffered = $.Deferred();
@@ -214,7 +175,7 @@ AppAdmin = (function () {
 
     function ajaxCreateLayer(obj) {
         return $.ajax({
-            url: "/tilestore/layerManager/createLayer",
+            url: "/tilestore/layerManager/create",
             type: 'POST',
             dataType: 'json',
             data: obj
@@ -355,7 +316,7 @@ AppAdmin = (function () {
 
     function ajaxRenameLayer(oldName, newName) {
         return $.ajax({
-            url: "/tilestore/layerManager/renameLayer",
+            url: "/tilestore/layerManager/rename",
             type: 'POST',
             dataType: 'json',
             data: {'oldName': oldName, 'newName': newName}
@@ -449,7 +410,7 @@ AppAdmin = (function () {
 
     function ajaxDeleteLayer(name) {
         return $.ajax({
-            url: "/tilestore/layerManager/deleteLayer?",
+            url: "/tilestore/layerManager/delete?",
             type: 'POST',
             dataType: 'json',
             data: {'name': name}
@@ -503,6 +464,7 @@ AppAdmin = (function () {
             l.stop() // stop spinner from rotating
             //Done: 04-17-15 - functionality for handling error reporting from server
             console.log(data);
+            $submitDeleteLayer.removeClass('btn-success disabled').addClass('btn-primary');
             // Fixed - 04-21-15 - Added data.responseJSON.message to display error to user
             toastr.error(data.responseJSON.message, 'Error');
         }
@@ -560,6 +522,22 @@ AppAdmin = (function () {
         currentTileLayer = $tileLayerSelect.val();
     }
 
+    function resizeMapRow(){
+        console.log('resizing')
+        $('#mapOmar').animate({height:$(window).height()- 112}, 100, function(){
+            mapOmar.updateSize();
+        });
+        $('#mapTile').animate({height:$(window).height()- 112}, 100, function(){
+            mapTile.updateSize();
+        });
+        $('#toc').animate({height:$(window).height()- 112}, 100, function(){
+        });
+    }
+
+    $(window).resize(function(){
+        resizeMapRow();
+    });
+
     // Parameters for the toastr banner
     toastr.options = {
         "closeButton": true,
@@ -576,7 +554,7 @@ AppAdmin = (function () {
         initialize: function (initParams) {
 
             loadParams = initParams;
-            console.log(loadParams);
+            //console.log(loadParams);
 
             //console.log(initParams.omarWmsUrl);
             //console.log(tilestoreLayers);
@@ -587,7 +565,7 @@ AppAdmin = (function () {
                     getCurrentTileLayer()
                 );
             function addInitialLayer(){
-                console.log(currentTileLayer);
+                //console.log(currentTileLayer);
                 initLayer = new ol.layer.Tile( {
                     opacity: 1.0,
                     source: new ol.source.TileWMS( {
@@ -599,6 +577,9 @@ AppAdmin = (function () {
                 mapTile.addLayer(initLayer);
             }
             addInitialLayer();
+
+            resizeMapRow();
+
         }
     };
 })();
