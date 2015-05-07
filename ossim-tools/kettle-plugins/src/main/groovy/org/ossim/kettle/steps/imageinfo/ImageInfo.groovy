@@ -38,6 +38,7 @@ class ImageInfo extends BaseStep implements StepInterface
 		def resultArray = []
 
 		meta.selectedFieldNames.each{key->
+
 			def fieldName = meta?.fieldNameDefinitions?."${key}".rasterEntryName
 
 			if(fieldName)
@@ -78,6 +79,9 @@ class ImageInfo extends BaseStep implements StepInterface
 						break
 					case "geomFile":
 						tempValue = rasterEntry.getFileNameOfType("geom")
+						break
+					case "ground_geom_epsg":
+						tempValue = "EPSG:4326" // ossim does a geometry as 4326 bounds
 						break
 					default:
 						break

@@ -38,8 +38,8 @@ public class GeomOp extends BaseStep implements StepInterface
 {
    private GeomOpData data
 	private GeomOpMeta meta
-	private param1
-	private param2
+	private def param1
+	private def param2
 	private def isSingleRow
 	def geom
   //joms.oms.DataInfo dataInfo;
@@ -48,7 +48,29 @@ public class GeomOp extends BaseStep implements StepInterface
 	{
 		super(s,stepDataInterface,c,t,dis);
 	}
-	
+	private String getFieldValueAsString(String fieldValue, def r, GeomOpMeta meta, GeomOpData data)
+	{
+		String result = fieldValue
+
+		if(fieldValue && r)
+		{
+			if(fieldValue.startsWith("\${"))
+			{
+				result = environmentSubstitute(fieldValue?:"")
+			}
+			else
+			{
+				Integer fieldIndex   =  getInputRowMeta().indexOfValue(fieldValue)
+				if(fieldIndex >= 0)
+				{
+					result = getInputRowMeta().getString(r,fieldIndex)
+				}
+			}
+		}
+
+		result
+	}
+
 	boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws KettleException
 	{
 		Object[] r=getRow();    // get row, set busy!
@@ -82,7 +104,12 @@ public class GeomOp extends BaseStep implements StepInterface
 				data.outputRowMeta = getInputRowMeta().clone()
 			}
 			//data.outputRowMeta.clear()
-			meta.getFields(data.outputRowMeta, getStepname(), null, null, this); 
+			meta.getFields(data.outputRowMeta, getStepname(), null, null, this);
+         if(meta.operationType == GeomOpType.PROJECTION_TRANSFORM)
+         {
+            param1 = new Projection(getFieldValueAsString(meta.param1,r, meta, data))
+            param2 = new Projection(getFieldValueAsString(meta.param2,r, meta, data))
+         }
 		}
 		def rowMeta = getInputRowMeta()
 		int input1Idx = rowMeta.indexOfValue(meta.inputGeomField1)
@@ -135,13 +162,12 @@ public class GeomOp extends BaseStep implements StepInterface
 						break
 					case GeomOpType.PROJECTION_TRANSFORM:
 						def value = null
-						if(input1Idx >= 0)
+                  if(input1Idx >= 0)
 						{
 							if(r[input1Idx])
 							{
 	    						try{
-	    							value = param1.transform(geoscript.geom.Geometry.wrap(r[input1Idx]), param2)//Projection.transform(geoscript.geom.Geometry.wrap(r[input1Idx]), 
-	    									//								meta.param1, meta.param2)
+	    							value = param1.transform(geoscript.geom.Geometry.wrap(r[input1Idx]), param2)//Projection.transform(geoscript.geom.Geometry.wrap(r[input1Idx]),
 									value = value.g
 	    						}
 	    						catch(e)
@@ -391,11 +417,6 @@ public class GeomOp extends BaseStep implements StepInterface
 		geom = null
 		isSingleRow = meta.isSingleRow()
 
-		if(meta.operationType == GeomOpType.PROJECTION_TRANSFORM)
-		{
-			param1 = new Projection(meta.param1)
-			param2 = new Projection(meta.param2)
-		}
 		return super.init(smi, sdi);
 	}
 
