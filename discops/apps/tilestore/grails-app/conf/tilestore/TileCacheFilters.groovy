@@ -1,5 +1,6 @@
 package tilestore
 
+
 class TileCacheFilters
 {
 
@@ -19,6 +20,7 @@ class TileCacheFilters
       }
 
     }
+
 
   }
 }

@@ -43,6 +43,7 @@ class TileCacheTileLayer  extends ImageTileLayer{
   TileCacheTileLayerIterator createIterator(TileCacheHints hints)
   {
     new TileCacheTileLayerIterator(layer:this,
+            regionOfInterest:hints.regionOfInterest,
             bounds:hints.clipBounds,
             minLevel:hints.minLevel,
             maxLevel:hints.maxLevel)

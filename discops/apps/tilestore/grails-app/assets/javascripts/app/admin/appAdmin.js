@@ -175,7 +175,7 @@ AppAdmin = (function () {
 
     function ajaxCreateLayer(obj) {
         return $.ajax({
-            url: "/tilestore/layerManager/createLayer",
+            url: "/tilestore/layerManager/create",
             type: 'POST',
             dataType: 'json',
             data: obj
@@ -316,7 +316,7 @@ AppAdmin = (function () {
 
     function ajaxRenameLayer(oldName, newName) {
         return $.ajax({
-            url: "/tilestore/layerManager/renameLayer",
+            url: "/tilestore/layerManager/rename",
             type: 'POST',
             dataType: 'json',
             data: {'oldName': oldName, 'newName': newName}
@@ -410,7 +410,7 @@ AppAdmin = (function () {
 
     function ajaxDeleteLayer(name) {
         return $.ajax({
-            url: "/tilestore/layerManager/deleteLayer?",
+            url: "/tilestore/layerManager/delete?",
             type: 'POST',
             dataType: 'json',
             data: {'name': name}
@@ -464,6 +464,7 @@ AppAdmin = (function () {
             l.stop() // stop spinner from rotating
             //Done: 04-17-15 - functionality for handling error reporting from server
             console.log(data);
+            $submitDeleteLayer.removeClass('btn-success disabled').addClass('btn-primary');
             // Fixed - 04-21-15 - Added data.responseJSON.message to display error to user
             toastr.error(data.responseJSON.message, 'Error');
         }

@@ -1,6 +1,7 @@
 package joms.geotools.tileapi
 
 import geoscript.geom.Bounds
+import geoscript.geom.Geometry
 import geoscript.layer.Grid
 import geoscript.layer.ImageTile
 import geoscript.layer.Tile
@@ -18,6 +19,10 @@ class TileCacheTileLayerIterator {
    int maxLevel
    Bounds    bounds
 
+   // gives us an aoi to clip all tiles to
+   //
+   Geometry regionOfInterest
+
    private int currentLevel=-1
    private TileCursor tiles
 
@@ -32,6 +37,10 @@ class TileCacheTileLayerIterator {
    }
    Bounds getBounds(def z)
    {
+      if(!bounds&&regionOfInterest)
+      {
+         bounds = regionOfInterest.bounds
+      }
       if(!bounds)
       {
          tiles = layer.tiles(minLevel);
@@ -43,16 +52,15 @@ class TileCacheTileLayerIterator {
 
       tiles.bounds
    }
-   Tile nextTile()
+   private boolean nextValidLevel()
    {
-      Tile result
+      boolean result = false
 
-     // if(!minLevelIndex) reset()
-      if(!tiles?.hasNext())
+      for(;;)
       {
          if(currentLevel<0) currentLevel=minLevel
          else ++currentLevel
-         //if(currentLevel <= maxLevel)
+
          if(currentLevel <= maxLevel)
          {
             if(!bounds)
@@ -63,25 +71,97 @@ class TileCacheTileLayerIterator {
             {
                tiles = layer?.tiles(bounds, currentLevel);
             }
+            if(tiles?.hasNext())
+            {
+               result = true
+               break
+            }
          }
          else
          {
-            tiles = null
+            result = false
+            break
          }
-         //println "${currentLevel}: count === ${tiles?.size}"
       }
-      if(tiles?.hasNext())
-      {
-         result = tiles?.next()
-      }
+
       result
    }
+
+   Tile nextTile()
+   {
+      Tile    result = null
+
+      // check if done with current level
+      if(!tiles?.hasNext())
+      {
+         // find next level
+         //
+         if(!nextValidLevel())
+         {
+            return result
+         }
+      }
+
+      // now iterate if the regionOfInterest is set.  We must make sure the tile is within
+      // the regionOfInterest.  The regionOfInterest can be a non cancave polygon so we scan till we hit
+      // an inersection
+      //
+      while(tiles?.hasNext())
+      {
+         result = tiles?.next()
+
+         if(result)
+         {
+            if(regionOfInterest)
+            {
+               Bounds tileBounds = layer.pyramid.bounds(result)
+
+               if(regionOfInterest.intersects(tileBounds.geometry))
+               {
+                  break
+               }
+               else
+               {
+                  result = null
+               }
+            }
+            else
+            {
+               break
+            }
+         }
+         else
+         {
+            // skip to next valid level that has tiles available
+            // if non available then break out and return null
+            if(!nextValidLevel())
+            {
+               break
+            }
+         }
+      }
+
+      result
+
+   }
+
    boolean isTileWithin(Tile t)
    {
-      def bounds = layer.pyramid.bounds(t)
+      boolean result = false
 
-      bounds.geometry.within(this.bounds.geometry)
+      def bounds = layer.pyramid.bounds(t)
+      if(regionOfInterest)
+      {
+         result = bounds.geometry.within(regionOfInterest)
+      }
+      else
+      {
+         result = bounds.geometry.within(this.bounds.geometry)
+      }
+
+      result
    }
+
    String getLevelInformationAsXML()
    {
       def writer = new StringWriter()

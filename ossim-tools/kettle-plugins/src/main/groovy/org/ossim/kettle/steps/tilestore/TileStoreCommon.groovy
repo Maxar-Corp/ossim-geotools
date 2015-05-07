@@ -180,7 +180,6 @@ class TileStoreCommon
       zookeeperPort     = rep.getStepAttributeString(id_step, "zookeeperPort")?:""
       zookeeperHosts    = rep.getStepAttributeString(id_step, "zookeeperHosts")?:""
       accumuloPassword = encr.decryptPasswordOptionallyEncrypted(accumuloPassword)
-      println "CHECKING HERE!!!!!!!! ${clusterName}"
    }
 
    void setDefault()
