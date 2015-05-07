@@ -9,6 +9,12 @@
 
     <title>RBT | Tiles Administrator</title>
 
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
     <asset:stylesheet src="app/admin.css"/>
 
 </head>
@@ -118,13 +124,14 @@
 
 <div id="mapsRow" class="">
 
-    <div id="toc" class="col-md-2" style="width: 280px; overflow: auto; overflow-x: hidden;">
+    <div id="toc" class="col-md-2" style="width: 355px; overflow: auto; overflow-x: hidden;">
         <h4 class="text-center">OMAR Feed</h4>
-        <img class="thumbnail" src="http://placehold.it/225x125">
-        <img class="thumbnail" src="http://placehold.it/225x125">
-        <img class="thumbnail" src="http://placehold.it/225x125">
-        <img class="thumbnail" src="http://placehold.it/225x125">
-        <img class="thumbnail" src="http://placehold.it/225x125">
+        %{--<img class="thumbnail" src="http://placehold.it/300x125">--}%
+        %{--<img class="thumbnail" src="http://placehold.it/300x125">--}%
+        %{--<img class="thumbnail" src="http://placehold.it/300x125">--}%
+        %{--<img class="thumbnail" src="http://placehold.it/300x125">--}%
+        %{--<img class="thumbnail" src="http://placehold.it/300x125">--}%
+        <div id="omarImageList"></div>
     </div>
 
     <div id="mapOmar" class="col-md-5"></div>
@@ -132,8 +139,6 @@
     <div id="mapTile" class="col-md-5"></div>
 
 </div>
-
-
 
 <!-- Create tile layer modal -->
 <div class="modal fade" id="createTileLayerModal" tabindex="-1" role="dialog" aria-labelledby="createTileLayerModalLabel" Saria-hidden="true">
@@ -278,7 +283,38 @@
     </div><!-- /.modal-dialog modal-lg -->
 </div><!-- /.modal fade "deleteTileLayerModal" -->
 
-
+<script id="image-template"  type="text/x-handlebars-template">
+    {{#features}}
+    <div class="row">
+        <div id="image-card">
+            <div id="image-card-thumb" class="col-md-4">
+                <img data-toggle="tooltip" data-placement="bottom"
+                     title="Add image to current tile layer" class="omar-thumb" style="width: 128px;
+                height: 95px;
+                margin-top: 10px;"
+                     src="http://localhost:9999/omar/thumbnail/show/{{properties.id}}" alt="Image thumbnail"
+                     size="128">
+            </div>
+            <div id="image-card-info" class="col-md-8">
+                <strong>ID: </strong>{{properties.id}}&nbsp;&nbsp;<strong>Type: </strong>
+                {{properties.file_type}}<br>
+                <strong>Acq. Date: </strong>{{formatDate properties.acquisition_date}}<br>
+                <strong>Ingest Date: </strong>{{formatDate properties.ingest_date}}<br>
+                <strong>Sensor: </strong>{{formatString properties.sensor_id}}<br>
+                <strong>Mission: </strong><span>{{formatString properties.mission_id}}</span>
+                <hr>
+                <i class="fa fa-ellipsis-h fa-lg" data-toggle="tooltip" data-placement="bottom"
+                   title="View image metadata"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a class="" href="http://localhost:9999/omar/mapView/imageSpace?layers={{properties.id}}"
+                   target="_blank"><i id="viewInOmar" class="fa fa-globe fa-lg" data-toggle="tooltip" data-placement="bottom"
+                                      title="View image in OMAR"></i></a>
+                <br>
+                <br>
+            </div>
+        </div>
+    </div>
+    {{/features}}
+</script>
 
 <tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
 
@@ -290,9 +326,12 @@
 
         AddLayersAdmin.initialize(initParams);
         AppAdmin.initialize(initParams);
+        AppOmarWfs.initialize(initParams);
 
     } );
 </g:javascript>
+
+
 
 </body>
 

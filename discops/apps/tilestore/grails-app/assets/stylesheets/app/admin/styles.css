@@ -180,3 +180,74 @@ body {
   top: 30px;
   font-size: 1.2em; 
 }
+
+/* BEGIN OMAR WFS Feed */
+#image-card {
+    border-top: 1px solid #eee;
+    border-left: 1px solid #eee;
+    border-right: 1px solid #eee;
+    margin-bottom: 0px;
+    border-radius: 6px;
+
+    /*background-color: #ededed;*/
+}
+
+#image-card:hover {
+    background-color: #eeeeee;
+    border: 1px solid #57a3ff;
+    -webkit-box-shadow: 3px 3px 3px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow:    3px 3px 3px 0px rgba(50, 50, 50, 0.75);
+    box-shadow:         3px 3px 3px 0px rgba(50, 50, 50, 0.75);
+
+}
+
+.col-md-4 {
+    padding-left: 5px;
+    padding-right: 0px;
+}
+
+.col-md-8 {
+    padding-left: 12px;
+    padding-right: 0px;
+}
+
+#image-card-thumb{
+    cursor: pointer;
+}
+
+#image-card-info {
+    padding-top: 8px;
+    font-size: 11px;
+}
+
+#image-card-info {
+    font-size: 11px;
+}
+
+#image-card-info hr {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#image-card-info .fa {
+    color: #57a3ff;
+    cursor: pointer;
+}
+
+#left, #right {
+    position: relative;
+    float: left;
+    margin: 0 5px 0 0;
+    border: 1px solid #337ab7;
+    width: 200px;
+    height: 400px;
+    overflow: hidden;
+}
+
+div.panel {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: none;
+}
+/* END OMAR WFS Feed */

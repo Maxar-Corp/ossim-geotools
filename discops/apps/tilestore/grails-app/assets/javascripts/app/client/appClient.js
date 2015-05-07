@@ -5,7 +5,7 @@ AppClient = (function () {
     // 3857
     var ftStoryImage3857 = ol.proj.transform([-76.31, 36.93], 'EPSG:4326', 'EPSG:3857');
 
-    // Norfolk area BBox: -76.6023743199,36.5972904049,-75.7974156012,36.9992201554
+    var melbourneFlorida3857 = ol.proj.transform([-80.6552775, 28.1174805], 'EPSG:4326', 'EPSG:3857');
 
     var coordTemplate = 'Lat: {y}, Lon: {x}';
     var mousePositionControl = new ol.control.MousePosition({
@@ -22,7 +22,7 @@ AppClient = (function () {
         // minZoom: 12,
         // maxZoom: 19,
         //projection: 'EPSG:4326',
-        center: ftStoryImage3857
+        center: melbourneFlorida3857
     });
 
     var map = new ol.Map({
@@ -49,7 +49,7 @@ AppClient = (function () {
                 "timeOut": "10000"
 
             }
-            toastr.info('Use the < ALT > key to define an Area of Interest, and then click "Create Geopackage" to generate a .gpkg file.', 'Define Geopackage AOI');
+            toastr.info('Use the < ALT > and < SHIFT > keys together to define an Area of Interest, and then click "Create Geopackage" to generate a .gpkg file.', 'Define Geopackage AOI');
 
             $.each(AddLayerClient.layersArray, function (i, obj) {
                 map.addLayer(obj);
