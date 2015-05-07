@@ -42,6 +42,33 @@ Brief summary/description of the plugin.
 
     def doWithSpring = {
         // TODO Implement runtime spring config (optional)
+        csvResultFormat( tilestore.wfs.formats.CsvResultFormat ) {
+          grailsApplication = ref( 'grailsApplication' )
+        }
+
+        gml2ResultFormat( tilestore.wfs.formats.Gml2ResultFormat ) {
+          grailsApplication = ref( 'grailsApplication' )
+          grailsLinkGenerator = ref( 'grailsLinkGenerator' )
+        }
+
+        shpResultFormat( tilestore.wfs.formats.ShpResultFormat )
+
+        kmlResultFormat( tilestore.wfs.formats.KmlResultFormat ) {
+          grailsApplication = ref( 'grailsApplication' )
+          grailsLinkGenerator = ref( 'grailsLinkGenerator' )
+        }
+
+        kmlqueryResultFormat( tilestore.wfs.formats.KmlQueryResultFormat ) {
+          grailsApplication = ref( 'grailsApplication' )
+          grailsLinkGenerator = ref( 'grailsLinkGenerator' )
+        }
+
+        geojsonResultFormat( tilestore.wfs.formats.GeoJsonResultFormat )
+
+        jsonResultFormat( tilestore.wfs.formats.GeoJsonResultFormat ) {
+          name = "JSON"
+        }
+
     }
 
     def doWithDynamicMethods = { ctx ->
