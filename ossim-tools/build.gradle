@@ -109,6 +109,9 @@ allprojects {
          url 'https://artifacts.unidata.ucar.edu/content/repositories/unidata/'
       }
       maven {
+         url 'https://github.com/ElectronicChartCentre/ecc-mvn-repo/raw/master/releases'
+      }
+      maven {
          url 'http://www.hibernatespatial.org/repository'
       }
       mavenCentral()
@@ -270,7 +273,10 @@ project( ':kettle-libs' ) {
       {
          case AccumuloTarget.CDH4:
             compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.1'
-            compile 'org.apache.accumulo:accumulo-core:1.6.1'
+            compile 'org.apache.zookeeper:zookeeper:3.4.5-cdh4.7.1'
+            compile ('org.apache.accumulo:accumulo-core:1.6.1') {
+               exclude module: 'zookeeper'
+            }
             //  compile 'pentaho:pentaho-hadoop-shims-cdh42-mapred:5.0.1-stable'
             break
          case AccumuloTarget.CDH5:
@@ -415,7 +421,9 @@ project( ':common-libs' ) {
          case AccumuloTarget.CDH4:
             compile 'org.apache.zookeeper:zookeeper:3.4.5-cdh4.7.1'
             compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.1'
-            compile 'org.apache.accumulo:accumulo-core:1.6.1'
+            compile ('org.apache.accumulo:accumulo-core:1.6.1') {
+               exclude module: 'zookeeper'
+            }
             break
          case AccumuloTarget.CDH5:
             compile 'org.apache.hadoop:hadoop-client:2.5.0-cdh5.2.4'

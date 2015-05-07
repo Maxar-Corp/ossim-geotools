@@ -36,42 +36,44 @@ import org.pentaho.di.core.row.value.ValueMetaBase
 
 import org.ossim.core.SynchOssimInit
 @Step(
-		id="Chipper",
-		name="name",
-		description="description",
-		categoryDescription="categoryDescription", 
-		image="org/ossim/kettle/steps/chipper/icon.png",
-		i18nPackageName="org.ossim.steps.kettle.chipper"
-) 
+		  id="Chipper",
+		  name="name",
+		  description="description",
+		  categoryDescription="categoryDescription",
+		  image="org/ossim/kettle/steps/chipper/icon.png",
+		  i18nPackageName="org.ossim.kettle.steps.chipper"
+)
 public class ChipperMeta extends BaseStepMeta implements StepMetaInterface
 {
 	def imageResultField     = "image"
 	def imageStatusField     = "image_status"
 
 	/**
-	* Values can be
-	*	nearest neighbor
-	*	bilinear
-	*	cubic
-	*	bessel
-	*	blackman
-	*	bspline
-	*	catrom
-	*	gaussian
-	*	hanning
-	*	hamming
-	*	hermite
-	*	lanczos
-	*	mitchell
-	*	quadratic
-	*	sinc
-	*/
+	 * Values can be
+	 *	nearest neighbor
+	 *	bilinear
+	 *	cubic
+	 *	bessel
+	 *	blackman
+	 *	bspline
+	 *	catrom
+	 *	gaussian
+	 *	hanning
+	 *	hamming
+	 *	hermite
+	 *	lanczos
+	 *	mitchell
+	 *	quadratic
+	 *	sinc
+	 */
 	def resampleFilterType		 = "bilinear"
 	/**
-	* can be values: none, auto-minmax, std-stretch-1, std-stretch-2, std-stretch-3
-	*/
+	 * can be values: none, auto-minmax, std-stretch-1, std-stretch-2, std-stretch-3
+	 */
 	def histogramOperationType = "none"
 
+	def inputCutGeometryField      = ""
+	def inputCutGeometryEpsgField  = ""
 	def inputFilenameField   = "filename"
 	def inputEntryField      = "entry"
 	def inputTileMinXField   = "tile_minx"
@@ -84,12 +86,14 @@ public class ChipperMeta extends BaseStepMeta implements StepMetaInterface
 
 	String getXML() throws KettleValueException
 	{
-      def retval = new StringBuffer(400);
-		
+		def retval = new StringBuffer(400);
+
 		retval.append("    ").append(XMLHandler.addTagValue("imageResultField",     imageResultField))
 		retval.append("    ").append(XMLHandler.addTagValue("resampleFilterType",     resampleFilterType))
 		retval.append("    ").append(XMLHandler.addTagValue("histogramOperationType",     histogramOperationType))
 		retval.append("    ").append(XMLHandler.addTagValue("imageStatusField",     imageStatusField))
+		retval.append("    ").append(XMLHandler.addTagValue("inputCutGeometryField",   inputCutGeometryField))
+		retval.append("    ").append(XMLHandler.addTagValue("inputCutGeometryEpsgField",   inputCutGeometryEpsgField))
 		retval.append("    ").append(XMLHandler.addTagValue("inputFilenameField",   inputFilenameField))
 		retval.append("    ").append(XMLHandler.addTagValue("inputEntryField",      inputEntryField))
 		retval.append("    ").append(XMLHandler.addTagValue("inputTileMinXField",   inputTileMinXField))
@@ -107,18 +111,18 @@ public class ChipperMeta extends BaseStepMeta implements StepMetaInterface
 
 		return retval;
 	}
-	void getFields(RowMetaInterface r, String origin, 
-		            RowMetaInterface[] info, 
-		            StepMeta nextStep, VariableSpace space)
+	void getFields(RowMetaInterface r, String origin,
+						RowMetaInterface[] info,
+						StepMeta nextStep, VariableSpace space)
 	{
 		ValueMetaInterface field
 		field = ValueMetaFactory.createValueMeta(imageStatusField, ValueMetaBase.TYPE_STRING);
-		field.setOrigin(origin);		
+		field.setOrigin(origin);
 		r.addValueMeta(field);
 
-		field = ValueMetaFactory.createValueMeta(imageResultField, 
-																						OssimValueMetaBase.TYPE_IMAGE);
-		field.setOrigin(origin);		
+		field = ValueMetaFactory.createValueMeta(imageResultField,
+				  OssimValueMetaBase.TYPE_IMAGE);
+		field.setOrigin(origin);
 		r.addValueMeta(field);
 
 	}
@@ -138,14 +142,14 @@ public class ChipperMeta extends BaseStepMeta implements StepMetaInterface
 	}
 
 	void loadXML(Node stepnode, List<DatabaseMeta> databases, Map<String,Counter> counters)
-		throws KettleXMLException
+			  throws KettleXMLException
 	{
 		this.setDefault();
 		readData(stepnode, databases);
 	}
-	
+
 	private void readData(Node stepnode, List<DatabaseMeta> databases)
-	throws KettleXMLException
+			  throws KettleXMLException
 	{
 		this.setDefault();
 		def values = stepnode
@@ -157,6 +161,8 @@ public class ChipperMeta extends BaseStepMeta implements StepMetaInterface
 			def imageResultFieldString     = XMLHandler.getTagValue(values, "imageResultField");
 			def imageStatusFieldString     = XMLHandler.getTagValue(values, "imageStatusField");
 			def inputFilenameFieldString   = XMLHandler.getTagValue(values, "inputFilenameField");
+			def inputCutGeometryFieldString     = XMLHandler.getTagValue(values, "inputCutGeometryField");
+			def inputCutGeometryEpsgFieldString = XMLHandler.getTagValue(values, "inputCutGeometryEpsgField");
 			def inputEntryFieldString      = XMLHandler.getTagValue(values, "inputEntryField");
 			def inputTileMinXFieldString   = XMLHandler.getTagValue(values, "inputTileMinXField");
 			def inputTileMinYFieldString   = XMLHandler.getTagValue(values, "inputTileMinYField");
@@ -167,61 +173,69 @@ public class ChipperMeta extends BaseStepMeta implements StepMetaInterface
 			def inputTileHeightFieldString = XMLHandler.getTagValue(values, "inputTileHeightField");
 
 			if(histogramOperationTypeString)
-	   	{
-	   		histogramOperationType = histogramOperationTypeString
-	   	}
+			{
+				histogramOperationType = histogramOperationTypeString
+			}
 			if(resampleFilterTypeString)
-	   	{
-	   		resampleFilterType = resampleFilterTypeString
-	   	}
+			{
+				resampleFilterType = resampleFilterTypeString
+			}
 			if(imageResultFieldString != null)
-	   	{
-	   		imageResultField = imageResultFieldString
-	   	}
+			{
+				imageResultField = imageResultFieldString
+			}
 			if(imageStatusFieldString != null)
-	   	{
-	   		imageStatusField = imageStatusFieldString
-	   	}
+			{
+				imageStatusField = imageStatusFieldString
+			}
 			if(inputFilenameFieldString != null)
-	   	{
-	   		inputFilenameField = inputFilenameFieldString
-	   	}
+			{
+				inputFilenameField = inputFilenameFieldString
+			}
+			if(inputCutGeometryFieldString != null)
+			{
+				inputCutGeometryField = inputCutGeometryFieldString
+			}
+			if(inputCutGeometryEpsgFieldString != null)
+			{
+				inputCutGeometryEpsgField = inputCutGeometryEpsgFieldString
+			}
 			if(inputEntryFieldString != null)
-	   	{
-	   		inputEntryField = inputEntryFieldString
-	   	}
+			{
+				inputEntryField = inputEntryFieldString
+			}
 			if(inputTileMinXFieldString != null)
-	   	{
-	   		inputTileMinXField = inputTileMinXFieldString
-	   	}
+			{
+				inputTileMinXField = inputTileMinXFieldString
+			}
 			if(inputTileMinYFieldString != null)
-	   	{
-	   		inputTileMinYField = inputTileMinYFieldString
-	   	}
+			{
+				inputTileMinYField = inputTileMinYFieldString
+			}
 			if(inputTileMaxXFieldString != null)
-	   	{
-	   		inputTileMaxXField = inputTileMaxXFieldString
-	   	}
+			{
+				inputTileMaxXField = inputTileMaxXFieldString
+			}
 			if(inputTileMaxYFieldString != null)
-	   	{
-	   		inputTileMaxYField = inputTileMaxYFieldString
-	   	}
+			{
+				inputTileMaxYField = inputTileMaxYFieldString
+			}
 			if(inputEpsgCodeFieldString != null)
-	   	{
-	   		inputEpsgCodeField = inputEpsgCodeFieldString
-	   	}
+			{
+				inputEpsgCodeField = inputEpsgCodeFieldString
+			}
 			if(inputTileWidthFieldString != null)
-	   	{
-	   		inputTileWidthField = inputTileWidthFieldString
-	   	}
+			{
+				inputTileWidthField = inputTileWidthFieldString
+			}
 			if(inputTileHeightFieldString != null)
-	   	{
-	   		inputTileHeightField = inputTileHeightFieldString
-	   	}
-	   }
+			{
+				inputTileHeightField = inputTileHeightFieldString
+			}
+		}
 		catch (Exception e)
 		{
-		   throw new KettleException(Messages.getString("FileExistsMeta.Exception.UnexpectedErrorReadingStepInfo"), e); //$NON-NLS-1$
+			throw new KettleException(Messages.getString("FileExistsMeta.Exception.UnexpectedErrorReadingStepInfo"), e); //$NON-NLS-1$
 		}
 	}
 	void setDefault()
@@ -231,7 +245,7 @@ public class ChipperMeta extends BaseStepMeta implements StepMetaInterface
 		resampleFilterType   = "bilinear"
 		SynchOssimInit.initialize()
 	}
-	void readRep(Repository rep, ObjectId id_step, List<DatabaseMeta> databases, Map<String, Counter> counters) throws KettleException 
+	void readRep(Repository rep, ObjectId id_step, List<DatabaseMeta> databases, Map<String, Counter> counters) throws KettleException
 	{
 		this.setDefault();
 		try
@@ -241,6 +255,8 @@ public class ChipperMeta extends BaseStepMeta implements StepMetaInterface
 			String imageResultFieldString     = rep.getStepAttributeString(id_step, "imageResultField");
 			String imageStatusFieldString     = rep.getStepAttributeString(id_step, "imageStatusField");
 			String inputFilenameFieldString   = rep.getStepAttributeString(id_step, "inputFilenameField");
+			String inputCutGeometryFieldString   = rep.getStepAttributeString(id_step, "inputCutGeometryField");
+			String inputCutGeometryEpsgFieldString   = rep.getStepAttributeString(id_step, "inputCutGeometryEpsgField");
 			String inputEntryFieldString      = rep.getStepAttributeString(id_step, "inputEntryField");
 			String inputTileMinXFieldString   = rep.getStepAttributeString(id_step, "inputTileMinXField");
 			String inputTileMinYFieldString   = rep.getStepAttributeString(id_step, "inputTileMinYField");
@@ -251,117 +267,131 @@ public class ChipperMeta extends BaseStepMeta implements StepMetaInterface
 			String inputTileHeightFieldString = rep.getStepAttributeString(id_step, "inputTileHeightField");
 
 			if(histogramOperationTypeString)
-	   	{
-	   		histogramOperationType = histogramOperationTypeString
-	   	}
+			{
+				histogramOperationType = histogramOperationTypeString
+			}
 			if(resampleFilterTypeString)
-	   	{
-	   		resampleFilterType = resampleFilterTypeString
-	   	}
+			{
+				resampleFilterType = resampleFilterTypeString
+			}
 			if(imageResultFieldString != null)
-	   	{
-	   		imageResultField = imageResultFieldString
-	   	}
+			{
+				imageResultField = imageResultFieldString
+			}
 			if(imageStatusFieldString != null)
-	   	{
-	   		imageStatusField = imageStatusFieldString
-	   	}
+			{
+				imageStatusField = imageStatusFieldString
+			}
 			if(inputFilenameFieldString != null)
-	   	{
-	   		inputFilenameField = inputFilenameFieldString
-	   	}
+			{
+				inputFilenameField = inputFilenameFieldString
+			}
+			if(inputCutGeometryFieldString != null)
+			{
+				inputCutGeometryField = inputCutGeometryFieldString
+			}
+			if(inputCutGeometryEpsgFieldString != null)
+			{
+				inputCutGeometryEpsgField = inputCutGeometryEpsgFieldString
+			}
 			if(inputEntryFieldString != null)
-	   	{
-	   		inputEntryField = inputEntryFieldString
-	   	}
+			{
+				inputEntryField = inputEntryFieldString
+			}
 			if(inputTileMinXFieldString != null)
-	   	{
-	   		inputTileMinXField = inputTileMinXFieldString
-	   	}
+			{
+				inputTileMinXField = inputTileMinXFieldString
+			}
 			if(inputTileMinYFieldString != null)
-	   	{
-	   		inputTileMinYField = inputTileMinYFieldString
-	   	}
+			{
+				inputTileMinYField = inputTileMinYFieldString
+			}
 			if(inputTileMaxXFieldString != null)
-	   	{
-	   		inputTileMaxXField = inputTileMaxXFieldString
-	   	}
+			{
+				inputTileMaxXField = inputTileMaxXFieldString
+			}
 			if(inputTileMaxYFieldString != null)
-	   	{
-	   		inputTileMaxYField = inputTileMaxYFieldString
-	   	}
+			{
+				inputTileMaxYField = inputTileMaxYFieldString
+			}
 			if(inputEpsgCodeFieldString != null)
-	   	{
-	   		inputEpsgCodeField = inputEpsgCodeFieldString
-	   	}
+			{
+				inputEpsgCodeField = inputEpsgCodeFieldString
+			}
 			if(inputTileWidthFieldString != null)
-	   	{
-	   		inputTileWidthField = inputTileWidthFieldString
-	   	}
+			{
+				inputTileWidthField = inputTileWidthFieldString
+			}
 			if(inputTileHeightFieldString != null)
-	   	{
-	   		inputTileHeightField = inputTileHeightFieldString
-	   	}
+			{
+				inputTileHeightField = inputTileHeightFieldString
+			}
 
 		}
 		catch (Exception e)
 		{
-		   throw new KettleException(Messages.getString("FileExistsMeta.Exception.UnexpectedErrorReadingStepInfo"), e); //$NON-NLS-1$
+			throw new KettleException(Messages.getString("FileExistsMeta.Exception.UnexpectedErrorReadingStepInfo"), e); //$NON-NLS-1$
 		}
 
 	}
-	void saveRep(Repository rep, ObjectId id_transformation, ObjectId id_step) throws KettleException 
+	void saveRep(Repository rep, ObjectId id_transformation, ObjectId id_step) throws KettleException
 	{
-		 try
-		 {
-		    rep.saveStepAttribute(id_transformation, 
-									id_step, "resampleFilterType", 
-									resampleFilterType) //$NON-NLS-1$
-		    rep.saveStepAttribute(id_transformation, 
-									id_step, "histogramOperationType", 
-									histogramOperationType) //$NON-NLS-1$
-		    rep.saveStepAttribute(id_transformation, 
-									id_step, "imageResultField", 
-									imageResultField) //$NON-NLS-1$
-		    rep.saveStepAttribute(id_transformation, 
-									id_step, "imageStatusField", 
-									imageStatusField) //$NON-NLS-1$
-		    rep.saveStepAttribute(id_transformation, 
-									id_step, "inputFilenameField", 
-									inputFilenameField) //$NON-NLS-1$
-		    rep.saveStepAttribute(id_transformation, 
-									id_step, "inputEntryField", 
-									inputEntryField) //$NON-NLS-1$
-		    rep.saveStepAttribute(id_transformation, 
-									id_step, "inputTileMinXField", 
-									inputTileMinXField) //$NON-NLS-1$
-		    rep.saveStepAttribute(id_transformation, 
-									id_step, "inputTileMinYField", 
-									inputTileMinYField) //$NON-NLS-1$
-		    rep.saveStepAttribute(id_transformation, 
-									id_step, "inputTileMaxXField", 
-									inputTileMaxXField) //$NON-NLS-1$
-		    rep.saveStepAttribute(id_transformation, 
-									id_step, "inputTileMaxYField", 
-									inputTileMaxYField) //$NON-NLS-1$
-		    rep.saveStepAttribute(id_transformation, 
-									id_step, "inputEpsgCodeField", 
-									inputEpsgCodeField) //$NON-NLS-1$
-		    rep.saveStepAttribute(id_transformation, 
-									id_step, "inputTileWidthField", 
-									inputTileWidthField) //$NON-NLS-1$
-		    rep.saveStepAttribute(id_transformation, 
-									id_step, "inputTileHeightField", 
-									inputTileHeightField) //$NON-NLS-1$
-		 }
-		 catch (Exception e)
-		 {
-		     throw new KettleException(Messages.getString("FileExistsMeta.Exception.UnableToSaveStepInfo") + id_step, e); //$NON-NLS-1$
-		 }
+		try
+		{
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "resampleFilterType",
+					  resampleFilterType) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "histogramOperationType",
+					  histogramOperationType) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "imageResultField",
+					  imageResultField) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "imageStatusField",
+					  imageStatusField) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "inputFilenameField",
+					  inputFilenameField) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "inputCutGeometryField",
+					  inputCutGeometryField) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "inputCutGeometryEpsgField",
+					  inputCutGeometryEpsgField) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "inputEntryField",
+					  inputEntryField) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "inputTileMinXField",
+					  inputTileMinXField) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "inputTileMinYField",
+					  inputTileMinYField) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "inputTileMaxXField",
+					  inputTileMaxXField) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "inputTileMaxYField",
+					  inputTileMaxYField) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "inputEpsgCodeField",
+					  inputEpsgCodeField) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "inputTileWidthField",
+					  inputTileWidthField) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "inputTileHeightField",
+					  inputTileHeightField) //$NON-NLS-1$
+		}
+		catch (Exception e)
+		{
+			throw new KettleException(Messages.getString("FileExistsMeta.Exception.UnableToSaveStepInfo") + id_step, e); //$NON-NLS-1$
+		}
 	}
 	void check(List<CheckResultInterface> remarks, TransMeta transmeta, StepMeta stepinfo, RowMetaInterface prev, String[] inputList, String[] outputList, RowMetaInterface info)
 	{
-	}		
+	}
 	StepInterface getStep(StepMeta stepMeta, StepDataInterface stepDataInterface, int cnr, TransMeta transMeta, Trans disp)
 	{
 		return new Chipper(stepMeta, stepDataInterface, cnr, transMeta, disp);

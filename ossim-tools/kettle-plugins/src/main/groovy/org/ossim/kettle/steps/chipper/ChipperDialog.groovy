@@ -46,7 +46,10 @@ public class ChipperDialog extends BaseStepDialog implements
 				             "maxy":"inputTileMaxYField", 
 				             "epsg":"inputEpsgCodeField", 
 				             "width":"inputTileWidthField", 
-				             "height":"inputTileHeightField"]
+				             "height":"inputTileHeightField",
+								 "geo_cut":"inputCutGeometryField",
+								 "geo_cut_epsg":"inputCutGeometryEpsgField"
+	]
 
 	public ChipperDialog(Shell parent, Object baseStepMeta,
 			TransMeta transMeta, String stepname) {

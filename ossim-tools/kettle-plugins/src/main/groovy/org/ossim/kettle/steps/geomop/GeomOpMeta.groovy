@@ -36,32 +36,32 @@ import org.ossim.kettle.types.OssimValueMetaBase;
 import org.ossim.kettle.steps.geomop.GeomOpData.GeomOpType
 
 @Step(
-		id="GeomOperation",
-		name="name",
-		description="description",
-		categoryDescription="categoryDescription", 
-		image="org/ossim/kettle/steps/geomop/icon.png",
-		i18nPackageName="org.ossim.steps.kettle.geomop"
-) 
+		  id="GeomOperation",
+		  name="name",
+		  description="description",
+		  categoryDescription="categoryDescription",
+		  image="org/ossim/kettle/steps/geomop/icon.png",
+		  i18nPackageName="org.ossim.kettle.steps.geomop"
+)
 public class GeomOpMeta extends BaseStepMeta implements StepMetaInterface
-{	
+{
 
 	def outputFieldName = "geom_op_result"
 	def inputGeomField1 = ""
 	def inputGeomField2 = ""
-	def param1			  
-	def param2			  
+	def param1
+	def param2
 	def operationType   = GeomOpType.UNION
 
 	GeomOpMeta()
 	{
-		super(); 
+		super();
 		this.setDefault();
 	}
-	
+
 	String getXML() throws KettleValueException
 	{
-      StringBuffer retval = new StringBuffer(400);
+		StringBuffer retval = new StringBuffer(400);
 		//retval.append("    <values>"+Const.CR);
 		retval.append("        ").append(XMLHandler.addTagValue("outputFieldName", outputFieldName)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		retval.append("        ").append(XMLHandler.addTagValue("inputGeomField1", inputGeomField1)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -105,27 +105,27 @@ public class GeomOpMeta extends BaseStepMeta implements StepMetaInterface
 				break
 			default:
 				break
-			break
+				break
 		}
 
 		result
 	}
-	void getFields(RowMetaInterface r, String origin, 
-		                  RowMetaInterface[] info, 
-		                  StepMeta nextStep, VariableSpace space)
+	void getFields(RowMetaInterface r, String origin,
+						RowMetaInterface[] info,
+						StepMeta nextStep, VariableSpace space)
 	{
 		def oType = this.outputType
-		ValueMetaInterface field = ValueMetaFactory.createValueMeta(outputFieldName, 
-																						oType);
+		ValueMetaInterface field = ValueMetaFactory.createValueMeta(outputFieldName,
+				  oType);
 
 		if(oType == ValueMetaInterface.TYPE_NUMBER)
 		{
 			field.setLength( -1 );
 			field.setPrecision( 18 );
-			field.setConversionMask( "##.##################;-##.##################" );			
+			field.setConversionMask( "##.##################;-##.##################" );
 		}
-      field.setOrigin(origin);
-      r.addValueMeta(field);
+		field.setOrigin(origin);
+		r.addValueMeta(field);
 	}
 
 	Object clone()
@@ -135,14 +135,14 @@ public class GeomOpMeta extends BaseStepMeta implements StepMetaInterface
 	}
 
 	void loadXML(Node stepnode, List<DatabaseMeta> databases, Map<String,Counter> counters)
-		throws KettleXMLException
+			  throws KettleXMLException
 	{
 		this.setDefault();
 		readData(stepnode, databases);
 	}
 
 	private void readData(Node stepnode, List<DatabaseMeta> databases)
-	throws KettleXMLException
+			  throws KettleXMLException
 	{
 		def values = stepnode
 		try
@@ -181,7 +181,7 @@ public class GeomOpMeta extends BaseStepMeta implements StepMetaInterface
 		}
 		catch (Exception e)
 		{
-		   throw new KettleXMLException(Messages.getString("FileExistsMeta.Exception.UnableToReadStepInfo"), e); //$NON-NLS-1$
+			throw new KettleXMLException(Messages.getString("FileExistsMeta.Exception.UnableToReadStepInfo"), e); //$NON-NLS-1$
 		}
 	}
 
@@ -195,7 +195,7 @@ public class GeomOpMeta extends BaseStepMeta implements StepMetaInterface
 		operationType   = GeomOpType.UNION
 	}
 
-	void readRep(Repository rep, ObjectId id_step, List<DatabaseMeta> databases, Map<String, Counter> counters) throws KettleException 
+	void readRep(Repository rep, ObjectId id_step, List<DatabaseMeta> databases, Map<String, Counter> counters) throws KettleException
 	{
 		this.setDefault();
 		try
@@ -208,58 +208,64 @@ public class GeomOpMeta extends BaseStepMeta implements StepMetaInterface
 			String param2String   = rep.getStepAttributeString(id_step, "param2");
 
 			if(outputFieldNameString != null && !outputFieldNameString.isEmpty())
-	   	{
-	   		outputFieldName = outputFieldNameString;
-	   	}
+			{
+				outputFieldName = outputFieldNameString;
+			}
 			if(inputGeomField1String != null && !inputGeomField1String.isEmpty())
-	   	{
-	   		inputGeomField1 = inputGeomField1String;
-	   	}
+			{
+				inputGeomField1 = inputGeomField1String;
+			}
 			if(inputGeomField2String != null && !inputGeomField2String.isEmpty())
-	   	{
-	   		inputGeomField2 = inputGeomField2String;
-	   	}
+			{
+				inputGeomField2 = inputGeomField2String;
+			}
 			if(operationTypeString != null && !operationTypeString.isEmpty())
-	   	{
-	   		operationType = GeomOpType."${operationTypeString}";
-	   	}
+			{
+				operationType = GeomOpType."${operationTypeString}";
+			}
 			if(param1String != null && !param1String.isEmpty())
-	   	{
-	   		param1 = param1String;
-	   	}
+			{
+				param1 = param1String;
+			}
 			if(param2String != null && !param2String.isEmpty())
-	   	{
-	   		param2 = param2String;
-	   	}
+			{
+				param2 = param2String;
+			}
 
 		}
 		catch (Exception e)
 		{
-		   throw new KettleException(Messages.getString("FileExistsMeta.Exception.UnexpectedErrorReadingStepInfo"), e); //$NON-NLS-1$
+			throw new KettleException(Messages.getString("FileExistsMeta.Exception.UnexpectedErrorReadingStepInfo"), e); //$NON-NLS-1$
 		}
 	}
-	
-	void saveRep(Repository rep, ObjectId id_transformation, ObjectId id_step) throws KettleException 
+
+	void saveRep(Repository rep, ObjectId id_transformation, ObjectId id_step) throws KettleException
 	{
-		 try
-		 {
-		     rep.saveStepAttribute(id_transformation, 
-		                           id_step, "outputFieldName", 
-		                           outputFieldName) //$NON-NLS-1$
-		     rep.saveStepAttribute(id_transformation, 
-		                           id_step, "inputGeomField1", 
-		                           outputFieldName) //$NON-NLS-1$
-		     rep.saveStepAttribute(id_transformation, 
-		                           id_step, "inputGeomField2", 
-		                           outputFieldName) //$NON-NLS-1$
-		     rep.saveStepAttribute(id_transformation, 
-		                           id_step, "operationType", 
-		                           operationType.toString()) //$NON-NLS-1$
-		 }
-		 catch (Exception e)
-		 {
-		     throw new KettleException(Messages.getString("FileExistsMeta.Exception.UnableToSaveStepInfo") + id_step, e); //$NON-NLS-1$
-		 }
+		try
+		{
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "outputFieldName",
+					  outputFieldName) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "inputGeomField1",
+					  inputGeomField1) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "inputGeomField2",
+					  inputGeomField2) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "operationType",
+					  operationType.toString()) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "param1",
+					  param1.toString()) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "param2",
+					  param2.toString()) //$NON-NLS-1$
+		}
+		catch (Exception e)
+		{
+			throw new KettleException(Messages.getString("FileExistsMeta.Exception.UnableToSaveStepInfo") + id_step, e); //$NON-NLS-1$
+		}
 	}
 
 	void check(List<CheckResultInterface> remarks, TransMeta transmeta, StepMeta stepinfo, RowMetaInterface prev, String[] inputList, String[] outputList, RowMetaInterface info)
@@ -275,7 +281,7 @@ public class GeomOpMeta extends BaseStepMeta implements StepMetaInterface
 			cr = new CheckResult(CheckResult.TYPE_RESULT_OK, "Step is connected to previous one, receiving "+prev.size()+" fields", stepinfo);
 			remarks.add(cr);
 		}
-		
+
 		// See if we have input streams leading to this step!
 		if (inputList.length>0)
 		{
@@ -288,7 +294,7 @@ public class GeomOpMeta extends BaseStepMeta implements StepMetaInterface
 			remarks.add(cr);
 		}
 	}
-	
+
 	//String getDialogClassName()
 	//{
 	//	return DataInfoDialog.class.name;

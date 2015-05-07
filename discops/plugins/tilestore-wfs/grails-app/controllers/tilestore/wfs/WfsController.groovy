@@ -6,8 +6,8 @@ class WfsController
 
   def index(WfsCommand cmd)
   {
-    println params
-    println cmd
+    //println params
+    //println cmd
 
     if ( cmd.validate() )
     {
@@ -33,14 +33,14 @@ class WfsController
 
   def getCapabilities(GetCapabilitiesCommand cmd)
   {
-    println cmd
+    //println cmd
     def results = webFeatureService.getCapabilities( cmd )
     render contentType: results.contentType, text: results.buffer
   }
 
   def describeFeatureType(DescribeFeatureTypeCommand cmd)
   {
-    println cmd
+    //println cmd
     def results = webFeatureService.describeFeatureType( cmd )
     render contentType: results.contentType, text: results.buffer
   }
@@ -48,7 +48,9 @@ class WfsController
   def getFeature(GetFeatureCommand cmd)
   {
     def results = webFeatureService.getFeature( cmd )
-    render contentType: results.contentType, file: results.buffer
+    //println results.buffer
+
+    render contentType: results.contentType, text: results.buffer
   }
 
 }
