@@ -13,8 +13,7 @@
 //= require common/spin.js
 //= require common/ladda.min.js
 
-
-//= require common/bootstrap-select.js
+//= require common/bootstrap-select.js  /* TODO: Use FuelUX */
 
 //= require admin/addLayersAdmin.js
 //= require admin/appAdmin.js
