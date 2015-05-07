@@ -1,5 +1,7 @@
 package tilestore.wfs
 
+import geoscript.GeoScript
+import geoscript.geom.Bounds
 import geoscript.workspace.Workspace
 
 import groovy.xml.StreamingMarkupBuilder
@@ -23,6 +25,9 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
   private def serverAddress
   private def wfsConfig
   private def resultFormats
+
+  def layerManagerService
+
 
   ApplicationContext applicationContext
 
@@ -105,18 +110,19 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
           Operations {
             wfsConfig.featureTypeOperations.each { op -> "${op}"() }
           }
-          wfsConfig.featureTypes.each { featureType ->
-            FeatureType {
-              Name( featureType.name )
+//          wfsConfig.featureTypes.each { featureType ->
+          listFeatureTypes()?.each { featureType ->
+            FeatureType( "xmlns:${featureType.namespace.id}": featureType.namespace.uri ) {
+              Name( "${featureType.namespace.id}:${featureType.name}" )
               Title( featureType.title )
-              Abstract( featureType.abstract )
+              Abstract( featureType.description )
               Keywords( featureType.keywords )
-              SRS( featureType.srs )
+              SRS( featureType.projection )
               LatLongBoundingBox(
-                  minx: featureType.bbox.minX,
-                  miny: featureType.bbox.minY,
-                  maxx: featureType.bbox.maxX,
-                  maxy: featureType.bbox.maxY
+                  minx: featureType.bounds.minX,
+                  miny: featureType.bounds.minY,
+                  maxx: featureType.bounds.maxX,
+                  maxy: featureType.bounds.maxY
               )
             }
           }
@@ -195,7 +201,7 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
 
     def buffer = new StreamingMarkupBuilder( encoding: 'UTF-8' ).bind( x ).toString()
 
-    [buffer: buffer, contentType:  'application/xml']
+    [buffer: buffer, contentType: 'application/xml']
   }
 
   def getFeature(GetFeatureCommand wfsRequest)
@@ -224,7 +230,7 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
       contentType = 'application/xml'
     }
 
-    return [buffer:  results, contentType:  contentType]
+    return [buffer: results, contentType: contentType]
   }
 
   private Workspace getWorkspace(def workspaceName)
@@ -312,4 +318,37 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
         featureNamespaces: [tilestore: 'http://tilestore.ossim.org']
     ]
   }
+
+
+  private def listFeatureTypes()
+  {
+    def featureList = [[
+        namespace: [id: 'tilestore', uri: 'http://tilestore.ossim.org'],
+        name: 'tile_cache_layer_info',
+        title: 'List of Tile Layers',
+        description: 'List of Tile Layers',
+        keywords: [],
+        projection: 'EPSG:404000',
+        bounds: new Bounds( 0, 0, 0, 0 )
+    ]]
+
+    layerManagerService.getTileCacheLayers().each { row ->
+      Bounds bounds = GeoScript.wrap( row.bounds )?.bounds
+
+      bounds?.proj = row?.epsgCode
+
+      featureList << [
+          namespace: [id: 'tilestore', uri: 'http://tilestore.ossim.org'],
+          name: "tilestore_${row.name}_tiles",
+          title: row?.name,
+          description: row.description,
+          keywords: [],
+          projection: bounds.proj.id,
+          bounds: bounds
+      ]
+    }
+
+    featureList
+  }
+
 }

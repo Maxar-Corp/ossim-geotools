@@ -48,7 +48,7 @@ class WfsController
   def getFeature(GetFeatureCommand cmd)
   {
     def results = webFeatureService.getFeature( cmd )
-    println results.buffer
+    //println results.buffer
 
     render contentType: results.contentType, text: results.buffer
   }
