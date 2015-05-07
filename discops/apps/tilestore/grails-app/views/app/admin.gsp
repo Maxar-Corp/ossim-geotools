@@ -296,6 +296,7 @@
                 <strong>Sensor: </strong>{{formatString properties.sensor_id}}<br>
                 <strong>Mission: </strong><span>{{formatString properties.mission_id}}</span>
                 <hr>
+                &nbsp;&nbsp;
                 <i class="fa fa-ellipsis-h fa-lg" data-toggle="tooltip" data-placement="bottom"
                    title="View image metadata"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <a href="http://localhost:9999/omar/mapView/imageSpace?layers={{properties.id}}"

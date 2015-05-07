@@ -103,6 +103,7 @@ AppOmarWfs = (function () {
 
     $('.omar-thumb').on('click', function(){
         alert('Adding current image to Omar Map');
+        console.log(AppAdmin.mapOmar);
     });
 
 
@@ -131,8 +132,12 @@ AppOmarWfs = (function () {
     //});
 
     $(document).on('click', '.ingestToCurrentTileLayer', function(){
-        alert('test me event click!');
-        alert(this);
+        alert('ingestToCurrentTileLayer clicked');
+        alert('map: ' + AppAdmin.mapOmar);
+        alert('this: ' + this);
+
+        // TODO: Add ingest layer code here
+
     });
 
     //$('#testMe').on('click', function(){
@@ -142,11 +147,11 @@ AppOmarWfs = (function () {
         initialize: function (initParams) {
 
             loadParams = initParams;
-            //console.log(loadParams);
+            console.log(loadParams);
 
-            function ingestCurrentImage(imageId, filePath){
-                alert('you called ingestCurrentImage with value: ' + imageId);
-            }
+            //function ingestCurrentImage(imageId, filePath){
+            //    alert('you called ingestCurrentImage with value: ' + imageId);
+            //}
 
         }
     };
