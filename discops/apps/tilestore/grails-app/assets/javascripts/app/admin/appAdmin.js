@@ -410,7 +410,7 @@ AppAdmin = (function () {
 
     function ajaxDeleteLayer(name) {
         return $.ajax({
-            url: "/tilestore/layerManager/delete?",
+            url: "/tilestore/layerManager/delete",
             type: 'POST',
             dataType: 'json',
             data: {'name': name}

@@ -39,7 +39,7 @@ body {
 }
 
 .ol-viewport{
-    border: solid 1px;
+    border: solid 2px #57a3ff;
     height: 100% !important;
 
 }
@@ -47,6 +47,7 @@ body {
 #mapOmar {
     /*position: absolute;*/
     top: 0px;
+    z-index: 35;
     /*bottom: 29px;*/
     /*left: 270px;*/
 }
@@ -54,13 +55,10 @@ body {
 #mapTile {
     /*position: absolute;*/
     top: 0px;
+    z-index: 35;
     /*bottom: 29px;*/
     /*right: -10px;*/
 }
-
-#mapOmar { z-index: 35; }
-
-#mapOmar { z-index: 35; }
 
 /* Move the attribution above footer */
 #mapOmar .ol-attribution{

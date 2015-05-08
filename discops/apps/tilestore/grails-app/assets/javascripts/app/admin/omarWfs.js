@@ -22,6 +22,38 @@ AppOmarWfs = (function () {
         maxLevel: ''
     };
 
+    function ingestLayer(obj){
+
+        // TODO: Look into using OL3 WFS API here
+
+        console.log(obj.properties.filename);
+
+        objIngestImage.input.file = obj.properties.filename;
+        objIngestImage.input.entry = obj.properties.entry_id;
+
+        console.log(objIngestImage);
+
+        // TODO: Refactor using promises...
+        $.ajax({
+            url: "/tilestore/layerManager/ingest",
+            type: 'POST',
+            dataType: 'jsonp',
+            dataType: 'json',
+            data: objIngestImage,
+            success: function (data) {
+                console.log('Success data: ' + data);
+                toastr.success('Ingest job posted to queue', 'Success!');
+
+            },
+            error: function(data){
+                console.log('Error: ' + data);
+                toastr.error(data.message, 'Error on ingest');
+
+            }
+        });
+
+    }
+
     // TODO: Set these to DOM elements
     filterName = 'acquisition_date'; // Dropdown Acq date, Ing date
     filterRangeLow = '>=';
@@ -51,7 +83,7 @@ AppOmarWfs = (function () {
     //var wfsUrl = "http://omar.ossim.org/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=20&outputFormat=geojson&filter=file_type='tiff'";
     //var wfsUrl = "http://omar.ossim.org/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=200&outputFormat=geojson&filter=sensor_id='VIIRS'";
     //var wfsUrl = "http://localhost:9999/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=50&outputFormat=geojson&filter=" + filterName + filterRangeLow + "'"+ filter + "'";
-    var wfsUrl = "http://localhost:9999/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=50&outputFormat=geojson&filter=acquisition_date>='2003-01-23'+and+acquisition_date<='2003-01-24'";
+    //var wfsUrl = "http://localhost:9999/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=50&outputFormat=geojson&filter=acquisition_date>='2003-01-23'+and+acquisition_date<='2003-01-24'";
     //var wfsUrl = "http://localhost:9999/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=50&outputFormat=geojson&filter=" + filterName + filterRangeLow + filterLow + '+and+' + filterName + filterRangeHigh + filterHigh;
 
     // Done: 4-7-2015 - cache the DOM element so we only have to look at it once
@@ -64,7 +96,7 @@ AppOmarWfs = (function () {
     //    $images.append(imageTemplate, (image));
     //}
 
-    //Done: 4-6-2015 - Add date converision
+    // Add date converision
     Handlebars.registerHelper("formatDate", function convertDate(date){
 
         if(date){
@@ -89,6 +121,10 @@ AppOmarWfs = (function () {
         else{
             return "Unknown";
         }
+    });
+
+    Handlebars.registerHelper('json', function(context) {
+        return JSON.stringify(context);
     });
 
     //Handlebars.registerHelper("addToOmarMap", function addWmsToOmarMap(wmsId){
@@ -127,50 +163,32 @@ AppOmarWfs = (function () {
     //    alert('event click!');
     //});
 
-    $(document).on('click', '.ingestToCurrentTileLayer', function(){
-        //console.log('ingestToCurrentTileLayer clicked');
-        //console.log('map: ' + AppAdmin.mapOmar);
-        //console.log('this: ' + this);
-
-        // TODO: Add ingest layer code here
-        //console.log(loadParams);
-        console.log(objIngestImage);
-
-        // TODO: Refactor using promises...
-        $.ajax({
-            url: "/tilestore/layerManager/ingest",
-            dataType: 'jsonp',
-            dataType: 'json',
-            data: objIngestImage,
-            success: function () {
-
-                toastr.success(data.message, 'Successful ingest');
-
-            },
-            error: function(){
-
-                toastr.error(data.message, 'Error on ingest');
-
-            }
-        });
-
-    });
+    //$(document).on('click', '.ingestToCurrentTileLayer', function(){
+    //
+    //});
 
 
     return {
         initialize: function (initParams) {
 
             loadParams = initParams;
-            omarWfsUrl = loadParams.omarWfs + "?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=50&outputFormat=geojson&filter=acquisition_date>='2003-01-23'+and+acquisition_date<='2003-01-24'";
+            omarWfsUrl = loadParams.omarWfs + "?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=200&outputFormat=geojson&filter="; //acquisition_date>='2003-01-23'+and+acquisition_date<='2003-01-24'";
             //console.log(omarWfsUrl);
 
             // TODO: Add $ajax to a function that gets called on init
+            // http://openlayers.org/en/v3.5.0/apidoc/ol.format.WFS.html
             $.ajax({
                 url: omarWfsUrl,
                 dataType: 'jsonp',
                 // TODO: Refactor using promises...
                 success: function (images) {
                     //console.log(images);
+                    //console.log(images.features.properties);
+
+                    // ###########################################################
+                    // TODO: Push to a new model to clean up before injecting into
+                    //       the handlebars template
+                    // ###########################################################
 
                     // TODO: Add this to the Feed
                     //$('#imageCount').html(images.features.length);
@@ -189,7 +207,8 @@ AppOmarWfs = (function () {
             //    alert('you called ingestCurrentImage with value: ' + imageId);
             //}
 
-        }
+        },
+        ingestLayer: ingestLayer
     };
 })();
 
