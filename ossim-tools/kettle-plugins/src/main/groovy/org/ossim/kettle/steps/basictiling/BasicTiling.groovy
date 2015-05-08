@@ -180,28 +180,28 @@ class BasicTiling extends BaseStep implements StepInterface
       }
       if(!tileIterator)
       {
-         if(meta.geometry&&meta.geometryEpsg)
+         if(meta.crop&&meta.cropEpsg)
          {
-            String geometryString = this.getFieldValueAsString(meta?.geometry, r, meta, data)//environmentSubstitute(meta?.clampMinLevel?:"")
-            String geometryEpsg   = this.getFieldValueAsString(meta?.geometryEpsg, r, meta, data)//environmentSubstitute(meta?.clampMinLevel?:"")
+            String cropString = this.getFieldValueAsString(meta?.crop, r, meta, data)//environmentSubstitute(meta?.clampMinLevel?:"")
+            String cropEpsg   = this.getFieldValueAsString(meta?.cropEpsg, r, meta, data)//environmentSubstitute(meta?.clampMinLevel?:"")
 
             // int geometryIdx      =  getInputRowMeta().indexOfValue(meta.geometry)
            // int geometryEpsgIdx  =  getInputRowMeta().indexOfValue(meta.geometryEpsg)
 
-            if(geometryString&&geometryEpsg)
+            if(cropString&&cropEpsg)
             {
-               Geometry clipeGeometry = new WktReader().read(geometryString)
+               Geometry clipGeometry = new WktReader().read(cropString)
 
-               if(clipeGeometry)
+               if(clipGeometry)
                {
-                  def epsg = geometryEpsg.split(":")[-1].toInteger()
+                  def epsg = cropEpsg.split(":")[-1].toInteger()
                  // geoscript.geom.Geometry clipGeometry = geoscript.geom.Geometry.wrap(geometry)
                   if(epsg != pyramid.proj.epsg)
                   {
-                     Projection geometryProj = new Projection(geometryEpsg)
+                     Projection cropProj = new Projection(cropEpsg)
 
                      // need to reproject geometry
-                     Geometry value =geometryProj.transform(clipeGeometry,
+                     Geometry value =cropProj.transform(clipGeometry,
                              pyramid.proj)
 
                      tileIterator = layer.createIterator(new TileCacheHints(
@@ -401,7 +401,7 @@ class BasicTiling extends BaseStep implements StepInterface
                      {
                         resultArray[tileColIdx] = (Long)tile.x
                      }
-                     if(tileMaskAoiIdx > -1)
+                    /* if(tileMaskAoiIdx > -1)
                      {
                       //  Geometry geomMask  = tileBounds.geometry
 
@@ -411,6 +411,7 @@ class BasicTiling extends BaseStep implements StepInterface
                         }
                         resultArray[tileMaskAoiIdx] = regionOfInterest.g //geomMask.g
                      }
+                     */
                      //if(tileGlobalRowIdx >-1)
                      //{
                      // resultArray[tileGlobalRowIdx] = (Long)tile.globalRow

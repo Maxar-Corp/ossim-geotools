@@ -60,8 +60,8 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 	String targetTileWidth	  = "256"
 	String targetTileHeight   = "256"
 
-	String geometry           = ""
-	String geometryEpsg       = ""
+	String crop	              = ""
+	String cropEpsg           = ""
 	String clampMinLevel      = ""
 	String clampMaxLevel      = ""
 	String inputFilenameField = ""
@@ -95,7 +95,7 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 									tile_level:"tile_level",
 									tile_row:"tile_row",
 									tile_col:"tile_col",
-                           tile_mask_aoi:"tile_mask_aoi",
+                        //   tile_mask_aoi:"tile_mask_aoi",
 									//tile_global_row:"tile_global_row",
 									//tile_global_col:"tile_global_col",
 									tile_epsg:"tile_epsg",
@@ -140,7 +140,7 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 									//		tile_global_col:[type:ValueMetaInterface.TYPE_INTEGER],
 											tile_row:[type:ValueMetaInterface.TYPE_INTEGER],
 											tile_col:[type:ValueMetaInterface.TYPE_INTEGER],
-											tile_mask_aoi:[type:OssimValueMetaBase.TYPE_GEOMETRY_2D],
+									//		tile_mask_aoi:[type:OssimValueMetaBase.TYPE_GEOMETRY_2D],
 											tile_epsg:[type:ValueMetaInterface.TYPE_STRING],
 											tile_minx:[type:ValueMetaInterface.TYPE_NUMBER , len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
 											tile_miny:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
@@ -241,8 +241,8 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 			retval.append("    ").append(XMLHandler.addTagValue("clampMinLevel", clampMinLevel))
 		}
 		if(clampMaxLevel!=null) retval.append("    ").append(XMLHandler.addTagValue("clampMaxLevel", clampMaxLevel))
-		if(geometry) retval.append("    ").append(XMLHandler.addTagValue("geometry", geometry.toString()))
-		if(geometryEpsg) retval.append("    ").append(XMLHandler.addTagValue("geometryEpsg", geometryEpsg))
+		if(crop) retval.append("    ").append(XMLHandler.addTagValue("crop", crop.toString()))
+		if(cropEpsg) retval.append("    ").append(XMLHandler.addTagValue("cropEpsg", cropEpsg))
 
 		if(projectionType != null) retval.append("    ").append(XMLHandler.addTagValue("projectionType", projectionType))
 		if(targetTileWidth != null) retval.append("    ").append(XMLHandler.addTagValue("targetTileWidth", targetTileWidth))
@@ -300,8 +300,8 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 		origin           = XMLHandler.getTagValue(values, "origin");
 		clampMinLevel = XMLHandler.getTagValue(values, "clampMinLevel");
 		clampMaxLevel = XMLHandler.getTagValue(values, "clampMaxLevel");
-		geometry      = XMLHandler.getTagValue(values, "geometry");
-		geometryEpsg  = XMLHandler.getTagValue(values, "geometryEpsg");
+		crop      = XMLHandler.getTagValue(values, "crop");
+		cropEpsg  = XMLHandler.getTagValue(values, "cropEpsg");
 
 		projectionType             = XMLHandler.getTagValue(values, "projectionType");
 		def tileIdNameMaskString   = XMLHandler.getTagValue(values, "tileIdNameMask");
@@ -345,8 +345,8 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 	{
 		clampMinLevel = ""
 		clampMaxLevel = ""
-		geometry      = ""
-		geometryEpsg  = ""
+		crop      = ""
+		cropEpsg  = ""
 		targetTileWidth  = "256"
 		targetTileHeight = "256"
 		tileGenerationOrder = "LOWEST_TO_HIGHEST"
@@ -362,8 +362,8 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 
 		clampMinLevel       = rep.getStepAttributeString(id_step, "clampMinLevel");
 		clampMaxLevel       = rep.getStepAttributeString(id_step, "clampMaxLevel");
-		geometry            = rep.getStepAttributeString(id_step, "geometry");
-		geometryEpsg        = rep.getStepAttributeString(id_step, "geometryEpsg");
+		crop                = rep.getStepAttributeString(id_step, "crop");
+		cropEpsg            = rep.getStepAttributeString(id_step, "cropEpsg");
       targetTileWidth     = rep.getStepAttributeString(id_step, "targetTileWidth");
       targetTileHeight    = rep.getStepAttributeString(id_step, "targetTileHeight");
 
@@ -413,17 +413,17 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 									id_step, "clampMaxLevel",
 									"${clampMaxLevel}".toString()) //$NON-NLS-1$
 		 	}
-			 if(geometry != null)
+			 if(crop != null)
 			 {
 				 rep.saveStepAttribute(id_transformation,
-							id_step, "geometry",
-							geometry.toString()) //$NON-NLS-1$
+							id_step, "crop",
+							crop.toString()) //$NON-NLS-1$
 			 }
-			 if(geometryEpsg != null)
+			 if(cropEpsg != null)
 			 {
 				 rep.saveStepAttribute(id_transformation,
-							id_step, "geometryEpsg",
-							geometryEpsg.toString()) //$NON-NLS-1$
+							id_step, "cropEpsg",
+							cropEpsg.toString()) //$NON-NLS-1$
 			 }
 
 			rep.saveStepAttribute(id_transformation,
