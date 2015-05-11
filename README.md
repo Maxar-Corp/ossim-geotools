@@ -97,6 +97,8 @@ put the jar into a local maven cache.  The OMS rpm should intall the the joms ja
 
 if `<version>` is 1.8.19 then you can issue the following command and install it:
 
+mvn install:install-file -Dfile=joms-1.8.19.jar -DgroupId=org.ossim -DartifactId=joms -Dversion=1.8.19 -Dpackaging=jar
+
 ### Groovy SWT
 *ADD SOMETHING HERE*
 

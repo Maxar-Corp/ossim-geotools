@@ -1,5 +1,6 @@
 package org.ossim.kettle.steps.basictiling
 
+import com.vividsolutions.jts.io.WKTReader
 import geoscript.geom.Bounds
 import geoscript.geom.Geometry
 import geoscript.geom.io.WktReader
@@ -66,6 +67,50 @@ class BasicTiling extends BaseStep implements StepInterface
 
       result
    }
+   private Geometry getGeometryField(String fieldValue, def r, BasicTilingMeta meta, BasicTilingData data)
+   {
+      Geometry result
+
+      if(fieldValue && r)
+      {
+         try{
+            if(fieldValue.startsWith("\${"))
+            {
+               String v = environmentSubstitute(fieldValue?:"")
+
+               if(v) result = new WKTReader().read(v)
+
+            }
+            else
+            {
+               Integer fieldIndex   =  getInputRowMeta().indexOfValue(fieldValue)
+               if(fieldIndex >= 0)
+               {
+                  if(r[fieldIndex] instanceof com.vividsolutions.jts.geom.Geometry)
+                  {
+                     result = Geometry.wrap(r[fieldIndex])
+                  }
+                  else
+                  {
+                     String v = getInputRowMeta().getString(r,fieldIndex)
+                     result = new WKTReader().read(v)
+                  }
+
+               }
+            }
+            if(!result)
+            {
+               result = new WKTReader().read(fieldValue)
+            }
+         }
+         catch(e)
+         {
+            println "Error in BasicTiling: ${e}"
+            result = null
+         }
+      }
+      result
+   }
    public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws KettleException {
 
       meta = (BasicTilingMeta) smi;
@@ -81,7 +126,7 @@ class BasicTiling extends BaseStep implements StepInterface
       String projectionType
       Integer clampMinLevel = -1
       Integer clampMaxLevel = -1
-
+      Geometry cropRegionOfInterest
       def options = [:]
       if (first)
       {
@@ -118,7 +163,6 @@ class BasicTiling extends BaseStep implements StepInterface
       String inputFilename
       String entryString = ""
       Integer entry
-      Geometry regionOfInterest
 
       if(meta.inputFilenameField)
       {
@@ -129,7 +173,7 @@ class BasicTiling extends BaseStep implements StepInterface
       def tileWidth = this.getFieldValueAsString(meta?.targetTileWidth, r, meta, data)
       def tileHeight = this.getFieldValueAsString(meta?.targetTileHeight, r, meta, data)
 
-      tileWidth = tileWidth?:"256"
+      tileWidth  = tileWidth?:"256"
       tileHeight = tileHeight?:"256"
 
       // define the pyramid we are tiling
@@ -152,6 +196,22 @@ class BasicTiling extends BaseStep implements StepInterface
               bounds:pyramid.bounds,
               pyramid:pyramid
       )
+      Geometry cropGeometry = getGeometryField(meta?.crop, r, meta, data)
+      if(cropGeometry&&meta.cropEpsg)
+      {
+         String cropEpsg   = this.getFieldValueAsString(meta?.cropEpsg, r, meta, data)//environmentSubstitute(meta?.clampMinLevel?:"")
+         def epsg = cropEpsg.split(":")[-1].toInteger()
+         if(epsg != pyramid.proj.epsg)
+         {
+            Projection cropProj = new Projection(cropEpsg)
+
+            // need to reproject geometry
+            Geometry value =cropProj.transform(cropGeometry,
+                    pyramid.proj)
+            cropGeometry = value
+
+         }
+      }
       //-----------------------------------
       // now find the clamp set to iterate of the global tiling scheme
       //
@@ -160,63 +220,39 @@ class BasicTiling extends BaseStep implements StepInterface
          TileCacheSupport tileCacheSupport = new TileCacheSupport()
          if(tileCacheSupport.openImage(inputFilename))
          {
+
             def intersection = pyramid.findIntersections(tileCacheSupport, entry, options)
 
             if(intersection.clippedBounds)
             {
-               regionOfInterest = intersection.clippedBounds?.geometry
+               cropRegionOfInterest = intersection.clippedBounds?.geometry
             }
-            if(intersection)
+            if(cropGeometry&&intersection)
+            {
+               cropRegionOfInterest = cropGeometry.intersection(cropRegionOfInterest)
+            }
+            if(intersection&&cropRegionOfInterest)
             {
                tileIterator = layer.createIterator(new TileCacheHints(
-                       clipBounds: intersection.clippedBounds,
+                       clipBounds: cropRegionOfInterest.bounds, //intersection.clippedBounds,
                        minLevel: intersection.minLevel,
                        maxLevel: intersection.maxLevel
                ))
+               tileIterator.regionOfInterest = cropRegionOfInterest
             }
          }
          tileCacheSupport.delete()
          tileCacheSupport = null
       }
-      if(!tileIterator)
+      if(!tileIterator&&cropGeometry)
       {
-         if(meta.crop&&meta.cropEpsg)
-         {
-            String cropString = this.getFieldValueAsString(meta?.crop, r, meta, data)//environmentSubstitute(meta?.clampMinLevel?:"")
-            String cropEpsg   = this.getFieldValueAsString(meta?.cropEpsg, r, meta, data)//environmentSubstitute(meta?.clampMinLevel?:"")
-
-            // int geometryIdx      =  getInputRowMeta().indexOfValue(meta.geometry)
-           // int geometryEpsgIdx  =  getInputRowMeta().indexOfValue(meta.geometryEpsg)
-
-            if(cropString&&cropEpsg)
-            {
-               Geometry clipGeometry = new WktReader().read(cropString)
-
-               if(clipGeometry)
-               {
-                  def epsg = cropEpsg.split(":")[-1].toInteger()
-                 // geoscript.geom.Geometry clipGeometry = geoscript.geom.Geometry.wrap(geometry)
-                  if(epsg != pyramid.proj.epsg)
-                  {
-                     Projection cropProj = new Projection(cropEpsg)
-
-                     // need to reproject geometry
-                     Geometry value =cropProj.transform(clipGeometry,
-                             pyramid.proj)
-
-                     tileIterator = layer.createIterator(new TileCacheHints(
-                             clipBounds: value.bounds,
-                             minLevel: options.minLevel,
-                             maxLevel: options.maxLevel
-                     ))
-                     tileIterator.regionOfInterest = value
-                     regionOfInterest = value
-                  }
-               }
-            }
-         }
+         tileIterator = layer.createIterator(new TileCacheHints(
+                 clipBounds: cropGeometry.bounds,
+                 minLevel: options.minLevel,
+                 maxLevel: options.maxLevel
+         ))
+         tileIterator.regionOfInterest = cropGeometry
       }
-      //----------------------
 
       if(tileIterator)
       {
@@ -244,7 +280,8 @@ class BasicTiling extends BaseStep implements StepInterface
          Integer tileNameIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_name"])
          Integer tileWidthIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_width"])
          Integer tileHeightIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_height"])
-         Integer tileMaskAoiIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_mask_aoi"])
+         Integer tileCropAoiIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_crop_aoi"])
+         Integer tileCropAoiEpsgIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_crop_aoi_epsg"])
          Integer tileWithinIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_within"])
          Integer tileSummaryLevelInfoIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_level_info"])
          Integer tileSummaryMinxdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_epsg_minx"])
@@ -401,17 +438,17 @@ class BasicTiling extends BaseStep implements StepInterface
                      {
                         resultArray[tileColIdx] = (Long)tile.x
                      }
-                    /* if(tileMaskAoiIdx > -1)
+                     if(tileCropAoiIdx > -1)
                      {
-                      //  Geometry geomMask  = tileBounds.geometry
+                        Geometry tileCrop  = tileBounds.geometry.intersection(cropRegionOfInterest)
 
-                        if(regionOfInterest)
-                        {
-                           //geomMask = regionOfInterest.intersection(geomMask)
-                        }
-                        resultArray[tileMaskAoiIdx] = regionOfInterest.g //geomMask.g
+                        if(cropRegionOfInterest) resultArray[tileCropAoiIdx] = tileCrop.g//cropRegionOfInterest.g //geomMask.g
                      }
-                     */
+                     if(tileCropAoiEpsgIdx > -1)
+                     {
+                        resultArray[tileCropAoiEpsgIdx] = "EPSG:${pyramid.proj.epsg}" //geomMask.g
+                     }
+
                      //if(tileGlobalRowIdx >-1)
                      //{
                      // resultArray[tileGlobalRowIdx] = (Long)tile.globalRow

@@ -13,7 +13,7 @@ class IngestCommand  implements CaseInsensitiveBind
 {
    String type
    String jobName
-   String layer
+   HashMap layer
    String aoi
    String aoiEpsg
    Integer minLevel
