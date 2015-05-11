@@ -290,6 +290,7 @@
                      size="100">
             </div>
             <div class="col-md-8 image-card-info">
+
                 <strong>ID: </strong>{{properties.id}}&nbsp;&nbsp;<strong>Type: </strong>
                 {{properties.file_type}}<br>
                 <strong>Acq. Date: </strong>{{formatDate properties.acquisition_date}}<br>
@@ -298,12 +299,17 @@
                 <strong>Mission: </strong><span>{{formatString properties.mission_id}}</span>
                 <hr>
                 &nbsp;&nbsp;
-                <i class="fa fa-ellipsis-h fa-lg" data-toggle="tooltip" data-placement="bottom"
+                <i class="fa fa-ellipsis-h fa-lg"
+                   data-toggle="tooltip"
+                   data-placement="bottom"
                    title="View image metadata"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <a href="http://localhost:9999/omar/mapView/imageSpace?layers={{properties.id}}"
                    target="_blank"><i id="viewInOmar" class="fa fa-globe fa-lg" data-toggle="tooltip" data-placement="bottom"
                                       title="View image in OMAR"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <a target="_blank"><i id="ingestToCurrentTileLayer" class="fa fa-sign-in fa-lg ingestToCurrentTileLayer" data-toggle="tooltip"
+                <a target="_blank"><i id="ingestToCurrentTileLayer"
+                                      data-name="{{properties.filename}}"
+                                      onclick="AppOmarWfs.ingestLayer({{json this}})"
+                                      class="fa fa-sign-in fa-lg ingestToCurrentTileLayer" data-toggle="tooltip"
                                       data-placement="bottom"
                                       title="Add image to current tile layer"></i></a>
                 <br>
