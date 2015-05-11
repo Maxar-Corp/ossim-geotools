@@ -581,7 +581,8 @@ AppAdmin = (function () {
             resizeMapRow();
         },
         mapOmar: mapOmar,
-        mapTile: mapTile
+        mapTile: mapTile,
+        $tilelayerSelect: $tileLayerSelect
     };
 })();
 
