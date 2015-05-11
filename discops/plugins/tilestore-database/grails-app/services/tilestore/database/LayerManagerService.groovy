@@ -397,21 +397,24 @@ class LayerManagerService implements InitializingBean
                     message: "",
                     data   : []
       ]
-      if(cmd.input.name)
+      if(cmd.layer.name)
       {
-         TileCacheLayerInfo layerInfo = daoTileCacheService.getLayerInfoByName(cmd.input.name)
+
+         TileCacheLayerInfo layerInfo = daoTileCacheService.getLayerInfoByName(cmd.layer.name)
          if(layerInfo)
          {
-            cmd.input.epsg       = layerInfo.epsgCode
-            cmd.input.tileWidth  = layerInfo.tileWidth
-            cmd.input.tileHeight = layerInfo.tileHeight
+
+            cmd.layer.epsg       = layerInfo.epsgCode
+            cmd.layer.tileWidth  = layerInfo.tileWidth
+            cmd.layer.tileHeight = layerInfo.tileHeight
          }
          else
          {
             result.status = HttpStatus.NOT_FOUND
             result.message = "Layer name ${cmd.input.name}"
+            return result
          }
-         return result
+
       }
       else
       {

@@ -42,6 +42,7 @@ class Chipper extends BaseStep implements StepInterface
    def chipper
    def degreesPerMeter;
    Projection cutEpsg
+   def cutGeom
    Projection geographicProjection = new Projection("EPSG:4326")
    public Chipper(StepMeta stepMeta, StepDataInterface stepDataInterface,
                   int copyNr, TransMeta transMeta, Trans trans) {
@@ -71,87 +72,87 @@ class Chipper extends BaseStep implements StepInterface
             def cutEpsgString = getInputRowMeta().getString(r,cutEpsgIdx);
             cutEpsg = new Projection(cutEpsgString)
          }
-      }
-      int cutIdx   =  getInputRowMeta().indexOfValue(meta.inputCutGeometryField)
-      int filenameIdx   =  getInputRowMeta().indexOfValue(meta.inputFilenameField)
-      int entryIdx      =  getInputRowMeta().indexOfValue(meta.inputEntryField)
-      int tileMinxIdx   =  getInputRowMeta().indexOfValue(meta.inputTileMinXField)
-      int tileMinyIdx   =  getInputRowMeta().indexOfValue(meta.inputTileMinYField)
-      int tileMaxxIdx   =  getInputRowMeta().indexOfValue(meta.inputTileMaxXField)
-      int tileMaxyIdx   =  getInputRowMeta().indexOfValue(meta.inputTileMaxYField)
-      int epsgCodeIdx   =  getInputRowMeta().indexOfValue(meta.inputEpsgCodeField)
-      int tileWidthIdx  =  getInputRowMeta().indexOfValue(meta.inputTileWidthField)
-      int tileHeightIdx =  getInputRowMeta().indexOfValue(meta.inputTileHeightField)
-
-      if((filenameIdx < 0) || (entryIdx < 0)	|| (tileMinxIdx < 0)||
-              (tileMinyIdx < 0) || (tileMaxxIdx < 0) || (tileMaxyIdx < 0) ||
-              (epsgCodeIdx < 0) || (tileWidthIdx < 0) || (tileHeightIdx < 0))
-      {
-         throw new KettleException("All input fields are not specified.  Please verify all fields.")
-      }
-      //int tileLevelIdx  =  getInputRowMeta().indexOfValue("tile_level")
-      //int tileRowIdx    =  getInputRowMeta().indexOfValue("tile_row")
-      //int tileColIdx    =  getInputRowMeta().indexOfValue("tile_col")
-      //def tileLevel     = getInputRowMeta().getString(row, tileLevelIdx)
-      //def tileRow     = getInputRowMeta().getString(row, tileRowIdx)
-      //def tileCol     = getInputRowMeta().getString(row, tileColIdx)
-
-      def filename = getInputRowMeta().getString(r,filenameIdx);
-      def entry    = getInputRowMeta().getString(r,entryIdx);
-      def minx     = getInputRowMeta().getString(r,tileMinxIdx);
-      def miny     = getInputRowMeta().getString(r,tileMinyIdx);
-      def maxx     = getInputRowMeta().getString(r,tileMaxxIdx);
-      def maxy     = getInputRowMeta().getString(r,tileMaxyIdx);
-      def epsg     = getInputRowMeta().getString(r,epsgCodeIdx);
-      def wString  = getInputRowMeta().getString(r,tileWidthIdx);
-      def hString  = getInputRowMeta().getString(r,tileHeightIdx);
-
-      def cutGeom
-      if((cutIdx >= 0)&&(r[cutIdx]))
-      {
-         if(r[cutIdx] instanceof String)
+         int cutIdx   =  getInputRowMeta().indexOfValue(meta.inputCutGeometryField)
+         if((cutIdx >= 0)&&(r[cutIdx]))
          {
-           cutGeom = new WKTReader().read(r[cutIdx])
+            if(r[cutIdx] instanceof String)
+            {
+               cutGeom = new WKTReader().read(r[cutIdx])
+            }
+            else if(r[cutIdx] instanceof Geometry)
+            {
+               cutGeom = r[cutIdx]
+            }
          }
-         else if(r[cutIdx] instanceof Geometry)
-         {
-           cutGeom = r[cutIdx]
-         }
+         if(cutEpsg&&(cutEpsg.epsg!=geographicProjection.epsg)) cutGeom = cutEpsg.transform(geoscript.geom.Geometry.wrap(cutGeom), geographicProjection)?.g
 
+     }
+     int filenameIdx   =  getInputRowMeta().indexOfValue(meta.inputFilenameField)
+     int entryIdx      =  getInputRowMeta().indexOfValue(meta.inputEntryField)
+     int tileMinxIdx   =  getInputRowMeta().indexOfValue(meta.inputTileMinXField)
+     int tileMinyIdx   =  getInputRowMeta().indexOfValue(meta.inputTileMinYField)
+     int tileMaxxIdx   =  getInputRowMeta().indexOfValue(meta.inputTileMaxXField)
+     int tileMaxyIdx   =  getInputRowMeta().indexOfValue(meta.inputTileMaxYField)
+     int epsgCodeIdx   =  getInputRowMeta().indexOfValue(meta.inputEpsgCodeField)
+     int tileWidthIdx  =  getInputRowMeta().indexOfValue(meta.inputTileWidthField)
+     int tileHeightIdx =  getInputRowMeta().indexOfValue(meta.inputTileHeightField)
 
-      }
-      def w = wString.toInteger()
-      def h = hString.toInteger()
-      def arrayOfFiles   = filename.split(",")
-      def arrayOfEntries = entry.split(",")
-      if(arrayOfFiles.size())
-      {
-         def chipperChipOpts = [
-                 cut_wms_bbox:"${minx},${miny},${maxx},${maxy}" as String,
-                 cut_height: "${h}" as String,
-                 cut_width: "${w}" as String
-         ]
+     if((filenameIdx < 0) || (entryIdx < 0)	|| (tileMinxIdx < 0)||
+             (tileMinyIdx < 0) || (tileMaxxIdx < 0) || (tileMaxyIdx < 0) ||
+             (epsgCodeIdx < 0) || (tileWidthIdx < 0) || (tileHeightIdx < 0))
+     {
+        throw new KettleException("All input fields are not specified.  Please verify all fields.")
+     }
+     //int tileLevelIdx  =  getInputRowMeta().indexOfValue("tile_level")
+     //int tileRowIdx    =  getInputRowMeta().indexOfValue("tile_row")
+     //int tileColIdx    =  getInputRowMeta().indexOfValue("tile_col")
+     //def tileLevel     = getInputRowMeta().getString(row, tileLevelIdx)
+     //def tileRow     = getInputRowMeta().getString(row, tileRowIdx)
+     //def tileCol     = getInputRowMeta().getString(row, tileColIdx)
 
-         def chipperOptionsMap = [
-                 cut_wms_bbox:"${minx},${miny},${maxx},${maxy}" as String,
-                 cut_height: "${h}" as String,
-                 cut_width: "${w}" as String,
-                 //'hist-op': 'auto-minmax',
-                 'hist-op': meta.histogramOperationType,
-                 operation: 'ortho',
-                 scale_2_8_bit: 'true',
-                 'srs': epsg,
-                 three_band_out: 'true',
-                 resampler_filter: meta.resampleFilterType
-         ]
-         if(cutGeom)
-         {
-            if(cutEpsg&&(cutEpsg.epsg!=geographicProjection.epsg)) cutGeom = cutEpsg.transform(geoscript.geom.Geometry.wrap(cutGeom), geographicProjection)?.g
+     def filename = getInputRowMeta().getString(r,filenameIdx);
+     def entry    = getInputRowMeta().getString(r,entryIdx);
+     def minx     = getInputRowMeta().getString(r,tileMinxIdx);
+     def miny     = getInputRowMeta().getString(r,tileMinyIdx);
+     def maxx     = getInputRowMeta().getString(r,tileMaxxIdx);
+     def maxy     = getInputRowMeta().getString(r,tileMaxyIdx);
+     def epsg     = getInputRowMeta().getString(r,epsgCodeIdx);
+     def wString  = getInputRowMeta().getString(r,tileWidthIdx);
+     def hString  = getInputRowMeta().getString(r,tileHeightIdx);
 
-            def geom = cutGeom.getGeometryN(0)
-            def geomColl = geom?.coordinates.collect{ "(${it.y},${it.x})" }
+     def w = wString.toInteger()
+     def h = hString.toInteger()
+     def arrayOfFiles   = filename.split(",")
+     def arrayOfEntries = entry.split(",")
+     if(arrayOfFiles.size())
+     {
+        def chipperChipOpts = [
+                cut_wms_bbox:"${minx},${miny},${maxx},${maxy}" as String,
+                cut_height: "${h}" as String,
+                cut_width: "${w}" as String
+        ]
 
-            if(geomColl) chipperOptionsMap.clip_poly_lat_lon = "(${geomColl.join(",")})".toString()
+        def chipperOptionsMap = [
+                cut_wms_bbox:"${minx},${miny},${maxx},${maxy}" as String,
+                cut_height: "${h}" as String,
+                cut_width: "${w}" as String,
+                //'hist-op': 'auto-minmax',
+                'hist-op': meta.histogramOperationType,
+                operation: 'ortho',
+                scale_2_8_bit: 'true',
+                'srs': epsg,
+                three_band_out: 'true',
+                resampler_filter: meta.resampleFilterType
+        ]
+        if(cutGeom)
+        {
+/*           if(cutEpsg&&(cutEpsg.epsg!=geographicProjection.epsg)) cutGeom = cutEpsg.transform(geoscript.geom.Geometry.wrap(cutGeom), geographicProjection)?.g
+*/
+           def geom = cutGeom.getGeometryN(0)
+           def geomColl = geom?.coordinates.collect{ "(${it.y},${it.x})" }
+
+           if(geomColl) chipperOptionsMap.clip_poly_lat_lon = "(${geomColl.join(",")})".toString()
+
          }
         // println chipperOptionsMap.clip_poly_lat_lon
          //println chipperOptionsMap

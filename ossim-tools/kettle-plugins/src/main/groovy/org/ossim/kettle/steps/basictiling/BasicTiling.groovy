@@ -440,9 +440,9 @@ class BasicTiling extends BaseStep implements StepInterface
                      }
                      if(tileCropAoiIdx > -1)
                      {
-                        Geometry tileCrop  = tileBounds.geometry.intersection(cropRegionOfInterest)
+                       // Geometry tileCrop  = tileBounds.geometry.intersection(cropRegionOfInterest)
 
-                        if(cropRegionOfInterest) resultArray[tileCropAoiIdx] = tileCrop.g//cropRegionOfInterest.g //geomMask.g
+                        if(cropRegionOfInterest) resultArray[tileCropAoiIdx] = cropRegionOfInterest.g//cropRegionOfInterest.g //geomMask.g
                      }
                      if(tileCropAoiEpsgIdx > -1)
                      {
