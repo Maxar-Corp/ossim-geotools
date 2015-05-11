@@ -39,7 +39,7 @@ AppAdmin = (function () {
     // 4326
     var melbourneFlorida4326 = [-80.6552775, 28.1174805];
     // 3857
-    var melbourneFlorida3857 = ol.proj.transform([-80.6552775, 28.1174805], 'EPSG:4326', 'EPSG:3857');
+    var melbourneFlorida3857 = ol.proj.transform([-81.9404092,42.082707], 'EPSG:4326', 'EPSG:3857');
 
     //var mousePositionControl = new ol.control.MousePosition({
     //    coordinateFormat: ol.coordinate.createStringXY(4),
@@ -64,7 +64,7 @@ AppAdmin = (function () {
         ]),
         layers: AddLayersAdmin.layers,
         view: new ol.View({
-            zoom: 14,
+            zoom: 8,
             center: melbourneFlorida3857
         }),
         target: 'mapOmar'
@@ -410,7 +410,7 @@ AppAdmin = (function () {
 
     function ajaxDeleteLayer(name) {
         return $.ajax({
-            url: "/tilestore/layerManager/delete?",
+            url: "/tilestore/layerManager/delete",
             type: 'POST',
             dataType: 'json',
             data: {'name': name}
