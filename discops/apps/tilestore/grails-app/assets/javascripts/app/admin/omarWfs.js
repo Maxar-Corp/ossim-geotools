@@ -26,12 +26,13 @@ AppOmarWfs = (function () {
 
         // TODO: Look into using OL3 WFS API here
 
-        console.log(obj.properties.filename);
+        console.log(obj);
+        //console.log(obj.properties.filename);
 
         objIngestImage.input.file = obj.properties.filename;
         objIngestImage.input.entry = obj.properties.entry_id;
 
-        console.log(objIngestImage);
+        //console.log(objIngestImage);
 
         // TODO: Refactor using promises...
         $.ajax({
@@ -177,12 +178,55 @@ AppOmarWfs = (function () {
 
             // TODO: Add $ajax to a function that gets called on init
             // http://openlayers.org/en/v3.5.0/apidoc/ol.format.WFS.html
+
+            // Source retrieving WFS data in GeoJSON format using JSONP technique
+            //var vectorSourceJsonp = new ol.source.ServerVector({
+            //    format: new ol.format.GeoJSON(),
+            //    loader: function(extent, resolution, projection) {
+            //        var url = 'http://demo.opengeo.org/geoserver/wfs?'+
+            //            'service=WFS&request=GetFeature&'+
+            //            'version=1.1.0&typename=osm:water_areas&'+
+            //            'outputFormat=text/javascript&'+
+            //            'format_options=callback:loadFeatures&' +
+            //            'srsname=EPSG:3857&'+
+            //            'bbox=' + extent.join(',');
+            //
+            //        $.ajax({
+            //            url: url,
+            //            dataType: 'jsonp'
+            //        });
+            //    },
+            //    strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
+            //        maxZoom: 19
+            //    })),
+            //    projection: 'EPSG:3857'
+            //});
+            //
+            //// Executed when data is loaded by the $.ajax method.
+            //var loadFeatures = function(response) {
+            //    vectorSourceJsonp.addFeatures(vectorSourceJsonp.readFeatures(response));
+            //};
+            //
+            //// Vector layer
+            //var vectorLayerJsonp = new ol.layer.Vector({
+            //    source: vectorSourceJsonp,
+            //    style: new ol.style.Style({
+            //        stroke: new ol.style.Stroke({
+            //            color: 'green',
+            //            width: 2
+            //        })
+            //    })
+            //});
+
+           /// AppAdmin.mapOmar.addLayer(vectorLayerJsonp);
+
+
             $.ajax({
                 url: omarWfsUrl,
                 dataType: 'jsonp',
                 // TODO: Refactor using promises...
                 success: function (images) {
-                    //console.log(images);
+                    console.log(images);
                     //console.log(images.features.properties);
 
                     // ###########################################################
@@ -203,9 +247,7 @@ AppOmarWfs = (function () {
                 }
             });
 
-            //function ingestCurrentImage(imageId, filePath){
-            //    alert('you called ingestCurrentImage with value: ' + imageId);
-            //}
+
 
         },
         ingestLayer: ingestLayer
