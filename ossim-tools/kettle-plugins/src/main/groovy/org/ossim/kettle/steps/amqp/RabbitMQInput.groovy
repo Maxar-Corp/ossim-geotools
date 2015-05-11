@@ -75,6 +75,7 @@ class RabbitMQInput extends BaseStep implements StepInterface
 
 		public void rowReadEvent(RowMetaInterface rowMeta, Object[] row)
 		{
+
 		}
 		public void rowWrittenEvent(RowMetaInterface rowMeta, Object[] row)
 		{
@@ -177,7 +178,7 @@ class RabbitMQInput extends BaseStep implements StepInterface
 		if(value)
 		{
 			def delivery = rabbitmq?.consumer?.nextDelivery(1000)
-			if(delivery&&!isStopped()&&(this.status != StepExecutionStatus.STATUS_HALTING))
+			if(delivery&&(!isStopped())&&(this.status != StepExecutionStatus.STATUS_HALTING))
 			{
 
 				++linesRead
@@ -208,7 +209,9 @@ class RabbitMQInput extends BaseStep implements StepInterface
 			{
 				if(meta.stopAfterNMessages > 0) blockSizeMet = ((linesRead%meta.stopAfterNMessages)==0)
 			}
-			if((this.status != StepExecutionStatus.STATUS_HALTING)&&(!blockSizeMet) )
+
+			if((!isStopped())&&(this.status != StepExecutionStatus.STATUS_HALTING)&&
+					  (!blockSizeMet) )
 			{
 				// only keep going if the stop flag is not specified
 				if(delivery||(!delivery&&!meta.stopIfNoMoreMessages))

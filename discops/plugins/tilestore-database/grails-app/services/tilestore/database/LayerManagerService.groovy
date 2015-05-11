@@ -397,6 +397,32 @@ class LayerManagerService implements InitializingBean
                     message: "",
                     data   : []
       ]
+      if(cmd.layer.name)
+      {
+
+         TileCacheLayerInfo layerInfo = daoTileCacheService.getLayerInfoByName(cmd.layer.name)
+         if(layerInfo)
+         {
+
+            cmd.layer.epsg       = layerInfo.epsgCode
+            cmd.layer.tileWidth  = layerInfo.tileWidth
+            cmd.layer.tileHeight = layerInfo.tileHeight
+         }
+         else
+         {
+            result.status = HttpStatus.NOT_FOUND
+            result.message = "Layer name ${cmd.input.name}"
+            return result
+         }
+
+      }
+      else
+      {
+         result.status = HttpStatus.NOT_FOUND
+         result.message = "Layer name can't be empty."
+
+         return result
+      }
       String jobId = UUID.randomUUID().toString()
       HashMap ingestCommand = cmd.toMap();
       ingestCommand.jobName = ingestCommand.jobName?:"Ingest"

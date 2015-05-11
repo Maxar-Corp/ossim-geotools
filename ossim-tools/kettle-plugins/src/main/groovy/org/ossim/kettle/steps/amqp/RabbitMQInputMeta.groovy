@@ -259,7 +259,7 @@ public class RabbitMQInputMeta extends BaseStepMeta implements StepMetaInterface
     if(!stopIfNoMoreMessagesTemp) stopIfNoMoreMessagesTemp = "false"
     if(!stopAfterNMessagesTemp) stopAfterNMessagesTemp = "-1"
     stopIfNoMoreMessages = stopIfNoMoreMessagesTemp.toBoolean()
-    stopAfterNMessages = stopAfterNMessages.toInteger()
+    stopAfterNMessages = stopAfterNMessagesTemp.toInteger()
 
     password = encr.decryptPasswordOptionallyEncrypted(password)
   }
