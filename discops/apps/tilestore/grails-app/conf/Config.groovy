@@ -172,7 +172,7 @@ omar{
 }
 
 tilestore {
-  //disableAccumulo = true
+  disableAccumulo = false
   maxTileConnections = 50
   wmtsTileGrid = false
   referenceLayers = [
