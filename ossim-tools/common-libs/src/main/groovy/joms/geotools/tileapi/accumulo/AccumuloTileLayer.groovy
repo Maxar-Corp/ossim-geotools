@@ -6,6 +6,10 @@ import geoscript.layer.Pyramid
 import joms.geotools.tileapi.hibernate.controller.TileCacheServiceDAO
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
 
+import javax.imageio.ImageIO
+import java.awt.Graphics
+import java.awt.image.BufferedImage
+
 
 /**
  * Created by gpotts on 1/25/15.
@@ -68,6 +72,24 @@ class AccumuloTileLayer extends ImageTileLayer//TileLayer<ImageTile>
 
     if(t.data)
     {
+      // check if already exists.
+      // if already exists then we will merge the two tiles together
+      ImageTile destinationTile = this.get(imageTile.z, imageTile.x, imageTile.y)
+      if(destinationTile)
+      {
+        BufferedImage destinationData = ImageIO.read(new ByteArrayInputStream(destinationTile.data))
+        BufferedImage srcData = ImageIO.read(new ByteArrayInputStream(imageTile.data))
+        if(destinationData&&srcData)
+        {
+          Graphics g = destinationData.graphics
+
+          g.drawImage(srcData, 0, 0, null)
+          g.dispose()
+        }
+        ByteArrayOutputStream output = new ByteArrayOutputStream()
+        ImageIO.write(destinationData, "tiff", output)
+        imageTile.data = output.toByteArray()
+      }
       imageTile.modify()
       tileCacheService.writeTile(layerInfo, imageTile)
      // println "PUTTING TILE ${imageTile}"
