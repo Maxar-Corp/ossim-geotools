@@ -20,6 +20,20 @@ class LayerManagerController
       render contentType: "application/json", (bounds as JSON).toString()
    }
 
+   def getFirstValidTile(FirstValidTileCommand)
+   {
+      def result = layerManagerService.getFirstValidTile(cmd)
+
+      if(result.status != HttpStatus.OK)
+      {
+         response.status = result.status.value
+         render contentType: "application/json", ([message:result.message] as JSON).toString()
+      }
+      else
+      {
+         render contentType: "application/json", (result.data as JSON).toString()
+      }
+   }
    /*
  def getTiles()
  {
@@ -247,6 +261,21 @@ class LayerManagerController
       {
          render contentType: "application/json", ([message:result.message] as JSON).toString()
       }
+   }
+   def getFirstTileMeta(GetFirstTileCommand cmd)
+   {
+      def result = layerManagerService.getFirstTileMeta(cmd)
+      response.status = result.status.value
+
+      if(result.status != HttpStatus.OK)
+      {
+         render contentType: 'application/json', text: [message:result.message] as JSON
+      }
+      else
+      {
+         render contentType: 'application/json', text: result.data as JSON
+      }
+
    }
    def ingest(IngestCommand cmd)
    {
