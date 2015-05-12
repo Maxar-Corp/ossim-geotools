@@ -285,12 +285,13 @@
         <div id="image-card">
             <div class="col-md-2 image-card-thumb">
                 <img data-toggle="tooltip" data-placement="bottom"
+                     data-name="{{properties.id}}"
+                     onclick="AppOmarWfs.previewLayer({{json this}})"
                      title="Add image to current tile layer" class="omar-thumb"
                      src="http://localhost:9999/omar/thumbnail/show/{{properties.id}}" alt="Image thumbnail"
                      size="100">
             </div>
             <div class="col-md-8 image-card-info">
-
                 <strong>ID: </strong>{{properties.id}}&nbsp;&nbsp;<strong>Type: </strong>
                 {{properties.file_type}}<br>
                 <strong>Acq. Date: </strong>{{formatDate properties.acquisition_date}}<br>
@@ -307,7 +308,7 @@
                    target="_blank"><i id="viewInOmar" class="fa fa-globe fa-lg" data-toggle="tooltip" data-placement="bottom"
                                       title="View image in OMAR"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <a target="_blank"><i id="ingestToCurrentTileLayer"
-                                      data-name="{{properties.filename}}"
+                                      data-name="{{properties.id}}"
                                       onclick="AppOmarWfs.ingestLayer({{json this}})"
                                       class="fa fa-sign-in fa-lg ingestToCurrentTileLayer" data-toggle="tooltip"
                                       data-placement="bottom"

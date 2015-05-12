@@ -177,7 +177,7 @@
         -->
         <tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
 
-                <!-- Export to Geopackage Form -->
+        <!-- Export to Geopackage Form -->
         <div class="modal fade" id="exportGeopackageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" Saria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
