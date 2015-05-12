@@ -3,22 +3,36 @@ package tilestore.database
 class TilestoreDatabaseFilters {
 
     def filters = {
-        getActualBounds( uri: '/layerManager/getActualBounds' ) {
-            before = {
-                response.setHeader( "Access-Control-Allow-Origin", "*" );
-                response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
-                response.setHeader( "Access-Control-Max-Age", "3600" );
-                response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
-            }
-            after = {
+       getActualBounds( uri: '/layerManager/getActualBounds' ) {
+          before = {
+             response.setHeader( "Access-Control-Allow-Origin", "*" );
+             response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
+             response.setHeader( "Access-Control-Max-Age", "3600" );
+             response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
+          }
+          after = {
 
-            }
-            afterView = {
+          }
+          afterView = {
 
-            }
-        }
+          }
+       }
+       getFirstTileMeta(controller:"layerManager", action:"getFirstTileMeta"){
+          before = {
+             response.setHeader( "Access-Control-Allow-Origin", "*" );
+             response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
+             response.setHeader( "Access-Control-Max-Age", "3600" );
+             response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
+             new GetFirstTileCommand().fixParamNames( params )
+          }
+          after = {
 
-        createOrUpdate( uri: '/layerManager/createOrUpdate' ) {
+          }
+          afterView = {
+
+          }
+       }
+       createOrUpdate( uri: '/layerManager/createOrUpdate' ) {
             before = {
                 response.setHeader( "Access-Control-Allow-Origin", "*" );
                 response.setHeader( "Access-Control-Allow-Origin", "*" );

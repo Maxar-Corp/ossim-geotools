@@ -314,6 +314,37 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     layerInfoTableDAO.list()
   }
 
+  private String createOrderByClause(def constraints)
+  {
+    String result = ""
+
+    if(constraints)
+    {
+
+      if(constraints.orderBy)
+      {
+        def tempOrderBySplit = constraints.orderBy.split("\\+")
+        result  = "ORDER BY ${tempOrderBySplit[0]}"
+
+        if(tempOrderBySplit.size() > 1)
+        {
+          switch(tempOrderBySplit[-1].toLowerCase())
+          {
+            case "d":
+              result += " DESC"
+              break
+            case "a":
+              result += " ASC"
+              break
+            default:
+              break
+          }
+        }
+      }
+    }
+
+    result
+  }
   private String createWhereClause(def constraints)
   {
     def result = ""
@@ -434,7 +465,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     {
       return result
     }
-    if ( constraints.offset && constraints.maxRows )
+    if ( (constraints.offset!=null) && (constraints.maxRows!=null) )
     {
       sql.eachRow( queryString, constraints.offset, constraints.maxRows ) { row ->
         metaRows."${row.hash_id}" = new TileCacheTileTableTemplate().bindSql( row )
@@ -472,6 +503,36 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
         }
       }
 
+    }
+    result
+  }
+  @Transactional
+  def getTilesMetaWithinConstraints(TileCacheLayerInfo layer, HashMap constraints)
+  {
+    def result = []
+    String whereClause = createWhereClause(constraints)
+    String orderBy     = createOrderByClause(constraints)
+    def queryString = "select * from ${layer?.tileStoreTable} ${whereClause} ${orderBy}".toString()
+    def metaRows = [:]
+//    def hashIds = []
+
+    if ( !layer )
+    {
+      return result
+    }
+    if ( (constraints.offset!=null) && (constraints.maxRows!=null) )
+    {
+      sql.eachRow( queryString, constraints.offset, constraints.maxRows ) { row ->
+        result << new TileCacheTileTableTemplate().bindSql( row ).toMap()
+ //       hashIds << new ImageTileKey( rowId: row.hash_id )
+      }
+    }
+    else
+    {
+      sql.eachRow( queryString ) { row ->
+        result << new TileCacheTileTableTemplate().bindSql( row ).toMap()
+ //       hashIds << new ImageTileKey( rowId: row.hash_id )
+      }
     }
     result
   }
@@ -641,7 +702,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   {
     String table = layer.tileStoreTable
     TileCacheImageTile result
-
+                           n
     def meta = sql.firstRow( "select hash_id, x, y, z, res, modified_date, st_astext(bounds) as bounds from ${table} where hash_id = '${key.rowId}'".toString() )
     if ( meta )
     {

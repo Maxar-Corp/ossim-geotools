@@ -1,6 +1,8 @@
 package tilestore.database
 
+import geoscript.GeoScript
 import geoscript.geom.Bounds
+import geoscript.geom.Geometry
 import geoscript.geom.Polygon
 import grails.converters.JSON
 import grails.transaction.Transactional
@@ -356,7 +358,6 @@ class LayerManagerService implements InitializingBean
 
       daoTileCacheService.getActualLayerBounds( params?.name, constraints )
    }
-
    def createTileLayers(String[] layerNames)
    {
       def layers = []
@@ -391,6 +392,40 @@ class LayerManagerService implements InitializingBean
       getMapBlockingQueue.put( session )
    }
 
+   def getFirstTileMeta(GetFirstTileCommand cmd)
+   {
+      def result = [status : HttpStatus.OK,
+                    message: "",
+                    data   : [] ]
+
+      if(cmd.layer)
+      {
+         def layerInfo = daoTileCacheService.getLayerInfoByName(cmd.layer)
+         if(layerInfo)
+         {
+            def tileList = daoTileCacheService.getTilesMetaWithinConstraints(layerInfo, [offset:0, maxRows:1,orderBy:"Z+D"])
+            HashMap tempResult = tileList[0]
+            if(tempResult.bounds)
+            {
+               Geometry g = GeoScript.wrap(tempResult.bounds)
+               Bounds b = g.bounds
+               tempResult.bounds = tempResult.bounds.toString()
+
+               tempResult.centerX =(b.minX+b.maxX)*0.5
+               tempResult.centerY =(b.minY+b.maxY)*0.5
+               tempResult.minx = b.minX
+               tempResult.miny = b.minY
+               tempResult.maxx = b.maxX
+               tempResult.maxy = b.maxY
+               tempResult.epsg = layerInfo.epsgCode
+            }
+
+            result.data = tempResult
+         }
+      }
+
+      result
+   }
    def ingest(IngestCommand cmd)
    {
       def result = [status : HttpStatus.OK,
