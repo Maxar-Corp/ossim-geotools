@@ -39,7 +39,7 @@ AppAdmin = (function () {
     // 4326
     var melbourneFlorida4326 = [-80.6552775, 28.1174805];
     // 3857
-    var melbourneFlorida3857 = ol.proj.transform([-81.9404092,42.082707], 'EPSG:4326', 'EPSG:3857');
+    var melbourneFlorida3857 = ol.proj.transform([-80.6552775, 28.1174805], 'EPSG:4326', 'EPSG:3857');
 
     //var mousePositionControl = new ol.control.MousePosition({
     //    coordinateFormat: ol.coordinate.createStringXY(4),
@@ -59,13 +59,14 @@ AppAdmin = (function () {
         }).extend([
             //mousePositionControl
         ]),
-        interactions: ol.interaction.defaults().extend([
-            new ol.interaction.DragRotateAndZoom()
-        ]),
+        //interactions: ol.interaction.defaults().extend([
+        //    new ol.interaction.DragRotateAndZoom()
+        //]),
         layers: AddLayersAdmin.layers,
         view: new ol.View({
-            zoom: 8,
-            center: melbourneFlorida3857
+            zoom: 14,
+            projection: 'EPSG:4326',
+            center: melbourneFlorida4326
         }),
         target: 'mapOmar'
     });
@@ -78,9 +79,9 @@ AppAdmin = (function () {
         }).extend([
             //mousePositionControl
         ]),
-        interactions: ol.interaction.defaults().extend([
-            new ol.interaction.DragRotateAndZoom()
-        ]),
+        //interactions: ol.interaction.defaults().extend([
+        //    new ol.interaction.DragRotateAndZoom()
+        //]),
         layers: AddLayersAdmin.layers,
         view: mapOmar.getView(),
         target: 'mapTile'
@@ -558,8 +559,8 @@ AppAdmin = (function () {
 
             //console.log(initParams.omarWmsUrl);
             //console.log(tilestoreLayers);
-            // Done: 04-23-05 Add .done via a $.Deffered() to grab the value of the $tileLayerSelect
-            //       This is needed, because the select options are populated after the DOM is loaded.
+            // Use .done via a $.Deffered() to grab the value of the $tileLayerSelect
+            // This is needed, because the select options are populated after the DOM is loaded.
             getTileLayers(loadParams.tilestoreLayers, $tileLayerSelect)
                 .done(
                     getCurrentTileLayer()

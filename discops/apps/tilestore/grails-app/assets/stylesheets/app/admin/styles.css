@@ -180,17 +180,15 @@ body {
     border-right: 1px solid #57a3ff;
     margin-bottom: 0px;
     border-radius: 6px;
-    background-color: red;
 }
 
-/*#image-card:hover {*/
-    /*background-color: #eeeeee;*/
+#omarImageList .row:hover {
+    background-color: #eeeeee;
     /*border: 1px solid #57a3ff;*/
     /*-webkit-box-shadow: 3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
     /*-moz-box-shadow:    3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
     /*box-shadow:         3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
-
-/*}*/
+}
 
 
 .image-card-thumb {
@@ -208,9 +206,12 @@ body {
     margin-left: 43px;
     padding-top: 8px;
     padding-right: 0px;
-    font-size: 8.5px;
+    font-size: 9px;
 }
 
+/*.image-card-info strong {*/
+    /*color: #ccc;*/
+/*}*/
 
 .image-card-info hr {
     margin-top: 5px;
