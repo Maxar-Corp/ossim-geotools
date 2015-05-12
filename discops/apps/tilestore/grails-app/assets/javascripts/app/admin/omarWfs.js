@@ -1,8 +1,8 @@
 AppOmarWfs = (function () {
 
     var loadParams;
-    var omarWfsUrl;
-    var loadFeatures;
+    var omarWfsUrlCards;
+    //var loadFeatures;
     var filterName, filterRangeLow, filterRangeHigh, filterLow, filterHigh, filter;
     var objIngestImage = {
         type: 'TileServerIngestMessage',
@@ -12,7 +12,7 @@ AppOmarWfs = (function () {
             entry: 0
         },
         layer: {
-            name: 'testIngest',
+            name: 'testIngest'
             //epsg: 'EPSG:3857',
             //tileWidth: 256,
             //tileHeight: 256
@@ -22,6 +22,32 @@ AppOmarWfs = (function () {
         minLevel: '',
         maxLevel: ''
     };
+
+    function previewLayer(obj){
+
+        var omarPreviewLayer = obj.properties.id;
+        console.log(obj);
+        console.log(omarPreviewLayer);
+
+        //AppAdmin.mapTile.removeLayer(removeOldLayer);
+
+        console.log('Now loading: ' + omarPreviewLayer);
+        omarPreviewLayer =  new ol.layer.Image( {
+            opacity: 1.0,
+            source: new ol.source.ImageWMS( {
+                //url: loadParams.omarWms,
+                url: "http://localhost:9999/omar/ogc/wms",
+                params: {'LAYERS': omarPreviewLayer, 'VERSION': '1.1.1'}
+                //projection: 'EPSG:3857'
+
+            } ),
+            name: omarPreviewLayer
+        } );
+        AppAdmin.mapOmar.addLayer(omarPreviewLayer);
+
+        //initLayer = addNewLayer;
+
+    }
 
     function ingestLayer(obj){
 
@@ -96,11 +122,6 @@ AppOmarWfs = (function () {
     var imageSource = $('#image-template').html();
     var imageTemplate = Handlebars.compile(imageSource);
 
-    //function addImage(image){
-    //    $images.append(imageTemplate, (image));
-    //}
-
-    // Add date converision
     Handlebars.registerHelper("formatDate", function convertDate(date){
 
         if(date){
@@ -131,14 +152,6 @@ AppOmarWfs = (function () {
         return JSON.stringify(context);
     });
 
-    //Handlebars.registerHelper("addToOmarMap", function addWmsToOmarMap(wmsId){
-    //    //alert(wmsId);
-    //    url="http://www.google.com";
-    //    return new Handlebars.SafeString(
-    //        "<a href='" + url + "'>" + wmsId + "</a>"
-    //    );
-    //});
-
     //$('.omar-thumb').on('click', function(){
     //    alert('Adding current image to Omar Map');
     //    console.log(AppAdmin.mapOmar);
@@ -167,39 +180,42 @@ AppOmarWfs = (function () {
     //    alert('event click!');
     //});
 
-    //$(document).on('click', '.ingestToCurrentTileLayer', function(){
-    //
-    //});
-
 
     return {
         initialize: function (initParams) {
 
             loadParams = initParams;
-            omarWfsUrl = loadParams.omarWfs + "?service=wfs&version=1.1.0&request" +
-                "=getFeature&typeName=omar:raster_entry" +
-                "&maxFeatures=200&outputFormat=geojson&filter=";
-                //acquisition_date>='2003-01-23'+and+acquisition_date<='2003-01-24'";
+            console.log(loadParams);
 
-            //console.log(omarWfsUrl);
+
+            //var omarWfsUrlMap = "http://localhost:9999/omar/wfs?service=WFS&version=1.1.0&request" +
+            //    "=GetFeature&typeName=omar:raster_entry" +
+            //    "&maxFeatures=200&outputFormat=JSON&filter=" +
+            //    "bbox=" + extent.join(',');
+
+
 
             // TODO: Add $ajax to a function that gets called on init
             // Source retrieving WFS data in GeoJSON format using JSONP technique
-            var vectorSourceJsonp = new ol.source.ServerVector({
-                format: new ol.format.GeoJSON(),
+            var vectorSource = new ol.source.ServerVector({
+                format: new ol.format.WFS({
+                    featureNS: 'http://omar.ossim.org',
+                    featureType: 'omar:raster_entry'
+                }),
                 loader: function(extent, resolution, projection) {
-                    var url = 'http://demo.opengeo.org/geoserver/wfs?'+
-                        'service=WFS&request=GetFeature&'+
-                        'version=1.1.0&typename=osm:water_areas&'+
-                        'outputFormat=text/javascript&'+
-                        'format_options=callback:loadFeatures&' +
-                        'srsname=EPSG:3857&'+
-                        'bbox=' + extent.join(',');
-
+                    var url = "http://localhost:9999/omar/wfs?service=WFS&version=1.1.0&request" +
+                        "=GetFeature&typeName=omar:raster_entry" +
+                        "&maxFeatures=200&filter=" //+
+                        //"bbox=" + extent.join(',');
+                    //console.log(url);
                     $.ajax({
-                        url: url,
-                        dataType: 'jsonp'
-                    });
+                        url: url
+                        //dataType: 'jsonp'
+                    })
+                        .done(function(response) {
+                            console.log(response);
+                            vectorSource.addFeatures(vectorSource.readFeatures(response));
+                        });
                 },
                 strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
                     maxZoom: 19
@@ -207,14 +223,9 @@ AppOmarWfs = (function () {
                 projection: 'EPSG:3857'
             });
 
-            // Executed when data is loaded by the $.ajax method.
-            loadFeatures = function(response) {
-                vectorSourceJsonp.addFeatures(vectorSourceJsonp.readFeatures(response));
-            };
-
             // Vector layer
-            var vectorLayerJsonp = new ol.layer.Vector({
-                source: vectorSourceJsonp,
+            var vectorLayer = new ol.layer.Vector({
+                source: vectorSource,
                 style: new ol.style.Style({
                     stroke: new ol.style.Stroke({
                         color: 'green',
@@ -223,21 +234,19 @@ AppOmarWfs = (function () {
                 })
             });
 
-            //AppAdmin.mapOmar.addLayer(vectorLayerJsonp);
+            //AppAdmin.mapOmar.addLayer(vectorLayer);
 
-
+            omarWfsUrlCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
+                "=GetFeature&typeName=omar:raster_entry" +
+                "&maxFeatures=200&outputFormat=geojson&filter=";
+            //      acquisition_date>='2003-01-23'+and+acquisition_date<='2003-01-24'";
             $.ajax({
-                url: omarWfsUrl,
+                url: omarWfsUrlCards,
                 dataType: 'jsonp',
                 // TODO: Refactor using promises...
                 success: function (images) {
-                    console.log(images);
+                    //console.log(images);
                     //console.log(images.features.properties);
-
-                    // ###########################################################
-                    // TODO: Push to a new model to clean up before injecting into
-                    //       the handlebars template
-                    // ###########################################################
 
                     // TODO: Add this to the Feed
                     //$('#imageCount').html(images.features.length);
@@ -255,7 +264,8 @@ AppOmarWfs = (function () {
 
 
         },
-        ingestLayer: ingestLayer
+        ingestLayer: ingestLayer,
+        previewLayer: previewLayer
     };
 })();
 
