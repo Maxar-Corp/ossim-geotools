@@ -702,7 +702,6 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   {
     String table = layer.tileStoreTable
     TileCacheImageTile result
-                           n
     def meta = sql.firstRow( "select hash_id, x, y, z, res, modified_date, st_astext(bounds) as bounds from ${table} where hash_id = '${key.rowId}'".toString() )
     if ( meta )
     {
