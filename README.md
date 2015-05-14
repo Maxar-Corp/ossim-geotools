@@ -1,14 +1,13 @@
 # Disco Ops
 
 
-Is a library that provides the user with a web accessible graphical interface
-that makes it easier to manage geospatial imagery within PostgreSQL and Accumulo. 
-It also allows users to view geospatially encoded tiles and serve them 
-via Open Geospatial Consortium Standards, [(OGC)](http://www.opengeospatial.org/standards).
+Is a web service library that provides the user with a web services and 
+graphical interfaces that makes it easier to manage geospatial imagery 
+within PostgreSQL and Accumulo.  It also allows users to view geospatially encoded tiles and serve them via Open Geospatial Consortium Standards, [(OGC)](http://www.opengeospatial.org/standards). 
 
 **Not Complete**
 
-A library that provides functions for putting imagery into postgres/accumulo
+(1) A library that provides functions for putting imagery into postgres/accumulo
 
 (2) a cmdline app that is used to put images into postgres/accumulo. It is built on top of (1).
 
@@ -16,7 +15,7 @@ A library that provides functions for putting imagery into postgres/accumulo
 
 (3b) a server (“tilestore”) that exposes the data in postgres/accumulo via OGC services
 
-(4) a Pentaho plugin which allows the user to draw a “workflow" to perform image processing jobs in a distributed manner. The plug-in makes OGC and Omar API calls, and it uses Map/Reduce and Hadoop to implement the parallelized workflows.
+(4) a Pentaho plugin which allows the user to draw a “workflow" to perform image processing jobs in using serial, multi-threaded, clustered or map reduce processing techniques. The plug-in makes OGC and Omar API calls via a workflow tool.  The workflow can be defined using the data-integration tool called "Spoon" and can be saved to a database or to a local flat file system.
 
 **Not Complete**
 
@@ -100,13 +99,37 @@ if `<version>` is 1.8.19 then you can issue the following command and install it
 mvn install:install-file -Dfile=joms-1.8.19.jar -DgroupId=org.ossim -DartifactId=joms -Dversion=1.8.19 -Dpackaging=jar
 
 ### Groovy SWT
-*ADD SOMETHING HERE*
+
+Under the ossim-geotools/groovy-swt directory is a groovy integration to the SWT widget set used for GUI plugins in the kettle/data-integration environment.  To build you must issue the following command:
+
+gradle clean install
+
 
 ### ossim-tools
-*Add SOMETHING HERE*
+
+The ossim-tools supports build settings for several distributions of hadoop.  There is a variable that can be passed to the build called `hadoopDist` and can have values: cdh4, cdh5, gdac, hdp22.  cdh4 and cdh5 are for the cloudera distributions and the gdac is a distribution by missionfocus and the hdp22 is a distribution from hortonworks 2.2.
+
+
+In the `ossim-tools` directory, use gradle: 
+
+`$ gradle clean build -DhadoopDist=cdh4 common-libs:install kettle-libs:install kettle-plugins:install app:install app:shadowJar -x test`
+
+If you have the KETTLE_HOME environment set to the distirbution of your data-integration environment supplied by us then you should have all the dependencies required and if you rebuild the ossim-tools there is a `copyToKettle` task that will copy the jar's built and put them in the proper location under the kettle directory structure.
+
+The build line can then become:
+
+`$ gradle clean build -DhadoopDist=cdh4 common-libs:install kettle-libs:install kettle-plugins:install app:install app:shadowJar copyToKettle -x test`
+
 
 ### TILESTORE
-*ADD SOMETHING HERE*
+
+Is a web application written in grails that defines web APIs to the tilestore storage.  Where possible, we use OGC services to retrieve tiles from the tile store through WMTS, or WMS services.  We have added WFS services to get access to the layer definitions.
+
+The application can be built to a war file by issuing the following command:
+
+`grails prod war tilestore.war`
+
+
 
 
 

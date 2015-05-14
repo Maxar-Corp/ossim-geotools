@@ -124,13 +124,19 @@ class TileCachePyramid extends Pyramid
               tileCacheSupport.getHeight(entry));
       //println "LARGEST SIZE === ${largestSize}"
       int maxDecimationLevels = 0;
-      if (largestSize > tileSize) {
-        int testSize = largestSize;
-        while ((testSize > tileSize) && (testSize > 0)) {
+     // Integer testTileSize = tileSize*0.25// we will go no more than 2 more decimations
+      int testSize = largestSize;
+//      if (largestSize > testTileSize) {
+//        int testSize = largestSize;
+//        while ((testSize > testTileSize) && (testSize > 0)) {
+//          ++maxDecimationLevels;
+//          testSize = testSize >> 1;
+//        }
+        while ((testSize > 0)) {
           ++maxDecimationLevels;
           testSize = testSize >> 1;
         }
-      }
+//      }
 
       // once we find the number of decimations then we will find the estimate for the
       // resolution at that decimation

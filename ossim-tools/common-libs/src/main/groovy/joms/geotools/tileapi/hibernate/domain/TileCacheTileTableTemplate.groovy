@@ -1,7 +1,8 @@
 package joms.geotools.tileapi.hibernate.domain
 
+import com.vividsolutions.jts.geom.Envelope
 import com.vividsolutions.jts.geom.Polygon
-import com.vividsolutions.jts.io.WKTReader
+import geoscript.geom.io.WktReader
 import groovy.transform.ToString
 import org.hibernate.annotations.Type
 
@@ -59,7 +60,7 @@ class TileCacheTileTableTemplate
 
     if(data.bounds instanceof String)
     {
-      this.bounds = new WKTReader().read(data.bounds)
+      this.bounds = new WktReader().read(data.bounds)?.g
     }
 
     this
@@ -73,10 +74,23 @@ class TileCacheTileTableTemplate
     this.z      = data?.z
     if(data.bounds)
     {
-      this.bounds = new WKTReader().read(data.bounds.toString())
+       this.bounds = new WktReader().read(data.bounds.toString())?.g
     }
     this.modifiedDate = new Date(data?.modified_date?.time)
 
     this
+  }
+
+  HashMap toMap()
+  {
+    [
+            hashId: hashId,
+            x:x,
+            y:y,
+            z:z,
+            res:res,
+            bounds:bounds,
+            modifiedDate:modifiedDate
+    ]
   }
 }
