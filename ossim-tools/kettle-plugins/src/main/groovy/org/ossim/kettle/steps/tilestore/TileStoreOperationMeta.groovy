@@ -28,7 +28,7 @@ import org.w3c.dom.Node
  * Created by gpotts on 3/24/15.
  */
 
-@Step(
+/*@Step(
         id="TileStoreOperation",
         name="operation.name",
         description="operation.description",
@@ -36,6 +36,7 @@ import org.w3c.dom.Node
         image="org/ossim/kettle/steps/tilestore/icon.png",
         i18nPackageName="org.ossim.steps.kettle.tilestore"
 )
+*/
 class TileStoreOperationMeta extends BaseStepMeta implements StepMetaInterface
 {
    TileStoreCommon tileStoreCommon
@@ -66,6 +67,8 @@ class TileStoreOperationMeta extends BaseStepMeta implements StepMetaInterface
       retval.append( "    " ).append( XMLHandler.addTagValue( "layerFieldName", layerFieldName?:"" ) );
       retval.append( "    " ).append( XMLHandler.addTagValue( "layerName", layerName?:"" ) );
       retval.append( "    " ).append(XMLHandler.addTagValue("operationType", operationType.toString())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+      retval
    }
    void getFields(RowMetaInterface r, String origin, RowMetaInterface[] info,
                   StepMeta nextStep, VariableSpace space)
