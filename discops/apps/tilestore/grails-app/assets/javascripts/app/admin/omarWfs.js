@@ -30,6 +30,7 @@ AppOmarWfs = (function () {
         console.log(obj);
         console.log(obj.properties.id);
         text = obj.properties.id;
+        console.log(text);
 
         omarPreviewLayerId = obj.properties.id;
         if(omarPreviewLayer){
@@ -84,6 +85,9 @@ AppOmarWfs = (function () {
         var extent = polyFeature.getGeometry().getExtent();
         AppAdmin.mapOmar.getView().fitExtent(extent, AppAdmin.mapOmar.getSize());
 
+        // This adds the polyFeature to a vectorlayer and displays it on the map.
+        // TODO: Use this in a function to run all of the OMAR images through it
+        //       and display their bounding box on the map.
         if (previewFeatureArray.length === 1){
 
             vectorSource.clear();
@@ -110,6 +114,8 @@ AppOmarWfs = (function () {
                 features: previewFeatureArray
             });
 
+            // TODO: Move this out of the click on the image card, and put it in the appAddLayers
+            //       file so that it is always the top layer rendered.
             vectorLayer = new ol.layer.Vector({
                 source: vectorSource,
                 style: (function() {
@@ -144,8 +150,6 @@ AppOmarWfs = (function () {
             AppAdmin.mapTile.addLayer(vectorLayer);
             console.log('else...');
         }
-
-
 
     }
 
