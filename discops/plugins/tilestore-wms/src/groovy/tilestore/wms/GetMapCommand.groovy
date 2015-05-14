@@ -3,6 +3,8 @@ package tilestore.wms
 import grails.validation.Validateable
 import groovy.transform.ToString
 
+import java.awt.Color
+
 /**
  * Created by gpotts on 1/16/15.
  */
@@ -17,7 +19,7 @@ class GetMapCommand extends WmsCommand
   Integer width
   Integer height
   String bgcolor = "0x000000"
-  String transparent = true
+  String transparent = "true"
 
   static constraints = {
     transparent( nullable: true )
@@ -65,5 +67,31 @@ class GetMapCommand extends WmsCommand
         errors.reject( "height", "bad value for height" )
       }
     } )
+  }
+  def getBackgroundColor()
+  {
+    def result = new Color( 0, 0, 0 )
+    if ( bgcolor )
+    {
+      if ( bgcolor.size() == 8 )
+      {
+        // skip 0x
+        result = new Color( Integer.decode( "0x" + bgcolor[2] + bgcolor[3] ),
+                Integer.decode( "0x" + bgcolor[4] + bgcolor[5] ),
+                Integer.decode( "0x" + bgcolor[6] + bgcolor[7] ) )
+      }
+    }
+
+    return result
+  }
+
+  def getTransparentFlag()
+  {
+    def result = false;
+    if ( transparent )
+    {
+      result = Boolean.toBoolean( transparent )
+    }
+    return result
   }
 }
