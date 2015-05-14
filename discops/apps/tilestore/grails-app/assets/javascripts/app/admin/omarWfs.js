@@ -2,8 +2,9 @@ AppOmarWfs = (function () {
 
     var loadParams;
     var omarWfsUrlCards;
-    //var loadFeatures;
     var filterName, filterRangeLow, filterRangeHigh, filterLow, filterHigh, filter;
+    var vectorLayer, vectorSource, text, omarPreviewLayerId, omarPreviewLayer;
+    var previewFeatureArray = [];
     var objIngestImage = {
         type: 'TileServerIngestMessage',
         input: {
@@ -23,29 +24,132 @@ AppOmarWfs = (function () {
         maxLevel: ''
     };
 
+    // Done - 05-12-72 - Create a function that adds the OMAR wms image to the map for previewing.
     function previewLayer(obj){
 
-        var omarPreviewLayer = obj.properties.id;
         console.log(obj);
-        console.log(omarPreviewLayer);
+        console.log(obj.properties.id);
+        text = obj.properties.id;
+        console.log(text);
 
-        //AppAdmin.mapTile.removeLayer(removeOldLayer);
+        omarPreviewLayerId = obj.properties.id;
+        if(omarPreviewLayer){
+            console.log('omarPreviewLayer true');
+            //AppAdmin.mapOmar.removeLayer(omarPreviewLayer);
+            // Log source parameters before we swap for new preview layer
+            //console.log(omarPreviewLayer.getSource().getParams());
+            omarPreviewLayer.getSource().updateParams({'LAYERS': omarPreviewLayerId});
+            // Log source parameters after we swap for new preview layer
+            //console.log(omarPreviewLayer.getSource().getParams());
+            //AppAdmin.mapOmar.addLayer(omarPreviewLayer);
+        }
+        else {
+            console.log('no omarPreviewLayer');
+            omarPreviewLayer =  new ol.layer.Image( {
+                opacity: 1.0,
+                source: new ol.source.ImageWMS( {
+                    url: loadParams.omarWms + "/wms",
+                    params: {'LAYERS': omarPreviewLayerId, 'VERSION': '1.1.1'},
+                    projection: 'EPSG:3857'
 
-        console.log('Now loading: ' + omarPreviewLayer);
-        omarPreviewLayer =  new ol.layer.Image( {
-            opacity: 1.0,
-            source: new ol.source.ImageWMS( {
-                //url: loadParams.omarWms,
-                url: "http://localhost:9999/omar/ogc/wms",
-                params: {'LAYERS': omarPreviewLayer, 'VERSION': '1.1.1'}
-                //projection: 'EPSG:3857'
+                } ),
+                name: omarPreviewLayer
+            });
+            AppAdmin.mapOmar.addLayer(omarPreviewLayer);
 
-            } ),
-            name: omarPreviewLayer
-        } );
-        AppAdmin.mapOmar.addLayer(omarPreviewLayer);
+        }
+        // TODO: Set map extent to the extent of the previewed WMS, and set
+        //       the .css of the image card to reflect that it is the currently
+        //       selected/previewed image
+        //console.log(obj.geometry.coordinates[0][0] + " " + obj.geometry.coordinates[0][1] + " " + obj.geometry.coordinates[0][2] + " " + obj.geometry.coordinates[0][3] );//, obj.geometry.coordinates[3] )
+        var coord1 = ol.proj.transform(obj.geometry.coordinates[0][0], 'EPSG:4326', 'EPSG:3857');
+        var coord2 = ol.proj.transform(obj.geometry.coordinates[0][1], 'EPSG:4326', 'EPSG:3857');
+        var coord3 = ol.proj.transform(obj.geometry.coordinates[0][2], 'EPSG:4326', 'EPSG:3857');
+        var coord4 = ol.proj.transform(obj.geometry.coordinates[0][3], 'EPSG:4326', 'EPSG:3857');
 
-        //initLayer = addNewLayer;
+        //console.log(coord1 + " " + coord2 + " " + coord3 + " " + coord4);
+
+        var polyFeature = new ol.Feature({
+            geometry: new ol.geom.Polygon([
+                [
+                    [coord1[0], coord1[1]],
+                    [coord2[0], coord2[1]],
+                    [coord3[0], coord3[1]],
+                    [coord4[0], coord4[1]],
+                    [coord1[0], coord1[1]]
+                ]
+            ])
+        });
+        //polyFeature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
+
+        var extent = polyFeature.getGeometry().getExtent();
+        AppAdmin.mapOmar.getView().fitExtent(extent, AppAdmin.mapOmar.getSize());
+
+        // This adds the polyFeature to a vectorlayer and displays it on the map.
+        // TODO: Use this in a function to run all of the OMAR images through it
+        //       and display their bounding box on the map.
+        if (previewFeatureArray.length === 1){
+
+            vectorSource.clear();
+            previewFeatureArray.length = 0;
+            //console.log(previewFeatureArray.length);
+            previewFeatureArray.push(polyFeature);
+            //console.log(previewFeatureArray.length);
+            //console.log(previewFeatureArray);
+
+            vectorSource.addFeatures(previewFeatureArray);
+
+            // Need to update the source instead of creating a new instance
+            //console.log(vectorLayer.getSource());
+            vectorLayer.setSource(vectorSource);
+            //AppAdmin.mapOmar.render();
+            //AppAdmin.mapOmar.renderSync();
+
+        } else
+        {
+            //console.log(previewFeatureArray.length);
+            previewFeatureArray.push(polyFeature);
+
+            vectorSource = new ol.source.Vector({
+                features: previewFeatureArray
+            });
+
+            // TODO: Move this out of the click on the image card, and put it in the appAddLayers
+            //       file so that it is always the top layer rendered.
+            vectorLayer = new ol.layer.Vector({
+                source: vectorSource,
+                style: (function() {
+                    var stroke = new ol.style.Stroke({
+                        color: 'red',
+                        width: 3
+                    });
+                    var textStroke = new ol.style.Stroke({
+                        color: '#fff',
+                        width: 3
+                    });
+                    var textFill = new ol.style.Fill({
+                        color: 'red'
+                    });
+                    return function(feature, resolution) {
+                        console.log(feature);
+                        return [new ol.style.Style({
+                            stroke: stroke,
+                            text: new ol.style.Text({
+                                font: '24px Calibri,sans-serif',
+                                //text: text,
+                                text: "Preview Image Extent",
+                                fill: textFill,
+                                stroke: textStroke
+                            })
+                        })];
+                    };
+                })()
+            });
+
+            //AppAdmin.mapOmar.addLayer(vectorLayer);
+            AppAdmin.mapTile.addLayer(vectorLayer);
+            console.log('else...');
+        }
 
     }
 
@@ -180,59 +284,50 @@ AppOmarWfs = (function () {
     //    alert('event click!');
     //});
 
-
     return {
         initialize: function (initParams) {
 
             loadParams = initParams;
-            console.log(loadParams);
-
-
-            //var omarWfsUrlMap = "http://localhost:9999/omar/wfs?service=WFS&version=1.1.0&request" +
-            //    "=GetFeature&typeName=omar:raster_entry" +
-            //    "&maxFeatures=200&outputFormat=JSON&filter=" +
-            //    "bbox=" + extent.join(',');
-
-
+            //console.log(loadParams);
 
             // TODO: Add $ajax to a function that gets called on init
             // Source retrieving WFS data in GeoJSON format using JSONP technique
-            var vectorSource = new ol.source.ServerVector({
-                format: new ol.format.WFS({
-                    featureNS: 'http://omar.ossim.org',
-                    featureType: 'omar:raster_entry'
-                }),
-                loader: function(extent, resolution, projection) {
-                    var url = "http://localhost:9999/omar/wfs?service=WFS&version=1.1.0&request" +
-                        "=GetFeature&typeName=omar:raster_entry" +
-                        "&maxFeatures=200&filter=" //+
-                        //"bbox=" + extent.join(',');
-                    //console.log(url);
-                    $.ajax({
-                        url: url
-                        //dataType: 'jsonp'
-                    })
-                        .done(function(response) {
-                            console.log(response);
-                            vectorSource.addFeatures(vectorSource.readFeatures(response));
-                        });
-                },
-                strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
-                    maxZoom: 19
-                })),
-                projection: 'EPSG:3857'
-            });
-
-            // Vector layer
-            var vectorLayer = new ol.layer.Vector({
-                source: vectorSource,
-                style: new ol.style.Style({
-                    stroke: new ol.style.Stroke({
-                        color: 'green',
-                        width: 2
-                    })
-                })
-            });
+            //var vectorSource = new ol.source.ServerVector({
+            //    format: new ol.format.WFS({
+            //        featureNS: 'http://omar.ossim.org',
+            //        featureType: 'omar:raster_entry'
+            //    }),
+            //    loader: function(extent, resolution, projection) {
+            //        var url = "http://localhost:9999/omar/wfs?service=WFS&version=1.1.0&request" +
+            //            "=GetFeature&typeName=omar:raster_entry" +
+            //            "&maxFeatures=200&filter=" //+
+            //            //"bbox=" + extent.join(',');
+            //        //console.log(url);
+            //        $.ajax({
+            //            url: url//,
+            //            //dataType: 'jsonp'
+            //        })
+            //            .done(function(response) {
+            //                console.log(response);
+            //                vectorSource.addFeatures(vectorSource.readFeatures(response));
+            //            });
+            //    },
+            //    strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
+            //        maxZoom: 19
+            //    })),
+            //    projection: 'EPSG:3857'
+            //});
+            //
+            //// Vector layer
+            //var vectorLayer = new ol.layer.Vector({
+            //    source: vectorSource,
+            //    style: new ol.style.Style({
+            //        stroke: new ol.style.Stroke({
+            //            color: 'green',
+            //            width: 2
+            //        })
+            //    })
+            //});
 
             //AppAdmin.mapOmar.addLayer(vectorLayer);
 
@@ -260,8 +355,6 @@ AppOmarWfs = (function () {
                     alert('Error fetching images.');
                 }
             });
-
-
 
         },
         ingestLayer: ingestLayer,

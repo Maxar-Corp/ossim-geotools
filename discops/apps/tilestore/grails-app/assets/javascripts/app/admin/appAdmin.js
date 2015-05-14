@@ -65,8 +65,8 @@ AppAdmin = (function () {
         layers: AddLayersAdmin.layers,
         view: new ol.View({
             zoom: 14,
-            projection: 'EPSG:4326',
-            center: melbourneFlorida4326
+            //projection: 'EPSG:4326',
+            center: melbourneFlorida3857
         }),
         target: 'mapOmar'
     });
@@ -105,7 +105,11 @@ AppAdmin = (function () {
     function switchCurrentLayer(removeOldLayer, addNewLayer){
 
         mapTile.removeLayer(removeOldLayer);
-
+        //TODO: Refactor this so that it works similar to the previewLayer
+        //      function in omarWfs.js.  We should really be recreating
+        //      a new addNewLayer each time this function is fired.  It
+        //      should be created once, and the source should be updated
+        //      thereafter.
         console.log('Now loading: ' + addNewLayer);
         addNewLayer = new ol.layer.Tile( {
             opacity: 1.0,
@@ -140,14 +144,11 @@ AppAdmin = (function () {
     }
 
     // The tile layer object
-    // TODO: 05-04-15 verify that objLayer is still working...
     var objLayer = {}
 
     $tileLayerSelect.on('change', function() {
         console.log('select on change:' + $tileLayerSelect.val())
         switchCurrentLayer(initLayer, $tileLayerSelect.val());
-        // Remove current function
-        // Add new function
     });
 
     $navCreateLayer.click(function () {
@@ -159,8 +160,8 @@ AppAdmin = (function () {
 
     $navCreateLayer.one('click', function () {
 
-        // Done - 04-21-15 - Replace HTML option/values on min/max levels with dynamically generated
-        //        from js
+        // Replace HTML option/values on min/max levels with dynamically generated
+        // from js
         for (var i = 0; i < 23; i++) {
             //console.log(i);
             $minTileLevel.append('<option value="' + i + '">' + i + '</option>');
@@ -185,13 +186,10 @@ AppAdmin = (function () {
 
     $submitCreateLayer.on('click', function () {
 
-        // TODO: Dynamically populate the min and max level selects with their appropriate
-        //       levels.  In addition, set the default max to 18.
-
-        // Done: 04-16-15 - Prevent submits/multiple ajax requests
+        // Prevent submits/multiple ajax requests
         $submitCreateLayer.removeClass('btn-primary').addClass('disabled btn-success');
 
-        // Done: 04-16-15 - Added Ladda UI and spinner capabilities for ajax calls
+        // Ladda UI and spinner capabilities for ajax calls.
         // Create and then start the spinner upon job submission
         var l = Ladda.create(this);
         l.start();
@@ -207,16 +205,6 @@ AppAdmin = (function () {
         // This decouples the callback handling from the AJAX handling, allows you
         // to add multiple callbacks, failure callbacks, etc
 
-        // Done - 05-04-2015 - Moved this function out of the click event so that we could test it
-        //function ajaxCreateLayer() {
-        //    return $.ajax({
-        //        url: "/tilestore/layerManager/createLayer",
-        //        type: 'POST',
-        //        dataType: 'json',
-        //        data: objLayer
-        //    });
-        //}
-        //ajaxCreateLayer(objLayer);
 
         function successHandlerCreate(data, textStatus, jqXHR) {
             //console.log(JSON.stringify(data));
@@ -225,7 +213,7 @@ AppAdmin = (function () {
 
             if (jqXHR.status === 200) {
 
-                // Done: 04-16-15 - Puts new tile layer into dropdown list, and sets it as the active layer
+                // Puts new tile layer into dropdown list, and sets it as the active layer
                 var oldTileLayerName = $tileLayerSelect.val();
                 console.log(oldTileLayerName);
 
@@ -238,19 +226,17 @@ AppAdmin = (function () {
 
                 l.stop() // stop spinner from rotating
 
-                // Done 04-16-15 - close the modal if ajax request was successful
+                // Close the modal if ajax request was successful
                 $createTileLayerModal.modal('hide');
 
-                // Done: 04-16-15 - create function for reseting modal form inputs.
+                // Resets modal form inputs.
                 resetForm('create');
 
-                // Done 04-16-15 - toastr message added on successful tile layer creation.
-
+                // toastr message is added on successful tile layer creation.
                 toastr.success(newTileLayerName + ' has been successfully created,' +
                 ' and is now the active tile layer', 'Tile Layer Created');
                 
                 // Adding the new tile layer to the tile layer map
-                // console.log($tileLayerSelect.val());
                 switchCurrentLayer(initLayer, $tileLayerSelect.val());
 
             }
@@ -259,26 +245,23 @@ AppAdmin = (function () {
             }
         };
 
-        // TODO: Test errors for this
         function errorHandlerCreate(data) {
 
             l.stop() // stop spinner from rotating
-            //Done: 04-19-15 - functionality for handling error reporting from server
+            // Handles error reporting from server
             toastr.error(data.responseJSON.message + ' Please choose' +
             ' another name and submit again.', 'Error');
         };
 
-        //
         ajaxCreateLayer(objLayer).done(successHandlerCreate).fail(errorHandlerCreate);
 
     });
 
     $minTileLevel.on('change', function () {
 
-        // Done - 04-22-15 - Refactored $maxTileLevel <select> on create layer modal so that
-        //        the user it is updated to reflect only the levels that are available after
-        //        a minTileLevel has been select.  Restricts user from choosing a level lower
-        //        than is available.
+        // $maxTileLevel <select> on create layer modal so tha the user it is updated
+        // to reflect only the levels that are available after a minTileLevel has
+        // been select.  Restricts user from choosing a level lower than is available.
         //console.log($maxTileLevel);
         for (var i = 0; i < 23; i++) {
             //console.log(i);
@@ -326,31 +309,20 @@ AppAdmin = (function () {
 
     $submitRenameLayer.on('click', function () {
 
-        // Done: 04-19-15 - Prevent submits/multiple ajax requests
+        // Prevent submits/multiple ajax requests
         $submitRenameLayer.removeClass('btn-primary').addClass('disabled btn-success');
 
-        // Done: 04-19-15 - Added Ladda UI and spinner capabilities for ajax calls
-        // Create and then start the spinner upon job submission
+        // Ladda UI and spinner capabilities for ajax calls.
+        // Create and then start the spinner upon job submission.
         var l = Ladda.create(this);
         l.start();
 
-        // Done: 04-19-15
         // Grab these from a dropdown list
         var oldLayerName = $('#renameTileLayer option:selected').val();
 
         // Grab this from a input box
         var newLayerName = $renameLayerName.val();
 
-        //function ajaxRenameLayer() {
-        //    return $.ajax({
-        //        url: "/tilestore/layerManager/renameLayer?",
-        //        type: 'POST',
-        //        dataType: 'json',
-        //        data: {'oldName': oldName, 'newName': newName}
-        //    });
-        //}
-
-        // Done: 04-19-15
         function successHandlerRename(data, textStatus, jqXHR) {
             console.log(jqXHR.status);
             console.log(textStatus);
@@ -377,12 +349,11 @@ AppAdmin = (function () {
             }
         }
 
-        // TODO: Test errors for this
         function errorHandlerRename(data) {
             console.log(data);
             l.stop() // stop spinner from rotating
             $submitRenameLayer.removeClass('btn-success disabled').addClass('btn-primary');
-            //Done: 04-19-15 - functionality for handling error reporting from server
+            // Handles error reporting from server
             toastr.error(data.responseJSON.message + ' Rename failed' +
             ' choose another name and submit again.', 'Error');
         };
@@ -395,7 +366,7 @@ AppAdmin = (function () {
         resetForm('rename');
     });
 
-    // Bind the list of tile layers to the select element one time only.
+    // Binds the list of tile layers to the select element one time only.
     $navDeleteLayer.one('click', function () {
         getTileLayers(loadParams.tilestoreLayers, '#deleteTileLayer');
     });
@@ -420,7 +391,7 @@ AppAdmin = (function () {
 
     $submitDeleteLayer.on('click', function () {
 
-        // Set layer to the selected value in deleteTileLayer dropdown.
+        // Sets layer to the selected value in deleteTileLayer dropdown.
         var deleteLayerName = $('#deleteTileLayer option:selected').val();
 
         // Prevent submits/multiple ajax requests
@@ -431,16 +402,6 @@ AppAdmin = (function () {
         var l = Ladda.create(this);
         l.start();
 
-        //function ajaxDeleteLayer() {
-        //    return $.ajax({
-        //        url: "/tilestore/layerManager/deleteLayer?",
-        //        type: 'POST',
-        //        dataType: 'json',
-        //        data: {'name': objLayer.name}
-        //    });
-        //}
-
-        // Done: 04-19-15
         function successHandlerDelete(data, textStatus, jqXHR) {
             //console.log(jqXHR.status);
             //console.log(textStatus);
@@ -460,13 +421,11 @@ AppAdmin = (function () {
             }
         }
 
-        // Done: 04-19-15
         function errorHandlerDelete(data) {
             l.stop() // stop spinner from rotating
-            //Done: 04-17-15 - functionality for handling error reporting from server
+            // Handles error reporting from server
             console.log(data);
             $submitDeleteLayer.removeClass('btn-success disabled').addClass('btn-primary');
-            // Fixed - 04-21-15 - Added data.responseJSON.message to display error to user
             toastr.error(data.responseJSON.message, 'Error');
         }
 
@@ -481,9 +440,7 @@ AppAdmin = (function () {
         if (frm === 'create') {
             //console.log('create');
 
-            // Done: 04-23-15 - Added ability to reset the form elements back to
-            //       their original state.
-            // TODO: Need to refactor this into a function
+            // Resets the form elements back to their original state.
             for (var i = 0; i < 23; i++) {
                 //console.log(i);
                 $maxTileLevel.find('[value=' + i + ']').remove();
@@ -557,9 +514,7 @@ AppAdmin = (function () {
             loadParams = initParams;
             //console.log(loadParams);
 
-            //console.log(initParams.omarWmsUrl);
-            //console.log(tilestoreLayers);
-            // Use .done via a $.Deffered() to grab the value of the $tileLayerSelect
+            // Uses .done via a $.Deffered() to grab the value of the $tileLayerSelect
             // This is needed, because the select options are populated after the DOM is loaded.
             getTileLayers(loadParams.tilestoreLayers, $tileLayerSelect)
                 .done(
