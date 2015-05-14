@@ -133,10 +133,14 @@ class WebMappingService implements InitializingBean
       }
       catch ( def e )
       {
-        // really need to write exception to stream
-        def image = new BufferedImage( cmd.width, cmd.height, BufferedImage.TYPE_INT_ARGB )
+        // probably need to do an OGC exception here
+        //  need to determine exception type and then return that type
 
-        ImageIO.write( image, outputFormat, result )
+
+        // really need to write exception to stream
+       // def image = new BufferedImage( cmd.width, cmd.height, BufferedImage.TYPE_INT_ARGB )
+
+       // ImageIO.write( image, outputFormat, result )
 
         //  e.printStackTrace()
       }
