@@ -57,7 +57,7 @@ class LayerManagerService implements InitializingBean
       }
 
       getMapBlockingQueue = new LinkedBlockingQueue( grailsApplication.config.tilestore.maxTileConnections ?: 20 )
-      ( 0..<10 ).each { getMapBlockingQueue.put( 0 ) }
+      ( 0..<10 ).each { getMapBlockingQueue.put( it ) }
 
       // println "DATA SOURCE ===== ${dataSource}"
       // println "DATA SOURCE UNPROXIED ===== ${dataSourceUnproxied}"
