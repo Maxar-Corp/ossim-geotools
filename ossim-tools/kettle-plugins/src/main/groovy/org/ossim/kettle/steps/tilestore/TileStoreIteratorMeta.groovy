@@ -58,7 +58,7 @@ class TileStoreIteratorMeta extends BaseStepMeta implements StepMetaInterface
            tile_image:"tile_image"
            ]
    def fieldNameDefinitions = [  tile_level:[type:ValueMetaInterface.TYPE_INTEGER,columnName:"z"],
-                                 tile_row:[type:ValueMetaInterface.TYPE_STRING,columnName:"y"],
+                                 tile_row:[type:ValueMetaInterface.TYPE_INTEGER,columnName:"y"],
                                  tile_col:[type:ValueMetaInterface.TYPE_INTEGER,columnName:"x"],
                                  tile_res:[type:ValueMetaInterface.TYPE_NUMBER, columnName:"res"],
                                  tile_bounds:[type:OssimValueMetaBase.TYPE_GEOMETRY_2D, columnName:"bounds"],
