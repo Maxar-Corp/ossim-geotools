@@ -69,7 +69,8 @@ body {
 }
 
 .ol-viewport{
-    border: solid 2px #337ab7;
+    border: solid 2px #e7e7e7;
+    /*border-color: #e7e7e7*/
     height: 100% !important;
     border-radius: 4px;
 }
