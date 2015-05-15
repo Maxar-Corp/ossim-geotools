@@ -46,7 +46,7 @@ class TileStoreOperationMeta extends BaseStepMeta implements StepMetaInterface
     */
    String layerFieldName
    String layerName
-   TileStoreWriterData.TileStoreOpType operationType = TileStoreWriterData.TileStoreOpType.CREATE_LAYER
+   TileStoreCommonData.TileStoreOpType operationType = TileStoreCommonData.TileStoreOpType.CREATE_LAYER
 
    String wktBoundsField
    String minXField
@@ -104,7 +104,7 @@ class TileStoreOperationMeta extends BaseStepMeta implements StepMetaInterface
          def operationTypeValue = XMLHandler.getTagValue(stepnode, "operationType");
          if(operationTypeValue)
          {
-            operationType = TileStoreWriterData.TileStoreOpType."${operationTypeValue}"
+            operationType = TileStoreCommonData.TileStoreOpType."${operationTypeValue}"
          }
       }
       catch (Exception e)
@@ -123,7 +123,7 @@ class TileStoreOperationMeta extends BaseStepMeta implements StepMetaInterface
          String operationTypeString   = rep.getStepAttributeString(id_step, "operationType");
          if(operationTypeString)
          {
-            operationType = TileStoreWriterData.TileStoreOpType."${operationTypeString}"
+            operationType = TileStoreCommonData.TileStoreOpType."${operationTypeString}"
          }
       }
       catch (Exception e)
@@ -170,7 +170,7 @@ class TileStoreOperationMeta extends BaseStepMeta implements StepMetaInterface
 
    StepDataInterface getStepData()
    {
-      return new TileStoreWriterData();
+      return new TileStoreCommonData();
    }
    void setDefault()
    {

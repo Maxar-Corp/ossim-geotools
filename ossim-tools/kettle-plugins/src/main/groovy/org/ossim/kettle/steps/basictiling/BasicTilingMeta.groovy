@@ -397,6 +397,15 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 			def names = selectedFieldNamesString.split(",")
 			names.each{name->selectedFieldNames<<name}
 		}
+		def keyList = outputFieldNames.collect {it.key}
+
+		keyList.each {k->
+			def kValue  = rep.getStepAttributeString(id_step, k)
+			if(kValue)
+			{
+				outputFieldNames."${k}" = kValue
+			}
+		}
 	}
 	void saveRep(Repository rep, ObjectId id_transformation, ObjectId id_step) throws KettleException 
 	{

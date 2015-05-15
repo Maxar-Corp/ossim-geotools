@@ -17,7 +17,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Shell
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text
 import org.ossim.kettle.types.OssimValueMetaBase;
 import org.pentaho.di.core.Const;
@@ -52,21 +53,37 @@ public class BasicTilingDialog extends BaseStepDialog implements
       Display display = parent.getDisplay();
       swt = new KettleSwtBuilder()
       def lsMod = {
-         event -> input.setChanged()
+         event ->
+            def tableView = event.source.parent.parent
+           // println "${item.getText(0)}, ${item.getText(1)}, ${item.getText(2)}"
+            //println "1: ${event.source.parent.parent.class.name}"
+            //println "2: ${event.source.parent.class.name}"
+            def widgetSource = event.source
 
-            def ccombo = event.source
-            if(ccombo instanceof CCombo)
+            if (widgetSource instanceof Text)
             {
-               def tableView = event.source.parent.parent
-               def row  = tableView?.getCurrentRownr()
-               def item = event?.source?.parent?.getItem(row)
-               //def indexOfValue = ccombo.indexOf(ccombo.text)
-               def key = "${ccombo.text}"
-               def renameValue          = input.outputFieldNames."${key}"
+              // String newValue = "${event.widget.text}".toString()
+              // String key = item.getText(1)
 
+              // outputFieldNames."${key}" = newValue
+            }
+            else if(widgetSource instanceof CCombo)
+            {
+               def row = tableView?.getCurrentRownr()
+               Table table = event.source.parent as Table
+               TableItem item = table.getItem(row)
+               def key = "${widgetSource.text}"
+               def renameValue = input.outputFieldNames."${key}"
                item.setText(1, key)
                item.setText(2, renameValue)
+               //def indexOfValue = ccombo.indexOf(ccombo.text)
+               //  def renameValue = outputFieldNames."${key}"
+
+               //  println "RENAME VALUE ==== ${renameValue}"
+               //  item.setText(1, key)
+               //  item.setText(2, renameValue)
             }
+
       } as ModifyListener
       ColumnInfo[] colinf = new ColumnInfo[2];
       colinf[0] =
