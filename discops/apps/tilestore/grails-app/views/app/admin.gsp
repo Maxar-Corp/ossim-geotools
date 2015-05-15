@@ -42,48 +42,34 @@
             </div>
 
             <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
-                %{--<div class="col-sm-2 col-md-2">--}%
-                    %{--<form class="navbar-form" role="search" id="zoomToForm">--}%
-                        %{--<div class="form-group">--}%
-                            %{--<div class="input-group">--}%
-                                %{--<div class="input-group-btn">--}%
-                                    %{--<select  class="form-control selectpicker" data-style="btn-primary" id="coordSelect" >--}%
-                                        %{--<option data-icon="glyphicon-map-marker" value="dd">DD&nbsp;&nbsp;&nbsp;</option>--}%
-                                        %{--<option data-icon="glyphicon-time" value="dms">DMS&nbsp;&nbsp;</option>--}%
-                                        %{--<option data-icon="glyphicon-th-large" value="mgrs">MGRS</option>--}%
-                                    %{--</select>--}%
-                                %{--</div>--}%
-                                %{--<input class="form-control" id="coordInput" type="text" placeholder="Search by coordinates" value="39.5742132,-85.6194194">--}%
-                                %{--<div class="input-group-btn">--}%
-                                    %{--<button id="zoomButton" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i></button>--}%
-                                %{--</div>--}%
-                            %{--</div>--}%
-                        %{--</div>--}%
-                        %{--<div class="form-group">--}%
-                            %{--<div class="input-group" id="tileLayerInputGroup">--}%
-                                %{--<div class="input-group-addon"><i class="fa fa-th"></i>&nbsp;&nbsp;Active--}%
-                                %{--Tile Layer</div>--}%
-                                %{--<select class="form-control selectpicker" id="tileLayerSelect">--}%
-                                %{--</select>--}%
-                            %{--</div>--}%
-                        %{--</div>--}%
-                    %{--</form>--}%
-                %{--</div>--}%
+                <div class="col-sm-4 col-md-4">
+                    <form class="navbar-form" role="search" id="zoomToForm">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-btn">
+                                    <select  class="form-control selectpicker" data-style="btn-primary" id="coordSelect" >
+                                        <option data-icon="glyphicon-map-marker" value="dd">DD&nbsp;&nbsp;&nbsp;</option>
+                                        <option data-icon="glyphicon-time" value="dms">DMS&nbsp;&nbsp;</option>
+                                        <option data-icon="glyphicon-th-large" value="mgrs">MGRS</option>
+                                    </select>
+                                </div>
+                                <input class="form-control" id="coordInput" type="text" placeholder="Search by coordinates" value="39.57,-85.61">
+                                <div class="input-group-btn">
+                                    <button id="zoomButton" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
                 <div class="nav navbar-nav navbar-right">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                       aria-expanded="false"><span class="fa fa-server"></span>&nbsp;Manage Layers</a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a id="navCreateLayer" href="#"><span class="fa fa-plus-square-o"></span>&nbsp;Create Tile
-                        Layer</a></li>
-                        <li><a id="navRenameLayer" href="#"><span class="fa fa-pencil"></span>&nbsp;Rename Tile
-                        Layer</a></li>
-                        <li class="divider"></li>
-                        <li><a id="navDeleteLayer" href="#"><span class="fa fa-trash"></span>&nbsp;Delete Tile
-                        Layer</a></li>
-                    </ul>
-                </li>
-                <div class="col-md-6 col-md-6">
+                    %{--<li class="dropdown">--}%
+                        %{--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"--}%
+                           %{--aria-expanded="false"><span class="fa fa-server"></span>&nbsp;Manage Layers</a>--}%
+                        %{--<ul class="dropdown-menu" role="menu">--}%
+
+                        %{--</ul>--}%
+                    %{--</li>--}%
+                    %{--<div class="col-md-3 col-md-3">--}%
                         <form class="navbar-form">
                             <div class="form-group">
                                 <div class="input-group" id="tileLayerInputGroup">
@@ -96,7 +82,7 @@
                                 </div>
                             </div>
                         </form>
-                    </div>
+                    %{--</div>--}%
                 </div>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
@@ -104,29 +90,151 @@
 </div><!-- /.container" -->
 
 <div class="navbar-offset"></div>
+<div class="container-fluid">
+    <div id="toolBarRow" class="row">
+        <div id="omarFeedToolbar" class="col-md-2 text-center">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">OMAR Feed</a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="omarFeedNavbar">
+                        <ul class="nav navbar-nav">
+                            %{--<li class="active"><a href="#">Home</a></li>--}%
+                            %{--<li class="dropdown">--}%
+                                %{--<a class="dropdown-toggle" data-toggle="dropdown" href="#">1<span class="caret"></span></a>--}%
+                                %{--<ul class="dropdown-menu">--}%
+                                    %{--<li><a href="#">Page 1-1</a></li>--}%
+                                    %{--<li><a href="#">Page 1-2</a></li>--}%
+                                    %{--<li><a href="#">Page 1-3</a></li>--}%
+                                %{--</ul>--}%
+                            %{--</li>--}%
+                        </ul>
+                        %{--<ul class="nav navbar-nav navbar-right">--}%
+                        %{--<li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>--}%
+                        %{--<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>--}%
+                        %{--</ul>--}%
+                    </div>
+                </div>
+            </nav>
+        </div>
 
-%{--<div id="titlesRow" class="row">--}%
+        <div id="mapOmarToolbar" class="col-md-5 text-center">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">Preview Map</a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="previewMapNavbar">
+                        %{--<ul class="nav navbar-nav">--}%
+                            %{--<li class="active"><a href="#">Home</a></li>--}%
+                            %{--<li class="dropdown">--}%
+                                %{--<a class="dropdown-toggle" data-toggle="dropdown" href="#">Tool 1 <span--}%
+                                        %{--class="caret"></span></a>--}%
+                                %{--<ul class="dropdown-menu">--}%
+                                    %{--<li><a href="#">Page 1-1</a></li>--}%
+                                    %{--<li><a href="#">Page 1-2</a></li>--}%
+                                    %{--<li><a href="#">Page 1-3</a></li>--}%
+                                %{--</ul>--}%
+                            %{--</li>--}%
+                            %{--<li><a href="#">Tool 2</a></li>--}%
+                            %{--<li><a href="#">Tool 3</a></li>--}%
+                        %{--</ul>--}%
+                        <ul class="nav navbar-nav navbar-right">
+                            %{--<li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>--}%
+                            %{--<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>--}%
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-cog"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li role="presentation" class="dropdown-header">Cutting</li>
+                                    <li><a href="#"><i class="fa fa-square-o"></i>&nbsp;&nbsp;by Rectangle</a></li>
+                                    <li><a href="#"><i class="fa fa-circle-thin"></i>&nbsp;&nbsp;by Circle</a></li>
+                                    <li><a href="#"><i class="fa fa-lemon-o"></i>&nbsp;&nbsp;by Polygon</a></li>
+                                </ul>
+                            </li>
+                            %{--<li><a href="#">Tool 2</a></li>--}%
+                            %{--<li><a href="#">Tool 3</a></li>--}%
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
 
-    %{--<div class="col-md-2 text-center">--}%
-        %{--<h4>OMAR Layers</h4>--}%
-    %{--</div>--}%
+        <div id="mapTileToolbar" class="col-md-5 text-center">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">Tile Map</a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="tileMapNavbar">
+                        %{--<ul class="nav navbar-nav">--}%
+                            %{--<li class="active"><a href="#">Home</a></li>--}%
+                            %{--<li class="dropdown">--}%
+                                %{--<a class="dropdown-toggle" data-toggle="dropdown" href="#">Tools<span--}%
+                                        %{--class="caret"></span></a>--}%
+                                %{--<ul class="dropdown-menu">--}%
+                                    %{--<li><a href="#">Auto Refresh Map</a></li>--}%
+                                %{--</ul>--}%
+                            %{--</li>--}%
+                        %{--</ul>--}%
+                        %{--<div class="col-md-6 col-md-6">--}%
+                            %{--<form class="navbar-form">--}%
+                                %{--<div class="form-group">--}%
+                                    %{--<div class="input-group" id="tileLayerInputGroup">--}%
+                                        %{--<div class="input-group-addon"><i class="fa fa-th"></i>&nbsp;&nbsp;Active--}%
+                                        %{--Tile Layer</div>--}%
+                                        %{--<select id="tileLayerSelect"--}%
+                                                %{--class="form-control selectpicker show-tick" maxOptions="10"--}%
+                                                %{--data-live-search="true">--}%
+                                        %{--</select>--}%
+                                    %{--</div>--}%
+                                %{--</div>--}%
+                            %{--</form>--}%
+                        %{--</div>--}%
+                        <ul class="nav navbar-nav navbar-right">
+                            %{--<li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>--}%
+                            %{--<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>--}%
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-cog"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li role="presentation" class="dropdown-header">Manage tile layers</li>
+                                    <li><a id="navCreateLayer" href="#"><span class="fa fa-plus-square-o"></span>&nbsp;Create Tile
+                                    Layer</a></li>
+                                    <li><a id="navRenameLayer" href="#"><span class="fa fa-pencil"></span>&nbsp;Rename Tile
+                                    Layer</a></li>
+                                    <li><a id="navDeleteLayer" href="#"><span class="fa fa-trash"></span>&nbsp;Delete Tile
+                                    Layer</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="#"><i class="fa fa-toggle-off"></i>&nbsp;&nbsp;Auto Refresh Map</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
 
-    %{--<div class="col-md-5 text-center">--}%
-        %{--<h4>OMAR Map</h4>--}%
-    %{--</div>--}%
-
-    %{--<div class="col-md-5 text-center">--}%
-        %{--<h4>Tile Server</h4>--}%
-        %{--<button type="button" id="" class="btn btn-success">Create Tile Layer</button>--}%
-    %{--</div>--}%
-
-%{--</div>--}%
+    </div>
+</div>
 <div class="container-fluid">
     <div id="mapsRow" class="row">
 
-        <div id="toc" class="col-md-2" style="overflow-x: hidden;">
-            <h4 class="text-center">OMAR Feed</h4>
-
+        <div id="omarFeed" class="col-md-2" style="">
             <div id="omarImageList"></div>
         </div>
 
@@ -281,13 +389,13 @@
 
 <script id="image-template"  type="text/x-handlebars-template">
     {{#features}}
-    <div class="row">
-        <div id="image-card">
+    <div id="card-{{properties.id}}" class="row image-card">
+        <div>
             <div class="col-md-2 image-card-thumb">
                 <img data-toggle="tooltip" data-placement="bottom"
                      data-name="{{properties.id}}"
                      onclick="AppOmarWfs.previewLayer({{json this}})"
-                     title="Add image to current tile layer" class="omar-thumb"
+                     title="Click on thumbnail to preview image" class="omar-thumb"
                      src="http://localhost:9999/omar/thumbnail/show/{{properties.id}}" alt="Image thumbnail"
                      size="100">
             </div>

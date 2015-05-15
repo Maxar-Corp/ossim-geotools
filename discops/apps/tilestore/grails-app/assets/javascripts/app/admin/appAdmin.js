@@ -482,13 +482,13 @@ AppAdmin = (function () {
 
     function resizeMapRow(){
         //console.log('resizing')
-        $('#mapOmar').animate({height:$(window).height()- 112}, 100, function(){
+        $('#mapOmar').animate({height:$(window).height()- 172}, 100, function(){
             mapOmar.updateSize();
         });
-        $('#mapTile').animate({height:$(window).height()- 112}, 100, function(){
+        $('#mapTile').animate({height:$(window).height()- 172}, 100, function(){
             mapTile.updateSize();
         });
-        $('#toc').animate({height:$(window).height()- 112}, 100, function(){
+        $('#omarFeed').animate({height:$(window).height()- 172}, 100, function(){
         });
     }
 
