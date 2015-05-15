@@ -250,7 +250,7 @@ class TileStoreWriterMeta extends BaseStepMeta implements StepMetaInterface
 
    StepDataInterface getStepData()
    {
-      return new TileStoreWriterData();
+      return new TileStoreCommonData();
    }
 
 }

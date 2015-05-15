@@ -314,7 +314,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     layerInfoTableDAO.list()
   }
 
-  private String createOrderByClause(def constraints)
+  String createOrderByClause(def constraints)
   {
     String result = ""
 
@@ -323,7 +323,20 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
 
       if(constraints.orderBy)
       {
-        def tempOrderBySplit = constraints.orderBy.split("\\+")
+        def tempOrderBySplit
+
+         if(constraints.orderBy.contains("+"))
+         {
+            tempOrderBySplit  = constraints.orderBy.split("\\+")
+         }
+         else if(constraints.orderBy.contains(":"))
+         {
+            tempOrderBySplit = constraints.orderBy.split("\\:")
+         }
+         else
+         {
+            tempOrderBySplit = [orderBy]
+         }
         result  = "ORDER BY ${tempOrderBySplit[0]}"
 
         if(tempOrderBySplit.size() > 1)
@@ -345,7 +358,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
 
     result
   }
-  private String createWhereClause(def constraints)
+  String createWhereClause(def constraints)
   {
     def result = ""
     if ( constraints )

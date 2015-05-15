@@ -28,7 +28,7 @@ import java.awt.image.RenderedImage
  */
 class TileStoreWriter extends BaseStep implements StepInterface
 {
-   private TileStoreWriterData data;
+   private TileStoreCommonData data;
    private TileStoreWriterMeta meta;
    AccumuloTileLayer tileLayer
    private def layerInfo
@@ -203,10 +203,10 @@ class TileStoreWriter extends BaseStep implements StepInterface
    public boolean init(StepMetaInterface smi, StepDataInterface sdi)
    {
       meta = (TileStoreWriterMeta)smi;
-      data = (TileStoreWriterData)sdi;
+      data = (TileStoreCommonData)sdi;
       SynchOssimInit.initialize()
 
-      data?.initialize(meta)
+      data?.initialize(meta?.tileStoreCommon)
       def layerName
       if(meta.layerName)
       {
@@ -231,7 +231,7 @@ class TileStoreWriter extends BaseStep implements StepInterface
       try
       {
          meta = (TileStoreWriterMeta)smi;
-         data = (TileStoreWriterData)sdi;
+         data = (TileStoreCommonData)sdi;
          data?.shutdown()
       }
       catch(def e)
