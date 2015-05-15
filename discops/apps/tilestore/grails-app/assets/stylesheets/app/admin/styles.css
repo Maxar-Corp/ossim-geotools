@@ -17,7 +17,7 @@ body {
   font-weight:bold
 }
 
-.navbar-offset { margin-top: 52px; }
+.navbar-offset { margin-top: 56px; }
 
 .shadow {
     -webkit-box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
@@ -25,39 +25,80 @@ body {
     box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
 }
 
-/*#titlesRow {*/
-  /*margin-right: 15px;*/
-/*}*/
+#toolBarRow {
+    margin-right: 0px;
+    /*margin-left: -10px;*/
+}
+
+#toolBarRow .navbar {
+    margin-bottom: 4px;
+}
+
+.navbar-default .navbar-brand {
+    background-color: #565656;
+    color: transparent;
+    text-shadow: 0px 2px 3px rgba(255,255,255,0.5);
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    background-clip: text;
+    font-weight: bolder;
+}
 
 #mapsRow {
   /*margin-right: 15px;*/
 }
 
-#toc {
-  /*height: 642px;*/
-  /*bottom: 0px; */
+#omarFeed {
+    overflow-x: hidden;
+}
+
+#omarFeedToolbar {
+    padding-left: 6px;
+    padding-right: 0px;
+}
+
+#omarFeedToolbar p {
+    margin: 0 0 0px;
+    padding-left: 0px;
+    /*background-color: #565656;*/
+    /*color: transparent;*/
+    /*text-shadow: 0px 2px 3px rgba(255,255,255,0.5);*/
+    /*-webkit-background-clip: text;*/
+    /*-moz-background-clip: text;*/
+    /*background-clip: text;*/
 }
 
 .ol-viewport{
-    border: solid 2px #57a3ff;
+    border: solid 2px #e7e7e7;
+    /*border-color: #e7e7e7*/
     height: 100% !important;
-
+    border-radius: 4px;
 }
 
 #mapOmar {
     /*position: absolute;*/
     top: 0px;
     z-index: 35;
+    padding-left: 13px;
     /*bottom: 29px;*/
     /*left: 270px;*/
+}
+
+#mapOmarToolbar {
+    padding-right: 7px;
 }
 
 #mapTile {
     /*position: absolute;*/
     top: 0px;
     z-index: 35;
+    padding-left: 6px;
     /*bottom: 29px;*/
     /*right: -10px;*/
+}
+
+#mapTileToolbar {
+    padding-right: 0px
 }
 
 /* Move the attribution above footer */
@@ -173,21 +214,31 @@ body {
 }
 
 /* BEGIN OMAR WFS Feed */
-#image-card {
-    /*margin-left: 5px;*/
-    border-top: 1px solid #57a3ff;
-    border-left: 1px solid #57a3ff;
-    border-right: 1px solid #57a3ff;
-    margin-bottom: 0px;
-    border-radius: 6px;
+
+#omarImageList .row {
+    border: 1px solid #337ab7;
+    margin-left: -10px;
 }
 
-#omarImageList .row:hover {
-    background-color: #eeeeee;
-    /*border: 1px solid #57a3ff;*/
-    /*-webkit-box-shadow: 3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
-    /*-moz-box-shadow:    3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
-    /*box-shadow:         3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
+.image-card {
+    margin-top: 0px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+}
+
+.image-card:hover {
+    background-color: #A6DB98;
+    -webkit-box-shadow: -3px 3px 3px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow:    -3px 3px 3px 0px rgba(50, 50, 50, 0.75);
+    box-shadow:         -3px 3px 3px 0px rgba(50, 50, 50, 0.75);
+}
+
+.image-card-highlight {
+    background-color: #A6DB98;
+    -webkit-box-shadow: -3px 3px 3px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow:    -3px 3px 3px 0px rgba(50, 50, 50, 0.75);
+    box-shadow:         -3px 3px 3px 0px rgba(50, 50, 50, 0.75);
 }
 
 .image-card-thumb {
@@ -199,6 +250,7 @@ body {
     width: 75px;
     height: 75px;
     margin-top: 10px;
+    border: 1px solid #337ab7;
 }
 
 .image-card-info {
@@ -218,7 +270,7 @@ body {
 }
 
 .image-card-info .fa {
-    color: #57a3ff;
+    color: #337ab7;
     cursor: pointer;
 }
 

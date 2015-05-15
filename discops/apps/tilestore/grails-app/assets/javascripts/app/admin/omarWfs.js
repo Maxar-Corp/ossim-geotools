@@ -3,7 +3,7 @@ AppOmarWfs = (function () {
     var loadParams;
     var omarWfsUrlCards;
     var filterName, filterRangeLow, filterRangeHigh, filterLow, filterHigh, filter;
-    var vectorLayer, vectorSource, text, omarPreviewLayerId, omarPreviewLayer;
+    var vectorLayer, vectorSource, previewSelected, omarPreviewLayerId, omarPreviewLayer;
     var previewFeatureArray = [];
     var objIngestImage = {
         type: 'TileServerIngestMessage',
@@ -27,21 +27,45 @@ AppOmarWfs = (function () {
     // Done - 05-12-72 - Create a function that adds the OMAR wms image to the map for previewing.
     function previewLayer(obj){
 
-        console.log(obj);
-        console.log(obj.properties.id);
-        text = obj.properties.id;
-        console.log(text);
+        //previewSelected = true;
+
+        //$('#card-' + obj.properties.id).on("click", function(){
+        //   var color = $(this).css("background-color");
+        //   console.log(color);
+        //   //$('#card-' + obj.properties.id).css('background-color', 'red');
+        //});
+
+
+        $("#card-" + obj.properties.id).on("click",function() {
+            $(this).addClass("image-card-highlight").siblings().removeClass("image-card-highlight");
+            //var selected = $(this).hasClass("image-card-highlight");
+            //$("#card-" + obj.properties.id).removeClass("image-card-highlight");
+            //if(!selected)
+            //    $(this).addClass("image-card-highlight");
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //console.log(obj);
+        //console.log(obj.properties.id);
 
         omarPreviewLayerId = obj.properties.id;
         if(omarPreviewLayer){
             console.log('omarPreviewLayer true');
-            //AppAdmin.mapOmar.removeLayer(omarPreviewLayer);
-            // Log source parameters before we swap for new preview layer
-            //console.log(omarPreviewLayer.getSource().getParams());
             omarPreviewLayer.getSource().updateParams({'LAYERS': omarPreviewLayerId});
-            // Log source parameters after we swap for new preview layer
-            //console.log(omarPreviewLayer.getSource().getParams());
-            //AppAdmin.mapOmar.addLayer(omarPreviewLayer);
         }
         else {
             console.log('no omarPreviewLayer');
@@ -61,13 +85,10 @@ AppOmarWfs = (function () {
         // TODO: Set map extent to the extent of the previewed WMS, and set
         //       the .css of the image card to reflect that it is the currently
         //       selected/previewed image
-        //console.log(obj.geometry.coordinates[0][0] + " " + obj.geometry.coordinates[0][1] + " " + obj.geometry.coordinates[0][2] + " " + obj.geometry.coordinates[0][3] );//, obj.geometry.coordinates[3] )
         var coord1 = ol.proj.transform(obj.geometry.coordinates[0][0], 'EPSG:4326', 'EPSG:3857');
         var coord2 = ol.proj.transform(obj.geometry.coordinates[0][1], 'EPSG:4326', 'EPSG:3857');
         var coord3 = ol.proj.transform(obj.geometry.coordinates[0][2], 'EPSG:4326', 'EPSG:3857');
         var coord4 = ol.proj.transform(obj.geometry.coordinates[0][3], 'EPSG:4326', 'EPSG:3857');
-
-        //console.log(coord1 + " " + coord2 + " " + coord3 + " " + coord4);
 
         var polyFeature = new ol.Feature({
             geometry: new ol.geom.Polygon([
@@ -99,11 +120,8 @@ AppOmarWfs = (function () {
 
             vectorSource.addFeatures(previewFeatureArray);
 
-            // Need to update the source instead of creating a new instance
-            //console.log(vectorLayer.getSource());
+            // Update the source instead of creating a new instance
             vectorLayer.setSource(vectorSource);
-            //AppAdmin.mapOmar.render();
-            //AppAdmin.mapOmar.renderSync();
 
         } else
         {
@@ -131,7 +149,7 @@ AppOmarWfs = (function () {
                         color: 'red'
                     });
                     return function(feature, resolution) {
-                        console.log(feature);
+                        //console.log(feature);
                         return [new ol.style.Style({
                             stroke: stroke,
                             text: new ol.style.Text({
@@ -148,7 +166,7 @@ AppOmarWfs = (function () {
 
             //AppAdmin.mapOmar.addLayer(vectorLayer);
             AppAdmin.mapTile.addLayer(vectorLayer);
-            console.log('else...');
+            //console.log('else...');
         }
 
     }
