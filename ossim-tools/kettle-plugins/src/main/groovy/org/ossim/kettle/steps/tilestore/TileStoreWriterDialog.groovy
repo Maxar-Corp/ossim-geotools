@@ -83,7 +83,7 @@ class TileStoreWriterDialog extends BaseStepDialog implements
          //gridLayout(numColumns: 2)
          composite(style:"none", layoutData:"span,growx") {
             migLayout(layoutConstraints:"inset 0", columnConstraints: "[][grow,50:100:200]")
-            label Messages.getString("TileStoreWriterDialog.Stepname.Label")
+            label Messages.getString("TileStoreCommon.Stepname.Label")
             text(id: "stepName", layoutData: "span,growx", text: stepname) {
                onEvent(type: 'Modify') { input.setChanged() }
             }

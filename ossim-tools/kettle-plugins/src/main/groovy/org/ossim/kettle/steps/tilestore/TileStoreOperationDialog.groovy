@@ -213,8 +213,8 @@ class TileStoreOperationDialog extends BaseStepDialog implements
             label "Operation type field"
             cCombo(id: "operationTypeField",
                     layoutData: "span,growx",
-                    text:TileStoreWriterData.TileStoreOpType.CREATE_LAYER.toString(),
-                     items:TileStoreWriterData.TileStoreOpType.valuesAsString()){
+                    text:TileStoreCommonData.TileStoreOpType.CREATE_LAYER.toString(),
+                     items:TileStoreCommonData.TileStoreOpType.valuesAsString()){
                onEvent(type: 'Modify') {
                   changeStackLayoutOperation(swt.operationTypeField.text)
                   input.setChanged()
@@ -266,11 +266,11 @@ class TileStoreOperationDialog extends BaseStepDialog implements
    void changeStackLayoutOperation(String type)
    {
 
-      def opType = TileStoreWriterData.TileStoreOpType."${type.toUpperCase()}"
+      def opType = TileStoreCommonData.TileStoreOpType."${type.toUpperCase()}"
 
       switch(opType)
       {
-         case TileStoreWriterData.TileStoreOpType.CREATE_LAYER:
+         case TileStoreCommonData.TileStoreOpType.CREATE_LAYER:
             swt.stackLayoutOperation.topControl = swt.CREATE_LAYER
             swt.CREATE_LAYER.visible = true
             swt.nullLayoutOperationGroupId.visible = false
@@ -431,7 +431,7 @@ class TileStoreOperationDialog extends BaseStepDialog implements
          input.layerName =swt.layerName.text
          input.layerFieldName = ""
       }
-      input.operationType =  TileStoreWriterData.TileStoreOpType."${swt.operationTypeField.text}"
+      input.operationType =  TileStoreCommonData.TileStoreOpType."${swt.operationTypeField.text}"
 
       dispose();
    }

@@ -3,23 +3,20 @@ package org.ossim.kettle.steps.tilestore
 import joms.geotools.tileapi.TileCacheConfig
 import joms.geotools.tileapi.hibernate.TileCacheHibernate
 import joms.geotools.tileapi.hibernate.controller.TileCacheServiceDAO
-import org.pentaho.di.core.database.DatabaseMeta
 import org.pentaho.di.core.row.RowMetaInterface
 import org.pentaho.di.trans.step.BaseStepData
 import org.pentaho.di.trans.step.StepDataInterface
 
 /**
- * Created by gpotts on 3/19/15.
+ * Created by gpotts on 5/14/15.
  */
-class TileStoreWriterData extends BaseStepData implements StepDataInterface
+class TileStoreCommonData extends BaseStepData implements StepDataInterface
 {
    def encr = new org.pentaho.di.core.encryption.Encr()
+
    public RowMetaInterface outputRowMeta;
    TileCacheHibernate hibernate
    TileCacheServiceDAO tileCacheService
-
-
-
    enum TileStoreOpType
    {
       CREATE_LAYER(0),
@@ -28,22 +25,19 @@ class TileStoreWriterData extends BaseStepData implements StepDataInterface
       TileStoreOpType(int value){this.value = value}
       static def valuesAsString(){this.values().collect(){it.toString()}}
    }
-
-
-
-   void initialize(TileStoreWriterMeta meta)
+   void initialize(TileStoreCommon tileStoreCommon)
    {
-      def zooServers = meta?.tileStoreCommon.zookeeperPort?"${meta?.tileStoreCommon.zookeeperHosts}:${meta?.tileStoreCommon.zookeeperPort}":meta?.tileStoreCommon.zookeeperHosts
+      def zooServers = tileStoreCommon.zookeeperPort?"${tileStoreCommon.zookeeperHosts}:${tileStoreCommon.zookeeperPort}":tileStoreCommon.zookeeperHosts
 
       initialize(new TileCacheConfig(
-              dbDriverClassName: meta?.tileStoreCommon.databaseMeta?.driverClass,
-              dbUsername:meta?.tileStoreCommon.databaseMeta?.username,
-              dbPassword:encr.decryptPasswordOptionallyEncrypted(meta?.tileStoreCommon.databaseMeta?.password?:""),
-              dbUrl:meta?.tileStoreCommon.databaseMeta?.URL,
+              dbDriverClassName: tileStoreCommon.databaseMeta?.driverClass,
+              dbUsername:tileStoreCommon.databaseMeta?.username,
+              dbPassword:encr.decryptPasswordOptionallyEncrypted(tileStoreCommon.databaseMeta?.password?:""),
+              dbUrl:tileStoreCommon.databaseMeta?.URL,
               dbCreate:"update",
-              accumuloInstanceName:meta?.tileStoreCommon.accumuloInstance,
-              accumuloPassword:encr.decryptPasswordOptionallyEncrypted(meta?.tileStoreCommon.accumuloPassword?:""),
-              accumuloUsername:meta?.tileStoreCommon.accumuloUsername,
+              accumuloInstanceName:tileStoreCommon.accumuloInstance,
+              accumuloPassword:encr.decryptPasswordOptionallyEncrypted(tileStoreCommon.accumuloPassword?:""),
+              accumuloUsername:tileStoreCommon.accumuloUsername,
               accumuloZooServers:zooServers.toString())
       )
    }
@@ -59,5 +53,4 @@ class TileStoreWriterData extends BaseStepData implements StepDataInterface
    {
       hibernate?.shutdown()
    }
-
 }

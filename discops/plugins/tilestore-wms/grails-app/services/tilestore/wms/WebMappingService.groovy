@@ -110,7 +110,6 @@ class WebMappingService implements InitializingBean
 
         // ImageIO.write(dest, cmd.format.split('/')[-1],response.outputStream)
         //img = null
-
         element = layerManagerService.createSession()
 
         map = new GeoScriptMap(
@@ -126,21 +125,30 @@ class WebMappingService implements InitializingBean
         // def gzipped = new GZIPOutputStream(result)
         //  OutputStreamWriter writer=new OutputStreamWriter(gzipped);
         map?.render( result )
+        //def img = map?.renderToImage()
+        //if(img) ImageIO.write(img,outputFormat,result)
         //gzipped.finish();
         //writer.close();
 
       }
       catch ( def e )
       {
-        // really need to write exception to stream
+        // probably need to do an OGC exception here
+        //  need to determine exception type and then return that type
 
-        e.printStackTrace()
+
+        // really need to write exception to stream
+       // def image = new BufferedImage( cmd.width, cmd.height, BufferedImage.TYPE_INT_ARGB )
+
+       // ImageIO.write( image, outputFormat, result )
+
+        //  e.printStackTrace()
       }
       finally
       {
         if ( element != null )
         {
-          layerManagerService.deleteSession( element )
+           layerManagerService.deleteSession( element )
         }
 
         // map?.layers.each{it.dispose()}

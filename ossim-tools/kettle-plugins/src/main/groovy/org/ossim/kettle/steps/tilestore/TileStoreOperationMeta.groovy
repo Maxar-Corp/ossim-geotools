@@ -28,7 +28,7 @@ import org.w3c.dom.Node
  * Created by gpotts on 3/24/15.
  */
 
-@Step(
+/*@Step(
         id="TileStoreOperation",
         name="operation.name",
         description="operation.description",
@@ -36,6 +36,7 @@ import org.w3c.dom.Node
         image="org/ossim/kettle/steps/tilestore/icon.png",
         i18nPackageName="org.ossim.steps.kettle.tilestore"
 )
+*/
 class TileStoreOperationMeta extends BaseStepMeta implements StepMetaInterface
 {
    TileStoreCommon tileStoreCommon
@@ -45,7 +46,7 @@ class TileStoreOperationMeta extends BaseStepMeta implements StepMetaInterface
     */
    String layerFieldName
    String layerName
-   TileStoreWriterData.TileStoreOpType operationType = TileStoreWriterData.TileStoreOpType.CREATE_LAYER
+   TileStoreCommonData.TileStoreOpType operationType = TileStoreCommonData.TileStoreOpType.CREATE_LAYER
 
    String wktBoundsField
    String minXField
@@ -66,6 +67,8 @@ class TileStoreOperationMeta extends BaseStepMeta implements StepMetaInterface
       retval.append( "    " ).append( XMLHandler.addTagValue( "layerFieldName", layerFieldName?:"" ) );
       retval.append( "    " ).append( XMLHandler.addTagValue( "layerName", layerName?:"" ) );
       retval.append( "    " ).append(XMLHandler.addTagValue("operationType", operationType.toString())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+      retval
    }
    void getFields(RowMetaInterface r, String origin, RowMetaInterface[] info,
                   StepMeta nextStep, VariableSpace space)
@@ -101,7 +104,7 @@ class TileStoreOperationMeta extends BaseStepMeta implements StepMetaInterface
          def operationTypeValue = XMLHandler.getTagValue(stepnode, "operationType");
          if(operationTypeValue)
          {
-            operationType = TileStoreWriterData.TileStoreOpType."${operationTypeValue}"
+            operationType = TileStoreCommonData.TileStoreOpType."${operationTypeValue}"
          }
       }
       catch (Exception e)
@@ -120,7 +123,7 @@ class TileStoreOperationMeta extends BaseStepMeta implements StepMetaInterface
          String operationTypeString   = rep.getStepAttributeString(id_step, "operationType");
          if(operationTypeString)
          {
-            operationType = TileStoreWriterData.TileStoreOpType."${operationTypeString}"
+            operationType = TileStoreCommonData.TileStoreOpType."${operationTypeString}"
          }
       }
       catch (Exception e)
@@ -167,7 +170,7 @@ class TileStoreOperationMeta extends BaseStepMeta implements StepMetaInterface
 
    StepDataInterface getStepData()
    {
-      return new TileStoreWriterData();
+      return new TileStoreCommonData();
    }
    void setDefault()
    {
