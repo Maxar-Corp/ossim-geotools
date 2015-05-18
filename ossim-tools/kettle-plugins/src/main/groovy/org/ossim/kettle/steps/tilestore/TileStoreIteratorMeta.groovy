@@ -153,7 +153,7 @@ class TileStoreIteratorMeta extends BaseStepMeta implements StepMetaInterface
       }
       catch (Exception e)
       {
-         throw new KettleXMLException(org.ossim.kettle.steps.datainfoindexer.Messages.getString("DataInfoIndexerMeta.Exception.UnableToReadStepInfo"), e); //$NON-NLS-1$
+         logDebug(e.message, e)
       }
    }
    void setDefault()

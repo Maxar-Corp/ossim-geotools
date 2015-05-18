@@ -445,13 +445,6 @@ public class OssimValueMetaBase extends ValueMetaBase
 				{
 					result = null
 				}
-
-				if(result)
-				{
-					// now lets encode to XML
-					//
-
-				}
 			}
 		}
 		catch(e)
