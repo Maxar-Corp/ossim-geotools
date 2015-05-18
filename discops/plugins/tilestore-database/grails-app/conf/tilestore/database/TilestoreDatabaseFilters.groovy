@@ -5,10 +5,8 @@ class TilestoreDatabaseFilters {
     def filters = {
        getActualBounds( uri: '/layerManager/getActualBounds' ) {
           before = {
-             response.setHeader( "Access-Control-Allow-Origin", "*" );
              response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
              response.setHeader( "Access-Control-Max-Age", "3600" );
-             response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
           }
           after = {
 
@@ -19,10 +17,8 @@ class TilestoreDatabaseFilters {
        }
        getFirstTileMeta(controller:"layerManager", action:"getFirstTileMeta"){
           before = {
-             response.setHeader( "Access-Control-Allow-Origin", "*" );
              response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
              response.setHeader( "Access-Control-Max-Age", "3600" );
-             response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
              new GetFirstTileCommand().fixParamNames( params )
           }
           after = {
@@ -34,11 +30,8 @@ class TilestoreDatabaseFilters {
        }
        createOrUpdate( uri: '/layerManager/createOrUpdate' ) {
             before = {
-                response.setHeader( "Access-Control-Allow-Origin", "*" );
-                response.setHeader( "Access-Control-Allow-Origin", "*" );
                 response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
                 response.setHeader( "Access-Control-Max-Age", "3600" );
-                response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
                 //println "before: ${params}"
                 new CreateLayerCommand().fixParamNames( params )
                 //println "after: ${params}"
@@ -52,10 +45,8 @@ class TilestoreDatabaseFilters {
         }
         create( controller: "layerManager", action: "create" ) {
             before = {
-                response.setHeader( "Access-Control-Allow-Origin", "*" );
                 response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
                 response.setHeader( "Access-Control-Max-Age", "3600" );
-                response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
                 //println "before: ${params}"
                 new CreateLayerCommand().fixParamNames( params )
                 //println "after: ${params}"
@@ -69,10 +60,7 @@ class TilestoreDatabaseFilters {
         }
         delete( uri: '/layerManager/delete' ) {
             before = {
-                response.setHeader( "Access-Control-Allow-Origin", "*" );
-                response.setHeader( "Access-Control-Allow-Origin", "*" );
                 response.setHeader( "Access-Control-Allow-Methods", "GET, POST" );
-                response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
             }
             after = { Map model ->
 
@@ -84,9 +72,7 @@ class TilestoreDatabaseFilters {
 
         list( uri: '/layerManager/list' ) {
             before = {
-                response.setHeader( "Access-Control-Allow-Origin", "*" );
                 response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
-                response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
                 //println "before: ${params}"
                 new GetLayersCommand().fixParamNames( params )
                 //println "after: ${params}"
@@ -100,10 +86,7 @@ class TilestoreDatabaseFilters {
         }
         show( uri: '/layerManager/show' ) {
             before = {
-                response.setHeader( "Access-Control-Allow-Origin", "*" );
-                response.setHeader( "Access-Control-Allow-Origin", "*" );
                 response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
-                response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
             }
             after = { Map model ->
 
@@ -114,11 +97,7 @@ class TilestoreDatabaseFilters {
         }
         rename( uri: '/layerManager/rename' ) {
             before = {
-                response.setHeader( "Access-Control-Allow-Origin", "*" );
-                response.setHeader( "Access-Control-Allow-Origin", "*" );
                 response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
-                response.setHeader( "Access-Control-Max-Age", "3600" );
-                response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
                 //println "before: ${params}"
                 new RenameLayerCommand().fixParamNames( params )
                 //println "after: ${params}"
@@ -130,8 +109,9 @@ class TilestoreDatabaseFilters {
 
             }
         }
-        ingest(controller:"job", action:"ingest"){
+        ingest(controller:"layerManager", action:"ingest"){
             before = {
+               response.setHeader( "Access-Control-Allow-Methods", "POST" );
                 new IngestCommand().fixParamNames( params )
             }
             after = { Map model ->
@@ -144,6 +124,8 @@ class TilestoreDatabaseFilters {
 
         all(controller:'*', action:'*') {
             before = {
+               response.setHeader( "Access-Control-Allow-Origin", "*" );
+               response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
 
             }
             after = { Map model ->
