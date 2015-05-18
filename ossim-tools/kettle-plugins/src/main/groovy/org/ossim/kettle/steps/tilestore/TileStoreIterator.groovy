@@ -1,6 +1,8 @@
 package org.ossim.kettle.steps.tilestore
 
-import com.vividsolutions.jts.io.WKTReader
+import geoscript.geom.Geometry
+import geoscript.geom.io.WktReader
+import geoscript.proj.Projection
 import groovy.sql.Sql
 import joms.geotools.tileapi.accumulo.ImageTileKey
 import joms.geotools.tileapi.accumulo.TileCacheImageTile
@@ -68,6 +70,51 @@ class TileStoreIterator  extends BaseStep implements StepInterface
          }
       }
 
+      result
+   }
+   private Geometry getGeometryField(String fieldValue, def r, TileStoreIteratorMeta meta,
+                                     TileStoreCommonData data)
+   {
+      Geometry result
+
+      if(fieldValue && r)
+      {
+         try{
+            if(fieldValue.startsWith("\${"))
+            {
+               String v = environmentSubstitute(fieldValue?:"")
+
+               if(v) result = new WktReader().read(v)
+
+            }
+            else
+            {
+               Integer fieldIndex   =  getInputRowMeta().indexOfValue(fieldValue)
+               if(fieldIndex >= 0)
+               {
+                  if(r[fieldIndex] instanceof com.vividsolutions.jts.geom.Geometry)
+                  {
+                     result = Geometry.wrap(r[fieldIndex])
+                  }
+                  else
+                  {
+                     String v = getInputRowMeta().getString(r,fieldIndex)
+                     result = new WktReader().read(v)
+                  }
+
+               }
+            }
+            if(!result)
+            {
+               result = new WktReader().read(fieldValue)
+            }
+         }
+         catch(e)
+         {
+            println "Error in BasicTiling: ${e}"
+            result = null
+         }
+      }
       result
    }
 
@@ -156,8 +203,30 @@ class TileStoreIterator  extends BaseStep implements StepInterface
                }
             }
 
+            String whereClause = ""
+            HashMap whereConstraints = []
+            Geometry geom = getGeometryField(meta?.aoi, r, meta, data)
+            String aoiEpsg = getFieldValueAsString(meta?.aoiEpsg,r,meta,data)
+            if(geom&&aoiEpsg&&(aoiEpsg.toUpperCase()!=layerInfo.epsgCode.toUpperCase()))
+            {
+               Projection layerProjection = new Projection(layerInfo.epsgCode)
+               Projection aoiProjection   = new Projection(aoiEpsg)
+               if(layerProjection)
+               {
+                  geom = aoiProjection.transform(geom, layerProjection)
+               }
+            }
+
+            if(geom)
+            {
+               whereConstraints.intersects = geom.toString()
+               whereConstraints.intersectsSrid = layerInfo.epsgCode?.split(":")[-1]
+            }
+
+            whereClause = data?.tileCacheService.createWhereClause(whereConstraints)
+
             if(addHashId) selectionClause << "hash_id"
-            String queryString = "select ${selectionClause.join(',')} from ${layerInfo.tileStoreTable} ${orderByClause}".toString()
+            String queryString = "select ${selectionClause.join(',')} from ${layerInfo.tileStoreTable} ${whereClause} ${orderByClause}".toString()
             def resultArray = new Object[numberOfOutputFields]
             sql.eachRow(queryString){row->
                if(tileLevelIdx>=0)
@@ -184,7 +253,7 @@ class TileStoreIterator  extends BaseStep implements StepInterface
                {
                   try
                   {
-                     resultArray[tileBoundsIdx] = new WKTReader().read(row.bounds)
+                     resultArray[tileBoundsIdx] = new WktReader().read(row.bounds)?.g
                   }
                   catch(e)
                   {
@@ -201,17 +270,17 @@ class TileStoreIterator  extends BaseStep implements StepInterface
                           new ImageTileKey(rowId:row.hash_id))
                   if(data)
                   {
-                     def img = ImageIO.read(new ByteArrayInputStream(data))
+                   //  def img = ImageIO.read(new ByteArrayInputStream(data))
 
-                     if(img)
-                     {
+                     //if()
+                     //{
                       //  def planarImage = PlanarImage.wrapRenderedImage(img as RenderedImage)
                         // convert to a serializable planar image planar
                       //  planarImage = JAI.create("NULL", planarImage)
                       //  planarImage.data
 
-                        resultArray[tileImageIdx] =  img
-                     }
+                        resultArray[tileImageIdx] =  data
+                     //}
                   }
                }
                // println row

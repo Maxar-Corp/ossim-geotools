@@ -285,11 +285,28 @@ class LayerManagerController
 
       if(result.status != HttpStatus.OK)
       {
-         render contentType: 'application/json', text: [message:result.message] as JSON
+         if(params.callback)
+         {
+            String jsonResult = "${params.callback}(${[message:result.message] as JSON})"
+            render contentType: 'application/json', text: jsonResult
+         }
+         else
+         {
+            render contentType: 'application/json', text: [message:result.message] as JSON
+         }
       }
       else
       {
-         render contentType: 'application/json', text: result.data as JSON
+         // this is to support jsonp posts
+         if(params.callback)
+         {
+            String jsonResult = "${params.callback}(${result.data as JSON})"
+            render contentType: 'application/json', text: jsonResult
+         }
+         else
+         {
+            render contentType: 'application/json', text: result.data as JSON
+         }
       }
 
    }
