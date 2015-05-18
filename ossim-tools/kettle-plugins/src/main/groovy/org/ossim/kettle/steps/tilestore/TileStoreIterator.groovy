@@ -270,17 +270,17 @@ class TileStoreIterator  extends BaseStep implements StepInterface
                           new ImageTileKey(rowId:row.hash_id))
                   if(data)
                   {
-                     def img = ImageIO.read(new ByteArrayInputStream(data))
+                   //  def img = ImageIO.read(new ByteArrayInputStream(data))
 
-                     if(img)
-                     {
+                     //if()
+                     //{
                       //  def planarImage = PlanarImage.wrapRenderedImage(img as RenderedImage)
                         // convert to a serializable planar image planar
                       //  planarImage = JAI.create("NULL", planarImage)
                       //  planarImage.data
 
-                        resultArray[tileImageIdx] =  img
-                     }
+                        resultArray[tileImageIdx] =  data
+                     //}
                   }
                }
                // println row
