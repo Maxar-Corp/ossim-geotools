@@ -34,9 +34,11 @@ class IngestCommand  implements CaseInsensitiveBind
 
    HashMap toMap()
    {
-      [jobName:jobName,
+      [type:type,
+       jobName:jobName,
        layer:layer,
        aoi:aoi,
+       aoiEpsg:aoiEpsg,
        minLevel:minLevel,
        maxLevel:maxLevel,
        input:input]

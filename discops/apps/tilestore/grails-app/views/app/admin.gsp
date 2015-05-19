@@ -101,7 +101,7 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="#">OMAR Feed</a>
+                        <a class="navbar-brand">OMAR Feed</a>
                     </div>
                     <div class="collapse navbar-collapse" id="omarFeedNavbar">
                         <ul class="nav navbar-nav">
@@ -133,7 +133,7 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="#">Preview Map</a>
+                        <a class="navbar-brand">Preview Map</a>
                     </div>
                     <div class="collapse navbar-collapse" id="previewMapNavbar">
                         %{--<ul class="nav navbar-nav">--}%
@@ -153,13 +153,15 @@
                         <ul class="nav navbar-nav navbar-right">
                             %{--<li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>--}%
                             %{--<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>--}%
-                            <li class="dropdown">
+                            <li id="omarMapToolsDropdown" class="dropdown disabled">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-cog"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li role="presentation" class="dropdown-header">Cutting</li>
-                                    <li><a href="#"><i class="fa fa-square-o"></i>&nbsp;&nbsp;by Rectangle</a></li>
-                                    <li><a href="#"><i class="fa fa-circle-thin"></i>&nbsp;&nbsp;by Circle</a></li>
-                                    <li><a href="#"><i class="fa fa-lemon-o"></i>&nbsp;&nbsp;by Polygon</a></li>
+                                    <li><a id="drawRectangle" href="#"><i class="fa fa-square-o"></i>&nbsp;&nbsp;by
+                                    Rectangle</a></li>
+                                    %{--<li><a id="drawCircle" href="#"><i class="fa fa-circle-thin"></i>&nbsp;&nbsp;by Circle</a></li>--}%
+                                    <li><a id="drawPolygon" href="#"><i class="fa fa-lemon-o"></i>&nbsp;&nbsp;by
+                                    Freehand Polygon</a></li>
                                 </ul>
                             </li>
                             %{--<li><a href="#">Tool 2</a></li>--}%
@@ -179,7 +181,7 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <a class="navbar-brand" href="#">Tile Map</a>
+                        <a class="navbar-brand">Tile Map</a>
                     </div>
                     <div class="collapse navbar-collapse" id="tileMapNavbar">
                         %{--<ul class="nav navbar-nav">--}%
@@ -394,7 +396,7 @@
             <div class="col-md-2 image-card-thumb">
                 <img data-toggle="tooltip" data-placement="bottom"
                      data-name="{{properties.id}}"
-                     onclick="AppOmarWfs.previewLayer({{json this}})"
+                     onclick="AppOmarWfsAdmin.previewLayer({{json this}})"
                      title="Click on thumbnail to preview image" class="omar-thumb"
                      src="http://localhost:9999/omar/thumbnail/show/{{properties.id}}" alt="Image thumbnail"
                      size="100">
@@ -417,7 +419,7 @@
                                       title="View image in OMAR"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <a target="_blank"><i id="ingestToCurrentTileLayer"
                                       data-name="{{properties.id}}"
-                                      onclick="AppOmarWfs.ingestLayer({{json this}})"
+                                      onclick="AppIngestTileAdmin.ingestLayer({{json this}})"
                                       class="fa fa-sign-in fa-lg ingestToCurrentTileLayer" data-toggle="tooltip"
                                       data-placement="bottom"
                                       title="Add image to current tile layer"></i></a>
@@ -436,10 +438,14 @@
     $( document ).ready( function ()
     {
         var initParams = ${raw( initParams.toString() )};
+        //console.log('The params are:');
+        //console.log(initParams);
 
-        AddLayersAdmin.initialize(initParams);
+        AppManageLayersAdmin.initialize(initParams);
         AppAdmin.initialize(initParams);
-        AppOmarWfs.initialize(initParams);
+        AppOmarWfsAdmin.initialize(initParams);
+        AppIngestTileAdmin.initialize(initParams);
+        AppDrawFeaturesAdmin.initialize(initParams);
 
     } );
 </g:javascript>

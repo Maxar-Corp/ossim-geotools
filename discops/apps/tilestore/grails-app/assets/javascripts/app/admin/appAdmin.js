@@ -1,4 +1,5 @@
-AppAdmin = (function () {
+"use strict";
+var AppAdmin = (function () {
     // TODO: Cache jquery selectors.  Possibly use this solution:
     //      http://ttmm.io/tech/selector-caching-jquery/
 
@@ -62,7 +63,7 @@ AppAdmin = (function () {
         //interactions: ol.interaction.defaults().extend([
         //    new ol.interaction.DragRotateAndZoom()
         //]),
-        layers: AddLayersAdmin.layers,
+        layers: AppManageLayersAdmin.layers,
         view: new ol.View({
             zoom: 14,
             //projection: 'EPSG:4326',
@@ -82,7 +83,7 @@ AppAdmin = (function () {
         //interactions: ol.interaction.defaults().extend([
         //    new ol.interaction.DragRotateAndZoom()
         //]),
-        layers: AddLayersAdmin.layers,
+        layers: AppManageLayersAdmin.layers,
         view: mapOmar.getView(),
         target: 'mapTile'
     });

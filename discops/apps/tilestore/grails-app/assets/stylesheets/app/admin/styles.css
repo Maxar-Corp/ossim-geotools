@@ -34,15 +34,15 @@ body {
     margin-bottom: 4px;
 }
 
-.navbar-default .navbar-brand {
-    background-color: #565656;
-    color: transparent;
-    text-shadow: 0px 2px 3px rgba(255,255,255,0.5);
-    -webkit-background-clip: text;
-    -moz-background-clip: text;
-    background-clip: text;
-    font-weight: bolder;
-}
+/*.navbar-default .navbar-brand {*/
+    /*background-color: #565656;*/
+    /*color: transparent;*/
+    /*text-shadow: 0px 2px 3px rgba(255,255,255,0.5);*/
+    /*-webkit-background-clip: text;*/
+    /*-moz-background-clip: text;*/
+    /*background-clip: text;*/
+    /*font-weight: bolder;*/
+/*}*/
 
 #mapsRow {
   /*margin-right: 15px;*/
@@ -228,7 +228,7 @@ body {
 }
 
 .image-card:hover {
-    background-color: #A6DB98;
+    background-color: #e7e7e7;
     -webkit-box-shadow: -3px 3px 3px 0px rgba(50, 50, 50, 0.75);
     -moz-box-shadow:    -3px 3px 3px 0px rgba(50, 50, 50, 0.75);
     box-shadow:         -3px 3px 3px 0px rgba(50, 50, 50, 0.75);
@@ -236,9 +236,9 @@ body {
 
 .image-card-highlight {
     background-color: #A6DB98;
-    -webkit-box-shadow: -3px 3px 3px 0px rgba(50, 50, 50, 0.75);
-    -moz-box-shadow:    -3px 3px 3px 0px rgba(50, 50, 50, 0.75);
-    box-shadow:         -3px 3px 3px 0px rgba(50, 50, 50, 0.75);
+    /*-webkit-box-shadow: -3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
+    /*-moz-box-shadow:    -3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
+    /*box-shadow:         -3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
 }
 
 .image-card-thumb {
