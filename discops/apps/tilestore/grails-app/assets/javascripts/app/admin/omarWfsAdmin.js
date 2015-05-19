@@ -162,21 +162,6 @@ var AppOmarWfsAdmin = (function () {
 
         console.log(AppIngestTileAdmin.objIngestImage);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
     //function ingestLayer(obj){

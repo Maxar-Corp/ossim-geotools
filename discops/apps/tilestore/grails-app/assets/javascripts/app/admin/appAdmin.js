@@ -125,6 +125,55 @@ var AppAdmin = (function () {
 
     }
 
+    $('#autoRefreshMapToggle').on('click', function(){
+        $(this).find('i').toggleClass('fa-toggle-on fa-toggle-off');
+    });
+
+    $('#autoRefreshMapToggle').click((function(){
+
+        //$('#autoRefreshMapToggleIcon').toggleClass('fa-toggle-on fa-toggle-off');
+        //console.log($('#autoRefreshMapToggleIcon'));
+
+            //console.log($('#autoRefreshMapToggle'));
+            var refreshMap = null;
+            return function(e) {
+                if (refreshMap) {
+                    console.log('true');
+                    clearInterval(refreshMap);
+                    refreshMap = null;
+                }
+                else {
+                    console.log('false');
+                    refreshMap = setInterval(function() {
+                        var params = initLayer.getSource().getParams();
+                        //console.log(params);
+                        params.t = new Date().getMilliseconds();
+                        initLayer.getSource().updateParams(params);
+                        console.log('refreshing!');
+                    }, 5000);
+                }
+            };
+
+        }()));
+
+    function resizeMapRow(){
+        //console.log('resizing');
+        $('#mapOmar').animate({height:$(window).height()- 172}, 100, function(){
+            mapOmar.updateSize();
+        });
+        $('#mapTile').animate({height:$(window).height()- 172}, 100, function(){
+            mapTile.updateSize();
+        });
+        $('#omarFeed').animate({height:$(window).height()- 172}, 100, function(){
+        });
+    }
+
+    $(window).resize(function(){
+        resizeMapRow();
+    });
+
+
+
     // End map stuff #################################################################
 
     // Begin CRUD stuff ##############################################################
@@ -480,22 +529,6 @@ var AppAdmin = (function () {
     function getCurrentTileLayer(){
         currentTileLayer = $tileLayerSelect.val();
     }
-
-    function resizeMapRow(){
-        //console.log('resizing')
-        $('#mapOmar').animate({height:$(window).height()- 172}, 100, function(){
-            mapOmar.updateSize();
-        });
-        $('#mapTile').animate({height:$(window).height()- 172}, 100, function(){
-            mapTile.updateSize();
-        });
-        $('#omarFeed').animate({height:$(window).height()- 172}, 100, function(){
-        });
-    }
-
-    $(window).resize(function(){
-        resizeMapRow();
-    });
 
     // Parameters for the toastr banner
     toastr.options = {

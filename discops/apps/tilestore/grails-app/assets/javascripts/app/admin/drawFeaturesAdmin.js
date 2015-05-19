@@ -103,7 +103,7 @@ var AppDrawFeaturesAdmin = (function () {
 
         AppIngestTileAdmin.objIngestImage.aoi = outputWkt;
 
-        console.log(AppIngestTileAdmin.objIngestImage);
+        //console.log(AppIngestTileAdmin.objIngestImage);
 
     }
 
@@ -125,6 +125,11 @@ var AppDrawFeaturesAdmin = (function () {
 
         aoiFeature.setGeometry(output);
         AppManageLayersAdmin.aoiVector.getSource().addFeature(aoiFeature);
+
+        AppIngestTileAdmin.objIngestImage.aoi = outputWkt;
+
+        //console.log(AppIngestTileAdmin.objIngestImage);
+
     }
 
     return {

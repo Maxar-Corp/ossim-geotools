@@ -228,7 +228,7 @@ body {
 }
 
 .image-card:hover {
-    background-color: #e7e7e7;
+    background-color: #A6DB98;
     -webkit-box-shadow: -3px 3px 3px 0px rgba(50, 50, 50, 0.75);
     -moz-box-shadow:    -3px 3px 3px 0px rgba(50, 50, 50, 0.75);
     box-shadow:         -3px 3px 3px 0px rgba(50, 50, 50, 0.75);
