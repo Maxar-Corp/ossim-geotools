@@ -72,7 +72,7 @@ AppOmarWfs = (function () {
             omarPreviewLayer =  new ol.layer.Image( {
                 opacity: 1.0,
                 source: new ol.source.ImageWMS( {
-                    url: loadParams.omarWms + "/wms",
+                    url: loadParams.omarWms,
                     params: {'LAYERS': omarPreviewLayerId, 'VERSION': '1.1.1'},
                     projection: 'EPSG:3857'
 
