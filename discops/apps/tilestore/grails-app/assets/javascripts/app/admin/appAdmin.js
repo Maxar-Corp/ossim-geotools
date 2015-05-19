@@ -125,10 +125,14 @@ var AppAdmin = (function () {
 
     }
 
+    $('#autoRefreshMapToggle').on('click', function(){
+        $(this).find('i').toggleClass('fa-toggle-on fa-toggle-off');
+    });
+
     $('#autoRefreshMapToggle').click((function(){
 
-        $('#autoRefreshMapToggleIcon').toggleClass('fa-toggle-on fa-toggle-off');
-        console.log($('#autoRefreshMapToggleIcon'));
+        //$('#autoRefreshMapToggleIcon').toggleClass('fa-toggle-on fa-toggle-off');
+        //console.log($('#autoRefreshMapToggleIcon'));
 
             //console.log($('#autoRefreshMapToggle'));
             var refreshMap = null;

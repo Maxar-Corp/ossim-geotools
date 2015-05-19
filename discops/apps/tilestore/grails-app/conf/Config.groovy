@@ -166,8 +166,8 @@ accumulo {
 }
 
 omar{
-   //url = "http://localhost:9999/omar"
-   url = "http://10.0.10.180:9999/omar"
+   url = "http://localhost:9999/omar"
+   //url = "http://10.0.10.180:9999/omar"
    wfs = "${omar.url}/wfs"
    wms = "${omar.url}/ogc/wms"
 }

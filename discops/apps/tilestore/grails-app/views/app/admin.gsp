@@ -399,7 +399,7 @@
                      data-name="{{properties.id}}"
                      onclick="AppOmarWfsAdmin.previewLayer({{json this}})"
                      title="Click on thumbnail to preview image" class="omar-thumb"
-                     src="http://10.0.10.180:9999/omar/thumbnail/show/{{properties.id}}" alt="Image thumbnail"
+                     src="${grailsApplication.config.omar.url}/thumbnail/show/{{properties.id}}" alt="Image thumbnail"
                      size="100">
             </div>
             <div class="col-md-8 image-card-info">
@@ -415,7 +415,7 @@
                    data-toggle="tooltip"
                    data-placement="bottom"
                    title="View image metadata"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <a href="http://10.0.10.180:9999/omar/mapView/imageSpace?layers={{properties.id}}"
+                <a href="${grailsApplication.config.omar.url}/mapView/imageSpace?layers={{properties.id}}"
                    target="_blank"><i id="viewInOmar" class="fa fa-globe fa-lg" data-toggle="tooltip" data-placement="bottom"
                                       title="View image in OMAR"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <a target="_blank"><i id="ingestToCurrentTileLayer"
