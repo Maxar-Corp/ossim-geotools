@@ -1,65 +1,41 @@
-AppOmarWfs = (function () {
+"use strict";
+var AppOmarWfsAdmin = (function () {
 
     var loadParams;
     var omarWfsUrlCards;
     var filterName, filterRangeLow, filterRangeHigh, filterLow, filterHigh, filter;
-    var vectorLayer, vectorSource, previewSelected, omarPreviewLayerId, omarPreviewLayer;
+    var previewFeatureVectorLayer, previewFeatureVectorSource, omarPreviewLayerId, omarPreviewLayer;
     var previewFeatureArray = [];
-    var objIngestImage = {
-        type: 'TileServerIngestMessage',
-        input: {
-            type: 'local',
-            file: '',
-            entry: 0
-        },
-        layer: {
-            name: 'testIngest'
-            //epsg: 'EPSG:3857',
-            //tileWidth: 256,
-            //tileHeight: 256
-        },
-        aoi: '',
-        aoiEpsg: '',
-        minLevel: '',
-        maxLevel: ''
-    };
+    //var objIngestImage = {
+    //    type: 'TileServerIngestMessage',
+    //    input: {
+    //        type: 'local',
+    //        file: '',
+    //        entry: 0
+    //    },
+    //    layer: {
+    //        name: 'testIngest'
+    //        //epsg: 'EPSG:3857',
+    //        //tileWidth: 256,
+    //        //tileHeight: 256
+    //    },
+    //    aoi: '',
+    //    aoiEpsg: '',
+    //    minLevel: '',
+    //    maxLevel: ''
+    //};
 
-    // Done - 05-12-72 - Create a function that adds the OMAR wms image to the map for previewing.
+    // Adds the OMAR WMS image to the map for previewing.
     function previewLayer(obj){
 
-        //previewSelected = true;
-
-        //$('#card-' + obj.properties.id).on("click", function(){
-        //   var color = $(this).css("background-color");
-        //   console.log(color);
-        //   //$('#card-' + obj.properties.id).css('background-color', 'red');
-        //});
-
+        // Enable the tools menu for cutting out AOI's
+        $("#omarMapToolsDropdown").removeClass("disabled");
 
         $("#card-" + obj.properties.id).on("click",function() {
             $(this).addClass("image-card-highlight").siblings().removeClass("image-card-highlight");
-            //var selected = $(this).hasClass("image-card-highlight");
-            //$("#card-" + obj.properties.id).removeClass("image-card-highlight");
-            //if(!selected)
-            //    $(this).addClass("image-card-highlight");
         });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //console.log(obj);
+        console.log(obj);
         //console.log(obj.properties.id);
 
         omarPreviewLayerId = obj.properties.id;
@@ -72,7 +48,7 @@ AppOmarWfs = (function () {
             omarPreviewLayer =  new ol.layer.Image( {
                 opacity: 1.0,
                 source: new ol.source.ImageWMS( {
-                    url: loadParams.omarWms + "/wms",
+                    url: loadParams.omarWms,
                     params: {'LAYERS': omarPreviewLayerId, 'VERSION': '1.1.1'},
                     projection: 'EPSG:3857'
 
@@ -81,7 +57,18 @@ AppOmarWfs = (function () {
             });
             AppAdmin.mapOmar.addLayer(omarPreviewLayer);
 
+            // Need to move the omarPreviewLayer below the vector layers
+            console.log(AppAdmin.mapOmar.getLayers().getArray().length);
+
+            // Move the previewLayer below the aoiVectorLayer
+            // Before:
+            console.log(AppAdmin.mapOmar.getLayers().getArray());
+            AppManageLayersAdmin.swapTopLayer(2,1);
+            // After:
+            console.log(AppAdmin.mapOmar.getLayers().getArray());
+
         }
+
         // TODO: Set map extent to the extent of the previewed WMS, and set
         //       the .css of the image card to reflect that it is the currently
         //       selected/previewed image
@@ -109,33 +96,33 @@ AppOmarWfs = (function () {
         // This adds the polyFeature to a vectorlayer and displays it on the map.
         // TODO: Use this in a function to run all of the OMAR images through it
         //       and display their bounding box on the map.
-        if (previewFeatureArray.length === 1){
+        if (previewFeatureArray.length === 1) {
 
-            vectorSource.clear();
+            previewFeatureVectorSource.clear();
             previewFeatureArray.length = 0;
             //console.log(previewFeatureArray.length);
             previewFeatureArray.push(polyFeature);
             //console.log(previewFeatureArray.length);
             //console.log(previewFeatureArray);
 
-            vectorSource.addFeatures(previewFeatureArray);
+            previewFeatureVectorSource.addFeatures(previewFeatureArray);
 
             // Update the source instead of creating a new instance
-            vectorLayer.setSource(vectorSource);
+            previewFeatureVectorLayer.setSource(previewFeatureVectorSource);
 
-        } else
-        {
+        }
+        else {
             //console.log(previewFeatureArray.length);
             previewFeatureArray.push(polyFeature);
 
-            vectorSource = new ol.source.Vector({
+            previewFeatureVectorSource = new ol.source.Vector({
                 features: previewFeatureArray
             });
 
             // TODO: Move this out of the click on the image card, and put it in the appAddLayers
             //       file so that it is always the top layer rendered.
-            vectorLayer = new ol.layer.Vector({
-                source: vectorSource,
+            previewFeatureVectorLayer = new ol.layer.Vector({
+                source: previewFeatureVectorSource,
                 style: (function() {
                     var stroke = new ol.style.Stroke({
                         color: 'red',
@@ -165,46 +152,66 @@ AppOmarWfs = (function () {
             });
 
             //AppAdmin.mapOmar.addLayer(vectorLayer);
-            AppAdmin.mapTile.addLayer(vectorLayer);
+            AppAdmin.mapTile.addLayer(previewFeatureVectorLayer);
             //console.log('else...');
         }
 
-    }
+        // Store the OMAR card obj here?  How to pass to ingest???
+        AppIngestTileAdmin.objIngestImage.input.filename = obj.properties.filename;
+        AppIngestTileAdmin.objIngestImage.input.entry = obj.properties.entry_id;
 
-    function ingestLayer(obj){
+        console.log(AppIngestTileAdmin.objIngestImage);
 
-        // TODO: Look into using OL3 WFS API here
 
-        console.log(obj);
-        //console.log(obj.properties.filename);
 
-        objIngestImage.input.file = obj.properties.filename;
-        objIngestImage.input.entry = obj.properties.entry_id;
-        objIngestImage.layer.name = AppAdmin.$tilelayerSelect.val();
 
-        console.log(AppAdmin.$tilelayerSelect.val());
-        console.log(objIngestImage);
 
-        // TODO: Refactor using promises...
-        $.ajax({
-            url: "/tilestore/layerManager/ingest",
-            type: 'POST',
-            dataType: 'jsonp',
-            dataType: 'json',
-            data: objIngestImage,
-            success: function (data) {
-                console.log('Success data: ' + data);
-                toastr.success('Ingest job posted to queue', 'Success!');
 
-            },
-            error: function(data){
-                console.log('Error: ' + data);
-                toastr.error(data.message, 'Error on ingest');
 
-            }
-        });
+
+
+
+
+
+
+
+
 
     }
+
+    //function ingestLayer(obj){
+    //
+    //    // TODO: Look into using OL3 WFS API here
+    //
+    //    console.log(obj);
+    //    //console.log(obj.properties.filename);
+    //
+    //    objIngestImage.input.file = obj.properties.filename;
+    //    objIngestImage.input.entry = obj.properties.entry_id;
+    //    objIngestImage.layer.name = AppAdmin.$tilelayerSelect.val();
+    //
+    //    console.log(AppAdmin.$tilelayerSelect.val());
+    //    console.log(objIngestImage);
+    //
+    //    // TODO: Refactor using promises...
+    //    $.ajax({
+    //        url: "/tilestore/layerManager/ingest",
+    //        type: 'POST',
+    //        dataType: 'json',
+    //        data: objIngestImage,
+    //        success: function (data) {
+    //            console.log('Success data: ' + data);
+    //            toastr.success('Ingest job posted to queue', 'Success!');
+    //
+    //        },
+    //        error: function(data){
+    //            console.log(data);
+    //            toastr.error(data.message, 'Error on ingest');
+    //
+    //        }
+    //    });
+    //
+    //}
 
     // TODO: Set these to DOM elements
     filterName = 'acquisition_date'; // Dropdown Acq date, Ing date
@@ -375,7 +382,6 @@ AppOmarWfs = (function () {
             });
 
         },
-        ingestLayer: ingestLayer,
         previewLayer: previewLayer
     };
 })();

@@ -15,9 +15,12 @@
 
 //= require common/bootstrap-select.js  /* TODO: Use FuelUX */
 
-//= require admin/addLayersAdmin.js
+//= require admin/managelayersAdmin.js
 //= require admin/appAdmin.js
-//= require admin/omarWfs.js
+//= require admin/omarWfsAdmin.js
+//= require admin/ingestTileAdmin.js
+//= require admin/drawFeaturesAdmin.js
+
 //= require common/coordinate.js
 //= require common/zoomTo.js
 //= require_self
