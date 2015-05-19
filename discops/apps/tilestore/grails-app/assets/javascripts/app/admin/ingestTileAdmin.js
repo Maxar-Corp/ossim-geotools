@@ -29,14 +29,11 @@ var AppIngestTileAdmin = (function () {
     function ingestLayer(obj){
 
         console.log(obj);
-
         console.log(objIngestImage);
         //objIngestImage.input.file = obj.properties.filename;
         //objIngestImage.input.entry = obj.properties.entry_id;
         console.log(AppAdmin.$tilelayerSelect.val());
         objIngestImage.layer.name = AppAdmin.$tilelayerSelect.val();
-
-
 
         //TODO: Refactor using promises...
         $.ajax({
@@ -45,7 +42,7 @@ var AppIngestTileAdmin = (function () {
             dataType: 'json',
             data: objIngestImage,
             success: function (data) {
-                console.log('Success data: ' + data);
+                //console.log('Success data: ' + data);
                 toastr.success('Ingest job posted to queue', 'Success!');
 
             },
