@@ -1,6 +1,5 @@
 package org.ossim.kettle.steps.basictiling
 
-import com.vividsolutions.jts.io.WKTReader
 import geoscript.geom.Bounds
 import geoscript.geom.Geometry
 import geoscript.geom.io.WktReader
@@ -78,7 +77,7 @@ class BasicTiling extends BaseStep implements StepInterface
             {
                String v = environmentSubstitute(fieldValue?:"")
 
-               if(v) result = new WKTReader().read(v)
+               if(v) result = new WktReader().read(v)
 
             }
             else
@@ -93,14 +92,14 @@ class BasicTiling extends BaseStep implements StepInterface
                   else
                   {
                      String v = getInputRowMeta().getString(r,fieldIndex)
-                     result = new WKTReader().read(v)
+                     result = new WktReader().read(v)
                   }
 
                }
             }
             if(!result)
             {
-               result = new WKTReader().read(fieldValue)
+               result = new WktReader().read(fieldValue)
             }
          }
          catch(e)

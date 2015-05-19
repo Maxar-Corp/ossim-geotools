@@ -1,5 +1,6 @@
 package org.ossim.kettle.steps.quadtilewriter
 
+import org.ossim.kettle.types.OssimValueMetaBase
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.row.RowDataUtil;
@@ -35,6 +36,14 @@ class QuadTileWriter extends BaseStep implements StepInterface
 	private QuadTileWriterMeta meta = null;
 	private QuadTileWriterData data = null;
 	private idx = 0
+	private OssimValueMetaBase imageConverter
+	private int imageidx
+	private int imageStatusIdx
+	private int rootOutputDirIdx
+	private int levelIdx
+	private int rowIdx
+	private int colIdx
+
 	public QuadTileWriter(StepMeta stepMeta, StepDataInterface stepDataInterface,
 			int copyNr, TransMeta transMeta, Trans trans) {
 		super(stepMeta, stepDataInterface, copyNr, transMeta, trans);
@@ -58,17 +67,18 @@ class QuadTileWriter extends BaseStep implements StepInterface
 			
 			data.outputRowMeta = getInputRowMeta().clone()
 			meta.getFields(data.outputRowMeta, getStepname(), null, null, this)
+			imageidx         =  getInputRowMeta().indexOfValue(meta.inputTileField)
+			imageStatusIdx   =  getInputRowMeta().indexOfValue(meta.inputTileStatusField)
+			rootOutputDirIdx =  getInputRowMeta().indexOfValue(meta.inputRootOutputDirField)
+			levelIdx         =  getInputRowMeta().indexOfValue(meta.inputTileLevelField)
+			rowIdx           =  getInputRowMeta().indexOfValue(meta.inputTileRowField)
+			colIdx           =  getInputRowMeta().indexOfValue(meta.inputTileColField)
+			imageConverter   = inputRowMeta.getValueMeta(imageidx) as OssimValueMetaBase
 		}
-	   int imageidx         =  getInputRowMeta().indexOfValue(meta.inputTileField)
-	   int imageStatusIdx   =  getInputRowMeta().indexOfValue(meta.inputTileStatusField)
-	   int rootOutputDirIdx =  getInputRowMeta().indexOfValue(meta.inputRootOutputDirField)
-	   int levelIdx         =  getInputRowMeta().indexOfValue(meta.inputTileLevelField)
-	   int rowIdx           =  getInputRowMeta().indexOfValue(meta.inputTileRowField)
-	   int colIdx           =  getInputRowMeta().indexOfValue(meta.inputTileColField)
 
 	   if(imageidx)
 	   {
-	   	def image = row[imageidx] as RenderedImage
+	   	def image = imageConverter.getImage(row[imageidx]) //row[imageidx] as RenderedImage
 	   	if(image)
 	   	{
 			  	def ext = "png"

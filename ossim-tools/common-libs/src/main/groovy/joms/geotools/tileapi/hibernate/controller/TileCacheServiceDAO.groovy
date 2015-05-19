@@ -373,7 +373,14 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
         {
           whereClause += conjunction
         }
-        whereClause += "(ST_Intersects(ST_GeometryFromText('${constraints.intersects}'),bounds))"
+         if(constraints.intersectsSrid!=null)
+         {
+            whereClause += "(ST_Intersects(ST_GeometryFromText('${constraints.intersects}',${constraints.intersectsSrid}),bounds))"
+         }
+         else
+         {
+            whereClause += "(ST_Intersects(ST_GeometryFromText('${constraints.intersects}'),bounds))"
+         }
       }
       if ( constraints.afterDate && constraints.beforeDate )
       {

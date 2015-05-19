@@ -293,7 +293,6 @@ class TileStoreIteratorDialog  extends BaseStepDialog implements
    }
    public void getData()
    {
-      swt.stepName.selectAll();
       databaseMeta = input.tileStoreCommon.databaseMeta
       swt.stepName.selectAll();
       if(databaseMeta?.name)
