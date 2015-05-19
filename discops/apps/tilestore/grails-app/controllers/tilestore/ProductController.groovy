@@ -2,8 +2,8 @@ package tilestore
 
 import grails.converters.JSON
 import joms.geotools.tileapi.job.TileCacheMessage
-import org.codehaus.groovy.grails.web.json.JSONObject
 import org.codehaus.groovy.grails.web.json.JSONArray
+import org.codehaus.groovy.grails.web.json.JSONObject
 
 class ProductController
 {

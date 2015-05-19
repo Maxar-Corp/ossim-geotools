@@ -3,6 +3,8 @@ package tilestore
 import grails.converters.JSON
 import groovy.sql.Sql
 
+import grails.plugin.springsecurity.annotation.Secured
+
 class AppController
 {
 
@@ -11,12 +13,15 @@ class AppController
 
   def dataSource
 
-  def index() {}
+  @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
+  def index()
+  {}
 
+  @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
   def client()
   {
     def sql = new Sql( dataSource )
-    def tilestoreLayers = sql.rows( "select name from tile_cache_layer_info ")//where epsg_code like '%3857'" )
+    def tilestoreLayers = sql.rows( "select name from tile_cache_layer_info " )//where epsg_code like '%3857'" )
 
     sql.close()
 
@@ -34,12 +39,13 @@ class AppController
     ]
   }
 
+  @Secured( ['ROLE_ADMIN'] )
   def admin()
   {
     def sql = new Sql( dataSource )
-    def tilestoreLayers = sql.rows( "select name from tile_cache_layer_info ")//where epsg_code like '%3857'" )
+    def tilestoreLayers = sql.rows( "select name from tile_cache_layer_info " )//where epsg_code like '%3857'" )
 
-      sql.close()
+    sql.close()
     [
         initParams: [
 //            wmtsTileGrid: grailsApplication.config.tilestore.wmtsTileGrid ?: false,
@@ -53,11 +59,12 @@ class AppController
 //            accumuloProxyWmsURL: grailsLinkGenerator.link( controller: 'accumuloProxy', action: 'wms', absolute: true ),
 //            referenceLayers: grailsApplication.config.tilestore.referenceLayers,
 //            overlayLayers: grailsApplication.config.tilestore.overlayLayers,
-           tilestoreLayers: tilestoreLayers
+            tilestoreLayers: tilestoreLayers
         ] as JSON
     ]
   }
 
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def testWFS()
   {
     def data = [
