@@ -12,27 +12,27 @@ enum AccumuloTarget {
 
 def accumuloTarget
 
-switch(System.properties?.hadoopDist?.toLowerCase())
+switch ( System.properties?.hadoopDist?.toLowerCase() )
 {
-  case "gdac":
-    println "Building for GDAC distribution"
-    accumuloTarget = AccumuloTarget.GDAC
-    break
-  case "cdh4":
-    println "Building for CDH4 distribution"
-    accumuloTarget = AccumuloTarget.CDH4
-    break
-  case "cdh5":
-    println "Building for CDH5 distribution"
-    accumuloTarget = AccumuloTarget.CDH5
-  case "hdp22":
-    println "Building for HDP version 2.2 distribution"
-    accumuloTarget = AccumuloTarget.HDP
-    break
-  default:
-    println "Defaulting to CDH4 dstribution"
-    accumuloTarget = AccumuloTarget.CDH4
-    break
+case "gdac":
+  println "Building for GDAC distribution"
+  accumuloTarget = AccumuloTarget.GDAC
+  break
+case "cdh4":
+  println "Building for CDH4 distribution"
+  accumuloTarget = AccumuloTarget.CDH4
+  break
+case "cdh5":
+  println "Building for CDH5 distribution"
+  accumuloTarget = AccumuloTarget.CDH5
+case "hdp22":
+  println "Building for HDP version 2.2 distribution"
+  accumuloTarget = AccumuloTarget.HDP
+  break
+default:
+  println "Defaulting to CDH4 dstribution"
+  accumuloTarget = AccumuloTarget.CDH4
+  break
 
 }
 
@@ -41,11 +41,11 @@ grails.project.fork = [
     //  compile: [maxMemory: 256, minMemory: 256, debug: false, maxPerm: 256, daemon:true],
 
     // configure settings for the test-app JVM, uses the daemon by default
-    test   : [maxMemory: 1024, minMemory: 256, debug: false, maxPerm: 256, daemon: true],
+    test: [maxMemory: 1024, minMemory: 256, debug: false, maxPerm: 256, daemon: true],
     // configure settings for the run-app JVM
-    run    : [maxMemory: 1024, minMemory: 256, debug: false, maxPerm: 256, forkReserve: false],
+    run: [maxMemory: 1024, minMemory: 256, debug: false, maxPerm: 256, forkReserve: false],
     // configure settings for the run-war JVM
-    war    : [maxMemory: 1024, minMemory: 256, debug: false, maxPerm: 256, forkReserve: false],
+    war: [maxMemory: 1024, minMemory: 256, debug: false, maxPerm: 256, forkReserve: false],
     // configure settings for the Console UI JVM
     console: [maxMemory: 1024, minMemory: 256, debug: false, maxPerm: 256]
 ]
@@ -83,7 +83,7 @@ grails.project.dependency.resolution = {
 
     mavenRepo "http://repo.grails.org/grails/plugins/"
 
-    
+
     mavenRepo "http://repo.boundlessgeo.com/main"
     mavenRepo "http://download.osgeo.org/webdav/geotools"
     mavenRepo "http://www.hibernatespatial.org/repository"
@@ -100,7 +100,7 @@ grails.project.dependency.resolution = {
 
     mavenRepo 'http://www.hibernatespatial.org/repository'
     mavenRepo 'http://www.terracotta.org/download/reflector/releases'
-    mavenRepo "http://oss.sonatype.org/content/repositories/snapshots" 
+    mavenRepo "http://oss.sonatype.org/content/repositories/snapshots"
   }
 
   dependencies {
@@ -120,7 +120,7 @@ grails.project.dependency.resolution = {
     //  compile 'org.springframework:spring-core:4.1.4.RELEASE'
     //  compile 'org.springframework:spring-context:4.1.4.RELEASE'
     //  compile 'org.springframework:spring-orm:4.1.4.RELEASE'
-    test("org.seleniumhq.selenium:selenium-firefox-driver:2.45.0")
+    test( "org.seleniumhq.selenium:selenium-firefox-driver:2.45.0" )
     test "org.gebish:geb-spock:0.10.0"
     test "org.gebish:geb-junit4:0.10.0"
   }
@@ -131,16 +131,16 @@ grails.project.dependency.resolution = {
     // plugins for the compile step
     compile ":scaffolding:2.1.2"
     compile ':cache:1.1.8'
-    compile ":asset-pipeline:2.1.5"
+    compile ":asset-pipeline:2.2.0"
 
     // plugins needed at runtime but not for compilation
-     runtime ":hibernate:3.6.10.18"
-   // runtime ':hibernate4:4.3.6.1'
+    runtime ":hibernate:3.6.10.18"
+    // runtime ':hibernate4:4.3.6.1'
     runtime ":database-migration:1.4.0"
     runtime ":jquery:1.11.1"
 
     runtime ":twitter-bootstrap:3.3.4"
-    runtime ":font-awesome-resources:4.3.0.1"
+    runtime ":font-awesome-resources:4.3.0.2"
 
     // Uncomment these to enable additional asset-pipeline capabilities
     //compile ":sass-asset-pipeline:1.9.0"
@@ -159,5 +159,10 @@ grails.plugin.location.tilestoreDatabase = "../../plugins/tilestore-database"
 grails.plugin.location.tilestoreWFS = "../../plugins/tilestore-wfs"
 grails.plugin.location.tilestoreWMS = "../../plugins/tilestore-wms"
 grails.plugin.location.tilestoreWMTS = "../../plugins/tilestore-wmts"
+
+grails.plugin.location.tilestoreSecurity = "../../plugins/tilestore-security"
+
+
+
 
 
