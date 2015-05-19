@@ -1,9 +1,12 @@
 package tilestore.wmts
 
+import grails.plugin.springsecurity.annotation.Secured
+
 class WmtsController
 {
   def webMapTileService
 
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def index(WmtsCommand cmd)
   {
     /*
@@ -38,6 +41,7 @@ class WmtsController
 
   }
 
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def tileParamGrid(WmtsCommand cmd)
   {
     def results = webMapTileService.getTileGridOverlay( cmd )
@@ -45,18 +49,21 @@ class WmtsController
     render contentType: results.contentType, file: results.buffer
   }
 
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def getCapabilities(GetCapabilitiesCommand cmd)
   {
     def results = webMapTileService.getCapabilities( cmd )
     render contentType: results.contentType, file: results.buffer
   }
 
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def getTile(GetTileCommand cmd)
   {
     def results = webMapTileService.getTile( cmd )
     render contentType: results.contentType, file: results.buffer
   }
 
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def parseWMTS()
   {
 

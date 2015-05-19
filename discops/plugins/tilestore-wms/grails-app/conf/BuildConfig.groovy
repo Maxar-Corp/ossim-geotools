@@ -48,3 +48,5 @@ grails.project.dependency.resolution = {
 }
 
 grails.plugin.location.tilestoreDatabase='../../plugins/tilestore-database'
+grails.plugin.location.tilestoreSecurity='../../plugins/tilestore-security'
+

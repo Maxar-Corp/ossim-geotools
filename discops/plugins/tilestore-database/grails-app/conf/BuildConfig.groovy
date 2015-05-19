@@ -103,4 +103,5 @@ grails.project.dependency.resolution = {
 }
 grails.plugin.location.ossimCommon = "../../plugins/ossim-common"
 grails.plugin.location.tilestoreJob = "../../plugins/tilestore-job"
+grails.plugin.location.tilestoreSecurity = "../../plugins/tilestore-security"
 
