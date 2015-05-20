@@ -1,9 +1,12 @@
 package tilestore.wms
 
+import grails.plugin.springsecurity.annotation.Secured
+
 class WmsController
 {
   def webMappingService
 
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def index(WmsCommand cmd)
   {
     try
@@ -39,12 +42,14 @@ class WmsController
     }
   }
 
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def getCapabilities(GetCapabilitiesCommand cmd)
   {
     def results = webMappingService.getCapabilities( cmd )
     render contentType: results.contentType, text: results.buffer
   }
 
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def getMap(GetMapCommand cmd)
   {
 //    println params

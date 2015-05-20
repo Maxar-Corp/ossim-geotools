@@ -1,9 +1,12 @@
 package tilestore.wfs
 
+import grails.plugin.springsecurity.annotation.Secured
+
 class WfsController
 {
   def webFeatureService
 
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def index(WfsCommand cmd)
   {
     //println params
@@ -31,6 +34,7 @@ class WfsController
     }
   }
 
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def getCapabilities(GetCapabilitiesCommand cmd)
   {
     //println cmd
@@ -38,6 +42,7 @@ class WfsController
     render contentType: results.contentType, text: results.buffer
   }
 
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def describeFeatureType(DescribeFeatureTypeCommand cmd)
   {
     //println cmd
@@ -45,6 +50,7 @@ class WfsController
     render contentType: results.contentType, text: results.buffer
   }
 
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def getFeature(GetFeatureCommand cmd)
   {
     def results = webFeatureService.getFeature( cmd )

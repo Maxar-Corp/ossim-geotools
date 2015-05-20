@@ -1,6 +1,7 @@
 package tilestore.job
 
 import grails.converters.JSON
+import grails.plugin.springsecurity.annotation.Secured
 import joms.geotools.web.HttpStatus
 import org.ossim.common.FetchDataCommand
 
@@ -12,8 +13,12 @@ class JobController {
                             ingest:['POST'],
                             list:['GET']
                            ]
+
+   @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
    def index() { }
    //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
+   @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
+
    def list(FetchDataCommand cmd)
    {
       def usernameRestriction =""
@@ -55,6 +60,8 @@ class JobController {
          render contentType: 'application/json', text: result.data as JSON
       }
    }
+
+   @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
    def create(CreateJobCommand cmd)
    {
       def result = jobService.create(cmd)
@@ -70,6 +77,8 @@ class JobController {
          render contentType: 'application/json', text: result.data as JSON
       }
    }
+
+   @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
    def remove(RemoveJobCommand cmd)
    {
       def result = jobService.remove(cmd)
@@ -85,6 +94,8 @@ class JobController {
          render contentType: 'application/json', text: result.data as JSON
       }
    }
+
+   @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
    def update(CreateJobCommand cmd)
    {
       def result = jobService.updateJob(cmd)
@@ -100,6 +111,8 @@ class JobController {
          render contentType: 'application/json', text: result.data as JSON
       }
    }
+
+   @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
    def show(GetJobCommand cmd)
    {
       def result = jobService.show(cmd)
