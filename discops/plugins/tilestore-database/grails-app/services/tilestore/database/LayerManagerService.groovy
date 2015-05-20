@@ -463,6 +463,7 @@ class LayerManagerService implements InitializingBean
       ingestCommand.jobName = ingestCommand.jobName?:"Ingest"
       ingestCommand.jobId = jobId
       ingestCommand.type = "TileServerIngestMessage"
+
       CreateJobCommand jobCommand = new CreateJobCommand(
               jobId: jobId,
               type: "TileServerIngestMessage",
