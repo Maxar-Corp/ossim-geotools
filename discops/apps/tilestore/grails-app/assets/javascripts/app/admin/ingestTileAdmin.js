@@ -47,7 +47,7 @@ var AppIngestTileAdmin = (function () {
 
             },
             error: function(data){
-                console.log('Error: ' + data);
+                console.log(data);
                 toastr.error(data.message, 'Error on ingest');
 
             }

@@ -157,11 +157,14 @@
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-cog"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li role="presentation" class="dropdown-header">Cutting</li>
-                                    <li><a id="drawRectangle" href="#"><i class="fa fa-square-o"></i>&nbsp;&nbsp;by
+                                    <li><a id="drawRectangle" href="#"><i class="fa fa-square-o fa-lg"></i>&nbsp;&nbsp;by
                                     Rectangle</a></li>
-                                    %{--<li><a id="drawCircle" href="#"><i class="fa fa-circle-thin"></i>&nbsp;&nbsp;by Circle</a></li>--}%
-                                    <li><a id="drawPolygon" href="#"><i class="fa fa-lemon-o"></i>&nbsp;&nbsp;by
+                                    <li><a id="drawPolygon" href="#"><i class="fa fa-lemon-o fa-lg"></i>&nbsp;&nbsp;by
                                     Freehand Polygon</a></li>
+                                    %{--<li><a id="drawCircle" href="#"><i class="fa fa-circle-thin"></i>&nbsp;&nbsp;by Circle</a></li>--}%
+                                    <li class="divider"></li>
+                                    <li class="disabled"><a id="endDraw" href="#"><i
+                                            class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Cutting Off</a></li>
                                 </ul>
                             </li>
                             %{--<li><a href="#">Tool 2</a></li>--}%
@@ -215,14 +218,18 @@
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-cog"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li role="presentation" class="dropdown-header">Manage tile layers</li>
-                                    <li><a id="navCreateLayer" href="#"><span class="fa fa-plus-square-o"></span>&nbsp;Create Tile
+                                    <li><a id="navCreateLayer" href="#"><span
+                                            class="fa fa-plus-square-o fa-lg"></span>&nbsp;Create Tile
                                     Layer</a></li>
-                                    <li><a id="navRenameLayer" href="#"><span class="fa fa-pencil"></span>&nbsp;Rename Tile
+                                    <li><a id="navRenameLayer" href="#"><span
+                                            class="fa fa-pencil fa-lg"></span>&nbsp;Rename Tile
                                     Layer</a></li>
-                                    <li><a id="navDeleteLayer" href="#"><span class="fa fa-trash"></span>&nbsp;Delete Tile
+                                    <li><a id="navDeleteLayer" href="#"><span
+                                            class="fa fa-trash fa-lg"></span>&nbsp;Delete Tile
                                     Layer</a></li>
                                     <li class="divider"></li>
-                                    <li><a id="autoRefreshMapToggle" href="#"><i id="autoRefreshMapToggleIcon" class="fa fa-toggle-off"></i>&nbsp;&nbsp;Auto Refresh
+                                    <li><a id="autoRefreshMapToggle" href="#"><i id="autoRefreshMapToggleIcon"
+                                                                                 class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Auto Refresh
                                     Map</a></li>
                                 </ul>
                             </li>

@@ -8,29 +8,6 @@ var AppDrawFeaturesAdmin = (function () {
 
     var aoiFeature = new ol.Feature();
 
-    //var aoiStyle = new ol.style.Style({
-    //    stroke: new ol.style.Stroke({
-    //        color: 'cyan',
-    //        width: 5
-    //    }),
-    //    fill: new ol.style.Fill({
-    //        color: 'rgba(0, 255, 255, 0.3)'
-    //    })
-    //});
-    //
-    //var aoiSource = new ol.source.Vector({wrapX: false});
-    //
-    //var aoiVector = new ol.layer.Vector({
-    //    source: aoiSource,
-    //    style: aoiStyle
-    //});
-    //
-    //AppAdmin.mapOmar.addLayer(aoiVector);
-
-    //$('#drawCircle').on('click', function(){
-    //    //alert('Draw some circles!');
-    //    addInteraction('Circle');
-    //});
 
     $drawRectangle.on('click', function(){
         addInteraction('Rectangle');
@@ -40,7 +17,6 @@ var AppDrawFeaturesAdmin = (function () {
         addInteraction('Polygon');
     });
 
-    // TODO: Add code for freehand polygon tool.
     function addInteraction(value) {
 
         if(drawInteraction){
@@ -82,6 +58,11 @@ var AppDrawFeaturesAdmin = (function () {
         //
         //}
         AppAdmin.mapOmar.addInteraction(drawInteraction);
+
+        $('#endDraw').html('<i class="fa fa-toggle-on fa-lg"></i>&nbsp;&nbsp;Cutting On')
+            .closest('li')
+            .removeClass('disabled');
+
 
     }
 
@@ -131,6 +112,16 @@ var AppDrawFeaturesAdmin = (function () {
         //console.log(AppIngestTileAdmin.objIngestImage);
 
     }
+
+    $('#endDraw').on('click', function(){
+        if(drawInteraction){
+            console.log('drawInteraction present');
+            AppAdmin.mapOmar.removeInteraction(drawInteraction);
+            $('#endDraw').html('<i class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Cutting Off')
+                .closest('li')
+                .addClass('disabled');
+        }
+    })
 
     return {
         initialize: function (initParams) {
