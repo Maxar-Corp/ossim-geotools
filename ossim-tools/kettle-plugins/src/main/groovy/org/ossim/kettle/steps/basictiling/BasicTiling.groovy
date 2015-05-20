@@ -116,6 +116,7 @@ class BasicTiling extends BaseStep implements StepInterface
       data = (BasicTilingData) sdi;
 
       Object[] r = getRow();
+      println "Basic Tiling Process Row ${r}"
 
       if (r==null)
       {
