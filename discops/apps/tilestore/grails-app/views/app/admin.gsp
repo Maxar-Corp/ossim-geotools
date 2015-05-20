@@ -219,13 +219,13 @@
                                 <ul class="dropdown-menu">
                                     <li role="presentation" class="dropdown-header">Manage tile layers</li>
                                     <li><a id="navCreateLayer" href="#"><span
-                                            class="fa fa-plus-square-o fa-lg"></span>&nbsp;Create Tile
+                                            class="fa fa-plus-square-o fa-lg"></span>&nbsp;&nbsp;Create Tile
                                     Layer</a></li>
                                     <li><a id="navRenameLayer" href="#"><span
-                                            class="fa fa-pencil fa-lg"></span>&nbsp;Rename Tile
+                                            class="fa fa-pencil fa-lg"></span>&nbsp;&nbsp;Rename Tile
                                     Layer</a></li>
                                     <li><a id="navDeleteLayer" href="#"><span
-                                            class="fa fa-trash fa-lg"></span>&nbsp;Delete Tile
+                                            class="fa fa-trash fa-lg"></span>&nbsp;&nbsp;Delete Tile
                                     Layer</a></li>
                                     <li class="divider"></li>
                                     <li><a id="autoRefreshMapToggle" href="#"><i id="autoRefreshMapToggleIcon"
