@@ -121,6 +121,9 @@ The build line can then become:
 `$ gradle clean build -DhadoopDist=cdh4 common-libs:install kettle-libs:install kettle-plugins:install app:install app:shadowJar copyToKettle -x test`
 
 
+To run the command line test app the full documentation can be found under the ossim-tools/README.txt file
+
+
 ### TILESTORE
 
 Is a web application written in grails that defines web APIs to the tilestore storage.  Where possible, we use OGC services to retrieve tiles from the tile store through WMTS, or WMS services.  We have added WFS services to get access to the layer definitions.
@@ -130,6 +133,20 @@ The application can be built to a war file by issuing the following command:
 `grails prod war tilestore.war`
 
 
+Configuration variables for the tilestore as a grails application can be overriden externally via a tile store config groovy file.  It will look for the file using one of two methods.  Either 1) a predefined file name called tilestore-config.groovy found under the <users home>/.grails/tilestore-config.groovy file or via and environment config variable called TILESTORE_CONFIG that points to some arbitrarily named <config-file>.groovy
+
+Any value found in the Config.groovy file for the main grails application can be overridden in the external configuration file.  Typical values you can override are:
 
 
+dataSource.url = "jdbc:postgresql:raster-test"
+accumulo {
+  username = "root"
+  password = "root"
+  zooServers = "sandbox.accumulo.radiantblue.local"
+  instance = "accumulo"
+}
+
+omar.url = "http://localhost:9999/omar"
+omar.wms = "http://localhost:9999/omar/ogc/wms"
+omar.wfs = "http://localhost:9999/omar/wfs"
 

@@ -297,35 +297,45 @@ def putTile()
   @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
   def ingest(IngestCommand cmd)
   {
-    def result = layerManagerService.ingest( cmd )
-
-    response.status = result.status.value
-
-    if ( result.status != HttpStatus.OK )
+    def result
+    if ( !cmd.validate() )
     {
-      if ( params.callback )
-      {
-        String jsonResult = "${params.callback}(${[message: result.message] as JSON})"
-        render contentType: 'application/json', text: jsonResult
-      }
-      else
-      {
-        render contentType: 'application/json', text: [message: result.message] as JSON
-      }
+      response.status = HttpStatus.BAD_REQUEST.value
+      render cmd.errors.allErrors.collect() {
+        message( error: it, encodeAs: 'HTML' )
+      } as JSON
     }
     else
     {
-      // this is to support jsonp posts
-      if ( params.callback )
+      result = layerManagerService.ingest( cmd )
+
+      response.status = result.status.value
+
+      if ( result.status != HttpStatus.OK )
       {
-        String jsonResult = "${params.callback}(${result.data as JSON})"
-        render contentType: 'application/json', text: jsonResult
+        if ( params.callback )
+        {
+          String jsonResult = "${params.callback}(${[message: result.message] as JSON})"
+          render contentType: 'application/json', text: jsonResult
+        }
+        else
+        {
+          render contentType: 'application/json', text: [message: result.message] as JSON
+        }
       }
       else
       {
-        render contentType: 'application/json', text: result.data as JSON
+        // this is to support jsonp posts
+        if ( params.callback )
+        {
+          String jsonResult = "${params.callback}(${result.data as JSON})"
+          render contentType: 'application/json', text: jsonResult
+        }
+        else
+        {
+          render contentType: 'application/json', text: result.data as JSON
+        }
       }
     }
-
   }
 }
