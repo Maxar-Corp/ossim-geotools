@@ -35,7 +35,7 @@ var AppOmarWfsAdmin = (function () {
             $(this).addClass("image-card-highlight").siblings().removeClass("image-card-highlight");
         });
 
-        console.log(obj);
+        //console.log(obj);
         //console.log(obj.properties.id);
 
         omarPreviewLayerId = obj.properties.id;
@@ -44,7 +44,7 @@ var AppOmarWfsAdmin = (function () {
             omarPreviewLayer.getSource().updateParams({'LAYERS': omarPreviewLayerId});
         }
         else {
-            console.log('no omarPreviewLayer');
+            //console.log('no omarPreviewLayer');
             omarPreviewLayer =  new ol.layer.Image( {
                 opacity: 1.0,
                 source: new ol.source.ImageWMS( {
@@ -58,14 +58,14 @@ var AppOmarWfsAdmin = (function () {
             AppAdmin.mapOmar.addLayer(omarPreviewLayer);
 
             // Need to move the omarPreviewLayer below the vector layers
-            console.log(AppAdmin.mapOmar.getLayers().getArray().length);
+            //console.log(AppAdmin.mapOmar.getLayers().getArray().length);
 
             // Move the previewLayer below the aoiVectorLayer
             // Before:
-            console.log(AppAdmin.mapOmar.getLayers().getArray());
+            //console.log(AppAdmin.mapOmar.getLayers().getArray());
             AppManageLayersAdmin.swapTopLayer(2,1);
             // After:
-            console.log(AppAdmin.mapOmar.getLayers().getArray());
+            //console.log(AppAdmin.mapOmar.getLayers().getArray());
 
         }
 
@@ -160,7 +160,7 @@ var AppOmarWfsAdmin = (function () {
         AppIngestTileAdmin.objIngestImage.input.filename = obj.properties.filename;
         AppIngestTileAdmin.objIngestImage.input.entry = obj.properties.entry_id;
 
-        console.log(AppIngestTileAdmin.objIngestImage);
+        //console.log(AppIngestTileAdmin.objIngestImage);
 
     }
 

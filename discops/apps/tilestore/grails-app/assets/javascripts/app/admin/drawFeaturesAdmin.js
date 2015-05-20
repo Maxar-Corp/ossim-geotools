@@ -8,7 +8,6 @@ var AppDrawFeaturesAdmin = (function () {
 
     var aoiFeature = new ol.Feature();
 
-
     $drawRectangle.on('click', function(){
         addInteraction('Rectangle');
     });
@@ -19,10 +18,11 @@ var AppDrawFeaturesAdmin = (function () {
 
     function addInteraction(value) {
 
-        if(drawInteraction){
-            console.log('drawInteraction present');
-            AppAdmin.mapOmar.removeInteraction(drawInteraction);
-        }
+        //console.log(drawInteraction.setActive);
+        //if(drawInteraction){
+        //    console.log('drawInteraction present');
+        //    AppAdmin.mapOmar.removeInteraction(drawInteraction);
+        //}
 
         if (value === 'Polygon') {
 
@@ -35,7 +35,7 @@ var AppDrawFeaturesAdmin = (function () {
 
             drawInteraction.on('drawend', function (evt) {
                 aoiFeature = evt.feature;
-                //console.log(aoiFeature.getGeometry());
+                console.log(aoiFeature.getGeometry());
                 addAoiFeaturePolygon(aoiFeature.getGeometry());
             });
 
@@ -62,7 +62,6 @@ var AppDrawFeaturesAdmin = (function () {
         $('#endDraw').html('<i class="fa fa-toggle-on fa-lg"></i>&nbsp;&nbsp;Cutting On')
             .closest('li')
             .removeClass('disabled');
-
 
     }
 
@@ -115,11 +114,17 @@ var AppDrawFeaturesAdmin = (function () {
 
     $('#endDraw').on('click', function(){
         if(drawInteraction){
-            console.log('drawInteraction present');
-            AppAdmin.mapOmar.removeInteraction(drawInteraction);
+
+            //AppAdmin.mapOmar.removeInteraction(drawInteraction);
+            drawInteraction.setActive(false);
+            AppManageLayersAdmin.aoiVector.getSource().clear();
+            //console.log('draw below: ');
+            //console.log(drawInteraction);
+
             $('#endDraw').html('<i class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Cutting Off')
                 .closest('li')
                 .addClass('disabled');
+            console.log('drawInteraction present');
         }
     })
 
