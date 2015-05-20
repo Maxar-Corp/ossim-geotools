@@ -126,11 +126,31 @@ To run the command line test app the full documentation can be found under the o
 
 ### TILESTORE
 
+Requires postgres to be installed and the full installation docs are beyond the scope and will assume postgres has bee installed and setup via RPM's on unx systems or .exe installers on windows.  We expect at least a 9.X installation along with postgis support
+
+Once a database is setup you can setup a tilestore database.  You can choose anyname for your database and then point the variable `dataSource.url` to a jdbc connection string.  For example: dataSource.url = jdbc:postgresql://localhost:5432/raster-test to point to postgres on port 5432 with database raster-test.  Before the server can use the raster-test database you must set it up via a couple SQL commands
+
+create DATABASE "raster-test";
+
+connect to raster-test then create postgis extension:
+
+create extension postgis;
+
+
 Is a web application written in grails that defines web APIs to the tilestore storage.  Where possible, we use OGC services to retrieve tiles from the tile store through WMTS, or WMS services.  We have added WFS services to get access to the layer definitions.
 
 The application can be built to a war file by issuing the following command:
 
 `grails prod war tilestore.war`
+
+To run the grails application outside of tomcat you can do:
+
+`grails dev run-app`
+
+By default it will come up on port 8080 on `http://localhost:8080/tilestore`.  If you need a different port you can do:
+
+`grails -Dserver.port=9999 dev run-app` if you want the library to come up on port 9999.
+
 
 
 Configuration variables for the tilestore as a grails application can be overriden externally via a tile store config groovy file.  It will look for the file using one of two methods.  Either 1) a predefined file name called tilestore-config.groovy found under the <users home>/.grails/tilestore-config.groovy file or via and environment config variable called TILESTORE_CONFIG that points to some arbitrarily named <config-file>.groovy
