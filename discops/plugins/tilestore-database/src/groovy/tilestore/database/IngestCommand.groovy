@@ -1,5 +1,6 @@
 package tilestore.database
 
+import com.vividsolutions.jts.io.WKTReader
 import grails.validation.Validateable
 import groovy.transform.ToString
 import org.ossim.common.CaseInsensitiveBind
@@ -25,7 +26,28 @@ class IngestCommand  implements CaseInsensitiveBind
       jobName nullable: true
       layer nullable: false, blank: false
       input nullable:false
-      aoi nullable: true  //validator: { val, cmd ->
+      aoi nullable: true, validator: { val, cmd ->
+         def result = true
+         try{
+            if(val)
+            {
+               def geom = new WKTReader().read(val)
+               if(!geom.isSimple())
+               {
+                  result = ['notSimple', 'aoi']
+
+                  println result
+               }
+            }
+         }
+         catch(e)
+         {
+            println e
+            result = ['exception', 'aoi']
+         }
+
+         result
+      }
       aoiEpsg nullable: true
       minLevel nullable: true
       maxLevel nullable: true
