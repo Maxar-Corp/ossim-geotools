@@ -18,12 +18,6 @@ var AppDrawFeaturesAdmin = (function () {
 
     function addInteraction(value) {
 
-        //console.log(drawInteraction.setActive);
-        //if(drawInteraction){
-        //    console.log('drawInteraction present');
-        //    AppAdmin.mapOmar.removeInteraction(drawInteraction);
-        //}
-
         if (value === 'Polygon') {
 
             drawInteraction = new ol.interaction.Draw({
@@ -83,7 +77,7 @@ var AppDrawFeaturesAdmin = (function () {
 
         AppIngestTileAdmin.objIngestImage.aoi = outputWkt;
 
-        //console.log(AppIngestTileAdmin.objIngestImage);
+        AppIngestTileAdmin.getIngestImageObj();
 
     }
 
@@ -108,23 +102,31 @@ var AppDrawFeaturesAdmin = (function () {
 
         AppIngestTileAdmin.objIngestImage.aoi = outputWkt;
 
-        //console.log(AppIngestTileAdmin.objIngestImage);
+        AppIngestTileAdmin.getIngestImageObj();
+
 
     }
+
+
+    // TODO: Move this stuff below
+
+
+    // Remove the AOI feature if the user closes the ingest image modal window
+    $('#ingestImageModal').on('hidden.bs.modal', function (e) {
+        AppManageLayersAdmin.aoiVector.getSource().clear();
+    });
+
 
     $('#endDraw').on('click', function(){
         if(drawInteraction){
 
-            //AppAdmin.mapOmar.removeInteraction(drawInteraction);
             drawInteraction.setActive(false);
             AppManageLayersAdmin.aoiVector.getSource().clear();
-            //console.log('draw below: ');
-            //console.log(drawInteraction);
 
             $('#endDraw').html('<i class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Cutting Off')
                 .closest('li')
                 .addClass('disabled');
-            console.log('drawInteraction present');
+
         }
     })
 
@@ -132,7 +134,10 @@ var AppDrawFeaturesAdmin = (function () {
         initialize: function (initParams) {
             //console.log(initParams);
             loadParams = initParams;
-        }
+        },
+        //setIngestLevels: setIngestLevels
+        //$minIngestLevel: $minIngestLevel,
+        //$maxIngestLevel: $maxIngestLevel
     };
 
 })();
