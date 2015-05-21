@@ -33,6 +33,8 @@ var AppAdmin = (function () {
     var $deleteLayerName = $('#deleteLayerName');
     var $submitDeleteLayer = $('#submitDeleteLayer');
 
+    var $autoRefreshMapToggle = $('#autoRefreshMapToggle');
+
     var currentTileLayer;
     var initLayer;
 
@@ -125,16 +127,13 @@ var AppAdmin = (function () {
 
     }
 
-    $('#autoRefreshMapToggle').on('click', function(){
+
+    $autoRefreshMapToggle.on('click', function(){
         $(this).find('i').toggleClass('fa-toggle-on fa-toggle-off');
     });
 
-    $('#autoRefreshMapToggle').click((function(){
+    $autoRefreshMapToggle.click((function(){
 
-        //$('#autoRefreshMapToggleIcon').toggleClass('fa-toggle-on fa-toggle-off');
-        //console.log($('#autoRefreshMapToggleIcon'));
-
-            //console.log($('#autoRefreshMapToggle'));
             var refreshMap = null;
             return function(e) {
                 if (refreshMap) {
@@ -171,7 +170,6 @@ var AppAdmin = (function () {
     $(window).resize(function(){
         resizeMapRow();
     });
-
 
 
     // End map stuff #################################################################
@@ -223,6 +221,7 @@ var AppAdmin = (function () {
             $maxTileLevel.selectpicker('val', '20');  // intial value for max level
             $maxTileLevel.selectpicker('refresh');
         }
+
     });
     
     function ajaxCreateLayer(obj) {

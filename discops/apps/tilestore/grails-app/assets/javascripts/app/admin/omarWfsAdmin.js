@@ -6,24 +6,6 @@ var AppOmarWfsAdmin = (function () {
     var filterName, filterRangeLow, filterRangeHigh, filterLow, filterHigh, filter;
     var previewFeatureVectorLayer, previewFeatureVectorSource, omarPreviewLayerId, omarPreviewLayer;
     var previewFeatureArray = [];
-    //var objIngestImage = {
-    //    type: 'TileServerIngestMessage',
-    //    input: {
-    //        type: 'local',
-    //        file: '',
-    //        entry: 0
-    //    },
-    //    layer: {
-    //        name: 'testIngest'
-    //        //epsg: 'EPSG:3857',
-    //        //tileWidth: 256,
-    //        //tileHeight: 256
-    //    },
-    //    aoi: '',
-    //    aoiEpsg: '',
-    //    minLevel: '',
-    //    maxLevel: ''
-    //};
 
     // Adds the OMAR WMS image to the map for previewing.
     function previewLayer(obj){
@@ -34,9 +16,6 @@ var AppOmarWfsAdmin = (function () {
         $("#card-" + obj.properties.id).on("click",function() {
             $(this).addClass("image-card-highlight").siblings().removeClass("image-card-highlight");
         });
-
-        //console.log(obj);
-        //console.log(obj.properties.id);
 
         omarPreviewLayerId = obj.properties.id;
         if(omarPreviewLayer){
@@ -151,16 +130,20 @@ var AppOmarWfsAdmin = (function () {
                 })()
             });
 
-            //AppAdmin.mapOmar.addLayer(vectorLayer);
             AppAdmin.mapTile.addLayer(previewFeatureVectorLayer);
-            //console.log('else...');
         }
 
-        // Store the OMAR card obj here?  How to pass to ingest???
+
+        // TODO:  Get the WKT string for the whole image here in case we want to ingest
+        //        the whole image
+
+
+        // Store the OMAR card objIngestImage properties here
+        // Image properties
         AppIngestTileAdmin.objIngestImage.input.filename = obj.properties.filename;
         AppIngestTileAdmin.objIngestImage.input.entry = obj.properties.entry_id;
 
-        //console.log(AppIngestTileAdmin.objIngestImage);
+        console.log(AppIngestTileAdmin.objIngestImage);
 
     }
 

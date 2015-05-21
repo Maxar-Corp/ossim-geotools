@@ -260,7 +260,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title fa fa-th">&nbsp;&nbsp;&nbsp;Create a New Tile Layer</h3>
+                <h3 class="modal-title fa fa-th fa-lg">&nbsp;&nbsp;&nbsp;Create a New Tile Layer</h3>
             </div>
             <div class="modal-body">
                 <div class="container">
@@ -275,11 +275,11 @@
                                  letters, numbers and underscores (case insensitive).  No spaces.</em></small></span>
                             </div>
                             <div class="form-group">
-                                <label for="minTileLevel">Min. Level</label>
+                                <label for="minTileLevel">Minimum Level</label>
                                 <select id="minTileLevel" class="form-control selectpicker show-tick"
                                         maxOptions="10" data-live-search="true">
                                 </select>
-                                <label for="maxTileLevel">Max. Level</label>
+                                <label for="maxTileLevel">Maximum Level</label>
                                 <select id="maxTileLevel" class="form-control selectpicker show-tick" maxOptions="10"
                                         data-live-search="true">
                                 </select><br><br>
@@ -316,7 +316,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title fa fa-pencil">&nbsp;&nbsp;&nbsp;Rename Tile Layers</h3>
+                <h3 class="modal-title fa fa-pencil fa-lg">&nbsp;&nbsp;&nbsp;Rename Tile Layers</h3>
             </div>
             <div class="modal-body">
                 <form id="renameTileLayerForm" data-toggle="validator" class="form">
@@ -366,7 +366,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title fa fa-trash">&nbsp;&nbsp;&nbsp;Delete Tile Layers</h3>
+                <h3 class="modal-title fa fa-trash fa-lg">&nbsp;&nbsp;&nbsp;Delete Tile Layers</h3>
             </div>
             <div class="modal-body">
                 <div class="container">
@@ -397,6 +397,47 @@
     </div><!-- /.modal-dialog modal-lg -->
 </div><!-- /.modal fade "deleteTileLayerModal" -->
 
+<!-- Ingest image modal -->
+<div class="modal fade" id="ingestImageModal" tabindex="-1" role="dialog"
+     aria-labelledby="ingestImageModal" Saria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title fa fa-file-image-o fa-lg">&nbsp;&nbsp;&nbsp;Ingest Tile Image</h3>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <form name="ingestImageForm" role="form">
+                        <div class="row col-sm-6 col-md-6">
+                            <p>Select the desired minimum and maximum ingest levels for the selected image, and then
+                            click the Submit button to start the process.</p>
+                            <div class="form-group">
+                                <label for="minIngestLevel">Minimum Level</label>
+                                <select id="minIngestLevel" class="form-control selectpicker">
+                                </select>
+                                <label for="maxIngestLevel">Maximum Level</label>
+                                <select id="maxIngestLevel" class="form-control selectpicker">
+                                </select>
+                                <br>
+                                <br>
+                                <div>
+                                    <button id="submitIngestImage" class="btn btn-primary ladda-button"
+                                            data-style="expand-left"><span class="ladda-label">Submit</span></button>
+                                    <button id="cancelIngestImage" type="button" class="btn btn-default"
+                                            data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div><!-- /.modal-body -->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog modal-lg -->
+</div><!-- /.modal fade "ingestImageModal" -->
+
+<!-- OMAR WFS Feed Handlebars template -->
 <script id="image-template"  type="text/x-handlebars-template">
     {{#features}}
     <div id="card-{{properties.id}}" class="row image-card">
@@ -427,7 +468,7 @@
                                       title="View image in OMAR"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <a target="_blank"><i id="ingestToCurrentTileLayer"
                                       data-name="{{properties.id}}"
-                                      onclick="AppIngestTileAdmin.ingestLayer({{json this}})"
+                                      onclick="AppIngestTileAdmin.getIngestImageObj({{json this}})"
                                       class="fa fa-sign-in fa-lg ingestToCurrentTileLayer" data-toggle="tooltip"
                                       data-placement="bottom"
                                       title="Add image to current tile layer"></i></a>
