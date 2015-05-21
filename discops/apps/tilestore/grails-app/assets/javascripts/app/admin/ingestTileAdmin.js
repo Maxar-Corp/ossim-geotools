@@ -2,38 +2,66 @@
 var AppIngestTileAdmin = (function () {
     var loadParams;
 
+    var $minIngestLevel = $('#minIngestLevel');
+    var $maxIngestLevel = $('#maxIngestLevel');
+
     var objIngestImage = {
         type: 'TileServerIngestMessage',
         input: {
             type: 'local',
-            // from card obj ('file' and 'entry')
             file: '',
             entry: 0
         },
         layer: {
-            // from tileSelectLayer val
-            name: 'testIngest'
-            // from tilestore wfs query ????
+            name: ''
             //epsg: 'EPSG:3857',
             //tileWidth: 256,
             //tileHeight: 256
         },
-        // Passed from drawFeaturesAdmin
         aoi: '',
-        // from modal
         aoiEpsg: 'EPSG:3857',
         minLevel: '',
         maxLevel: ''
     };
 
-    function ingestLayer(obj){
+    function setIngestLevels(){
 
-        console.log(obj);
-        console.log(objIngestImage);
-        //objIngestImage.input.file = obj.properties.filename;
-        //objIngestImage.input.entry = obj.properties.entry_id;
-        console.log(AppAdmin.$tilelayerSelect.val());
+        // Replace HTML option/values on min/max levels with dynamically generated
+        // from js
+        for (var i = 0; i < 23; i++) {
+            //console.log(i);
+            $minIngestLevel.append('<option value="' + i + '">' + i + '</option>');
+            $minIngestLevel.selectpicker('refresh');
+        }
+        for (var i = 0; i < 23; i++) {
+            //console.log(i);
+            $maxIngestLevel.append('<option value="' + i + '">' + i + '</option>');
+            $maxIngestLevel.selectpicker('val', '20');  // intial value for max level
+            $maxIngestLevel.selectpicker('refresh');
+        }
+
+    }
+
+    function getIngestImageObj(){
+
+        // Set clamping levels
+        setIngestLevels();
+        $('#ingestImageModal').modal('show');
+
+        //console.log(obj);
+        //console.log(objIngestImage);
+        //console.log(AppAdmin.$tilelayerSelect.val());
+
+        //objIngestImage.layer.name = AppAdmin.$tilelayerSelect.val();
+        //console.log(objIngestImage);
+
+    }
+
+    function ingestImage(){
         objIngestImage.layer.name = AppAdmin.$tilelayerSelect.val();
+        objIngestImage.minLevel = $minIngestLevel.val();
+        objIngestImage.maxLevel = $maxIngestLevel.val();
+        console.log(objIngestImage);
 
         //TODO: Refactor using promises...
         $.ajax({
@@ -53,15 +81,22 @@ var AppIngestTileAdmin = (function () {
             }
         });
 
+        // TODO: Close modal after ingest is submitted
+        $('#ingestImageModal').modal('hide');
     }
+
+    $('#submitIngestImage').on('click', function(){
+        console.log('submit firing...');
+        ingestImage();
+    });
 
     return{
         initialize: function (initParams) {
             loadParams = initParams;
             //console.log(loadParams);
         },
-        ingestLayer: ingestLayer,
-        objIngestImage: objIngestImage
+        getIngestImageObj: getIngestImageObj,
+        objIngestImage: objIngestImage,
     }
 
 })();
