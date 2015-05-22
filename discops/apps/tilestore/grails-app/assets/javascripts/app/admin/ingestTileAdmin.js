@@ -26,6 +26,15 @@ var AppIngestTileAdmin = (function () {
 
     function setIngestLevels(){
 
+        // TODO: ASAP!!!
+        //########################################################################
+        //########################################################################
+        //   /location
+        //   /layerManager/getClampedBounds
+        //   /layerName=reference&resLevels=10&res=10&resUnits=meters
+        //########################################################################
+        //########################################################################
+
         // Replace HTML option/values on min/max levels with dynamically generated
         // from js
         for (var i = 0; i < 23; i++) {
