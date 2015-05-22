@@ -214,6 +214,76 @@ class TileCachePyramid extends Pyramid
     result
   }
 
+  /**
+   *
+   * @param fullResolution  Resolution in the units of the projector
+   * @param numberOfResolutions Number of decimation factors or resolutions
+   * @return A hashmap of the form [minLevel: , maxLevel: ]
+   */
+  HashMap clampLevels(double fullResolution, Integer numberOfResolutions)
+  {
+    double coarsestResolution = fullResolution*(1<<(numberOfResolutions-1))
+    double highestResolution  = fullResolution
+
+    def minLevelGrid
+    def minLevelPrevious
+    def maxLevelGrid
+    def maxLevelPrevious
+
+    for (g in this.grids)
+    {
+
+      if(coarsestResolution > g.yResolution)
+      {
+        minLevelGrid = g
+        break
+      }
+      else
+      {
+        minLevelPrevious = g
+      }
+    }
+    for(g in this.grids.reverse())
+    {
+      if(highestResolution < g.yResolution)
+      {
+        maxLevelGrid = g
+        break
+      }
+      else
+      {
+        maxLevelPrevious = g
+      }
+    }
+
+    if(maxLevelGrid && minLevelGrid)
+    {
+      def minLevel = minLevelGrid.z
+      def maxLevel = maxLevelGrid.z
+      def minDelta = Math.abs(minLevelGrid.yResolution-coarsestResolution)
+      def maxDelta = Math.abs(maxLevelGrid.yResolution-highestResolution)
+
+      def prevMinDelta
+      def prevMaxDelta
+      if(minLevelPrevious)
+      {
+        prevMinDelta = Math.abs(minLevelPrevious?.yResolution-coarsestResolution)
+        if(prevMinDelta < minDelta)
+        {
+          minLevel = minLevelPrevious.z
+        }
+      }
+      if(maxLevelPrevious)
+      {
+        prevMaxDelta = Math.abs(maxLevelPrevious?.yResolution-highestResolution)
+        if(prevMaxDelta < maxDelta)
+        {
+          maxLevel = maxLevelPrevious.z
+        }
+      }
+      [minLevel:minLevel, maxLevel:maxLevel]
+    }
+  }
   def getMinMaxLevel()
   {
     Long minLevel = 9999
