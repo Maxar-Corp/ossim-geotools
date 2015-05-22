@@ -7,10 +7,12 @@ import geoscript.geom.Polygon
 import grails.converters.JSON
 import grails.transaction.Transactional
 import groovy.xml.StreamingMarkupBuilder
+import joms.geotools.tileapi.TileCachePyramid
 import joms.geotools.tileapi.hibernate.TileCacheHibernate
 import joms.geotools.tileapi.hibernate.controller.TileCacheServiceDAO
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
 import joms.geotools.web.HttpStatus
+import joms.oms.ossimGpt
 import org.geotools.factory.Hints
 import org.springframework.beans.factory.InitializingBean
 import tilestore.job.CreateJobCommand
@@ -358,6 +360,7 @@ class LayerManagerService implements InitializingBean
 
       daoTileCacheService.getActualLayerBounds( params?.name, constraints )
    }
+
    def createTileLayers(String[] layerNames)
    {
       def layers = []
@@ -423,6 +426,40 @@ class LayerManagerService implements InitializingBean
             result.data = tempResult
          }
       }
+
+      result
+   }
+   def getClampedBounds(GetClampedBoundsCommand cmd)
+   {
+      def result = [status : HttpStatus.OK,
+                    message: "",
+                    data   : []
+      ]
+      def gpt = new ossimGpt()
+
+      TileCachePyramid pyramid = daoTileCacheService.newPyramidGivenLayerName(cmd.layerName)
+      String resUnits = cmd.resUnits?.toLowerCase()
+      if(pyramid.proj.epsg == 4326)
+      {
+         // make sure the units are geographic
+         if(resUnits&&(resUnits != "degrees"))
+         {
+            cmd.res = cmd.res*(1.0/gpt.metersPerDegree().y)
+         }
+      }
+      else
+      {
+         // make sure the units are meters
+         if(resUnits&&(resUnits!= "meters"))
+         {
+            cmd.res = cmd.res*(gpt.metersPerDegree().y)
+         }
+      }
+
+      result.data = pyramid.clampLevels(cmd.res, cmd.resLevels)
+
+      gpt.delete()
+      gpt = null
 
       result
    }

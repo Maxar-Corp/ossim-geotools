@@ -175,24 +175,32 @@ class TileStoreWriter extends BaseStep implements StepInterface
       }
       else
       {
-         ByteArrayOutputStream out = new ByteArrayOutputStream()
-         ImageIO.write(image, "tiff", out)
-         tileData = out.toByteArray()
+         if(image)
+         {
+            ByteArrayOutputStream out = new ByteArrayOutputStream()
+            ImageIO.write(image, "tiff", out)
+            tileData = out.toByteArray()
+         }
+         else
+         {
+            tileData = null
+         }
       }
+
       if(tileData)
       {
-         def bounds =  new Bounds(tileMinx.toDouble(), tileMiny.toDouble(), tileMaxx.toDouble(), tileMaxy.toDouble(),proj)
-         imageTile = new TileCacheImageTile(
-                 bounds,
-                 tileLevel.toInteger(), tileCol.toLong(), tileRow.toLong(),
-                 tileData)
-         ImageTile destinationTile = data?.tileCacheService.getTileByKey(layerInfo, imageTile.key)
+            def bounds =  new Bounds(tileMinx.toDouble(), tileMiny.toDouble(), tileMaxx.toDouble(), tileMaxy.toDouble(),proj)
+            imageTile = new TileCacheImageTile(
+                    bounds,
+                    tileLevel.toInteger(), tileCol.toLong(), tileRow.toLong(),
+                    tileData)
+            ImageTile destinationTile = data?.tileCacheService.getTileByKey(layerInfo, imageTile.key)
 
-         def mergedTile = checkAndMergeTile(imageTile, destinationTile)
+            def mergedTile = checkAndMergeTile(imageTile, destinationTile)
 
-         data?.tileCacheService.writeTile(layerInfo,mergedTile)
+            data?.tileCacheService.writeTile(layerInfo,mergedTile)
 
-         ++count
+            ++count
       }
       else {
       }
