@@ -25,9 +25,23 @@ class LayerManagerController
   }
 
   @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
-  def getFirstValidTile(FirstValidTileCommand)
+  def getClampedBounds(GetClampedBoundsCommand cmd)
   {
-    def result = layerManagerService.getFirstValidTile( cmd )
+    def result = layerManagerService.getClampedBounds(cmd)
+    if ( result.status != HttpStatus.OK )
+    {
+      response.status = result.status.value
+      render contentType: "application/json", ( [message: result.message] as JSON ).toString()
+    }
+    else
+    {
+      render contentType: "application/json", ( result.data as JSON ).toString()
+    }
+  }
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
+  def getFirstValidTile(GetFirstTileCommand cmd)
+  {
+    def result = layerManagerService.getFirstTileMeta( cmd )
 
     if ( result.status != HttpStatus.OK )
     {

@@ -28,6 +28,19 @@ class TilestoreDatabaseFilters {
 
           }
        }
+       getClampedBounds(controller:"layerManager", action:"getClampedBounds") {
+          before = {
+             response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
+             response.setHeader( "Access-Control-Max-Age", "3600" );
+             new GetClampedBoundsCommand().fixParamNames( params )
+          }
+          after = {
+
+          }
+          afterView = {
+
+          }
+       }
        createOrUpdate( uri: '/layerManager/createOrUpdate' ) {
             before = {
                 response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
