@@ -34,16 +34,6 @@ body {
     margin-bottom: 4px;
 }
 
-/*.navbar-default .navbar-brand {*/
-    /*background-color: #565656;*/
-    /*color: transparent;*/
-    /*text-shadow: 0px 2px 3px rgba(255,255,255,0.5);*/
-    /*-webkit-background-clip: text;*/
-    /*-moz-background-clip: text;*/
-    /*background-clip: text;*/
-    /*font-weight: bolder;*/
-/*}*/
-
 #mapsRow {
   /*margin-right: 15px;*/
 }
@@ -216,29 +206,36 @@ body {
 /* BEGIN OMAR WFS Feed */
 
 #omarImageList .row {
-    border: 1px solid #337ab7;
+    /*border: 1px solid #337ab7;*/
+    /*border: 1px solid #e7e7e7;*/
     margin-left: -10px;
+    margin-right: -10px;
 }
 
 .image-card {
     margin-top: 0px;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
     border-radius: 4px;
-    background-color: #f8f8f8;
+    background-color: #e9e9ea;
 }
 
 .image-card:hover {
-    background-color: #A6DB98;
-    -webkit-box-shadow: -3px 3px 3px 0px rgba(50, 50, 50, 0.75);
-    -moz-box-shadow:    -3px 3px 3px 0px rgba(50, 50, 50, 0.75);
-    box-shadow:         -3px 3px 3px 0px rgba(50, 50, 50, 0.75);
+    /*background-color: #A6DB98;*/
+    -webkit-transform: scale(1.025);
+    -moz-transform: scale(1.025);
+    -o-transform: scale(1.025);
+    -webkit-transition: background-color .8s ease;
+    -moz-transition: background-color .8s ease;
+    -ms-transition: background-color .8s ease;
+    -o-transition: background-color .8s ease;
+    transition: background-color .8s ease;
+    /*-webkit-box-shadow: -3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
+    /*-moz-box-shadow:    -3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
+    /*box-shadow:         -3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
 }
 
 .image-card-highlight {
     background-color: #A6DB98;
-    /*-webkit-box-shadow: -3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
-    /*-moz-box-shadow:    -3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
-    /*box-shadow:         -3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
 }
 
 .image-card-thumb {
@@ -247,22 +244,18 @@ body {
 }
 
 .omar-thumb {
-    width: 75px;
-    height: 75px;
-    margin-top: 10px;
+    width: 65px;
+    height: 80px;
+    margin-top: 12px;
     border: 1px solid #337ab7;
 }
 
 .image-card-info {
-    margin-left: 43px;
+    margin-left: 42px;
     padding-top: 8px;
     padding-right: 0px;
     font-size: 9px;
 }
-
-/*.image-card-info strong {*/
-    /*color: #ccc;*/
-/*}*/
 
 .image-card-info hr {
     margin-top: 5px;
@@ -273,21 +266,4 @@ body {
     color: #337ab7;
     cursor: pointer;
 }
-
-/*#left, #right {*/
-    /*position: relative;*/
-    /*float: left;*/
-    /*margin: 0 5px 0 0;*/
-    /*border: 1px solid #337ab7;*/
-    /*width: 200px;*/
-    /*height: 400px;*/
-    /*overflow: hidden;*/
-/*}*/
-
-/*div.panel {*/
-    /*position: absolute;*/
-    /*height: 100%;*/
-    /*width: 100%;*/
-    /*display: none;*/
-/*}*/
 /* END OMAR WFS Feed */

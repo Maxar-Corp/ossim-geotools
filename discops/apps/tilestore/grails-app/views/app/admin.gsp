@@ -245,7 +245,14 @@
     <div id="mapsRow" class="row">
 
         <div id="omarFeed" class="col-md-2" style="">
+            <div>
+                <span>Images in view: </span><span id="wfsImages">96</span>
+                <a id="wfsFilter" href="#"><i class="fa fa-filter text-right"></i></a>
+            </div>
             <div id="omarImageList"></div>
+            <div id="wfsFilterList" style="display:none;">
+                <p>Date stuff here...</p>
+            </div>
         </div>
 
         <div id="mapOmar" class="col-md-5"></div>
@@ -479,6 +486,12 @@
     </div>
     {{/features}}
 </script>
+
+
+
+
+
+
 
 <tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
 
