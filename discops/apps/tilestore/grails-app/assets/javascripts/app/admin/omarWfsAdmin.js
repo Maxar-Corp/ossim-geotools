@@ -200,6 +200,15 @@ var AppOmarWfsAdmin = (function () {
     //alert($('#datetimepicker1').data('date'));
     //alert($('#datetimepicker2').data('date'));
 
+    $('#wfsFilter').on('click', function(){
+        //alert('Hello Filter!');
+        //$('#omarImageList').hide();
+        //$('#wfsFilterList').show();
+        $('#omarImageList, #wfsFilterList').toggle();
+    });
+
+
+
     filterLow = $date1.data('date');
     filterHigh = $date2.data('date');
 
@@ -249,10 +258,6 @@ var AppOmarWfsAdmin = (function () {
         return JSON.stringify(context);
     });
 
-    //$('.omar-thumb').on('click', function(){
-    //    alert('Adding current image to Omar Map');
-    //    console.log(AppAdmin.mapOmar);
-    //});
 
     //$('a.panel').click(function() {
     //    var $target = $($(this).attr('href')),
