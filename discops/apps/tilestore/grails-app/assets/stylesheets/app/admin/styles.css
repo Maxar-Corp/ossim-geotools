@@ -34,10 +34,6 @@ body {
     margin-bottom: 4px;
 }
 
-#mapsRow {
-  /*margin-right: 15px;*/
-}
-
 #omarFeed {
     overflow-x: hidden;
 }
@@ -221,14 +217,14 @@ body {
 
 .image-card:hover {
     /*background-color: #A6DB98;*/
-    -webkit-transform: scale(1.025);
-    -moz-transform: scale(1.025);
-    -o-transform: scale(1.025);
-    -webkit-transition: background-color .8s ease;
-    -moz-transition: background-color .8s ease;
-    -ms-transition: background-color .8s ease;
-    -o-transition: background-color .8s ease;
-    transition: background-color .8s ease;
+    /*-webkit-transform: scale(1.025);*/
+    /*-moz-transform: scale(1.025);*/
+    /*-o-transform: scale(1.025);*/
+    /*-webkit-transition: background-color .8s ease;*/
+    /*-moz-transition: background-color .8s ease;*/
+    /*-ms-transition: background-color .8s ease;*/
+    /*-o-transition: background-color .8s ease;*/
+    /*transition: background-color .8s ease;*/
     /*-webkit-box-shadow: -3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
     /*-moz-box-shadow:    -3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
     /*box-shadow:         -3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
@@ -236,6 +232,11 @@ body {
 
 .image-card-highlight {
     background-color: #A6DB98;
+    -webkit-transition: background-color 1.5s ease;
+    -moz-transition: background-color 1.5s ease;
+    -ms-transition: background-color 1.5s ease;
+    -o-transition: background-color 1.5s ease;
+    transition: background-color 1.5s ease;
 }
 
 .image-card-thumb {
@@ -247,7 +248,6 @@ body {
     width: 65px;
     height: 80px;
     margin-top: 12px;
-    border: 1px solid #337ab7;
 }
 
 .image-card-info {
@@ -255,6 +255,7 @@ body {
     padding-top: 8px;
     padding-right: 0px;
     font-size: 9px;
+    color: black;
 }
 
 .image-card-info hr {
@@ -265,5 +266,15 @@ body {
 .image-card-info .fa {
     color: #337ab7;
     cursor: pointer;
+}
+
+.fuelux .checkbox-custom.checkbox-inline.highlight.checked {
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+    border-radius: 4px;
+}
+
+div[role='tooltip'] {
+    z-index:9999;
 }
 /* END OMAR WFS Feed */

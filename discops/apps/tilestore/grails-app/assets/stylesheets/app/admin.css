@@ -2,9 +2,12 @@
 *= require ../ol3/ol.css
 *= require bootstrap.css
 *= require font-awesome.css
-*= require admin/bootstrap-select.css
-*= require admin/toastr.css
-*= require admin/ladda-themeless.min.css
+
+*= require common/bootstrap-select.css
+*= require common/toastr.css
+*= require common/ladda-themeless.min.css
+*= require common/fuelux.css
+
 *= require admin/styles.css
 *= require_self
 */

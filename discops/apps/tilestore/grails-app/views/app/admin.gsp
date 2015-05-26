@@ -19,7 +19,7 @@
 
 </head>
 
-<body>
+<body class="fuelux">
 
 <tilestore:securityClassificationBanner class="row text-center security-level-top"/>
 
@@ -104,21 +104,11 @@
                         <a class="navbar-brand">${message(code: 'admin.feed.label')}</a>
                     </div>
                     <div class="collapse navbar-collapse" id="omarFeedNavbar">
-                        <ul class="nav navbar-nav">
-                            %{--<li class="active"><a href="#">Home</a></li>--}%
-                            %{--<li class="dropdown">--}%
-                                %{--<a class="dropdown-toggle" data-toggle="dropdown" href="#">1<span class="caret"></span></a>--}%
-                                %{--<ul class="dropdown-menu">--}%
-                                    %{--<li><a href="#">Page 1-1</a></li>--}%
-                                    %{--<li><a href="#">Page 1-2</a></li>--}%
-                                    %{--<li><a href="#">Page 1-3</a></li>--}%
-                                %{--</ul>--}%
-                            %{--</li>--}%
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a id="wfsFilter" href="#" data-toggle="tooltip" data-placement="bottom"
+                                   title="Filter OMAR image results"><i
+                                    class="fa fa-filter"></i></a></li>
                         </ul>
-                        %{--<ul class="nav navbar-nav navbar-right">--}%
-                        %{--<li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>--}%
-                        %{--<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>--}%
-                        %{--</ul>--}%
                     </div>
                 </div>
             </nav>
@@ -241,25 +231,94 @@
 
     </div>
 </div>
+
 <div class="container-fluid">
     <div id="mapsRow" class="row">
 
         <div id="omarFeed" class="col-md-2" style="">
-            <div>
-                <span>Images in view: </span><span id="wfsImages">96</span>
-                <a id="wfsFilter" href="#"><i class="fa fa-filter text-right"></i></a>
-            </div>
             <div id="omarImageList"></div>
             <div id="wfsFilterList" style="display:none;">
-                <p>Date stuff here...</p>
+                <br/>
+                <h4>Filtering</h4>
+                <div class="alert alert-info" role="alert"><p><small>Click Enabled below to start filtering the OMAR
+                feed images.</small></p></div>
+                <form class="form-horizontal">
+                    <fieldset>
+                        <div class="control-group">
+                            <div class="controls">
+
+                                <div class="checkbox" id="filteringEnabledCheckbox">
+                                    <label class="checkbox-custom checkbox-inline highlight" data-initialize="checkbox">
+                                        <input class="sr-only" name="checkboxes" type="checkbox" value="Enabled">
+                                        <span class="checkbox-label">Enabled</span>
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="radios">Date Type</label>
+                            <div class="controls">
+
+                                <label class="radio-custom radio-inline" id="ingestDateRadioLabel"
+                                       data-initialize="radio" for="ingestDateRadio">
+                                    <input class="sr-only" checked="checked" type="radio" id="ingestDateRadio"
+                                           name="radios" value="Ingest">
+                                    Ingest
+                                </label>
+
+                                <label class="radio-custom radio-inline" id="acquisitionDateRadioLabel"
+                                       data-initialize="radio"
+                                       for="acquisitionDateRadio">
+                                    <input class="sr-only" checked="checked" type="radio"
+                                           id="acquisitionDateRadio" name="radios" value="Acquisition">
+                                    Acquisition
+                                </label>
+
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="dateRangeSelect">Date Range</label>
+                            <div class="controls">
+                                <div class="btn-group selectlist disabled" data-resize="auto"
+                                     data-initialize="selectlist"
+                                     id="dateRangeSelect">
+                                    <button class="btn btn-default dropdown-toggle " data-toggle="dropdown" type="button">
+                                        <span class="selected-label">Date Range</span>
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li data-value="Today"><a href="#">Today</a></li>
+                                        <li data-value="Yesterday"><a href="#">Yesterday</a></li>
+                                        <li data-value="Last 7 days"><a href="#">Last 7 days</a></li>
+                                        <li data-value="Last 30 days"><a href="#">Last 30 days</a></li>
+                                        <li data-value="This month"><a href="#">This month</a></li>
+                                        <li data-value="Last month"><a href="#">Last month</a></li>
+                                        <li data-value="Last 3 Months"><a href="#">Last 3 Months</a></li>
+                                    </ul>
+                                    <input class="hidden hidden-field disabled" name="dateRangeSelect" readonly="readonly"
+                                           aria-hidden="true" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <button id="submitFilter" class="btn btn-primary ladda-button disabled"
+                                data-style="expand-left"><span class="ladda-label">Submit</span></button>
+
+                    </fieldset>
+                </form>
             </div>
+        %{--</div>--}%
         </div>
 
         <div id="mapOmar" class="col-md-5"></div>
 
         <div id="mapTile" class="col-md-5"></div>
-
     </div>
+
 </div>
 <!-- Create tile layer modal -->
 <div class="modal fade" id="createTileLayerModal" tabindex="-1" role="dialog" aria-labelledby="createTileLayerModalLabel" Saria-hidden="true">
@@ -466,10 +525,9 @@
                 <strong>Mission: </strong><span>{{formatString properties.mission_id}}</span>
                 <hr>
                 &nbsp;&nbsp;
-                <i class="fa fa-ellipsis-h fa-lg"
-                   data-toggle="tooltip"
-                   data-placement="bottom"
-                   title="View image metadata"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="#"><i id="viewMetadata" class="fa fa-ellipsis-h fa-lg" onclick="alert('viewing metadata');"
+                               data-toggle="tooltip" data-placement="bottom"
+                   title="View image metadata"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <a href="${grailsApplication.config.omar.url}/mapView/imageSpace?layers={{properties.id}}"
                    target="_blank"><i id="viewInOmar" class="fa fa-globe fa-lg" data-toggle="tooltip" data-placement="bottom"
                                       title="View image in OMAR"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
