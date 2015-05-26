@@ -8,10 +8,10 @@
 //= require common/validator.js
 //= require common/handlebars.js
 //= require common/moment.min.js
-//= require common/bootstrap-datetimepicker.min.js
 //= require common/toastr.js
 //= require common/spin.js
 //= require common/ladda.min.js
+//= require common/fuelux.js
 
 //= require common/bootstrap-select.js  /* TODO: Use FuelUX */
 
