@@ -6,6 +6,12 @@ var AppOmarWfsAdmin = (function () {
     var filterName, filterRangeLow, filterRangeHigh, filterLow, filterHigh, filter;
     var previewFeatureVectorLayer, previewFeatureVectorSource, omarPreviewLayerId, omarPreviewLayer;
     var previewFeatureArray = [];
+    var $filteringEnabledCheckbox = $('#filteringEnabledCheckbox');
+    var $ingestDateRadioLabel = $('#ingestDateRadioLabel');
+    var $acquisitionDateRadioLabel = $('#acquisitionDateRadioLabel');
+    var $dateRangeSelect = $('#dateRangeSelect');
+    var $submitFilter = $('#submitFilter');
+
 
     // Adds the OMAR WMS image to the map for previewing.
     function previewLayer(obj){
@@ -147,39 +153,28 @@ var AppOmarWfsAdmin = (function () {
 
     }
 
-    //function ingestLayer(obj){
-    //
-    //    // TODO: Look into using OL3 WFS API here
-    //
-    //    console.log(obj);
-    //    //console.log(obj.properties.filename);
-    //
-    //    objIngestImage.input.file = obj.properties.filename;
-    //    objIngestImage.input.entry = obj.properties.entry_id;
-    //    objIngestImage.layer.name = AppAdmin.$tilelayerSelect.val();
-    //
-    //    console.log(AppAdmin.$tilelayerSelect.val());
-    //    console.log(objIngestImage);
-    //
-    //    // TODO: Refactor using promises...
-    //    $.ajax({
-    //        url: "/tilestore/layerManager/ingest",
-    //        type: 'POST',
-    //        dataType: 'json',
-    //        data: objIngestImage,
-    //        success: function (data) {
-    //            console.log('Success data: ' + data);
-    //            toastr.success('Ingest job posted to queue', 'Success!');
-    //
-    //        },
-    //        error: function(data){
-    //            console.log(data);
-    //            toastr.error(data.message, 'Error on ingest');
-    //
-    //        }
-    //    });
-    //
-    //}
+    // Disable filter controls until the 'Enabled' checkbox is checked
+    $dateRangeSelect.selectlist('disable');
+    $ingestDateRadioLabel.radio('disable');
+    $acquisitionDateRadioLabel.radio('disable');
+
+    // Enable 
+    $filteringEnabledCheckbox.on('change', function () {
+        if ( $(this).checkbox('isChecked') ) {
+            //alert('Checked');
+            $ingestDateRadioLabel.radio('enable');
+            $acquisitionDateRadioLabel.radio('enable');
+            $dateRangeSelect.selectlist('enable');
+            $submitFilter.removeClass('disabled');
+        } else {
+            //alert('Not checked');
+            $ingestDateRadioLabel.radio('disable');
+            $acquisitionDateRadioLabel.radio('disable');
+            $dateRangeSelect.selectlist('disable');
+            $submitFilter.addClass('disabled');
+        }
+    });
+
 
     // TODO: Set these to DOM elements
     filterName = 'acquisition_date'; // Dropdown Acq date, Ing date
@@ -188,14 +183,14 @@ var AppOmarWfsAdmin = (function () {
     filterRangeHigh = '<=';
     filterHigh = '2003-02-04'; // Datepicker
 
-    var $date1 = $('#datetimepicker1').datetimepicker({
-        defaultDate: '2003-01-23',//Date.now(),
-        format: 'YYYY-MM-DD'
-    });
-    var $date2 = $('#datetimepicker2').datetimepicker({
-        defaultDate: '2003-02-04',//Date.now(),
-        format: 'YYYY-MM-DD'
-    });
+    //var $date1 = $('#datetimepicker1').datetimepicker({
+    //    defaultDate: '2003-01-23',//Date.now(),
+    //    format: 'YYYY-MM-DD'
+    //});
+    //var $date2 = $('#datetimepicker2').datetimepicker({
+    //    defaultDate: '2003-02-04',//Date.now(),
+    //    format: 'YYYY-MM-DD'
+    //});
 
     //alert($('#datetimepicker1').data('date'));
     //alert($('#datetimepicker2').data('date'));
@@ -207,14 +202,12 @@ var AppOmarWfsAdmin = (function () {
         $('#omarImageList, #wfsFilterList').toggle();
     });
 
+    //filterLow = $date1.data('date');
+    //filterHigh = $date2.data('date');
 
-
-    filterLow = $date1.data('date');
-    filterHigh = $date2.data('date');
-
-    $('#datetimepicker1').on("change", function () {
-        alert('test');
-    });
+    //$('#datetimepicker1').on("change", function () {
+    //    alert('test');
+    //});
 
     //var wfsUrl = "http://omar.ossim.org/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=20&outputFormat=geojson&filter=file_type='tiff'";
     //var wfsUrl = "http://omar.ossim.org/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=200&outputFormat=geojson&filter=sensor_id='VIIRS'";
@@ -345,6 +338,7 @@ var AppOmarWfsAdmin = (function () {
                     //$('#imageCount').html(images.features.length);
 
                     $images.append(imageTemplate(images));
+
                     $('[data-toggle="tooltip"]').tooltip({
                     });
 
