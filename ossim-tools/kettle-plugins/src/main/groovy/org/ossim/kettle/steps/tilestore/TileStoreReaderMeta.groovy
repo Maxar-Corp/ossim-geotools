@@ -36,9 +36,7 @@ class TileStoreReaderMeta extends BaseStepMeta implements StepMetaInterface
    TileStoreCommon tileStoreCommon
 
    String layerName
-   String level
-   String row
-   String col
+   String hashId
 
    String getXML() throws KettleValueException
    {

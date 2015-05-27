@@ -1,5 +1,7 @@
 package org.ossim.kettle.steps.tilestore
 
+import joms.geotools.tileapi.accumulo.ImageTileKey
+import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
 import org.ossim.core.SynchOssimInit
 import org.pentaho.di.core.exception.KettleException
 import org.pentaho.di.trans.Trans
@@ -17,35 +19,15 @@ class TileStoreReader extends BaseStep implements StepInterface
 {
    private TileStoreCommonData data;
    private TileStoreReaderMeta meta;
+   int layerIdx
+   int hashIdIdx
+   String currentLayer
+   TileCacheLayerInfo currentLayerInfo
 
    TileStoreReader(StepMeta stepMeta, StepDataInterface stepDataInterface,
    int copyNr, TransMeta transMeta, Trans trans)
    {
       super(stepMeta, stepDataInterface, copyNr, transMeta, trans);
-   }
-   private String getFieldValueAsString(String fieldValue, def r,
-                                        TileStoreReaderMeta meta,
-                                        TileStoreCommonData data)
-   {
-      String result = fieldValue
-
-      if(fieldValue && r)
-      {
-         if(fieldValue.startsWith("\${"))
-         {
-            result = environmentSubstitute(fieldValue?:"")
-         }
-         else
-         {
-            Integer fieldIndex   =  getInputRowMeta().indexOfValue(fieldValue)
-            if(fieldIndex >= 0)
-            {
-               result = getInputRowMeta().getString(r,fieldIndex)
-            }
-         }
-      }
-
-      result
    }
    public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws KettleException
    {
@@ -67,9 +49,33 @@ class TileStoreReader extends BaseStep implements StepInterface
       if (first)
       {
          first = false;
+         currentLayerInfo = null
+         currentLayer     = ""
          data.outputRowMeta = getInputRowMeta().clone()
          meta.getFields(data.outputRowMeta, getStepname(), null, null, this)
+
+         layerIdx   =  getInputRowMeta().indexOfValue(meta?.layerName);
+         hashIdIdx   =  getInputRowMeta().indexOfValue(meta?.hashId);
+
+         if((layerIdx < 0) ||
+            (hashIdIdx   < 0))
+         {
+            throw new KettleException("All input parameters need to be specified.  Please specify layer, level, row, col")
+         }
       }
+
+      if((currentLayer != r[layerIdx])&&(r[layerIdx]))
+      {
+         currentLayerInfo = data?.tileCacheService.getLayerInfoByName(r[layerIdx])
+      }
+
+      if(currentLayerInfo&&r[hashIdIdx])
+      {
+         def data = data?.tileCacheService.getTileDataByKey(currentLayerInfo, new ImageTileKey(rowId:r[hashIdIdx]))
+
+         println data?.size()
+      }
+
 
       return true;
    }
