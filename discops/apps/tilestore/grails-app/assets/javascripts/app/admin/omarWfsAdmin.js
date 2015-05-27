@@ -2,16 +2,36 @@
 var AppOmarWfsAdmin = (function () {
 
     var loadParams;
-    var omarWfsUrlCards;
+    var wfsCards;
     var filterName, filterRangeLow, filterRangeHigh, filterLow, filterHigh, filter;
+
     var previewFeatureVectorLayer, previewFeatureVectorSource, omarPreviewLayerId, omarPreviewLayer;
     var previewFeatureArray = [];
+
+    var $filterWfsModal = $('#filterWfsModal');
     var $filteringEnabledCheckbox = $('#filteringEnabledCheckbox');
     var $ingestDateRadioLabel = $('#ingestDateRadioLabel');
     var $acquisitionDateRadioLabel = $('#acquisitionDateRadioLabel');
     var $dateRangeSelect = $('#dateRangeSelect');
+    var dateToday, dateYesterday, dateLast7Days, dateLastMonth, dateLast3Months, dateLast6Months;
+    var $customStartDateFilter = $('#customStartDateFilter');
+    var $customEndDateFilter = $('#customEndDateFilter');
+
     var $submitFilter = $('#submitFilter');
 
+    dateToday = moment().format('MM-DD-YYYY');
+    dateYesterday = moment().subtract(1, 'days').format('MM-DD-YYYY');
+    dateLast7Days = moment().subtract(7, 'days').format('MM-DD-YYYY');
+    dateLastMonth = moment().subtract(1, 'months').format('MM-DD-YYYY');
+    dateLast3Months = moment().subtract(3, 'months').format('MM-DD-YYYY');
+    dateLast6Months = moment().subtract(6, 'months').format('MM-DD-YYYY');
+
+    $customStartDateFilter.datepicker();
+    $customEndDateFilter.datepicker();
+
+    $('#wfsFilter').on('click', function(){
+        $filterWfsModal.modal('show');
+    });
 
     // Adds the OMAR WMS image to the map for previewing.
     function previewLayer(obj){
@@ -157,6 +177,8 @@ var AppOmarWfsAdmin = (function () {
     $dateRangeSelect.selectlist('disable');
     $ingestDateRadioLabel.radio('disable');
     $acquisitionDateRadioLabel.radio('disable');
+    //$customStartDateFilter.datepicker('disable');
+    //$customEndDateFilter.datepicker('disable');
 
     // Enable 
     $filteringEnabledCheckbox.on('change', function () {
@@ -175,39 +197,49 @@ var AppOmarWfsAdmin = (function () {
         }
     });
 
+    $($submitFilter).on('click', function(){
+        //console.log('dateToday: ' + dateToday);
+        //console.log('dateYesterday: ' + dateYesterday);
+        //console.log('dateLast7Days: ' + dateLast7Days);
+        //console.log('dateLastMonth: ' + dateLastMonth);
+        //console.log('dateLast3Months: ' + dateLast3Months);
+        //console.log('dateLast6Months: ' + dateLast6Months);
 
-    // TODO: Set these to DOM elements
-    filterName = 'acquisition_date'; // Dropdown Acq date, Ing date
+        if ($ingestDateRadioLabel.radio('isChecked')){
+            console.log('ingest checked...');
+            filterName = 'ingest_date';
+        }
+        else {
+            console.log('acquisition checked...');
+            filterName = 'acquisition_date';
+        }
+        var selItem = $dateRangeSelect.selectlist('selectedItem').value;
+        console.log(selItem);
+
+    });
+
+    //TODO: Need a Switch statement that grabs the values of the date dropdown
+    //      Will need the ability to display the custom date pickers when
+    //      selected
+    $dateRangeSelect.on('changed.fu.selectlist', function () {
+        console.log('selected list changed!');
+        if ($dateRangeSelect.selectlist('selectedItem').value === 'customDateRange'){
+            console.log('custom selected...');
+            $('#customFilterDates').show();
+
+        }
+        else{
+            $('#customFilterDates').hide();
+        }
+    });
+
+
+
+
     filterRangeLow = '>=';
     filterLow = '2003-01-23';  // Datepicker
     filterRangeHigh = '<=';
     filterHigh = '2003-02-04'; // Datepicker
-
-    //var $date1 = $('#datetimepicker1').datetimepicker({
-    //    defaultDate: '2003-01-23',//Date.now(),
-    //    format: 'YYYY-MM-DD'
-    //});
-    //var $date2 = $('#datetimepicker2').datetimepicker({
-    //    defaultDate: '2003-02-04',//Date.now(),
-    //    format: 'YYYY-MM-DD'
-    //});
-
-    //alert($('#datetimepicker1').data('date'));
-    //alert($('#datetimepicker2').data('date'));
-
-    $('#wfsFilter').on('click', function(){
-        //alert('Hello Filter!');
-        //$('#omarImageList').hide();
-        //$('#wfsFilterList').show();
-        $('#omarImageList, #wfsFilterList').toggle();
-    });
-
-    //filterLow = $date1.data('date');
-    //filterHigh = $date2.data('date');
-
-    //$('#datetimepicker1').on("change", function () {
-    //    alert('test');
-    //});
 
     //var wfsUrl = "http://omar.ossim.org/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=20&outputFormat=geojson&filter=file_type='tiff'";
     //var wfsUrl = "http://omar.ossim.org/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=200&outputFormat=geojson&filter=sensor_id='VIIRS'";
@@ -215,8 +247,7 @@ var AppOmarWfsAdmin = (function () {
     //var wfsUrl = "http://localhost:9999/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=50&outputFormat=geojson&filter=acquisition_date>='2003-01-23'+and+acquisition_date<='2003-01-24'";
     //var wfsUrl = "http://localhost:9999/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=50&outputFormat=geojson&filter=" + filterName + filterRangeLow + filterLow + '+and+' + filterName + filterRangeHigh + filterHigh;
 
-    // Done: 4-7-2015 - cache the DOM element so we only have to look at it once
-    var $images = $('#omarImageList');
+    var $omarImageList = $('#omarImageList');
 
     var imageSource = $('#image-template').html();
     var imageTemplate = Handlebars.compile(imageSource);
@@ -322,12 +353,12 @@ var AppOmarWfsAdmin = (function () {
 
             //AppAdmin.mapOmar.addLayer(vectorLayer);
 
-            omarWfsUrlCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
+            wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
                 "&maxFeatures=200&outputFormat=geojson&filter=";
             //      acquisition_date>='2003-01-23'+and+acquisition_date<='2003-01-24'";
             $.ajax({
-                url: omarWfsUrlCards,
+                url: wfsCards,
                 dataType: 'jsonp',
                 // TODO: Refactor using promises...
                 success: function (images) {
@@ -337,7 +368,7 @@ var AppOmarWfsAdmin = (function () {
                     // TODO: Add this to the Feed
                     //$('#imageCount').html(images.features.length);
 
-                    $images.append(imageTemplate(images));
+                    $omarImageList.append(imageTemplate(images));
 
                     $('[data-toggle="tooltip"]').tooltip({
                     });
