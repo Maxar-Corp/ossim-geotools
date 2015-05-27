@@ -33,11 +33,9 @@ import org.pentaho.di.ui.core.namedcluster.NamedClusterWidget;
 /**
  * Created by gpotts on 5/14/15.
  */
-class TileStoreIteratorDialog  extends BaseStepDialog implements
-        StepDialogInterface
+class TileStoreIteratorDialog  extends TileStoreCommonDialog
 {
    private TileStoreIteratorMeta input;
-   private def swt;
    private DatabaseMeta databaseMeta
    private def layers
    public TileStoreIteratorDialog(Shell parent, Object baseStepMeta,
@@ -45,17 +43,13 @@ class TileStoreIteratorDialog  extends BaseStepDialog implements
       super(parent, (BaseStepMeta)baseStepMeta, transMeta, stepname);
       input = (TileStoreIteratorMeta)baseStepMeta;
    }
+
    public String open()
    {
       Shell parent = getParent();
       Display display = parent.getDisplay();
-      swt = new KettleSwtBuilder()
-      def lsSelect = { event ->
-         SelectionEvent selectionEvent = event as SelectionEvent
-         //println selectionEvent.widget.text
-         input.setChanged()
+      kettleSwtBuilder()
 
-      } as SelectionListener
       def lsMod = {
          event ->
             def tableView = event.source.parent.parent
@@ -97,87 +91,14 @@ class TileStoreIteratorDialog  extends BaseStepDialog implements
          migLayout(layoutConstraints: "insets 2, wrap 1", columnConstraints: "[grow]")
          // migLayout(layoutConstraints:"wrap 2", columnConstraints: "[] [grow,:200:]")
          //gridLayout(numColumns: 2)
-
          composite(layoutData: "growx, spanx, wrap") {
             migLayout(layoutConstraints: "insets 2, wrap 2", columnConstraints: "[] [grow,:200:]")
 
-            label Messages.getString("TileStoreCommon.Stepname.Label")
-            //text(id:"stepName", text: stepname ,layoutData:"span, growx"){
-            text(id: "stepName", layoutData: "span,growx", text: stepname) {
-               onEvent(type: 'Modify') { input.setChanged() }
-            }
-            composite(id:"connectionLayoutId", style:"none", layoutData:"span,growx") {
-               migLayout(layoutConstraints: "inset 0", columnConstraints: "[][][][]")
-               label Messages.getString("TileStoreWriterDialog.Connection.Label")
-               cCombo(id: "connectionList", layoutData: "growx", items: transMeta.databaseNames) {
-                  onEvent(type: 'Selection') {
-                     int idx = swt.connectionList.indexOf(swt.connectionList.text);
-                     databaseMeta = transMeta.getDatabase(idx)
-                     // get and set list of layers
+            stepnameClosure()
+            databaseConnectionClosure()
+            namedClusterWidgetClosure()
+            accumuloConnectionClosure()
 
-                  }
-               }
-               button(id: "editConnection",
-                       text: Messages.getString("TileStoreWriterDialog.EditConnection.Label"),
-                       layoutData: "growx") {
-                  onEvent(type: "Selection") {
-                     int idx = swt.connectionList.indexOf(swt.connectionList.text);
-                     if (databaseMeta) {
-                        DatabaseDialog cid = getDatabaseDialog(shell);
-                        cid.setDatabaseMeta(databaseMeta);
-                        cid.setModalDialog(true);
-                        if (cid.open() != null) {
-                           input.setChanged()
-                        }
-                     }
-                  }
-               }
-               button(id: "newConnection",
-                       text: Messages.getString("TileStoreWriterDialog.NewConnection.Label"),
-                       layoutData: "growx,wrap") {
-                  onEvent(type: "Selection") {
-                     DatabaseMeta databaseMetaTemp = new DatabaseMeta();
-                     databaseMetaTemp.shareVariablesWith(transMeta);
-                     DatabaseDialog cid = getDatabaseDialog(shell);
-                     cid.setDatabaseMeta(databaseMetaTemp);
-                     cid.setModalDialog(true);
-                     if (cid.open() != null) {
-                        databaseMeta = databaseMetaTemp
-                        transMeta.addDatabase(databaseMeta);
-                        swt.connectionList.removeAll()
-                        swt.connectionList.items = transMeta.databaseNames
-                        int idx = swt.connectionList.indexOf(databaseMeta.name);
-                        idx < 0 ?: swt.connectionList.select(idx)
-                     }
-                  }
-               }
-            }
-            composite(style:"none", layoutData:"span,growx") {
-               migLayout(layoutConstraints:"inset 0", columnConstraints: "[grow]")
-               myNamedClusterWidget(id: "namedClusterWidgetId", showLabel:true,
-                       selectionListener:lsSelect, style:"none") {
-               }
-            }
-
-            group(id:"accumulGroupId", text:"Accumulo Connection", style:"none", layoutData:"span,growx") {
-               migLayout(layoutConstraints:"inset 0", columnConstraints: "[][grow,50:100:200]")
-               label Messages.getString("TileStoreWriterDialog.InstanceName.Label")
-               text(id: "accumuloInstance", layoutData: "span,growx") {
-                  onEvent(type: 'Modify') { input.setChanged() }
-               }
-               label Messages.getString("TileStoreWriterDialog.Username.Label")
-               text(id: "accumuloUsername", layoutData: "span,growx") {
-                  onEvent(type: 'Modify') { input.setChanged() }
-               }
-               label Messages.getString("TileStoreWriterDialog.Password.Label")
-               text(id: "accumuloPassword", layoutData: "span,growx", style:"PASSWORD") {
-                  onEvent(type: 'Modify') { input.setChanged() }
-               }
-               label Messages.getString("TileStoreWriterDialog.PasswordVerify.Label")
-               text(id: "accumuloPasswordVerify", layoutData: "span,growx", style:"PASSWORD") {
-                  onEvent(type: 'Modify') { input.setChanged() }
-               }
-            }
             label Messages.getString("TileStoreIteratorDialog.LayerName.Label")
             cCombo(id: "layerName",
                     items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING]),
@@ -247,16 +168,7 @@ class TileStoreIteratorDialog  extends BaseStepDialog implements
               }
            }
          }
-         group(layoutData:"span,growx"){
-            migLayout(layoutConstraints:"insets 2, wrap 2", columnConstraints: "[] [grow]")
-            button("Ok", layoutData:"align center,skip 1,split 2"){
-               onEvent(type:"Selection"){ok()}
-            }
-            button("Cancel", layoutData:""){
-               onEvent(type:"Selection"){cancel()}
-            }
-
-         }
+         okCancelClosure()
       }
       changed = input.hasChanged();
       shell.text = Messages.getString("TileStoreIteratorDialog.Shell.Title")
