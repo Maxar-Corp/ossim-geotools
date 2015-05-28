@@ -4,7 +4,7 @@
 
 //= require jquery.js
 //= require bootstrap.js
-//= require ../ol3/ol-debug.js
+//= require ../ol3/ol.js
 //= require common/validator.js
 //= require common/handlebars.js
 //= require common/moment.min.js
