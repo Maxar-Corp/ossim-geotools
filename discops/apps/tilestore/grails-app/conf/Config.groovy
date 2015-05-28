@@ -214,3 +214,5 @@ rabbitmq {
     password = "Encrypted 2be98afc86aa7f285a91aff228dd38f99"
   }
 }
+
+grails.assets.excludes  = ['**/*-debug.js']
