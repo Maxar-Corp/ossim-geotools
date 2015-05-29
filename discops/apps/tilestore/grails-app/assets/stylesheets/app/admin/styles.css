@@ -201,6 +201,14 @@ body {
 
 /* BEGIN OMAR WFS Feed */
 
+.label-as-badge {
+    border-radius: 1em;
+}
+
+.imageFilter {
+    color: grey;
+}
+
 #omarImageList .row {
     /*border: 1px solid #337ab7;*/
     /*border: 1px solid #e7e7e7;*/
