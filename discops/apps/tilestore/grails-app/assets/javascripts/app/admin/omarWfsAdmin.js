@@ -35,7 +35,7 @@ var AppOmarWfsAdmin = (function () {
     dateLast6Months = moment().subtract(6, 'months').format('MM-DD-YYYY');
 
     function getWfsCards(params){
-
+        console.log(params);
         var dateType = params.dateType || 'ingest_date' // default value
         var startDate = params.startDate || dateLast7Days // default value
         var endDate = params.endDate ||  dateToday // default value
@@ -83,8 +83,12 @@ var AppOmarWfsAdmin = (function () {
     }
 
     $dateRangeSelect.selectlist('selectByText', 'Last 7 days');
-    $customStartDateFilter.datepicker();
-    $customEndDateFilter.datepicker();
+    $customStartDateFilter.datepicker({
+        allowPastDates: true
+    });
+    $customEndDateFilter.datepicker({
+        allowPastDates: true
+    });
 
     $wfsFilter.on('click', function(){
         $filterWfsModal.modal('show');
@@ -232,41 +236,50 @@ var AppOmarWfsAdmin = (function () {
     }
 
     function getQueryType(){
-        var queryRange;
+        var queryRange = {
+            start: '',
+            end: ''
+        };
         var querySelectedItem = $dateRangeSelect.selectlist('selectedItem').value;
-
-        //if (querySelectedItem === 'today'){
-        //    queryRange = dateToday;
-        //}
-        //else if
-        //(querySelectedItem === 'yesterday'){
-        //    queryRange = dateYesterday;
-        //}
-        //console.log(queryRange);
 
         switch(querySelectedItem){
             case "today":
-                queryRange = dateToday;
+                queryRange.start = dateToday;
                 break;
             case "yesterday":
-                queryRange = dateYesterday;
+                queryRange.start = dateYesterday;
+                queryRange.end = dateToday;
                 break;
             case "last7Days":
-                queryRange= dateLast7Days;
+                queryRange.start = dateLast7Days;
+                queryRange.end = dateToday;
                 break;
             case "thisMonth":
-                queryRange = dateThisMonth;
+                queryRange.start = dateThisMonth;
+                queryRange.end = dateToday;
                 break;
             case "last3Months":
-                queryRange = dateLast3Months;
+                queryRange.start = dateLast3Months;
+                queryRange.end = dateToday;
                 break;
             case "last6Months":
-                queryRange = dateLast6Months;
+                queryRange.start = dateLast6Months;
+                queryRange.end = dateToday;
                 break;
             case "customDateRange":
-                alert('Custom date range coming soon!');
+                var inStartDate, outStartDate;
+
+                inStartDate = $customStartDateFilter.datepicker('getFormattedDate');
+                outStartDate = $customEndDateFilter.datepicker('getFormattedDate');
+
+                console.log(moment(inStartDate).format('YYYY-MM-DD'));
+                console.log(moment(outStartDate).format('YYYY-MM-DD'));
+
+                queryRange.start = moment(inStartDate).format('YYYY-MM-DD'); // = '05-12-2014';
+                queryRange.end = moment(outStartDate).format('YYYY-MM-DD'); // = '05-29-2015';
                 break;
         }
+        console.log(queryRange.start + " " + queryRange.end);
         return queryRange;
     }
 
@@ -280,13 +293,14 @@ var AppOmarWfsAdmin = (function () {
         //console.log('dateLast6Months: ' + dateLast6Months);
 
         var queryRange = getQueryType();
+        console.log(queryRange);
 
         if ($ingestDateRadioLabel.radio('isChecked')){
 
             //console.log('ingest checked...');
             filterOpts.dateType = 'ingest_date';
-            filterOpts.startDate =  queryRange;  //dateYesterday;
-            filterOpts.endDate = dateToday;
+            filterOpts.startDate =  queryRange.start;  //dateYesterday;
+            filterOpts.endDate = queryRange.end;
             getWfsCards(filterOpts);
 
         }
@@ -294,14 +308,14 @@ var AppOmarWfsAdmin = (function () {
 
             //console.log('acquisition checked...');
             filterOpts.dateType = 'acquisition_date';
-            filterOpts.startDate = queryRange;
-            filterOpts.endDate = dateToday;
+            filterOpts.startDate = queryRange.start;
+            filterOpts.endDate = queryRange.end;
 
             //console.log(filterOpts);
             getWfsCards(filterOpts);
 
         }
-        //alert($dateRangeSelect.selectlist('selectedItem').text);
+
         $filterWfsModal.modal('hide');
 
     });
@@ -329,7 +343,7 @@ var AppOmarWfsAdmin = (function () {
             //inDate = new Date(date);
             //options = { year: '2-digit', month: 'numeric', day: 'numeric', hour12: 'true', hour: 'numeric', minute: 'numeric', second: 'numeric' }
             //outDate = inDate.toLocaleDateString('en-US', options);
-            var outDate = moment(date).format('YYYY-MM-DD');// HH:mm:ss');
+            var outDate = moment(date).format('YYYY-MM-DD HH:mm:ss');
 
             return outDate;
         }
