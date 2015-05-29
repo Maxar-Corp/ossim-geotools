@@ -23,6 +23,7 @@
 
 <tilestore:securityClassificationBanner class="row text-center security-level-top"/>
 
+<!-- navBar -->
 <div class="container">
     <nav style="top:28px" class="navbar navbar-fixed-top navbar-default" role="navigation">
         <div class="container-fluid">
@@ -90,6 +91,8 @@
 </div><!-- /.container" -->
 
 <div class="navbar-offset"></div>
+
+<!-- toolBarRow -->
 <div class="container-fluid">
     <div id="toolBarRow" class="row">
         <div id="omarFeedToolbar" class="col-md-2 text-center">
@@ -105,9 +108,12 @@
                     </div>
                     <div class="collapse navbar-collapse" id="omarFeedNavbar">
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a id="wfsFilter" href="#" data-toggle="tooltip" data-placement="bottom"
+                            <li>
+                                <a id="wfsFilter" href="#" data-toggle="tooltip" data-placement="bottom"
                                    title="Filter OMAR image results"><i
-                                    class="fa fa-filter"></i></a></li>
+                                    class="fa fa-filter"></i>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -126,25 +132,11 @@
                         <a class="navbar-brand">Preview Map</a>
                     </div>
                     <div class="collapse navbar-collapse" id="previewMapNavbar">
-                        %{--<ul class="nav navbar-nav">--}%
-                            %{--<li class="active"><a href="#">Home</a></li>--}%
-                            %{--<li class="dropdown">--}%
-                                %{--<a class="dropdown-toggle" data-toggle="dropdown" href="#">Tool 1 <span--}%
-                                        %{--class="caret"></span></a>--}%
-                                %{--<ul class="dropdown-menu">--}%
-                                    %{--<li><a href="#">Page 1-1</a></li>--}%
-                                    %{--<li><a href="#">Page 1-2</a></li>--}%
-                                    %{--<li><a href="#">Page 1-3</a></li>--}%
-                                %{--</ul>--}%
-                            %{--</li>--}%
-                            %{--<li><a href="#">Tool 2</a></li>--}%
-                            %{--<li><a href="#">Tool 3</a></li>--}%
-                        %{--</ul>--}%
                         <ul class="nav navbar-nav navbar-right">
-                            %{--<li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>--}%
-                            %{--<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>--}%
                             <li id="omarMapToolsDropdown" class="dropdown disabled">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-cog"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
+                                <a id="omarMapToolsDropdownItem" class="dropdown-toggle disabled"
+                                   data-toggle="dropdown" href="#"><i
+                                        class="fa fa-cog"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li role="presentation" class="dropdown-header">Cutting</li>
                                     <li><a id="drawRectangle" href="#"><i class="fa fa-square-o fa-lg"></i>&nbsp;&nbsp;by
@@ -157,8 +149,6 @@
                                             class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Cutting Off</a></li>
                                 </ul>
                             </li>
-                            %{--<li><a href="#">Tool 2</a></li>--}%
-                            %{--<li><a href="#">Tool 3</a></li>--}%
                         </ul>
                     </div>
                 </div>
@@ -177,30 +167,6 @@
                         <a class="navbar-brand">Tile Map</a>
                     </div>
                     <div class="collapse navbar-collapse" id="tileMapNavbar">
-                        %{--<ul class="nav navbar-nav">--}%
-                            %{--<li class="active"><a href="#">Home</a></li>--}%
-                            %{--<li class="dropdown">--}%
-                                %{--<a class="dropdown-toggle" data-toggle="dropdown" href="#">Tools<span--}%
-                                        %{--class="caret"></span></a>--}%
-                                %{--<ul class="dropdown-menu">--}%
-                                    %{--<li><a href="#">Auto Refresh Map</a></li>--}%
-                                %{--</ul>--}%
-                            %{--</li>--}%
-                        %{--</ul>--}%
-                        %{--<div class="col-md-6 col-md-6">--}%
-                            %{--<form class="navbar-form">--}%
-                                %{--<div class="form-group">--}%
-                                    %{--<div class="input-group" id="tileLayerInputGroup">--}%
-                                        %{--<div class="input-group-addon"><i class="fa fa-th"></i>&nbsp;&nbsp;Active--}%
-                                        %{--Tile Layer</div>--}%
-                                        %{--<select id="tileLayerSelect"--}%
-                                                %{--class="form-control selectpicker show-tick" maxOptions="10"--}%
-                                                %{--data-live-search="true">--}%
-                                        %{--</select>--}%
-                                    %{--</div>--}%
-                                %{--</div>--}%
-                            %{--</form>--}%
-                        %{--</div>--}%
                         <ul class="nav navbar-nav navbar-right">
                             %{--<li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>--}%
                             %{--<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>--}%
@@ -232,10 +198,30 @@
     </div>
 </div>
 
+<!-- mapsRow -->
 <div class="container-fluid">
     <div id="mapsRow" class="row">
 
-        <div id="omarFeed" class="col-md-2" style="">
+        <div id="omarFeed" class="col-md-2">
+            <div>
+                <p>
+                    <strong>Current Filter:&nbsp;</strong>
+                    <span class="imageFilterType label label-primary"></span>
+                </p>
+                <p>
+                    <small><em><span class="imageFilter"></span></em></small>
+                </p>
+                <p>
+                    <strong>Results:&nbsp;</strong>
+                    <a href="" data-toggle="tooltip" data-placement="bottom"
+                       title="Number of images in current filter">
+                        <span class="label label-primary label-as-badge">
+                            <i class="fa fa-picture-o"></i>
+                            <span id="imageCount"></span>
+                        </span>
+                    </a>
+                </p>
+            </div>
             <div id="omarImageList"></div>
         </div>
 
@@ -245,6 +231,7 @@
     </div>
 
 </div>
+
 <!-- Create tile layer modal -->
 <div class="modal fade" id="createTileLayerModal" tabindex="-1" role="dialog" aria-labelledby="createTileLayerModalLabel" Saria-hidden="true">
     <div class="modal-dialog">
@@ -399,41 +386,30 @@
             </div>
             <div class="modal-body">
                 <div class="container">
-                    %{--<form name="filterWfsForm" role="form">--}%
-                        <div class="row col-sm-6 col-md-6">
-                            <p>Click Enabled below to start filtering the OMAR
-                            feed images.</p>
+                        <div class="row col-sm-3 col-md-3">
                             <fieldset>
-                                <div class="control-group">
-                                    <div class="controls">
-                                        <div class="checkbox" id="filteringEnabledCheckbox">
-                                            <label class="checkbox-custom checkbox-inline highlight" data-initialize="checkbox">
-                                                <input class="sr-only" name="checkboxes" type="checkbox" value="Enabled">
-                                                <span class="checkbox-label">Enabled</span>
-                                            </label>
-                                        </div>
-
-                                    </div>
-                                </div>
-
+                                <p><strong>Current Filter:&nbsp;</strong></p>
+                                <p class="imageFilter"></p>
                                 <div class="control-group">
                                     <label class="control-label" for="radios">Date Type</label>
                                     <div class="controls">
-
-                                        <label class="radio-custom radio-inline" id="ingestDateRadioLabel"
-                                               data-initialize="radio" for="ingestDateRadio">
-                                            <input class="sr-only" checked="checked" type="radio" id="ingestDateRadio"
-                                                   name="radios" value="Ingest">
-                                            Ingest
-                                        </label>
 
                                         <label class="radio-custom radio-inline" id="acquisitionDateRadioLabel"
                                                data-initialize="radio"
                                                for="acquisitionDateRadio">
                                             <input class="sr-only" checked="checked" type="radio"
-                                                   id="acquisitionDateRadio" name="radios" value="Acquisition">
+                                                   id="acquisitionDateRadio" name="radios" value="Acquisition Date">
                                             Acquisition
                                         </label>
+
+                                        <label class="radio-custom radio-inline" id="ingestDateRadioLabel"
+                                               data-initialize="radio" for="ingestDateRadio">
+                                            <input class="sr-only" checked="checked" type="radio" id="ingestDateRadio"
+                                                   name="radios" value="Ingest Date">
+                                            Ingest
+                                        </label>
+
+
 
                                     </div>
                                 </div>
@@ -453,8 +429,8 @@
                                                 <li data-value="today"><a href="#">Today</a></li>
                                                 <li data-value="yesterday"><a href="#">Yesterday</a></li>
                                                 <li data-value="last7Days"><a href="#">Last 7 days</a></li>
-                                                <li data-value="This month"><a href="#">This month</a></li>
-                                                <li data-value="lastMonth"><a href="#">Last month</a></li>
+                                                <li data-value="thisMonth"><a href="#">This month</a></li>
+                                                %{--<li data-value="previousMonth"><a href="#">Previous month</a></li>--}%
                                                 <li data-value="last3Months"><a href="#">Last 3 Months</a></li>
                                                 <li data-value="last6Months"><a href="#">Last 6 Months</a></li>
                                                 <li data-value="customDateRange"><a href="#">Custom Date Range</a></li>
@@ -627,11 +603,10 @@
                                     </div>
                                 </div>
                                 <br>
-                                <button id="submitFilter" class="btn btn-primary ladda-button disabled"
+                                <button id="submitFilter" class="btn btn-primary ladda-button"
                                         data-style="expand-left"><span class="ladda-label">Submit</span></button>
                             </fieldset>
                         </div>
-                    %{--</form>--}%
                 </div>
             </div><!-- /.modal-body -->
         </div><!-- /.modal-content -->
@@ -719,12 +694,6 @@
     </div>
     {{/features}}
 </script>
-
-
-
-
-
-
 
 <tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
 
