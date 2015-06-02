@@ -34,7 +34,12 @@ var AppIngestTileAdmin = (function () {
         //   /layerName=reference&resLevels=10&res=10&resUnits=meters
         //########################################################################
         //########################################################################
-
+        $minIngestLevel
+            .find('option')
+            .remove();
+        $maxIngestLevel
+            .find('option')
+            .remove();
         // Replace HTML option/values on min/max levels with dynamically generated
         // from js
         for (var i = 0; i < 23; i++) {
