@@ -23,7 +23,7 @@
 
 <tilestore:securityClassificationBanner class="row text-center security-level-top"/>
 
-<!-- navBar -->
+<!-- Main navBar -->
 <div class="container">
     <nav style="top:28px" class="navbar navbar-fixed-top navbar-default" role="navigation">
         <div class="container-fluid">
@@ -670,29 +670,26 @@
             </div>
             <div class="modal-body">
                 <div class="container">
-                    <form name="ingestImageForm" role="form">
-                        <div class="row col-sm-6 col-md-6">
-                            <p>Select the desired minimum and maximum ingest levels for the selected image, and then
-                            click the Submit button to start the process.</p>
-                            <div class="form-group">
-                                <label for="minIngestLevel">Minimum Level</label>
-                                <select id="minIngestLevel" class="form-control selectpicker">
-                                </select>
-                                <label for="maxIngestLevel">Maximum Level</label>
-                                <select id="maxIngestLevel" class="form-control selectpicker">
-                                </select>
-                                <br>
-                                <br>
-                                <div>
-                                    <button id="submitIngestImage" class="btn btn-primary ladda-button"
-                                            data-style="expand-left"><span class="ladda-label">Submit</span></button>
-                                    <button id="cancelIngestImage" type="button" class="btn btn-default"
-                                            data-dismiss="modal">Close</button>
-                                </div>
+                    <div class="row col-sm-6 col-md-6">
+                        <p>Select the desired minimum and maximum ingest levels for the selected image, and then
+                        click the Submit button to start the process.</p>
+                        <div class="form-group">
+                            <label for="minIngestLevel">Minimum Level</label>
+                            <select id="minIngestLevel" class="form-control selectpicker">
+                            </select>
+                            <label for="maxIngestLevel">Maximum Level</label>
+                            <select id="maxIngestLevel" class="form-control selectpicker">
+                            </select>
+                            <br>
+                            <br>
+                            <div>
+                                <button id="submitIngestImage" class="btn btn-primary ladda-button"
+                                        data-style="expand-left"><span class="ladda-label">Submit</span></button>
+                                <button id="cancelIngestImage" type="button" class="btn btn-default"
+                                        data-dismiss="modal">Close</button>
                             </div>
                         </div>
-                    </form>
-
+                    </div>
                 </div>
             </div><!-- /.modal-body -->
         </div><!-- /.modal-content -->

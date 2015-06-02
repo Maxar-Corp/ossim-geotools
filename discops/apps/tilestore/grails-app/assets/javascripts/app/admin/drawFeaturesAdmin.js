@@ -1,7 +1,7 @@
 "use strict";
 var AppDrawFeaturesAdmin = (function () {
 
-    var loadParams, outputWkt, formatWkt, drawInteraction, ingestLayer;
+    var loadParams, outputWkt, formatWkt, drawInteraction;
     var $drawRectangle = $('#drawRectangle');
     var $drawPolygon = $('#drawPolygon');
     var $tileLayerSelect = $('#tileLayerSelect');
@@ -108,9 +108,6 @@ var AppDrawFeaturesAdmin = (function () {
     }
 
 
-    // TODO: Move this stuff below
-
-
     // Remove the AOI feature if the user closes the ingest image modal window
     $('#ingestImageModal').on('hidden.bs.modal', function (e) {
         AppManageLayersAdmin.aoiVector.getSource().clear();
@@ -134,10 +131,7 @@ var AppDrawFeaturesAdmin = (function () {
         initialize: function (initParams) {
             //console.log(initParams);
             loadParams = initParams;
-        },
-        //setIngestLevels: setIngestLevels
-        //$minIngestLevel: $minIngestLevel,
-        //$maxIngestLevel: $maxIngestLevel
+        }
     };
 
 })();
