@@ -72,6 +72,7 @@ class Job
   String    statusMessage
 
   @Index(name = "job_jobid_idx")
+  @Type(type="text")
   String    message
 
   @Column(name="job_callback", nullable = true)

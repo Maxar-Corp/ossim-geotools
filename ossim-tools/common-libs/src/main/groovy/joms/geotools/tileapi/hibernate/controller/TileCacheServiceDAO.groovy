@@ -345,7 +345,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
          }
          else if(constraints.orderBy.contains(":"))
          {
-            tempOrderBySplit = constraints.orderBy.split("\\:")
+            tempOrderBySplit = constraints.orderBy.split(":")
          }
          else
          {

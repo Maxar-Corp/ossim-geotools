@@ -227,6 +227,7 @@ class TileStoreIterator  extends BaseStep implements StepInterface
 
             if(addHashId) selectionClause << "hash_id"
             String queryString = "select ${selectionClause.join(',')} from ${layerInfo.tileStoreTable} ${whereClause} ${orderByClause}".toString()
+
             def resultArray = new Object[numberOfOutputFields]
             sql.eachRow(queryString){row->
                if(tileLevelIdx>=0)
