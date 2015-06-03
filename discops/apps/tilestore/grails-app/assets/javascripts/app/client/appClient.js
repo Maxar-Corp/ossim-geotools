@@ -10,7 +10,7 @@ AppClient = (function () {
     var coordTemplate = 'Lat: {y}, Lon: {x}';
     var mousePositionControl = new ol.control.MousePosition({
         coordinateFormat: function(coord) {
-            return ol.coordinate.format(coord, coordTemplate, 2);
+            return ol.coordinate.format(coord, coordTemplate, 4);
         },
         projection: 'EPSG:4326',
         undefinedHTML: '<span class="fa fa-map-marker"></span>'
