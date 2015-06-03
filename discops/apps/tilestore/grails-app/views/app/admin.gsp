@@ -62,15 +62,8 @@
                         %{--</div>--}%
                     %{--</form>--}%
                 %{--</div>--}%
-                <div class="nav navbar-nav navbar-right">
-                    %{--<li class="dropdown">--}%
-                        %{--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"--}%
-                           %{--aria-expanded="false"><span class="fa fa-server"></span>&nbsp;Manage Layers</a>--}%
-                        %{--<ul class="dropdown-menu" role="menu">--}%
-
-                        %{--</ul>--}%
-                    %{--</li>--}%
-                    %{--<div class="col-md-3 col-md-3">--}%
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
                         <form class="navbar-form">
                             <div class="form-group">
                                 <div class="input-group" id="tileLayerInputGroup">
@@ -83,8 +76,17 @@
                                 </div>
                             </div>
                         </form>
-                    %{--</div>--}%
-                </div>
+                    </li>
+                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
+                        class="fa fa-user"></i>&nbsp;&nbsp;Admin <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        %{--<li><a href="#"><span class="glyphicon glyphicon-user"></span>Profile</a></li>--}%
+                        %{--<li><a href="#"><span class="glyphicon glyphicon-cog"></span>Settings</a></li>--}%
+                        %{--<li class="divider"></li>--}%
+                        <li>&nbsp;&nbsp;<i class="fa fa-power-off">&nbsp;&nbsp;<g:link controller='logout'>Logout</g:link></i></li>
+                    </ul>
+                </li>
+                </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
@@ -145,7 +147,7 @@
                                     Freehand Polygon</a></li>
                                     %{--<li><a id="drawCircle" href="#"><i class="fa fa-circle-thin"></i>&nbsp;&nbsp;by Circle</a></li>--}%
                                     <li class="divider"></li>
-                                    <li class="disabled"><a id="endDraw" href="#"><i
+                                    <li class="disabled"><a id="endCuts" href="#"><i
                                             class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Cutting Off</a></li>
                                 </ul>
                             </li>
@@ -225,9 +227,16 @@
             <div id="omarImageList"></div>
         </div>
 
-        <div id="mapOmar" class="col-md-5"></div>
+        <div id="mapOmar" class="col-md-5">
+            <div id="mapOmarInfo" class="mapInfoBox mapInfoElement"></div>
+            <div id="mapOmarZoomLevel" class="mapZoomLevel mapInfoElement"></div>
+        </div>
 
-        <div id="mapTile" class="col-md-5"></div>
+        <div id="mapTile" class="col-md-5">
+            <div id="mapTileSpinner" class="mapSpinner mapInfoElement"><i class="fa fa-spinner fa-pulse fa-3x"></i></div>
+            <div id="mapTileZoomLevel" class="mapZoomLevel mapInfoElement"></div>
+            <div id="mapTileInfo" class="mapInfoBox mapInfoElement"></div>
+        </div>
     </div>
 
 </div>

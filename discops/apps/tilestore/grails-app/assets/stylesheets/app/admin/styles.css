@@ -70,132 +70,91 @@ body {
     /*left: 270px;*/
 }
 
+.mapInfoElement {
+    z-index: 999;
+    color: #fff;
+    background-color: rgba(0,60,136,0.5);
+    padding: 2px 10px;
+    border-radius: 5px;
+}
+
+.mapInfoElement:hover{
+    background-color: rgba(0,60,136,0.7);
+}
+
+.mapSpinner {
+    display: none;
+    position: absolute;
+    top: 45%;
+    left: 45%;
+}
+
+.mapInfoBox {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 31px;
+}
+
+.mapZoomLevel {
+    position: absolute;
+    top: 15px;
+    left: 24px;
+}
+
 #mapOmarToolbar {
     padding-right: 7px;
 }
 
 #mapTile {
-    /*position: absolute;*/
     top: 0px;
     z-index: 35;
     padding-left: 6px;
-    /*bottom: 29px;*/
-    /*right: -10px;*/
 }
 
 #mapTileToolbar {
     padding-right: 0px
 }
 
-/* Move the attribution above footer */
-#mapOmar .ol-attribution{
+.ol-scale-line {
   bottom: 2.5em;
 }
 
-/* Move the attribution above footer */
-#mapTile .ol-attribution{
-  bottom: 2.5em;
-}
-
-/* Move the scale bar above footer */
-#mapOmar .ol-scale-line {
-  bottom: 2.5em;
-}
-
-/* Move the scale bar above footer */
-#mapTile .ol-scale-line {
-  bottom: 2.5em;
-}
-
-/* Move the fullscreen toggle to the top right */
-#mapOmar .ol-full-screen {
-  top: 65px;
-  left: auto;
-  right: 6px;
- }
-
- /* Move the fullscreen toggle to the top right */
-#mapTile .ol-full-screen {
-  top: 65px;
-  left: auto;
-  right: 6px;
- }
-
- #mapOmar .ol-rotate {
-   top: 2.25em;
- }
-
- #mapTile .ol-rotate {
-   top: 2.25em;
- }
-
-/* Move the zoomslider to the top right and style it up a bit */
-#mapOmar .ol-zoomslider {
-  top: 34px;
-  left: auto;
-  right: 50px;
-  background-color: rgba(0,60,136,0.2);
-  width: 200px;
-  height: 15px;
-  padding: 0;
-  box-shadow: 0 0 5px rgb(0,60,136);
-  border-radius: 20px;
+.ol-scale-line:hover {
+    background-color: rgba(0,60,136,0.7);
 }
 
 /* Move the zoomslider to the top right and style it up a bit */
-#mapTile .ol-zoomslider {
-  top: 34px;
+.ol-zoomslider {
+  top: 15px;
   left: auto;
-  right: 50px;
-  background-color: rgba(0,60,136,0.2);
+  right: 13px;
+  background-color: rgba(0,60,136,0.5);
   width: 200px;
   height: 15px;
   padding: 0;
-  box-shadow: 0 0 5px rgb(0,60,136);
   border-radius: 20px;
 }
 
-#mapOmar .ol-zoomslider:hover {
-  background-color: rgba(0,60,136,0.3);
+.ol-zoomslider:hover {
+  background-color: rgba(0,60,136,0.7);
 }
 
-#mapTile .ol-zoomslider:hover {
-  background-color: rgba(0,60,136,0.3);
-}
-
-#mapOmar .ol-zoomslider-thumb {
+.ol-zoomslider-thumb {
   height: 15px;
   width: 15px;
   margin: 0;
   filter: none;
-  background-color: rgba(0,60,136,0.6);
+  background-color: #fff;
   border-radius: 20px;
 }
 
-#mapTile .ol-zoomslider-thumb {
-  height: 15px;
-  width: 15px;
-  margin: 0;
-  filter: none;
-  background-color: rgba(0,60,136,0.6);
-  border-radius: 20px;
-}
-
-#mapOmar a.ol-zoomslider-handle:hover {
+a.ol-zoomslider-handle:hover {
   background-color: rgba(0,60,136,0.7);
 }
 
-#mapTile a.ol-zoomslider-handle:hover {
-  background-color: rgba(0,60,136,0.7);
-}
-
-#mapOmar .ol-zoom { 
-  top: 30px;
-  font-size: 1.2em; 
-}
-
-#mapTile .ol-zoom { 
-  top: 30px;
+.ol-zoom {
+  top: 50px;
   font-size: 1.2em; 
 }
 

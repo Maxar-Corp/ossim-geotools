@@ -109,7 +109,6 @@ h1 { font-family: 'Comfortaa', Arial, serif; font-weight: 400; }
 
 #currentZoomLevel2{
 	position: absolute;
-	left: 6.5em;
 	left: 47%;
 	z-index: 999;
 	color: #fff;

@@ -69,11 +69,14 @@
                             </form>
                         </div>
                         <div class="nav navbar-nav navbar-right">
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle fa fa-question-circle" data-toggle="dropdown">&nbsp;Help <b class="caret"></b></a>
-                            </li>
-                            <li>
-                                <a href="#">About</a>
+                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
+                                    class="fa fa-user"></i>&nbsp;&nbsp;Admin <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    %{--<li><a href="#"><span class="glyphicon glyphicon-user"></span>Profile</a></li>--}%
+                                    %{--<li><a href="#"><span class="glyphicon glyphicon-cog"></span>Settings</a></li>--}%
+                                    %{--<li class="divider"></li>--}%
+                                    <li>&nbsp;&nbsp;<i class="fa fa-power-off">&nbsp;&nbsp;<g:link controller='logout'>Logout</g:link></i></li>
+                                </ul>
                             </li>
                         </div>
                     </div><!-- /.navbar-collapse -->

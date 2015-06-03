@@ -67,8 +67,8 @@ var AppOmarWfsAdmin = (function () {
         var sortByFieldText = $sortByFieldSelect.selectlist('selectedItem').text;
         var sortByTypeText = $sortByTypeSelect.selectlist('selectedItem').text;
 
-        console.log('queryNone after being called:');
-        console.log(params);
+        //console.log('queryNone after being called:');
+        //console.log(params);
 
         // Feedback on the UI for the current filter
         $imageFilterType.html($dateRangeSelect.selectlist('selectedItem').text);
@@ -80,7 +80,7 @@ var AppOmarWfsAdmin = (function () {
         }
 
         if (params.queryNone === true || params.queryNone === undefined){
-            console.log(queryNone);
+            //console.log(queryNone);
             wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
                 "&maxFeatures=200&outputFormat=json&filter=" +
@@ -209,7 +209,13 @@ var AppOmarWfsAdmin = (function () {
                     url: loadParams.omarWms,
                     params: {'LAYERS': omarPreviewLayerId, 'VERSION': '1.1.1'},
                     projection: 'EPSG:3857'
-
+                    //imageLoadFunction: function(image, src) {
+                    //    var imageElement = image.getImage();
+                    //    imageElement.onload = function() {
+                    //        console.log('loaded');
+                    //    };
+                    //    imageElement.src = src;
+                    //}
                 } ),
                 name: omarPreviewLayer
             });

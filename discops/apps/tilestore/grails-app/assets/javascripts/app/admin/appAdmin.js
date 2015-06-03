@@ -9,6 +9,8 @@ var AppAdmin = (function () {
     var $select = $('.selectpicker').selectpicker();
     var $tileLayerSelect = $('#tileLayerSelect');
 
+    var $mapTileInfo = $('#mapTileInfo');
+
     var $minTileLevel = $('#minTileLevel');
     var $maxTileLevel = $('#maxTileLevel');
     var $navCreateLayer = $('#navCreateLayer');
@@ -95,15 +97,24 @@ var AppAdmin = (function () {
     //mapOmar.addControl(fullScreenControl);
     //mapTile.addControl(fullScreenControl);
     //
-    //// Add Zoom Slider
-    //var zoomslider = new ol.control.ZoomSlider();
-    //mapOmar.addControl(zoomslider);
-    //mapTile.addControl(zoomslider);
+    // Add Zoom Slider
+    var zoomsliderMapOmar = new ol.control.ZoomSlider();
+    var zoomsliderMapTile = new ol.control.ZoomSlider();
+    mapOmar.addControl(zoomsliderMapOmar);
+    mapTile.addControl(zoomsliderMapTile);
+
+    mapOmar.on('moveend', function () {
+        $("#mapOmarZoomLevel").html('<span class="fa fa-globe"> Zoom: </span>' + mapOmar.getView().getZoom());
+    });
+    mapTile.on('moveend', function () {
+        $("#mapTileZoomLevel").html('<span class="fa fa-globe"> Zoom: </span>' + mapOmar.getView().getZoom());
+    });
 
     // Add Scale bar
-    //var scaleBar = new ol.control.ScaleLine();
-    //mapOmar.addControl(scaleBar);
-    //mapTile.addControl(scaleBar);
+    var scaleBarMapOmar = new ol.control.ScaleLine();
+    var scaleBarMapTile = new ol.control.ScaleLine();
+    mapOmar.addControl(scaleBarMapOmar);
+    mapTile.addControl(scaleBarMapTile);
 
     function switchCurrentLayer(removeOldLayer, addNewLayer){
 
@@ -127,7 +138,6 @@ var AppAdmin = (function () {
 
     }
 
-
     $autoRefreshMapToggle.on('click', function(){
         $(this).find('i').toggleClass('fa-toggle-on fa-toggle-off');
     });
@@ -140,9 +150,13 @@ var AppAdmin = (function () {
                     console.log('true');
                     clearInterval(refreshMap);
                     refreshMap = null;
+                    $mapTileInfo.html('');
+                    $mapTileInfo.hide();
                 }
                 else {
                     console.log('false');
+                    $mapTileInfo.html('Autorefresh Map On');
+                    $mapTileInfo.show();
                     refreshMap = setInterval(function() {
                         var params = initLayer.getSource().getParams();
                         //console.log(params);
@@ -553,17 +567,33 @@ var AppAdmin = (function () {
                 .done(
                     getCurrentTileLayer()
                 );
+            var source = new ol.source.TileWMS( {
+                url: loadParams.tilestoreWmsURL,
+                params: {'LAYERS': currentTileLayer, 'TILED': true, 'VERSION': '1.1.1'}
+            } )
+
             function addInitialLayer(){
-                //console.log(currentTileLayer);
+                console.log(currentTileLayer);
                 initLayer = new ol.layer.Tile( {
                     opacity: 1.0,
-                    source: new ol.source.TileWMS( {
-                        url: loadParams.tilestoreWmsURL,
-                        params: {'LAYERS': currentTileLayer, 'TILED': true, 'VERSION': '1.1.1'}
-                    } ),
-                    name: currentTileLayer
+                    source: source,
+                    name: currentTileLayer,
+                    //imageLoadFunction: function(){
+                    //    alert('hello!');
+                    //}
                 } );
+                source.on('tileloadstart', function(event) {
+                    //progress.addLoaded();
+                    console.log('tile load started...');
+                    //$('#mapTileSpinner').show();
+                });
+                source.on('tileloadend', function(event) {
+                    //progress.addLoaded();
+                    console.log('all tiles loaded...');
+                    //$('#mapTileSpinner').hide();
+                });
                 mapTile.addLayer(initLayer);
+
             }
             addInitialLayer();
 
