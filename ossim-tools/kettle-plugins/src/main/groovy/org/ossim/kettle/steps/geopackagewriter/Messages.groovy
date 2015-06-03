@@ -4,7 +4,7 @@ import org.pentaho.di.i18n.BaseMessages;
 
 public class Messages
 {
-   private static final String packageName = GeoPackageWriterMeta.package.name; // for i18n purposes, needed by Translator2!!   $NON-NLS-1$
+   private static final String packageName = Messages.package.name; // for i18n purposes, needed by Translator2!!   $NON-NLS-1$
 
    public static String getString(String key)
    {

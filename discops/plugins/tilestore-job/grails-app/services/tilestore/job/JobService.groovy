@@ -223,7 +223,7 @@ class JobService
       {
          //println "ERROR!!!!!!!!!!!!!!!! ${e}"
          result.status = HttpStatus.BAD_REQUEST;
-         result.message = "Exception: ${e.toString}"
+         result.message = "Exception: ${e.toString()}"
       }
 
       result

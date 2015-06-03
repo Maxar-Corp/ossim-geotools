@@ -10,13 +10,13 @@ class LayerManagerController
 {
   def layerManagerService
 
-  @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
+  @Secured( ['ROLE_LAYER_ADMIN', 'ROLE_ADMIN'] )
   def index()
   {
 
   }
 
-  @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def getActualBounds()
   {
     def bounds = layerManagerService.getActualBounds( params )
@@ -24,7 +24,7 @@ class LayerManagerController
     render contentType: "application/json", ( bounds as JSON ).toString()
   }
 
-  @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def getClampedBounds(GetClampedBoundsCommand cmd)
   {
     def result = layerManagerService.getClampedBounds(cmd)
@@ -131,7 +131,7 @@ def putTile()
   }
   */
 
-  @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
+  @Secured( ['ROLE_LAYER_ADMIN', 'ROLE_ADMIN'] )
   def createOrUpdate(CreateLayerCommand cmd)
   {
     if ( request.JSON )
@@ -162,7 +162,7 @@ def putTile()
 
   }
 
-  @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
+  @Secured( ['ROLE_LAYER_ADMIN', 'ROLE_ADMIN'] )
   def create(CreateLayerCommand cmd)
   {
     if ( request.JSON )
@@ -190,7 +190,7 @@ def putTile()
     }
   }
 
-  @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
+  @Secured( ['ROLE_LAYER_ADMIN', 'ROLE_ADMIN'] )
   def delete(def params)
   {
     def name
@@ -227,7 +227,7 @@ def putTile()
     }
   }
 
-  @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
+  @Secured( ['ROLE_LAYER_ADMIN', 'ROLE_ADMIN'] )
   def rename(RenameLayerCommand cmd)//String oldName, String newName)
   {
 
@@ -260,7 +260,7 @@ def putTile()
     }
   }
 
-  @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def show()
   {
     def result = layerManagerService.show( params.name ?: "" )
@@ -276,7 +276,7 @@ def putTile()
     }
   }
 
-  @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def list()
   {
     def result = layerManagerService.list()
@@ -291,7 +291,7 @@ def putTile()
     }
   }
 
-  @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def getFirstTileMeta(GetFirstTileCommand cmd)
   {
     def result = layerManagerService.getFirstTileMeta( cmd )
@@ -308,7 +308,7 @@ def putTile()
 
   }
 
-  @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
+  @Secured( ['ROLE_LAYER_ADMIN', 'ROLE_ADMIN'] )
   def ingest(IngestCommand cmd)
   {
     def result

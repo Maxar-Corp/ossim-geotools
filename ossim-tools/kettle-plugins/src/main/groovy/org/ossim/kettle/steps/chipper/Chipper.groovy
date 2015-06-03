@@ -207,7 +207,7 @@ class Chipper extends BaseStep implements StepInterface
                  cut_height: "${h}" as String,
                  cut_width: "${w}" as String,
                  //'hist-op': 'auto-minmax',
-                 'hist-op': meta.histogramOperationType,
+                 'hist_op': meta.histogramOperationType,
                  operation: 'ortho',
                  scale_2_8_bit: 'true',
                  'srs': epsg,

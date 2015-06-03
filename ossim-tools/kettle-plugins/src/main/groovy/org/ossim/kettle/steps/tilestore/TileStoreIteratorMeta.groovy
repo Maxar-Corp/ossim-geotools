@@ -128,8 +128,8 @@ class TileStoreIteratorMeta extends BaseStepMeta implements StepMetaInterface
       try
       {
          // field reads here
-         def testSelectedFieldNames = XMLHandler.getTagValue(values, "selectedFieldNames")
-         def outputFieldNamesNode   = XMLHandler.getSubNode( values, "outputFieldNames" );
+         def testSelectedFieldNames = XMLHandler.getTagValue(stepnode, "selectedFieldNames")
+         def outputFieldNamesNode   = XMLHandler.getSubNode( stepnode, "outputFieldNames" );
          if(testSelectedFieldNames)
          {
             selectedFieldNames = [] as Set
@@ -150,6 +150,7 @@ class TileStoreIteratorMeta extends BaseStepMeta implements StepMetaInterface
          maxLevel             = XMLHandler.getTagValue(stepnode, "maxLevel")?:"";
 
          tileStoreCommon.readData(stepnode, databases, repository)
+
       }
       catch (Exception e)
       {

@@ -83,14 +83,14 @@ class TileStoreWriterDialog extends BaseStepDialog implements
          //gridLayout(numColumns: 2)
          composite(style:"none", layoutData:"span,growx") {
             migLayout(layoutConstraints:"inset 0", columnConstraints: "[][grow,50:100:200]")
-            label Messages.getString("TileStoreCommon.Stepname.Label")
+            label Messages.getString("TileStoreCommonDialog.Stepname.Label")
             text(id: "stepName", layoutData: "span,growx", text: stepname) {
                onEvent(type: 'Modify') { input.setChanged() }
             }
          }
          composite(id:"connectionLayoutId", style:"none", layoutData:"span,growx") {
             migLayout(layoutConstraints: "inset 0", columnConstraints: "[][][][]")
-            label Messages.getString("TileStoreWriterDialog.Connection.Label")
+            label Messages.getString("TileStoreCommonDialog.Connection.Label")
             cCombo(id: "connectionList", layoutData: "growx", items: transMeta.databaseNames) {
                onEvent(type: 'Selection') {
                   int idx = swt.connectionList.indexOf(swt.connectionList.text);
@@ -100,7 +100,7 @@ class TileStoreWriterDialog extends BaseStepDialog implements
                }
             }
             button(id: "editConnection",
-                    text: Messages.getString("TileStoreWriterDialog.EditConnection.Label"),
+                    text: Messages.getString("TileStoreCommonDialog.EditConnection.Label"),
                     layoutData: "growx") {
                onEvent(type: "Selection") {
                   int idx = swt.connectionList.indexOf(swt.connectionList.text);
@@ -115,7 +115,7 @@ class TileStoreWriterDialog extends BaseStepDialog implements
                }
             }
             button(id: "newConnection",
-                    text: Messages.getString("TileStoreWriterDialog.NewConnection.Label"),
+                    text: Messages.getString("TileStoreCommonDialog.NewConnection.Label"),
                     layoutData: "growx,wrap") {
                onEvent(type: "Selection") {
                   DatabaseMeta databaseMetaTemp = new DatabaseMeta();
@@ -142,19 +142,19 @@ class TileStoreWriterDialog extends BaseStepDialog implements
 
          group(id:"accumulGroupId", text:"Accumulo Connection", style:"none", layoutData:"span,growx") {
             migLayout(layoutConstraints:"inset 0", columnConstraints: "[][grow,50:100:200]")
-            label Messages.getString("TileStoreWriterDialog.InstanceName.Label")
+            label Messages.getString("TileStoreCommonDialog.InstanceName.Label")
             text(id: "accumuloInstance", layoutData: "span,growx") {
                onEvent(type: 'Modify') { input.setChanged() }
             }
-            label Messages.getString("TileStoreWriterDialog.Username.Label")
+            label Messages.getString("TileStoreCommonDialog.Username.Label")
             text(id: "accumuloUsername", layoutData: "span,growx") {
                onEvent(type: 'Modify') { input.setChanged() }
             }
-            label Messages.getString("TileStoreWriterDialog.Password.Label")
+            label Messages.getString("TileStoreCommonDialog.Password.Label")
             text(id: "accumuloPassword", layoutData: "span,growx", style:"PASSWORD") {
                onEvent(type: 'Modify') { input.setChanged() }
             }
-            label Messages.getString("TileStoreWriterDialog.PasswordVerify.Label")
+            label Messages.getString("TileStoreCommonDialog.PasswordVerify.Label")
             text(id: "accumuloPasswordVerify", layoutData: "span,growx", style:"PASSWORD") {
                onEvent(type: 'Modify') { input.setChanged() }
             }
