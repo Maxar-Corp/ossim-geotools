@@ -46,15 +46,14 @@ var AppAdmin = (function () {
     // 3857
     var melbourneFlorida3857 = ol.proj.transform([-80.6552775, 28.1174805], 'EPSG:4326', 'EPSG:3857');
 
-    //var mousePositionControl = new ol.control.MousePosition({
-    //    coordinateFormat: ol.coordinate.createStringXY(4),
-    //    projection: 'EPSG:4326',
-    //    // comment the following two lines to have the mouse position
-    //    // be placed within the map.
-    //    className: 'custom-mouse-position',
-    //    target: document.getElementById('mouse-position'),
-    //    undefinedHTML: '&nbsp;'
-    //});
+    var coordTemplate = 'Lat: {y}, Lon: {x}';
+    var mousePositionControlOmar = new ol.control.MousePosition({
+        coordinateFormat: function(coord) {
+            return ol.coordinate.format(coord, coordTemplate, 4);
+        },
+        projection: 'EPSG:4326',
+        undefinedHTML: '<span class="fa fa-map-marker"></span>'
+    });
 
     var mapOmar = new ol.Map({
         controls: ol.control.defaults({
@@ -62,7 +61,7 @@ var AppAdmin = (function () {
                 controlollapsible: false
             })
         }).extend([
-            //mousePositionControl
+            mousePositionControlOmar
         ]),
         //interactions: ol.interaction.defaults().extend([
         //    new ol.interaction.DragRotateAndZoom()
@@ -76,13 +75,21 @@ var AppAdmin = (function () {
         target: 'mapOmar'
     });
 
+    var mousePositionControlTile = new ol.control.MousePosition({
+        coordinateFormat: function(coord) {
+            return ol.coordinate.format(coord, coordTemplate, 4);
+        },
+        projection: 'EPSG:4326',
+        undefinedHTML: '<span class="fa fa-map-marker"></span>'
+    });
+
     var mapTile = new ol.Map({
         controls: ol.control.defaults({
             attributionOptions: ({
                 controlollapsible: false
             })
         }).extend([
-            //mousePositionControl
+            mousePositionControlTile
         ]),
         //interactions: ol.interaction.defaults().extend([
         //    new ol.interaction.DragRotateAndZoom()
@@ -91,6 +98,8 @@ var AppAdmin = (function () {
         view: mapOmar.getView(),
         target: 'mapTile'
     });
+
+
 
     //Add Full Screen
     //var fullScreenControl = new ol.control.FullScreen();

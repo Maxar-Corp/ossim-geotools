@@ -116,8 +116,19 @@ body {
     padding-right: 0px
 }
 
+.ol-mouse-position {
+    top: auto;
+    bottom: 2.5em;
+    right: 8px;
+    color: #fff;
+    background-color: rgba(0,60,136,0.4);
+    padding: 2px 10px;
+    border-radius: 5px;
+}
+
 .ol-scale-line {
   bottom: 2.5em;
+    background-color: rgba(0,60,136,0.5);
 }
 
 .ol-scale-line:hover {
@@ -245,3 +256,37 @@ div[role='tooltip'] {
     z-index:9999;
 }
 /* END OMAR WFS Feed */
+
+.corner-ribbon{
+    width: 175px;
+    position: absolute;
+    top: 25px;
+    left: -50px;
+    text-align: center;
+    line-height: 40px;
+    letter-spacing: 1px;
+    font-weight: bolder;
+    color: #3B5957;
+    background-color: #f8901b;
+    text-shadow: 0px 1px 0px rgba(245, 251, 247, 0.5);
+    font-size: 24px;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+}
+
+.corner-ribbon.sticky{
+    position: fixed;
+}
+
+.corner-ribbon.shadow{
+    /*box-shadow: 0 0 3px rgba(0,0,0,.3);*/
+}
+
+.corner-ribbon.top-left{
+    top: 20px;
+    left: -80px;
+    margin-left: 32px;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    z-index: 99999;
+}

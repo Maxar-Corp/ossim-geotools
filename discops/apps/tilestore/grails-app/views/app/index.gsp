@@ -19,6 +19,8 @@
 
 <tilestore:securityClassificationBanner class="row text-center"/>
 
+<div class="corner-ribbon top-left sticky red shadow">Alpha</div>
+
 <div class="container">
     <div class="row">
 
@@ -72,20 +74,9 @@
     </div>
 </div>
 
-<!--<tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
--->
+
 <tilestore:securityClassificationBanner class="navbar-default navbar-fixed-bottom text-center"/>
-<!--<nav class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom ">
-    <div class="container " style="min-height:">
-        Unclassified
-    </div>
-</nav>
--->
-<!-- Vendor libs -->
-<%--
-<script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
---%>
+
 <asset:javascript src="app/main.js"/>
 </body>
 
