@@ -37,7 +37,7 @@ class Job
   @Id
   @SequenceGenerator(name="job_id_seq",sequenceName="job_id_seq")
   @GeneratedValue(strategy=GenerationType.AUTO,generator="job_id_seq")
-  @Column(name="id", unique=true, nullable=false)
+  @Column(name="id", unique=true, nullable=false, columnDefinition = "serial")
   Long id;
 
   @Version
@@ -79,15 +79,18 @@ class Job
   String    jobCallback
 
 
-  @Column(name="percent_coimplete", nullable = true)
+  @Column(name="percent_complete", nullable = true)
   Double    percentComplete
 
+  @Column(name="submit_date", nullable = true)
   @Index(name = "job_submit_date_idx")
   Date      submitDate
 
+  @Column(name="start_date", nullable = true)
   @Index(name = "job_start_date_idx")
   Date      startDate
 
+  @Column(name="end_date", nullable = true)
   @Index(name = "job_end_date_idx")
   Date      endDate
 
