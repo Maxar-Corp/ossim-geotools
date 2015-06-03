@@ -38,8 +38,7 @@ class AppController
         ] as JSON
     ]
   }
-
-  @Secured( ['ROLE_ADMIN'] )
+  @Secured( ['ROLE_LAYER_ADMIN', 'ROLE_ADMIN'] )
   def admin()
   {
     def sql = new Sql( dataSource )
