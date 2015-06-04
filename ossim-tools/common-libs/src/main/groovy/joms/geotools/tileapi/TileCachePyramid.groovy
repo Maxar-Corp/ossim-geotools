@@ -296,6 +296,23 @@ class TileCachePyramid extends Pyramid
 
     [minLevel:minLevel, maxLevel:maxLevel]
   }
+  HashMap intersectLevels(Integer minLevel, Integer maxLevel)
+  {
+    HashMap result = [:]
+    HashMap minMaxLevels = this.minMaxLevel
+
+    if(minMaxLevels.minLevel<= minMaxLevels.maxLevel)
+    {
+      result.maxLevel = Math.min(minMaxLevels.maxLevel, maxLevel)
+      result.minLevel = Math.max(minMaxLevels.minLevel, minLevel)
+      if(result.minLevel>result.maxLevel)
+      {
+        result = [:]
+      }
+    }
+
+    result
+  }
   TileCacheHints getHints()
   {
     def minMax = this.minMaxLevel
