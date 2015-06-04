@@ -175,8 +175,11 @@ class GeoPkgWriter extends BaseStep implements StepInterface
       }
       else
       {
-         // if the group ids of the tiles come in have changed we will assume
-         // that we are writing to a different geopackage
+         // If the group id is supported and was specified then we will check to see
+         // if the id coming in has changed
+         //
+         // If they changed we will configure another group
+         //
          if(currentGroupId != null)
          {
             currentGroupId = r[groupIdIdx]
