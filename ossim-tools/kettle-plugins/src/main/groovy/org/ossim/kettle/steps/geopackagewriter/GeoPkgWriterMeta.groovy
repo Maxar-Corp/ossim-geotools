@@ -71,10 +71,10 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
                   RowMetaInterface[] info,
                   StepMeta nextStep, VariableSpace space)
    {
-    //  ValueMetaInterface field = ValueMetaFactory.createValueMeta(inputImageField, OssimValueMetaBase.TYPE_IMAGE)
+      //  ValueMetaInterface field = ValueMetaFactory.createValueMeta(inputImageField, OssimValueMetaBase.TYPE_IMAGE)
 
-     // field.setOrigin(origin)
-     // r.addValueMeta(field)
+      // field.setOrigin(origin)
+      // r.addValueMeta(field)
    }
    Object clone()
    {
