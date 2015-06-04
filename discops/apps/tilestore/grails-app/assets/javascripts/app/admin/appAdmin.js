@@ -535,11 +535,12 @@ var AppAdmin = (function () {
                 $minTileLevel.selectpicker('val', '0');  // intial value for max level
                 $minTileLevel.selectpicker('refresh');
             }
-
             $epsgCode.selectpicker('val', 'EPSG:3857');
             $select.selectpicker('render');
             $createTileLayerForm.trigger('reset');
             $submitCreateLayer.removeClass('btn-success disabled').addClass('btn-primary');
+            $minTileLevel.val('0');
+            $maxTileLevel.val('20');
         }
         else if (frm === 'rename') {
             $renameTileLayerForm.trigger('reset');
