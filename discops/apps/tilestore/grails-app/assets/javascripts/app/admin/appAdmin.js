@@ -542,7 +542,6 @@ var AppAdmin = (function () {
             $submitCreateLayer.removeClass('btn-success disabled').addClass('btn-primary');
             $minTileLevel.val('0');
             $maxTileLevel.val('20');
-            console.log('hello world');
         }
         else if (frm === 'rename') {
             $renameTileLayerForm.trigger('reset');
