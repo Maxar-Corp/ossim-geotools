@@ -521,7 +521,7 @@ var AppAdmin = (function () {
             for (var i = 0; i < 23; i++) {
                 //console.log(i);
                 $maxTileLevel.append('<option value="' + i + '">' + i + '</option>');
-                $maxTileLevel.selectpicker('val', '20');  // intial value for max level
+                $maxTileLevel.selectpicker('val', '20');  // initial value for max level
                 $maxTileLevel.selectpicker('refresh');
             }
             for (var i = 0; i < 23; i++) {
@@ -532,16 +532,18 @@ var AppAdmin = (function () {
             for (var i = 0; i < 23; i++) {
                 //console.log(i);
                 $minTileLevel.append('<option value="' + i + '">' + i + '</option>');
-                $minTileLevel.selectpicker('val', '0');  // intial value for max level
+                $minTileLevel.selectpicker('val', '0');  // initial value for max level
                 $minTileLevel.selectpicker('refresh');
             }
 
             $epsgCode.selectpicker('val', 'EPSG:3857');
             $select.selectpicker('render');
-            $createTileLayerForm.trigger('reset');
+            //$createTileLayerForm.trigger('reset');
             $submitCreateLayer.removeClass('btn-success disabled').addClass('btn-primary');
-            $minTileLevel.val('0');
-            $maxTileLevel.val('20');
+            console.log('min: ' + $minTileLevel.val())
+            console.log('max: ' + $maxTileLevel.val());
+            //$minTileLevel.val('0');
+            //$maxTileLevel.val('20');
         }
         else if (frm === 'rename') {
             $renameTileLayerForm.trigger('reset');
