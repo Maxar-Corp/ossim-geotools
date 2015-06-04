@@ -475,10 +475,39 @@ class LayerManagerService implements InitializingBean
          TileCacheLayerInfo layerInfo = daoTileCacheService.getLayerInfoByName(cmd.layer.name)
          if(layerInfo)
          {
+            TileCachePyramid pyramid = daoTileCacheService.newPyramidGivenLayerInfo(layerInfo)
+
+            //Integer minLevel
+            //Integer maxLevel
 
             cmd.layer.epsg       = layerInfo.epsgCode
             cmd.layer.tileWidth  = layerInfo.tileWidth
             cmd.layer.tileHeight = layerInfo.tileHeight
+
+
+            // check and clamp to the layer levels
+            //
+            if(cmd.minLevel!=null&&cmd.maxLevel!=null)
+            {
+               HashMap levels = pyramid.intersectLevels(cmd.minLevel, cmd.maxLevel)
+
+               if(levels)
+               {
+                  cmd.minLevel = levels.minLevel
+                  cmd.maxLevel = levels.maxLevel
+               }
+               else
+               {
+                  result.status = HttpStatus.NOT_FOUND
+                  result.message = "The Requested min and max levels do not intersect the layer."
+                  return result
+               }
+            }
+            else
+            {
+               cmd.minLevel = layerInfo.minLevel
+               cmd.maxLevel = layerInfo.maxLevel
+            }
          }
          else
          {
@@ -495,6 +524,7 @@ class LayerManagerService implements InitializingBean
 
          return result
       }
+
       String jobId = UUID.randomUUID().toString()
       HashMap ingestCommand = cmd.toMap();
       ingestCommand.jobName = ingestCommand.jobName?:"Ingest"
