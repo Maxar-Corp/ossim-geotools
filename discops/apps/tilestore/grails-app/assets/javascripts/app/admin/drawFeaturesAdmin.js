@@ -6,15 +6,20 @@ var AppDrawFeaturesAdmin = (function () {
     var $drawPolygon = $('#drawPolygon');
     var $tileLayerSelect = $('#tileLayerSelect');
     var $mapOmarInfo = $('#mapOmarInfo');
+    var $showIngestModal = $('#showIngestModal');
+    var $endCuts = $('#endCuts');
 
     var aoiFeature = new ol.Feature();
 
     $drawRectangle.on('click', function(){
         addInteraction('Rectangle');
+        $showIngestModal.removeClass('disabled');
     });
 
     $drawPolygon.on('click', function(){
         addInteraction('Polygon');
+        $showIngestModal.removeClass('disabled');
+
     });
 
     function addInteraction(value) {
@@ -78,7 +83,7 @@ var AppDrawFeaturesAdmin = (function () {
         //}
         //AppAdmin.mapOmar.addInteraction(drawInteractionRect);
 
-        $('#endCuts').html('<i class="fa fa-toggle-on fa-lg"></i>&nbsp;&nbsp;Cutting On')
+        $endCuts.html('<i class="fa fa-toggle-on fa-lg"></i>&nbsp;&nbsp;Cutting On')
             .closest('li')
             .removeClass('disabled');
 
@@ -102,8 +107,10 @@ var AppDrawFeaturesAdmin = (function () {
 
         AppIngestTileAdmin.objIngestImage.aoi = outputWkt;
 
-        AppIngestTileAdmin.getIngestImageObj();
+        //AppIngestTileAdmin.getIngestImageObj();
 
+        // Refactored 6-4-2015:
+        AppIngestTileAdmin.setIngestLevels();
     }
 
     function addAoiFeatureRectangle(){
@@ -127,8 +134,10 @@ var AppDrawFeaturesAdmin = (function () {
 
         AppIngestTileAdmin.objIngestImage.aoi = outputWkt;
 
-        AppIngestTileAdmin.getIngestImageObj();
+        //AppIngestTileAdmin.getIngestImageObj();
 
+        //Refactored 6-4-2015:
+        AppIngestTileAdmin.setIngestLevels();
 
     }
 
@@ -137,15 +146,16 @@ var AppDrawFeaturesAdmin = (function () {
         AppManageLayersAdmin.aoiVector.getSource().clear();
     });
 
-    $('#endCuts').on('click', function(){
+    $endCuts.on('click', function(){
 
-        console.log('endCuts fired...')
+        //console.log('endCuts fired...')
         AppAdmin.mapOmar.removeInteraction(drawInteractionFree);
         AppAdmin.mapOmar.removeInteraction(drawInteractionRect);
         AppManageLayersAdmin.aoiVector.getSource().clear();
-        $('#endCuts').html('<i class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Cutting Off')
+        $endCuts.html('<i class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Cutting Off')
             .closest('li')
             .addClass('disabled');
+        $showIngestModal.addClass('disabled');
         $mapOmarInfo.html('');
         $mapOmarInfo.hide();
     })

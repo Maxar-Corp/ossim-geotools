@@ -138,7 +138,7 @@
                     </div>
                     <div class="collapse navbar-collapse" id="previewMapNavbar">
                         <form class="navbar-form navbar-left" role="search">
-                            <button type="button" id="submitIng" class="btn btn-primary disabled"
+                            <button type="button" id="showIngestModal" class="btn btn-primary disabled"
                                     data-toggle="tooltip" data-placement="bottom"
                                     title="Ingest the definied AOI"><i
                                     class="fa fa-sign-in fa-rotate-90"></i>&nbsp;&nbsp;Ingest</button>
@@ -747,7 +747,7 @@
                                       onclick="AppIngestTileAdmin.getIngestImageObj({{json this}})"
                                       class="fa fa-sign-in fa-lg ingestToCurrentTileLayer" data-toggle="tooltip"
                                       data-placement="bottom"
-                                      title="Add image to current tile layer"></i></a>
+                                      title="Ingest image into currently selected tile layer"></i></a>
                 <br>
                 <br>
             </div>
