@@ -2,6 +2,9 @@
 var AppIngestTileAdmin = (function () {
     var loadParams;
 
+    var $showIngestModal = $('#showIngestModal');
+    var $ingestImageModal = $('#ingestImageModal')
+
     var $minIngestLevel = $('#minIngestLevel');
     var $maxIngestLevel = $('#maxIngestLevel');
 
@@ -26,7 +29,7 @@ var AppIngestTileAdmin = (function () {
 
     function setIngestLevels(){
 
-        // TODO: ASAP!!!
+        // TODO:
         //########################################################################
         //########################################################################
         //   /location
@@ -34,6 +37,7 @@ var AppIngestTileAdmin = (function () {
         //   /layerName=reference&resLevels=10&res=10&resUnits=meters
         //########################################################################
         //########################################################################
+
         $minIngestLevel
             .find('option')
             .remove();
@@ -54,22 +58,18 @@ var AppIngestTileAdmin = (function () {
             $maxIngestLevel.selectpicker('refresh');
         }
 
+        //$('#ingestImageModal').modal('show');
+
     }
 
-    function getIngestImageObj(){
+    //function getIngestImageObj(){
 
         // Set clamping levels
-        setIngestLevels();
-        $('#ingestImageModal').modal('show');
+        //setIngestLevels();
+        //$('#ingestImageModal').modal('show');
 
-        //console.log(obj);
-        //console.log(objIngestImage);
-        //console.log(AppAdmin.$tilelayerSelect.val());
 
-        //objIngestImage.layer.name = AppAdmin.$tilelayerSelect.val();
-        //console.log(objIngestImage);
-
-    }
+    //}
 
     function ingestImage(){
         objIngestImage.layer.name = AppAdmin.$tilelayerSelect.val();
@@ -100,6 +100,12 @@ var AppIngestTileAdmin = (function () {
         
     }
 
+    // TODO: Cache DOM element
+    $showIngestModal.on('click', function(){
+        $ingestImageModal.modal('show');
+    })
+
+    // TODO: Cache DOM element
     $('#submitIngestImage').on('click', function(){
         console.log('submit firing...');
         ingestImage();
@@ -110,7 +116,8 @@ var AppIngestTileAdmin = (function () {
             loadParams = initParams;
             //console.log(loadParams);
         },
-        getIngestImageObj: getIngestImageObj,
+        //getIngestImageObj: getIngestImageObj,
+        setIngestLevels: setIngestLevels,
         objIngestImage: objIngestImage,
     }
 
