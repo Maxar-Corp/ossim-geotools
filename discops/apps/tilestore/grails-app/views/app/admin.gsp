@@ -23,6 +23,8 @@
 
 <tilestore:securityClassificationBanner class="row text-center security-level-top"/>
 
+<div class="corner-ribbon top-left sticky red shadow">Alpha</div>
+
 <!-- Main navBar -->
 <div class="container">
     <nav style="top:28px" class="navbar navbar-fixed-top navbar-default" role="navigation">
@@ -36,7 +38,7 @@
                 </button>
 
                 <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left"
-                                                                                   style="width: 40px; height: 40px; padding-top: 10px;"
+                                                                                   style="width: 40px; height: 40px; padding-top: 10px; margin-left: 60px;"
                                                                                    src="app/rbt_symbol.png"
                                                                                    alt="RBT Logo"/></g:link>
                 <a class="navbar-brand">&nbsp;&nbsp;RBT | Tiles Administrator</a>
@@ -62,15 +64,8 @@
                         %{--</div>--}%
                     %{--</form>--}%
                 %{--</div>--}%
-                <div class="nav navbar-nav navbar-right">
-                    %{--<li class="dropdown">--}%
-                        %{--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"--}%
-                           %{--aria-expanded="false"><span class="fa fa-server"></span>&nbsp;Manage Layers</a>--}%
-                        %{--<ul class="dropdown-menu" role="menu">--}%
-
-                        %{--</ul>--}%
-                    %{--</li>--}%
-                    %{--<div class="col-md-3 col-md-3">--}%
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
                         <form class="navbar-form">
                             <div class="form-group">
                                 <div class="input-group" id="tileLayerInputGroup">
@@ -83,8 +78,18 @@
                                 </div>
                             </div>
                         </form>
-                    %{--</div>--}%
-                </div>
+                    </li>
+                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
+                        class="fa fa-user"></i>&nbsp;&nbsp;Admin <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        %{--<li><a href="user/search"><i class="fa fa-users"></i>&nbsp;&nbsp;User Settings</a></li>--}%
+                        <li><g:link title="Security" controller="user"
+                                    action="search">Security</g:link></li>
+                        <li class="divider"></li>
+                        <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-power-off">&nbsp;&nbsp;<g:link controller='logout'>Logout</g:link></i></li>
+                    </ul>
+                </li>
+                </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
@@ -132,6 +137,12 @@
                         <a class="navbar-brand">Preview Map</a>
                     </div>
                     <div class="collapse navbar-collapse" id="previewMapNavbar">
+                        <form class="navbar-form navbar-left" role="search">
+                            <button type="button" id="submitIng" class="btn btn-primary disabled"
+                                    data-toggle="tooltip" data-placement="bottom"
+                                    title="Ingest the definied AOI"><i
+                                    class="fa fa-sign-in fa-rotate-90"></i>&nbsp;&nbsp;Ingest</button>
+                        </form>
                         <ul class="nav navbar-nav navbar-right">
                             <li id="omarMapToolsDropdown" class="dropdown disabled">
                                 <a id="omarMapToolsDropdownItem" class="dropdown-toggle disabled"
@@ -145,7 +156,7 @@
                                     Freehand Polygon</a></li>
                                     %{--<li><a id="drawCircle" href="#"><i class="fa fa-circle-thin"></i>&nbsp;&nbsp;by Circle</a></li>--}%
                                     <li class="divider"></li>
-                                    <li class="disabled"><a id="endDraw" href="#"><i
+                                    <li class="disabled"><a id="endCuts" href="#"><i
                                             class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Cutting Off</a></li>
                                 </ul>
                             </li>
@@ -225,9 +236,16 @@
             <div id="omarImageList"></div>
         </div>
 
-        <div id="mapOmar" class="col-md-5"></div>
+        <div id="mapOmar" class="col-md-5">
+            <div id="mapOmarInfo" class="mapInfoBox mapInfoElement"></div>
+            <div id="mapOmarZoomLevel" class="mapZoomLevel mapInfoElement"></div>
+        </div>
 
-        <div id="mapTile" class="col-md-5"></div>
+        <div id="mapTile" class="col-md-5">
+            <div id="mapTileSpinner" class="mapSpinner mapInfoElement"><i class="fa fa-spinner fa-pulse fa-3x"></i></div>
+            <div id="mapTileZoomLevel" class="mapZoomLevel mapInfoElement"></div>
+            <div id="mapTileInfo" class="mapInfoBox mapInfoElement"></div>
+        </div>
     </div>
 
 </div>

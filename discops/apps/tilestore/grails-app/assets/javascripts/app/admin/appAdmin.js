@@ -9,6 +9,8 @@ var AppAdmin = (function () {
     var $select = $('.selectpicker').selectpicker();
     var $tileLayerSelect = $('#tileLayerSelect');
 
+    var $mapTileInfo = $('#mapTileInfo');
+
     var $minTileLevel = $('#minTileLevel');
     var $maxTileLevel = $('#maxTileLevel');
     var $navCreateLayer = $('#navCreateLayer');
@@ -44,15 +46,14 @@ var AppAdmin = (function () {
     // 3857
     var melbourneFlorida3857 = ol.proj.transform([-80.6552775, 28.1174805], 'EPSG:4326', 'EPSG:3857');
 
-    //var mousePositionControl = new ol.control.MousePosition({
-    //    coordinateFormat: ol.coordinate.createStringXY(4),
-    //    projection: 'EPSG:4326',
-    //    // comment the following two lines to have the mouse position
-    //    // be placed within the map.
-    //    className: 'custom-mouse-position',
-    //    target: document.getElementById('mouse-position'),
-    //    undefinedHTML: '&nbsp;'
-    //});
+    var coordTemplate = 'Lat: {y}, Lon: {x}';
+    var mousePositionControlOmar = new ol.control.MousePosition({
+        coordinateFormat: function(coord) {
+            return ol.coordinate.format(coord, coordTemplate, 4);
+        },
+        projection: 'EPSG:4326',
+        undefinedHTML: '<span class="fa fa-map-marker"></span>'
+    });
 
     var mapOmar = new ol.Map({
         controls: ol.control.defaults({
@@ -60,7 +61,7 @@ var AppAdmin = (function () {
                 controlollapsible: false
             })
         }).extend([
-            //mousePositionControl
+            mousePositionControlOmar
         ]),
         //interactions: ol.interaction.defaults().extend([
         //    new ol.interaction.DragRotateAndZoom()
@@ -74,13 +75,21 @@ var AppAdmin = (function () {
         target: 'mapOmar'
     });
 
+    var mousePositionControlTile = new ol.control.MousePosition({
+        coordinateFormat: function(coord) {
+            return ol.coordinate.format(coord, coordTemplate, 4);
+        },
+        projection: 'EPSG:4326',
+        undefinedHTML: '<span class="fa fa-map-marker"></span>'
+    });
+
     var mapTile = new ol.Map({
         controls: ol.control.defaults({
             attributionOptions: ({
                 controlollapsible: false
             })
         }).extend([
-            //mousePositionControl
+            mousePositionControlTile
         ]),
         //interactions: ol.interaction.defaults().extend([
         //    new ol.interaction.DragRotateAndZoom()
@@ -90,20 +99,31 @@ var AppAdmin = (function () {
         target: 'mapTile'
     });
 
+
+
     //Add Full Screen
     //var fullScreenControl = new ol.control.FullScreen();
     //mapOmar.addControl(fullScreenControl);
     //mapTile.addControl(fullScreenControl);
     //
-    //// Add Zoom Slider
-    //var zoomslider = new ol.control.ZoomSlider();
-    //mapOmar.addControl(zoomslider);
-    //mapTile.addControl(zoomslider);
+    // Add Zoom Slider
+    var zoomsliderMapOmar = new ol.control.ZoomSlider();
+    var zoomsliderMapTile = new ol.control.ZoomSlider();
+    mapOmar.addControl(zoomsliderMapOmar);
+    mapTile.addControl(zoomsliderMapTile);
+
+    mapOmar.on('moveend', function () {
+        $("#mapOmarZoomLevel").html('<span class="fa fa-globe"> Zoom: </span>' + mapOmar.getView().getZoom());
+    });
+    mapTile.on('moveend', function () {
+        $("#mapTileZoomLevel").html('<span class="fa fa-globe"> Zoom: </span>' + mapOmar.getView().getZoom());
+    });
 
     // Add Scale bar
-    //var scaleBar = new ol.control.ScaleLine();
-    //mapOmar.addControl(scaleBar);
-    //mapTile.addControl(scaleBar);
+    var scaleBarMapOmar = new ol.control.ScaleLine();
+    var scaleBarMapTile = new ol.control.ScaleLine();
+    mapOmar.addControl(scaleBarMapOmar);
+    mapTile.addControl(scaleBarMapTile);
 
     function switchCurrentLayer(removeOldLayer, addNewLayer){
 
@@ -127,7 +147,6 @@ var AppAdmin = (function () {
 
     }
 
-
     $autoRefreshMapToggle.on('click', function(){
         $(this).find('i').toggleClass('fa-toggle-on fa-toggle-off');
     });
@@ -140,9 +159,13 @@ var AppAdmin = (function () {
                     console.log('true');
                     clearInterval(refreshMap);
                     refreshMap = null;
+                    $mapTileInfo.html('');
+                    $mapTileInfo.hide();
                 }
                 else {
                     console.log('false');
+                    $mapTileInfo.html('Autorefresh Map On');
+                    $mapTileInfo.show();
                     refreshMap = setInterval(function() {
                         var params = initLayer.getSource().getParams();
                         //console.log(params);
@@ -498,7 +521,7 @@ var AppAdmin = (function () {
             for (var i = 0; i < 23; i++) {
                 //console.log(i);
                 $maxTileLevel.append('<option value="' + i + '">' + i + '</option>');
-                $maxTileLevel.selectpicker('val', '20');  // intial value for max level
+                $maxTileLevel.selectpicker('val', '20');  // initial value for max level
                 $maxTileLevel.selectpicker('refresh');
             }
             for (var i = 0; i < 23; i++) {
@@ -509,14 +532,18 @@ var AppAdmin = (function () {
             for (var i = 0; i < 23; i++) {
                 //console.log(i);
                 $minTileLevel.append('<option value="' + i + '">' + i + '</option>');
-                $minTileLevel.selectpicker('val', '0');  // intial value for max level
+                $minTileLevel.selectpicker('val', '0');  // initial value for max level
                 $minTileLevel.selectpicker('refresh');
             }
 
             $epsgCode.selectpicker('val', 'EPSG:3857');
             $select.selectpicker('render');
-            $createTileLayerForm.trigger('reset');
+            //$createTileLayerForm.trigger('reset');
             $submitCreateLayer.removeClass('btn-success disabled').addClass('btn-primary');
+            console.log('min: ' + $minTileLevel.val())
+            console.log('max: ' + $maxTileLevel.val());
+            //$minTileLevel.val('0');
+            //$maxTileLevel.val('20');
         }
         else if (frm === 'rename') {
             $renameTileLayerForm.trigger('reset');
@@ -553,17 +580,33 @@ var AppAdmin = (function () {
                 .done(
                     getCurrentTileLayer()
                 );
+            var source = new ol.source.TileWMS( {
+                url: loadParams.tilestoreWmsURL,
+                params: {'LAYERS': currentTileLayer, 'TILED': true, 'VERSION': '1.1.1'}
+            } )
+
             function addInitialLayer(){
-                //console.log(currentTileLayer);
+                console.log(currentTileLayer);
                 initLayer = new ol.layer.Tile( {
                     opacity: 1.0,
-                    source: new ol.source.TileWMS( {
-                        url: loadParams.tilestoreWmsURL,
-                        params: {'LAYERS': currentTileLayer, 'TILED': true, 'VERSION': '1.1.1'}
-                    } ),
-                    name: currentTileLayer
+                    source: source,
+                    name: currentTileLayer,
+                    //imageLoadFunction: function(){
+                    //    alert('hello!');
+                    //}
                 } );
+                source.on('tileloadstart', function(event) {
+                    //progress.addLoaded();
+                    console.log('tile load started...');
+                    //$('#mapTileSpinner').show();
+                });
+                source.on('tileloadend', function(event) {
+                    //progress.addLoaded();
+                    console.log('all tiles loaded...');
+                    //$('#mapTileSpinner').hide();
+                });
                 mapTile.addLayer(initLayer);
+
             }
             addInitialLayer();
 

@@ -1,10 +1,11 @@
 "use strict";
 var AppDrawFeaturesAdmin = (function () {
 
-    var loadParams, outputWkt, formatWkt, drawInteraction;
+    var loadParams, outputWkt, formatWkt, drawInteractionFree, drawInteractionRect;
     var $drawRectangle = $('#drawRectangle');
     var $drawPolygon = $('#drawPolygon');
     var $tileLayerSelect = $('#tileLayerSelect');
+    var $mapOmarInfo = $('#mapOmarInfo');
 
     var aoiFeature = new ol.Feature();
 
@@ -18,16 +19,32 @@ var AppDrawFeaturesAdmin = (function () {
 
     function addInteraction(value) {
 
+        // Clear the draw/cut interactions if they exist
+        if (drawInteractionFree || drawInteractionRect){
+            console.log('drawinteractions present...removing existing interactions');
+            AppAdmin.mapOmar.removeInteraction(drawInteractionFree);
+            AppAdmin.mapOmar.removeInteraction(drawInteractionRect);
+        }
+        else{
+            console.log('drawinteractions NOT present...');
+        }
+
         if (value === 'Polygon') {
 
-            drawInteraction = new ol.interaction.Draw({
-                source: AppManageLayersAdmin.aoiSource,
-                type: (value)
-            });
+            // Create the freehand poly cut tool if it doesn't exist
+            if (!drawInteractionFree){
+                console.log('!drawInteractionFree');
+                drawInteractionFree = new ol.interaction.Draw({
+                    source: AppManageLayersAdmin.aoiSource,
+                    type: (value)
+                });
+            }
 
-            AppAdmin.mapOmar.addInteraction(drawInteraction);
+            AppAdmin.mapOmar.addInteraction(drawInteractionFree);
+            $mapOmarInfo.html('Cutting by: Freehand Polygon');
+            $mapOmarInfo.show();
 
-            drawInteraction.on('drawend', function (evt) {
+            drawInteractionFree.on('drawend', function (evt) {
                 aoiFeature = evt.feature;
                 console.log(aoiFeature.getGeometry());
                 addAoiFeaturePolygon(aoiFeature.getGeometry());
@@ -35,14 +52,22 @@ var AppDrawFeaturesAdmin = (function () {
 
         }
         else if (value === 'Rectangle') {
-            console.log('rectangle clicked');
-            drawInteraction = new ol.interaction.DragBox({
-                style: AppManageLayersAdmin.aoiStyle
-            });
 
-            drawInteraction.on('boxend', function () {
+            // Create the rectangle cut tool if it doesn't exist
+            if(!drawInteractionRect){
+                console.log('!drawInteractionRect');
+                drawInteractionRect = new ol.interaction.DragBox({
+                    style: AppManageLayersAdmin.aoiStyle
+                });
+            }
+
+            drawInteractionRect.on('boxend', function () {
                 addAoiFeatureRectangle();
             });
+
+            AppAdmin.mapOmar.addInteraction(drawInteractionRect);
+            $mapOmarInfo.html('Cutting by: Rectangle');
+            $mapOmarInfo.show();
 
         }
         // TODO: Circle back to this, as converting from a circle geom to WKT is not posssilbe
@@ -51,9 +76,9 @@ var AppDrawFeaturesAdmin = (function () {
         //if (value === 'Circle'){
         //
         //}
-        AppAdmin.mapOmar.addInteraction(drawInteraction);
+        //AppAdmin.mapOmar.addInteraction(drawInteractionRect);
 
-        $('#endDraw').html('<i class="fa fa-toggle-on fa-lg"></i>&nbsp;&nbsp;Cutting On')
+        $('#endCuts').html('<i class="fa fa-toggle-on fa-lg"></i>&nbsp;&nbsp;Cutting On')
             .closest('li')
             .removeClass('disabled');
 
@@ -90,10 +115,10 @@ var AppDrawFeaturesAdmin = (function () {
         }
 
         // Pass the 'output' as a WKT polygon
-        var output = drawInteraction.getGeometry();
+        var output = drawInteractionRect.getGeometry();
 
         formatWkt = new ol.format.WKT();
-        outputWkt = formatWkt.writeGeometry(drawInteraction.getGeometry());
+        outputWkt = formatWkt.writeGeometry(drawInteractionRect.getGeometry());
 
         console.log(outputWkt);
 
@@ -107,24 +132,22 @@ var AppDrawFeaturesAdmin = (function () {
 
     }
 
-
     // Remove the AOI feature if the user closes the ingest image modal window
     $('#ingestImageModal').on('hidden.bs.modal', function (e) {
         AppManageLayersAdmin.aoiVector.getSource().clear();
     });
 
+    $('#endCuts').on('click', function(){
 
-    $('#endDraw').on('click', function(){
-        if(drawInteraction){
-
-            drawInteraction.setActive(false);
-            AppManageLayersAdmin.aoiVector.getSource().clear();
-
-            $('#endDraw').html('<i class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Cutting Off')
-                .closest('li')
-                .addClass('disabled');
-
-        }
+        console.log('endCuts fired...')
+        AppAdmin.mapOmar.removeInteraction(drawInteractionFree);
+        AppAdmin.mapOmar.removeInteraction(drawInteractionRect);
+        AppManageLayersAdmin.aoiVector.getSource().clear();
+        $('#endCuts').html('<i class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Cutting Off')
+            .closest('li')
+            .addClass('disabled');
+        $mapOmarInfo.html('');
+        $mapOmarInfo.hide();
     })
 
     return {

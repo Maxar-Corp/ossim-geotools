@@ -97,6 +97,7 @@ var AppIngestTileAdmin = (function () {
 
         // TODO: Close modal after ingest is submitted
         $('#ingestImageModal').modal('hide');
+        
     }
 
     $('#submitIngestImage').on('click', function(){

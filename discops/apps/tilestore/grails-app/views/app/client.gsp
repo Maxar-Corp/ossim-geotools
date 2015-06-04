@@ -16,7 +16,7 @@
     <body>
          <tilestore:securityClassificationBanner class="row text-center"/>
 
-        <!--<div class="row text-center security-level-top">Unclassified</div>-->
+        <div class="corner-ribbon top-left sticky red shadow">Alpha</div>
 
         %{--<div class="container">--}%
             <nav style="top:28px" class="navbar navbar-fixed-top navbar-default shadow" role="navigation">
@@ -28,7 +28,7 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                         </button>
-                        <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left" style="width: 40px; height: 40px; padding-top: 10px;" src="app/rbt_symbol.png" alt="RBT Logo"/></g:link>
+                        <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left" style="width: 40px; height: 40px; padding-top: 10px; margin-left: 60px;" src="app/rbt_symbol.png" alt="RBT Logo"/></g:link>
                         <a class="navbar-brand">&nbsp;&nbsp;RBT | Tiles Viewer</a>
                     </div>
 
@@ -52,7 +52,7 @@
                                                 <option data-icon="glyphicon-th-large" value="mgrs">MGRS</option>
                                             </select>
                                         </div>
-                                        <input class="form-control" id="coordInput" type="text" placeholder="Search by coordinates" value="39.5742132,-85.6194194">
+                                        <input class="form-control" id="coordInput" type="text" placeholder="Search by coordinates">
                                         <div class="input-group-btn">
                                             <button id="zoomButton" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i></button>
                                         </div>
@@ -69,11 +69,14 @@
                             </form>
                         </div>
                         <div class="nav navbar-nav navbar-right">
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle fa fa-question-circle" data-toggle="dropdown">&nbsp;Help <b class="caret"></b></a>
-                            </li>
-                            <li>
-                                <a href="#">About</a>
+                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
+                                    class="fa fa-user"></i>&nbsp;&nbsp;Admin <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    %{--<li><a href="#"><span class="glyphicon glyphicon-user"></span>Profile</a></li>--}%
+                                    %{--<li><a href="#"><span class="glyphicon glyphicon-cog"></span>Settings</a></li>--}%
+                                    %{--<li class="divider"></li>--}%
+                                    <li>&nbsp;&nbsp;<i class="fa fa-power-off">&nbsp;&nbsp;<g:link controller='logout'>Logout</g:link></i></li>
+                                </ul>
                             </li>
                         </div>
                     </div><!-- /.navbar-collapse -->
