@@ -222,67 +222,34 @@ class TileCachePyramid extends Pyramid
    */
   HashMap clampLevels(double fullResolution, Integer numberOfResolutions)
   {
+    double[] resolutions = grids*.yResolution as double[]
+    int[] levels = grids*.z as double[]
+
+    Integer minLevel = 99999
+    Integer maxLevel = -1
+    Integer i = 0
     double coarsestResolution = fullResolution*(1<<(numberOfResolutions-1))
     double highestResolution  = fullResolution
 
-    def minLevelGrid
-    def minLevelPrevious
-    def maxLevelGrid
-    def maxLevelPrevious
-
-    for (g in this.grids)
+    for(i = 0; i < resolutions.length;++i)
     {
-
-      if(coarsestResolution > g.yResolution)
-      {
-        minLevelGrid = g
+      if (highestResolution > resolutions[i]) {
+        maxLevel = i;
+        if (i > 0) maxLevel--;
         break
       }
-      else
-      {
-        minLevelPrevious = g
-      }
     }
-    for(g in this.grids.reverse())
+    for(i = resolutions.length-1; i >= 0;--i)
     {
-      if(highestResolution < g.yResolution)
-      {
-        maxLevelGrid = g
+      if (coarsestResolution < resolutions[i]) {
+        minLevel = i;
         break
       }
-      else
-      {
-        maxLevelPrevious = g
-      }
     }
+    Integer resultMinLevel = minLevel + levels[0]
+    Integer resultMaxLevel = maxLevel + levels[0]
 
-    if(maxLevelGrid && minLevelGrid)
-    {
-      def minLevel = minLevelGrid.z
-      def maxLevel = maxLevelGrid.z
-      def minDelta = Math.abs(minLevelGrid.yResolution-coarsestResolution)
-      def maxDelta = Math.abs(maxLevelGrid.yResolution-highestResolution)
-
-      def prevMinDelta
-      def prevMaxDelta
-      if(minLevelPrevious)
-      {
-        prevMinDelta = Math.abs(minLevelPrevious?.yResolution-coarsestResolution)
-        if(prevMinDelta < minDelta)
-        {
-          minLevel = minLevelPrevious.z
-        }
-      }
-      if(maxLevelPrevious)
-      {
-        prevMaxDelta = Math.abs(maxLevelPrevious?.yResolution-highestResolution)
-        if(prevMaxDelta < maxDelta)
-        {
-          maxLevel = maxLevelPrevious.z
-        }
-      }
-      [minLevel:minLevel, maxLevel:maxLevel]
-    }
+    [minLevel:resultMinLevel, maxLevel:resultMaxLevel]
   }
   def getMinMaxLevel()
   {
