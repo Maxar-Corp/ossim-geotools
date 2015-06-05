@@ -138,7 +138,7 @@
                     </div>
                     <div class="collapse navbar-collapse" id="previewMapNavbar">
                         <form class="navbar-form navbar-left" role="search">
-                            <button type="button" id="showIngestModal" class="btn btn-primary disabled"
+                            <button type="button" id="ingestModalButton" class="btn btn-primary disabled"
                                     data-toggle="tooltip" data-placement="bottom"
                                     title="Ingest the definied AOI"><i
                                     class="fa fa-sign-in fa-rotate-90"></i>&nbsp;&nbsp;Ingest</button>
@@ -816,7 +816,7 @@
                                       title="View image in OMAR"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <a target="_blank"><i id="ingestToCurrentTileLayer"
                                       data-name="{{properties.id}}"
-                                      onclick="AppIngestTileAdmin.getIngestImageObj({{json this}})"
+                                      onclick="AppIngestTileAdmin.ingestModalShow({{json this}})"
                                       class="fa fa-sign-in fa-lg ingestToCurrentTileLayer" data-toggle="tooltip"
                                       data-placement="bottom"
                                       title="Ingest image into currently selected tile layer"></i></a>

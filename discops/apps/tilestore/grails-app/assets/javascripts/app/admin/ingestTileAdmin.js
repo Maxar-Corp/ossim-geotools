@@ -2,7 +2,7 @@
 var AppIngestTileAdmin = (function () {
     var loadParams;
 
-    var $showIngestModal = $('#showIngestModal');
+    var $ingestModalButton = $('#ingestModalButton');
     var $ingestImageModal = $('#ingestImageModal');
     var $submitIngestImage = $('#submitIngestImage');
 
@@ -159,12 +159,17 @@ var AppIngestTileAdmin = (function () {
         //$maxIngestLevelSpin.spinbox('destroy');
     }
 
-    $showIngestModal.on('click', function(){
+    function ingestModalShow(){
+        setIngestLevels();
         $ingestImageModal.modal('show');
-    })
+    }
+
+    $ingestModalButton.on('click', function(){
+        ingestModalShow();
+    });
 
     $submitIngestImage.on('click', function(){
-        console.log('submit firing...');
+        console.log('ingesting selected image...');
         ingestImage();
     });
 
@@ -174,7 +179,8 @@ var AppIngestTileAdmin = (function () {
         },
         setIngestLevels: setIngestLevels,
         objIngestImage: objIngestImage,
-        $showIngestModal: $showIngestModal
+        $ingestModalButton: $ingestModalButton,
+        ingestModalShow: ingestModalShow
     }
 
 })();

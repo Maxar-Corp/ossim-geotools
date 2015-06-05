@@ -194,9 +194,7 @@ var AppOmarWfsAdmin = (function () {
     function previewLayer(obj){
 
         //TODO: Reset the clamp bounds from  previous 'preview'
-        AppIngestTileAdmin.$showIngestModal.addClass('disabled');
-
-
+        AppIngestTileAdmin.$ingestModalButton.addClass('disabled');
 
         // Enable the tools menu for cutting out AOI's
         $("#omarMapToolsDropdown").removeClass("disabled");
