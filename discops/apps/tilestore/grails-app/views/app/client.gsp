@@ -70,7 +70,7 @@
                         </div>
                         <div class="nav navbar-nav navbar-right">
                             <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
-                                    class="fa fa-user"></i>&nbsp;&nbsp;Admin <b class="caret"></b></a>
+                                    class="fa fa-user"></i>&nbsp;&nbsp;<sec:loggedInUserInfo field="username"/><b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     %{--<li><a href="#"><span class="glyphicon glyphicon-user"></span>Profile</a></li>--}%
                                     %{--<li><a href="#"><span class="glyphicon glyphicon-cog"></span>Settings</a></li>--}%

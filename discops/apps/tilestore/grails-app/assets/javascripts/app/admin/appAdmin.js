@@ -331,7 +331,7 @@ var AppAdmin = (function () {
 
     $minTileLevel.on('change', function () {
 
-        // $maxTileLevel <select> on create layer modal so tha the user it is updated
+        // $maxTileLevel <select> on create layer modal so that it is updated
         // to reflect only the levels that are available after a minTileLevel has
         // been select.  Restricts user from choosing a level lower than is available.
         //console.log($maxTileLevel);
@@ -597,12 +597,12 @@ var AppAdmin = (function () {
                 } );
                 source.on('tileloadstart', function(event) {
                     //progress.addLoaded();
-                    console.log('tile load started...');
+                    //console.log('tile load started...');
                     //$('#mapTileSpinner').show();
                 });
                 source.on('tileloadend', function(event) {
                     //progress.addLoaded();
-                    console.log('all tiles loaded...');
+                    //console.log('all tiles loaded...');
                     //$('#mapTileSpinner').hide();
                 });
                 mapTile.addLayer(initLayer);

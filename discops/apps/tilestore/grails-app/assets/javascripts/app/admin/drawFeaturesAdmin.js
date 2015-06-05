@@ -50,6 +50,7 @@ var AppDrawFeaturesAdmin = (function () {
             $mapOmarInfo.show();
 
             drawInteractionFree.on('drawend', function (evt) {
+                $('#showIngestModal').removeClass('disabled');
                 aoiFeature = evt.feature;
                 console.log(aoiFeature.getGeometry());
                 addAoiFeaturePolygon(aoiFeature.getGeometry());
@@ -67,12 +68,14 @@ var AppDrawFeaturesAdmin = (function () {
             }
 
             drawInteractionRect.on('boxend', function () {
+                $('#showIngestModal').removeClass('disabled');
                 addAoiFeatureRectangle();
             });
 
             AppAdmin.mapOmar.addInteraction(drawInteractionRect);
             $mapOmarInfo.html('Cutting by: Rectangle');
             $mapOmarInfo.show();
+            $('#showIngestModal').removeClass('disabled');
 
         }
         // TODO: Circle back to this, as converting from a circle geom to WKT is not posssilbe

@@ -80,11 +80,11 @@
                         </form>
                     </li>
                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
-                        class="fa fa-user"></i>&nbsp;&nbsp;Admin <b class="caret"></b></a>
+                        class="fa fa-user"></i>&nbsp;&nbsp;<sec:loggedInUserInfo field="username"/><b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         %{--<li><a href="user/search"><i class="fa fa-users"></i>&nbsp;&nbsp;User Settings</a></li>--}%
-                        <li><g:link title="Security" controller="user"
-                                    action="search">Security</g:link></li>
+                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-gears">&nbsp;&nbsp;<g:link title="Security" controller="user"
+                                    action="search">Security Settings</g:link></i></li>
                         <li class="divider"></li>
                         <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-power-off">&nbsp;&nbsp;<g:link controller='logout'>Logout</g:link></i></li>
                     </ul>
@@ -688,27 +688,99 @@
             </div>
             <div class="modal-body">
                 <div class="container">
-                    <div class="row col-sm-6 col-md-6">
-                        <p>Select the desired minimum and maximum ingest levels for the selected image, and then
-                        click the Submit button to start the process.</p>
-                        <div class="form-group">
-                            <label for="minIngestLevel">Minimum Level</label>
-                            <select id="minIngestLevel" class="form-control selectpicker">
-                            </select>
-                            <label for="maxIngestLevel">Maximum Level</label>
-                            <select id="maxIngestLevel" class="form-control selectpicker">
-                            </select>
-                            <br>
-                            <br>
-                            <div>
-                                <button id="submitIngestImage" class="btn btn-primary ladda-button"
-                                        data-style="expand-left"><span class="ladda-label">Submit</span></button>
-                                <button id="cancelIngestImage" type="button" class="btn btn-default"
-                                        data-dismiss="modal">Close</button>
-                            </div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6">
+
+                            <p>Select the desired minimum and maximum ingest levels for the selected image, and then
+                            click the Submit button to start the process.</p>
+                            <p><small><em>Note: The initial min and max levels below are determined by the resolution of the
+                            selected image.</em></small></p>
+
                         </div>
-                    </div>
-                </div>
+                    </div><!-- /.row -->
+                    <div class="row">
+
+                        <div class="col-md-3 col-sm-3">
+
+                            %{--<label class="control-label" for="minIngestLevelSpin">Min</label>--}%
+                            %{--<div class="controls">--}%
+                                %{--<div class="spinbox" id="minIngestLevelSpin">--}%
+                                    %{--<input type="text" class="form-control input-mini spinbox-input" value="1" >--}%
+                                    %{--<div class="spinbox-buttons btn-group btn-group-vertical">--}%
+                                        %{--<button class="btn btn-default spinbox-up btn-xs">--}%
+                                            %{--<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>--}%
+                                        %{--</button>--}%
+                                        %{--<button class="btn btn-default spinbox-down btn-xs">--}%
+                                            %{--<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>--}%
+                                        %{--</button>--}%
+                                    %{--</div>--}%
+                                    %{--<span class="help-block">Minimum Ingest Level</span>--}%
+                                %{--</div>--}%
+                            %{--</div>--}%
+
+                            %{--<label for="minIngestLevel">Minimum Level</label>--}%
+                            %{--<select id="minIngestLevel" class="form-control selectpicker">--}%
+                            %{--</select>--}%
+
+                            %{--<label class="control-label" for="minIngestLevelSelect">Minimum Level</label>--}%
+                            %{--<div class="btn-group selectlist" style="width: 100%"--}%
+                                 %{--data-initialize="selectlist"--}%
+                                 %{--id="minIngestLevelSelect" >--}%
+                                %{--<button class="btn btn-default dropdown-toggle" style="width: inherit"--}%
+                                        %{--data-toggle="dropdown"--}%
+                                        %{--type="button">--}%
+                                    %{--<span class="selected-label">Min. Level</span>--}%
+                                    %{--<span class="caret"></span>--}%
+                                %{--</button>--}%
+                                %{--<ul class="dropdown-menu" role="menu" style="width:100%;">--}%
+                                    %{--<li data-value="none"><a href="#">None</a></li>--}%
+                                    %{--<li data-value="some"><a href="#">Some</a></li>--}%
+                                %{--</ul>--}%
+                                %{--<input class="hidden hidden-field" name="minIngestLevelSelect" readonly="readonly"--}%
+                                       %{--aria-hidden="true" type="text">--}%
+                            %{--</div>--}%
+
+                            <label for="minIngestLevel">Minimum Level</label>
+                            <select id="minIngestLevel" class="form-control"></select>
+
+                        </div>
+                        <div class="col-md-3 col-sm-3">
+                            %{--<label class="control-label" for="maxIngestLevelSpin">Max</label>--}%
+                            %{--<div class="controls">--}%
+                                %{--<div class="spinbox" id="maxIngestLevelSpin">--}%
+                                    %{--<input type="text" class="form-control input-mini spinbox-input" value="1" >--}%
+                                    %{--<div class="spinbox-buttons btn-group btn-group-vertical">--}%
+                                        %{--<button class="btn btn-default spinbox-up btn-xs">--}%
+                                            %{--<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>--}%
+                                        %{--</button>--}%
+                                        %{--<button class="btn btn-default spinbox-down btn-xs">--}%
+                                            %{--<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>--}%
+                                        %{--</button>--}%
+                                    %{--</div>--}%
+                                    %{--<span class="help-block">Maximum Ingest Level</span>--}%
+                                %{--</div>--}%
+                            %{--</div>--}%
+
+                            %{--<label for="maxIngestLevel">Maximum Level</label>--}%
+                            %{--<select id="maxIngestLevel" class="form-control selectpicker">--}%
+                            %{--</select>--}%
+
+                            <label for="maxIngestLevel">Maximum Level</label>
+                            <select id="maxIngestLevel" class="form-control"></select>
+
+                        </div>
+                    </div><!-- /.row -->
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6">
+                            <button id="submitIngestImage" class="btn btn-primary ladda-button"
+                                    data-style="expand-left"><span class="ladda-label">Submit</span></button>
+                            <button id="cancelIngestImage" type="button" class="btn btn-default"
+                                    data-dismiss="modal">Close</button>
+                        </div>
+                    </div><!-- /.row -->
+
+                </div><!-- /.container -->
             </div><!-- /.modal-body -->
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog modal-lg -->
