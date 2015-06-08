@@ -105,7 +105,14 @@ var AppOmarWfsAdmin = (function () {
                 ":" + sortByType;
         }
 
-        console.log(wfsCards);
+        console.message()
+            .span({ color: '#337ab7', fontSize: 14 })
+                .text('(omarWfsAdmin.js 112): ')
+            .spanEnd()
+            .text(wfsCards + ' \u21b4 ', {
+                color: 'green', fontSize: 14
+            })
+            .print();
 
         // TODO: Add functionality to restrict the query to a spatial extent (via BBox)
         $.ajax({

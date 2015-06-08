@@ -68,7 +68,7 @@ AppClient = (function () {
             map.addControl(scaleBar);
 
             map.on('moveend', function () {
-                $("#currentZoomLevel2").html('<span class="fa fa-globe"> Zoom: </span>' + map.getView().getZoom());
+                $("#currentZoomLevel2").html('<i class="fa fa-globe"></i>&nbsp;<span> Zoom: </span>' + map.getView().getZoom());
             });
 
             $.ajax({

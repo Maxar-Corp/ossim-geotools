@@ -256,7 +256,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title fa fa-th fa-lg">&nbsp;&nbsp;&nbsp;Create a New Tile Layer</h3>
+                <h3 class="modal-title"><i class="fa fa-th fa-lg"></i>&nbsp;&nbsp;Create a New Tile Layer</h3>
             </div>
             <div class="modal-body">
                 <div class="container">
@@ -290,7 +290,7 @@
                                     <option value="512x512">512 x 512</option>
                                 </select><br><br>
                                 <div>
-                                    <button id="submitCreateLayer" class="btn btn-primary ladda-button"
+                                    <button id="submitCreateLayer" type="button" class="btn btn-primary ladda-button"
                                             data-style="expand-left"><span class="ladda-label">Create</span></button>
                                     <button id="cancelCreateTile" type="button" class="btn btn-default"
                                             data-dismiss="modal">Cancel</button>
@@ -312,7 +312,8 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title fa fa-pencil fa-lg">&nbsp;&nbsp;&nbsp;Rename Tile Layers</h3>
+                <h3 class="modal-title"><i class="fa fa-pencil fa-lg"></i>&nbsp;&nbsp;Rename Tile
+                Layers</h3>
             </div>
             <div class="modal-body">
                 <form id="renameTileLayerForm" data-toggle="validator" class="form">
@@ -339,7 +340,7 @@
                                 <br>
                                 <br>
                                 <div>
-                                    <button id="submitRenameLayer" class="btn btn-primary ladda-button"
+                                    <button id="submitRenameLayer" type="button" class="btn btn-primary ladda-button"
                                             data-style="expand-left"><span class="ladda-label">Rename</span></button>
                                     <button id="cancelRenameTile" type="button" class="btn btn-default"
                                             data-dismiss="modal">Cancel</button>
@@ -362,7 +363,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title fa fa-trash fa-lg">&nbsp;&nbsp;&nbsp;Delete Tile Layers</h3>
+                <h3 class="modal-title"><i class="fa fa-trash fa-lg"></i>&nbsp;&nbsp;Delete Tile Layers</h3>
             </div>
             <div class="modal-body">
                 <div class="container">
@@ -378,7 +379,7 @@
                                 <br>
                                 <br>
                                 <div>
-                                    <button id="submitDeleteLayer" class="btn btn-primary ladda-button"
+                                    <button id="submitDeleteLayer" type="button" class="btn btn-primary ladda-button"
                                             data-style="expand-left"><span class="ladda-label">Delete</span></button>
                                     <button id="cancelDeleteTile" type="button" class="btn btn-default"
                                             data-dismiss="modal">Close</button>
