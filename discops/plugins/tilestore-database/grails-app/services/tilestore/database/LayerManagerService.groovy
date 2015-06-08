@@ -439,24 +439,32 @@ class LayerManagerService implements InitializingBean
 
       TileCachePyramid pyramid = daoTileCacheService.newPyramidGivenLayerName(cmd.layerName)
       String resUnits = cmd.resUnits?.toLowerCase()
-      if(pyramid.proj.epsg == 4326)
+      if(pyramid)
       {
-         // make sure the units are geographic
-         if(resUnits&&(resUnits != "degrees"))
+         if(pyramid.proj.epsg == 4326)
          {
-            cmd.res = cmd.res*(1.0/gpt.metersPerDegree().y)
+            // make sure the units are geographic
+            if(resUnits&&(resUnits != "degrees"))
+            {
+               cmd.res = cmd.res*(1.0/gpt.metersPerDegree().y)
+            }
          }
+         else
+         {
+            // make sure the units are meters
+            if(resUnits&&(resUnits!= "meters"))
+            {
+               cmd.res = cmd.res*(gpt.metersPerDegree().y)
+            }
+         }
+
+         result.data = pyramid.clampLevels(cmd.res, cmd.resLevels)
       }
       else
       {
-         // make sure the units are meters
-         if(resUnits&&(resUnits!= "meters"))
-         {
-            cmd.res = cmd.res*(gpt.metersPerDegree().y)
-         }
+         result.status = HttpStatus.NOT_FOUND
+         result.message = "Can't get information from layer name = ${cmd.layerName}."
       }
-
-      result.data = pyramid.clampLevels(cmd.res, cmd.resLevels)
 
       gpt.delete()
       gpt = null

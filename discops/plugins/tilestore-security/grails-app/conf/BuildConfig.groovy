@@ -41,7 +41,7 @@ grails.project.dependency.resolution = {
 
   plugins {
 
-    compile ':spring-security-core:2.0-RC4'
+    compile ':spring-security-core:2.0-RC5'
     compile ":spring-security-ui:1.0-RC2"
 
     runtime ':jquery:1.11.1'
