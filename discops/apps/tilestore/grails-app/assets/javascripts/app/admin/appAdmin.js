@@ -113,10 +113,10 @@ var AppAdmin = (function () {
     mapTile.addControl(zoomsliderMapTile);
 
     mapOmar.on('moveend', function () {
-        $("#mapOmarZoomLevel").html('<span class="fa fa-globe"> Zoom: </span>' + mapOmar.getView().getZoom());
+        $("#mapOmarZoomLevel").html('<i class="fa fa-globe"></i>&nbsp;<span> Zoom: </span>' + mapOmar.getView().getZoom());
     });
     mapTile.on('moveend', function () {
-        $("#mapTileZoomLevel").html('<span class="fa fa-globe"> Zoom: </span>' + mapOmar.getView().getZoom());
+        $("#mapTileZoomLevel").html('<i class="fa fa-globe"></i>&nbsp;<span> Zoom: </span>' + mapOmar.getView().getZoom());
     });
 
     // Add Scale bar
@@ -133,7 +133,21 @@ var AppAdmin = (function () {
         //      a new addNewLayer each time this function is fired.  It
         //      should be created once, and the source should be updated
         //      thereafter.
-        console.log('Now loading: ' + addNewLayer);
+
+
+        //console.log('Now loading: ' + addNewLayer);
+
+        console.message()
+            .span({
+                color: '#337ab7', fontSize: 14
+            })
+            .text('(appAdmin.js 144): ')
+            .spanEnd()
+            .text('Now loading: ' + addNewLayer, {
+                color: 'green', fontSize: 14
+            })
+            .print();
+
         addNewLayer = new ol.layer.Tile( {
             opacity: 1.0,
             source: new ol.source.TileWMS( {
@@ -218,7 +232,19 @@ var AppAdmin = (function () {
     var objLayer = {}
 
     $tileLayerSelect.on('change', function() {
-        console.log('select on change:' + $tileLayerSelect.val())
+        // console.log('select on change:' + $tileLayerSelect.val())
+
+        console.message()
+            .span({
+                color: '#337ab7', fontSize: 14
+            })
+                .text('(appAdmin.js 241): ')
+            .spanEnd()
+            .text('$tileLayerSelect.on.change value: ' + $tileLayerSelect.val(), {
+                color: 'green', fontSize: 14
+            })
+            .print();
+
         switchCurrentLayer(initLayer, $tileLayerSelect.val());
     });
 
@@ -331,7 +357,7 @@ var AppAdmin = (function () {
 
     $minTileLevel.on('change', function () {
 
-        // $maxTileLevel <select> on create layer modal so tha the user it is updated
+        // $maxTileLevel <select> on create layer modal so that it is updated
         // to reflect only the levels that are available after a minTileLevel has
         // been select.  Restricts user from choosing a level lower than is available.
         //console.log($maxTileLevel);
@@ -394,6 +420,7 @@ var AppAdmin = (function () {
 
         // Grab this from a input box
         var newLayerName = $renameLayerName.val();
+        console.log(newLayerName);
 
         function successHandlerRename(data, textStatus, jqXHR) {
             console.log(jqXHR.status);
@@ -586,7 +613,22 @@ var AppAdmin = (function () {
             } )
 
             function addInitialLayer(){
-                console.log(currentTileLayer);
+                console.message()
+                    .group()
+                    .span({
+                        color: '#337ab7', fontSize: 14
+                    })
+                        .text('(appAdmin.js 604): ')
+                    .spanEnd()
+                    .text(' Active Tile Layer \u21b4 ', {
+                        color: 'green', fontSize: 14
+                    })
+                    .group(false)
+                        .line()
+                        .text(currentTileLayer)
+                        .groupEnd()
+                        .print();
+
                 initLayer = new ol.layer.Tile( {
                     opacity: 1.0,
                     source: source,
@@ -597,12 +639,12 @@ var AppAdmin = (function () {
                 } );
                 source.on('tileloadstart', function(event) {
                     //progress.addLoaded();
-                    console.log('tile load started...');
+                    //console.log('tile load started...');
                     //$('#mapTileSpinner').show();
                 });
                 source.on('tileloadend', function(event) {
                     //progress.addLoaded();
-                    console.log('all tiles loaded...');
+                    //console.log('all tiles loaded...');
                     //$('#mapTileSpinner').hide();
                 });
                 mapTile.addLayer(initLayer);

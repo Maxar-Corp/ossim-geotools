@@ -7,7 +7,12 @@ var AppOmarWfsAdmin = (function () {
 
     var previewFeatureVectorLayer, previewFeatureVectorSource, omarPreviewLayerId, omarPreviewLayer;
     var previewFeatureArray = [];
-
+    var objImageClamp = {
+        layerName: '', // layer dropdrown
+        resLevels: 0, // number_of_res_levels: from wfs
+        res: 0, // gsdy from wfs
+        resUnits: 'meters' // gsd_unit from wfs
+    };
     var $imageCount = $('#imageCount');
 
     var $wfsFilter = $('#wfsFilter');
@@ -100,7 +105,14 @@ var AppOmarWfsAdmin = (function () {
                 ":" + sortByType;
         }
 
-        console.log(wfsCards);
+        console.message()
+            .span({ color: '#337ab7', fontSize: 14 })
+                .text('(omarWfsAdmin.js 112): ')
+            .spanEnd()
+            .text(wfsCards + ' \u21b4 ', {
+                color: 'green', fontSize: 14
+            })
+            .print();
 
         // TODO: Add functionality to restrict the query to a spatial extent (via BBox)
         $.ajax({
@@ -188,6 +200,9 @@ var AppOmarWfsAdmin = (function () {
     // Adds the OMAR WMS image to the map for previewing.
     function previewLayer(obj){
 
+        //TODO: Reset the clamp bounds from  previous 'preview'
+        AppIngestTileAdmin.$ingestModalButton.addClass('disabled');
+
         // Enable the tools menu for cutting out AOI's
         $("#omarMapToolsDropdown").removeClass("disabled");
         $("#omarMapToolsDropdownItem").removeClass("disabled");
@@ -233,9 +248,6 @@ var AppOmarWfsAdmin = (function () {
 
         }
 
-        // TODO: Set map extent to the extent of the previewed WMS, and set
-        //       the .css of the image card to reflect that it is the currently
-        //       selected/previewed image
         var coord1 = ol.proj.transform(obj.geometry.coordinates[0][0], 'EPSG:4326', 'EPSG:3857');
         var coord2 = ol.proj.transform(obj.geometry.coordinates[0][1], 'EPSG:4326', 'EPSG:3857');
         var coord3 = ol.proj.transform(obj.geometry.coordinates[0][2], 'EPSG:4326', 'EPSG:3857');
@@ -316,19 +328,24 @@ var AppOmarWfsAdmin = (function () {
             });
 
             AppAdmin.mapTile.addLayer(previewFeatureVectorLayer);
+
+
         }
 
 
-        // TODO:  Get the WKT string for the whole image here in case we want to ingest
-        //        the whole image
-
+        // This sets the ingest clamping obj from the image
+        objImageClamp.layerName = AppAdmin.$tilelayerSelect.val();
+        objImageClamp.resLevels = obj.properties.number_of_res_levels;
+        objImageClamp.res = obj.properties.gsdy;
+        objImageClamp.resUnits = obj.properties.gsd_unit;
+        console.log(objImageClamp);
 
         // Store the OMAR card objIngestImage properties here
         // Image properties
         AppIngestTileAdmin.objIngestImage.input.filename = obj.properties.filename;
         AppIngestTileAdmin.objIngestImage.input.entry = obj.properties.entry_id;
 
-        console.log(AppIngestTileAdmin.objIngestImage);
+        //console.log(AppIngestTileAdmin.objIngestImage);
 
     }
 
@@ -426,29 +443,6 @@ var AppOmarWfsAdmin = (function () {
         return JSON.stringify(context);
     });
 
-    //$('a.panel').click(function() {
-    //    var $target = $($(this).attr('href')),
-    //        $other = $target.siblings('.active');
-    //
-    //    if (!$target.hasClass('active')) {
-    //        $other.each(function(index, self) {
-    //            var $this = $(this);
-    //            $this.removeClass('active').animate({
-    //                left: $this.width()
-    //            }, 100);
-    //        });
-    //
-    //        $target.addClass('active').show().css({
-    //            left: -($target.width())
-    //        }).animate({
-    //            left: 0
-    //        }, 100);
-    //    }
-    //});
-    //$('#testMe').on('click', function (){
-    //    alert('event click!');
-    //});
-
     return {
         initialize: function (initParams) {
 
@@ -496,7 +490,8 @@ var AppOmarWfsAdmin = (function () {
             getWfsCards({}); // use defaults
 
         },
-        previewLayer: previewLayer
+        previewLayer: previewLayer,
+        objImageClamp: objImageClamp
     };
 })();
 

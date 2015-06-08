@@ -6,19 +6,19 @@ var AppDrawFeaturesAdmin = (function () {
     var $drawPolygon = $('#drawPolygon');
     var $tileLayerSelect = $('#tileLayerSelect');
     var $mapOmarInfo = $('#mapOmarInfo');
-    var $showIngestModal = $('#showIngestModal');
+    var $ingestModalButton = $('#ingestModalButton');
     var $endCuts = $('#endCuts');
 
     var aoiFeature = new ol.Feature();
 
     $drawRectangle.on('click', function(){
         addInteraction('Rectangle');
-        $showIngestModal.removeClass('disabled');
+        //$showIngestModal.removeClass('disabled');
     });
 
     $drawPolygon.on('click', function(){
         addInteraction('Polygon');
-        $showIngestModal.removeClass('disabled');
+        //$showIngestModal.removeClass('disabled');
 
     });
 
@@ -48,8 +48,10 @@ var AppDrawFeaturesAdmin = (function () {
             AppAdmin.mapOmar.addInteraction(drawInteractionFree);
             $mapOmarInfo.html('Cutting by: Freehand Polygon');
             $mapOmarInfo.show();
+            AppIngestTileAdmin.$ingestModalButton.removeClass('disabled');
 
             drawInteractionFree.on('drawend', function (evt) {
+                $('#showIngestModal').removeClass('disabled');
                 aoiFeature = evt.feature;
                 console.log(aoiFeature.getGeometry());
                 addAoiFeaturePolygon(aoiFeature.getGeometry());
@@ -67,12 +69,14 @@ var AppDrawFeaturesAdmin = (function () {
             }
 
             drawInteractionRect.on('boxend', function () {
+                $('#showIngestModal').removeClass('disabled');
                 addAoiFeatureRectangle();
             });
 
             AppAdmin.mapOmar.addInteraction(drawInteractionRect);
             $mapOmarInfo.html('Cutting by: Rectangle');
             $mapOmarInfo.show();
+            AppIngestTileAdmin.$ingestModalButton.removeClass('disabled');
 
         }
         // TODO: Circle back to this, as converting from a circle geom to WKT is not posssilbe
@@ -155,7 +159,7 @@ var AppDrawFeaturesAdmin = (function () {
         $endCuts.html('<i class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Cutting Off')
             .closest('li')
             .addClass('disabled');
-        $showIngestModal.addClass('disabled');
+        $ingestModalButton.addClass('disabled');
         $mapOmarInfo.html('');
         $mapOmarInfo.hide();
     })
