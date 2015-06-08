@@ -5,8 +5,10 @@ import grails.plugin.springsecurity.annotation.Secured
 class WmsController
 {
   def webMappingService
+  def exceptionService
+  def messageSource
 
-  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
+  @Secured( ['IS_AUTHENTICATED_ANONYMOUSLY'] )
   def index(WmsCommand cmd)
   {
     try
@@ -24,12 +26,13 @@ class WmsController
         case 'GETCAPABILITIES':
           forward action: 'getCapabilities', params: new GetCapabilitiesCommand().fixParamNames( params )
           break
+        default:
+          throw new Exception( "Operation ${cmd.request} is not supported" )
         }
       }
       else
       {
-        render "${cmd.errors}"
-        println cmd.errors
+        throw new Exception( cmd.errors.allErrors.collect { messageSource.getMessage( it, null ) }.join( '\n' ) )
       }
     }
     catch ( def e )
@@ -37,25 +40,38 @@ class WmsController
       //println "---------------------------------------------------------"
       e.printStackTrace()
       // response.outputStream.close()
-
       //render e.toString()
+      render contentType: 'application/xml', text: exceptionService.createMessage( e.message )
     }
   }
 
-  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
+  @Secured( ['IS_AUTHENTICATED_ANONYMOUSLY'] )
   def getCapabilities(GetCapabilitiesCommand cmd)
   {
-    def results = webMappingService.getCapabilities( cmd )
-    render contentType: results.contentType, text: results.buffer
+    try
+    {
+      def results = webMappingService.getCapabilities( cmd )
+      render contentType: results.contentType, text: results.buffer
+    }
+    catch ( e )
+    {
+      render contentType: 'application/xml', text: exceptionService.createMessage( e.message )
+    }
   }
 
-  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
+  @Secured( ['IS_AUTHENTICATED_ANONYMOUSLY'] )
   def getMap(GetMapCommand cmd)
   {
 //    println params
 //    println cmd
-    def results = webMappingService.getMap( cmd )
-    render contentType: results.contentType, file: results.buffer
+    try
+    {
+      def results = webMappingService.getMap( cmd )
+      render contentType: results.contentType, file: results.buffer
+    }
+    catch ( e )
+    {
+      render contentType: 'application/xml', text: exceptionService.createMessage( e.message )
+    }
   }
-
 }
