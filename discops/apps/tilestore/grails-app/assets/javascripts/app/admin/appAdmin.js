@@ -419,7 +419,7 @@ var AppAdmin = (function () {
         var oldLayerName = $('#renameTileLayer option:selected').val();
 
         // Grab this from a input box
-        var newLayerName = $renameLayerName.val();
+        var newLayerName = $renameLayerName.val(); // Need to truncate to 50 characters
         console.log(newLayerName);
 
         function successHandlerRename(data, textStatus, jqXHR) {
@@ -569,6 +569,7 @@ var AppAdmin = (function () {
             $submitCreateLayer.removeClass('btn-success disabled').addClass('btn-primary');
             console.log('min: ' + $minTileLevel.val())
             console.log('max: ' + $maxTileLevel.val());
+            $createLayerName.val(''); // IE9 work around
             //$minTileLevel.val('0');
             //$maxTileLevel.val('20');
         }

@@ -59,6 +59,20 @@ var AppOmarWfsAdmin = (function () {
         $filterWfsModal.modal('show');
     });
 
+    $('#omarFeed').infinitescroll({
+        //dataSource is required to append additional content
+        dataSource: function(helpers, callback){
+            //passing back more content
+            //callback({
+            //    content: '...',
+            //    hybrid: true
+            //});
+            //callback(function(){console.log('firing infinite scroll')});
+        }
+    });
+    $('#omarFeed').infinitescroll('fetchData');
+
+
     function getWfsCards(params){
 
         var dateType = params.dateType || 'ingest_date'; // default value
@@ -88,7 +102,8 @@ var AppOmarWfsAdmin = (function () {
             //console.log(queryNone);
             wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
-                "&maxFeatures=200&outputFormat=json&filter=" +
+                //"&maxFeatures=200&outputFormat=json&filter=" +
+                "&outputFormat=json&filter=" +
                 "&sortBy=" + sortByField +
                 ":" + sortByType;
         }
