@@ -614,21 +614,6 @@ var AppAdmin = (function () {
             } )
 
             function addInitialLayer(){
-                console.message()
-                    .group()
-                    .span({
-                        color: '#337ab7', fontSize: 14
-                    })
-                        .text('(appAdmin.js 604): ')
-                    .spanEnd()
-                    .text(' Active Tile Layer \u21b4 ', {
-                        color: 'green', fontSize: 14
-                    })
-                    .group(false)
-                        .line()
-                        .text(currentTileLayer)
-                        .groupEnd()
-                        .print();
 
                 initLayer = new ol.layer.Tile( {
                     opacity: 1.0,

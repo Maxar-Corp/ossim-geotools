@@ -213,7 +213,7 @@
 <div class="container-fluid">
     <div id="mapsRow" class="row">
 
-        <div id="omarFeed" class="col-md-2 infinitescroll">
+        <div id="omarFeed" class="col-md-2">
             <div>
                 <p>
                     <strong>Your Filter:&nbsp;</strong>
