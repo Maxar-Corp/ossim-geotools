@@ -14,7 +14,6 @@
 //= require common/spin.js
 //= require common/ladda.min.js
 //= require common/fuelux.js
-
 //= require common/bootstrap-select.js
 
 //= require admin/managelayersAdmin.js
