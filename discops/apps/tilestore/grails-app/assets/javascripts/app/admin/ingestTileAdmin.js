@@ -94,7 +94,7 @@ var AppIngestTileAdmin = (function () {
                 //    'max': data.maxLevel
                 //});
 
-                toastr.success('Clamp working', 'Success!'); // TODO: remove after testing...
+                //toastr.success('Clamp working', 'Success!'); // TODO: remove after testing...
             },
             // TODO: need to move this to a $promise
             error: function(data){
@@ -132,7 +132,14 @@ var AppIngestTileAdmin = (function () {
         objIngestImage.layer.name = AppAdmin.$tilelayerSelect.val();
         objIngestImage.minLevel = $minIngestLevel.val(); //$minIngestLevelSpin.spinbox('value');
         objIngestImage.maxLevel =  $maxIngestLevel.val(); //$maxIngestLevelSpin.spinbox('value');
+
+
         console.log(objIngestImage);
+
+        console.message()
+            .text('Hey take a look at the this object ')
+            .object(objIngestImage)
+            .print();
 
         //TODO: Refactor using promises...
         $.ajax({

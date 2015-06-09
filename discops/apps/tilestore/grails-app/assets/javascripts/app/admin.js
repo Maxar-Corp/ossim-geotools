@@ -6,6 +6,7 @@
 //= require bootstrap.js
 //= require ../ol3/ol.js
 //= require common/console.message.js
+//= require common/H5F.js /* Needed for IE9 form validation */
 //= require common/validator.js
 //= require common/handlebars.js
 //= require common/moment.min.js
@@ -14,7 +15,7 @@
 //= require common/ladda.min.js
 //= require common/fuelux.js
 
-//= require common/bootstrap-select.js  /* TODO: Use FuelUX */
+//= require common/bootstrap-select.js
 
 //= require admin/managelayersAdmin.js
 //= require admin/appAdmin.js
