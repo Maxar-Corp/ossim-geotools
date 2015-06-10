@@ -290,3 +290,8 @@ div[role='tooltip'] {
     -webkit-transform: rotate(-45deg);
     z-index: 99999;
 }
+
+#easyPaginate {width:300px;}
+#easyPaginate img {display:block;margin-bottom:10px;}
+.easyPaginateNav a {padding:5px;}
+.easyPaginateNav a.current {font-weight:bold;text-decoration:underline;}

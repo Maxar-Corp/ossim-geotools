@@ -45,25 +45,25 @@
             </div>
 
             <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
-                %{--<div class="col-sm-4 col-md-4">--}%
-                    %{--<form class="navbar-form" role="search" id="zoomToForm">--}%
-                        %{--<div class="form-group">--}%
-                            %{--<div class="input-group">--}%
-                                %{--<div class="input-group-btn">--}%
-                                    %{--<select  class="form-control selectpicker" data-style="btn-primary" id="coordSelect" >--}%
-                                        %{--<option data-icon="glyphicon-map-marker" value="dd">DD&nbsp;&nbsp;&nbsp;</option>--}%
-                                        %{--<option data-icon="glyphicon-time" value="dms">DMS&nbsp;&nbsp;</option>--}%
-                                        %{--<option data-icon="glyphicon-th-large" value="mgrs">MGRS</option>--}%
-                                    %{--</select>--}%
-                                %{--</div>--}%
-                                %{--<input class="form-control" id="coordInput" type="text" placeholder="Search by coordinates" value="39.57,-85.61">--}%
-                                %{--<div class="input-group-btn">--}%
-                                    %{--<button id="zoomButton" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i></button>--}%
-                                %{--</div>--}%
-                            %{--</div>--}%
-                        %{--</div>--}%
-                    %{--</form>--}%
-                %{--</div>--}%
+                <div class="col-sm-4 col-md-4">
+                    <form class="navbar-form" role="search" id="zoomToForm">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-btn">
+                                    <select  class="form-control selectpicker" data-style="btn-primary" id="coordSelect" >
+                                        <option data-icon="glyphicon-map-marker" value="dd">DD&nbsp;&nbsp;&nbsp;</option>
+                                        <option data-icon="glyphicon-time" value="dms">DMS&nbsp;&nbsp;</option>
+                                        <option data-icon="glyphicon-th-large" value="mgrs">MGRS</option>
+                                    </select>
+                                </div>
+                                <input class="form-control" id="coordInput" type="text" placeholder="Search by coordinates" value="39.57,-85.61">
+                                <div class="input-group-btn">
+                                    <button id="zoomButton" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
                 <ul class="nav navbar-nav navbar-right">
                     <li>
                         <form class="navbar-form">
@@ -265,10 +265,11 @@
                             <div class="form-group">
                                 <label for="createLayerName">Tile Layer Name&nbsp;</label>
                                 <input id="createLayerName" type="text" pattern="^[A-Za-z](?:_?[A-Za-z0-9]+)*$"
-                                       maxlength="50"
+                                       maxlength="45"
                                        class="form-control" required>
-                                <span class="help-block with-errors"><small><em>Start with alphabetic, up to 50
-                                 letters, numbers and underscores (case insensitive).  No spaces.</em></small></span>
+                                <span class="help-block"><small><em>Start with alphabetic, up to 45
+                                letters, numbers and underscores (case insensitive).  No spaces.</em></small></span>
+                                <span class="help-block with-errors"></span>
                             </div>
                             <div class="form-group">
                                 <label for="minTileLevel">Minimum Level</label>
@@ -292,9 +293,9 @@
                                 <div>
                                     <button id="submitCreateLayer" type="button" class="btn btn-primary ladda-button"
                                             data-style="expand-left"><span class="ladda-label">Create</span></button>
-                                    <button id="cancelCreateTile" type="button" class="btn btn-default"
-                                            data-dismiss="modal">Cancel</button>
                                     <button id="resetCreateTile" type="button" class="btn btn-warning">Reset</button>
+                                    <button id="cancelCreateTile" type="button" class="btn btn-default"
+                                            data-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>
@@ -323,31 +324,29 @@
                             in the input box.
                             </p>
 
-                                <div class="form-group">
-                                    <label for="renameTileLayer">Available Layers</label>
-                                    <select id="renameTileLayer"
-                                            class="form-control selectpicker show-tick tile-select">
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="renameLayerName">New Name&nbsp;</label>
-                                    <input id="renameLayerName" type="text" pattern="^[A-Za-z](?:_?[A-Za-z0-9]+)*$"
-                                           maxlength="50"
-                                           class="form-control" required>
-                                    <span class="help-block with-errors"><small><em>Start with alphabetic, up to 50
-                                    letters, numbers and underscores (case insensitive).  No spaces.</em></small></span>
-                                </div>
-                                <br>
-                                <br>
-                                <div>
-                                    <button id="submitRenameLayer" type="button" class="btn btn-primary ladda-button"
-                                            data-style="expand-left"><span class="ladda-label">Rename</span></button>
-                                    <button id="cancelRenameTile" type="button" class="btn btn-default"
-                                            data-dismiss="modal">Cancel</button>
-                                    <button id="resetRenameTile" type="button" class="btn btn-warning">Reset
-                                    </button>
-                                </div>
-
+                            <div class="form-group">
+                                <label for="renameTileLayer">Available Layers</label>
+                                <select id="renameTileLayer"
+                                        class="form-control selectpicker show-tick tile-select">
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="renameLayerName">New Name&nbsp;</label>
+                                <input id="renameLayerName" type="text" pattern="^[A-Za-z](?:_?[A-Za-z0-9]+)*$"
+                                       maxlength="45"
+                                       class="form-control" required>
+                                <span class="help-block"><small><em>Start with alphabetic, up to 45
+                                letters, numbers and underscores (case insensitive).  No spaces.</em></small></span>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                            <br>
+                            <br>
+                            <div>
+                                <button id="submitRenameLayer" type="button" class="btn btn-primary ladda-button"
+                                        data-style="expand-left"><span class="ladda-label">Rename</span></button>
+                                <button id="cancelRenameTile" type="button" class="btn btn-default"
+                                        data-dismiss="modal">Close</button>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -401,7 +400,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title fa fa-filter fa-lg">&nbsp;&nbsp;&nbsp;Filter OMAR Feed</h3>
+                <h3 class="modal-title"><i class="fa fa-filter fa-lg"></i>&nbsp;&nbsp;Filter OMAR Images</h3>
             </div>
             <div class="modal-body">
 
@@ -673,6 +672,9 @@
 
                 <button id="submitFilter" class="btn btn-primary ladda-button"
                                     data-style="expand-left"><span class="ladda-label">Submit</span></button>
+                <button id="cancelFilter" type="button" class="btn btn-default"
+                        data-dismiss="modal">Close</button>
+
             </div><!-- /.modal-body -->
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog modal-lg -->
@@ -685,7 +687,8 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title fa fa-file-image-o fa-lg">&nbsp;&nbsp;&nbsp;Ingest Tile Image</h3>
+                <h3 class="modal-title"><i class="fa fa-file-image-o fa-lg"></i>&nbsp;&nbsp;Ingest Tile
+                Image</h3>
             </div>
             <div class="modal-body">
                 <div class="container">
@@ -844,6 +847,10 @@
         AppOmarWfsAdmin.initialize(initParams);
         AppIngestTileAdmin.initialize(initParams);
         AppDrawFeaturesAdmin.initialize(initParams);
+
+        //Use polyfill to utilize HTML5 form validation in IE9
+        H5F.setup(document.getElementById("createTileLayerForm"));
+        H5F.setup(document.getElementById("renameTileLayerForm"));
 
     } );
 </g:javascript>

@@ -23,7 +23,7 @@ var AppOmarWfsAdmin = (function () {
     var $dateRangeSelect = $('#dateRangeSelect');
     var $sortByFieldSelect = $('#sortByFieldSelect');
     var $sortByTypeSelect = $('#sortByTypeSelect');
-    var dateToday, dateYesterday, dateLast7Days, dateThisMonth, dateLast3Months, dateLast6Months;
+    var dateToday, dateTodayEnd, dateYesterday, dateLast7Days, dateThisMonth, dateLast3Months, dateLast6Months;
     var filterOpts = {
         dateType: '',
         startDate: '',
@@ -40,7 +40,8 @@ var AppOmarWfsAdmin = (function () {
 
     var $submitFilter = $('#submitFilter');
 
-    dateToday = moment().format('MM-DD-YYYY');
+    dateToday = moment().format('MM-DD-YYYY 00:00');
+    dateTodayEnd = moment().format('MM-DD-YYYY 23:59');
     dateYesterday = moment().subtract(1, 'days').format('MM-DD-YYYY');
     dateLast7Days = moment().subtract(7, 'days').format('MM-DD-YYYY');
     dateThisMonth = moment().subtract(1, 'months').format('MM-DD-YYYY');
@@ -104,15 +105,7 @@ var AppOmarWfsAdmin = (function () {
                 "&sortBy=" + sortByField +
                 ":" + sortByType;
         }
-
-        console.message()
-            .span({ color: '#337ab7', fontSize: 14 })
-                .text('(omarWfsAdmin.js 112): ')
-            .spanEnd()
-            .text(wfsCards + ' \u21b4 ', {
-                color: 'green', fontSize: 14
-            })
-            .print();
+        console.log(wfsCards);
 
         // TODO: Add functionality to restrict the query to a spatial extent (via BBox)
         $.ajax({
@@ -152,16 +145,17 @@ var AppOmarWfsAdmin = (function () {
                 break;
             case "today":
                 queryRange.start = dateToday;
+                queryRange.end = dateTodayEnd;
                 queryRange.none = false;
                 break;
             case "yesterday":
                 queryRange.start = dateYesterday;
-                queryRange.end = dateToday;
+                queryRange.end = dateTodayEnd;
                 queryRange.none = false;
                 break;
             case "last7Days":
                 queryRange.start = dateLast7Days;
-                queryRange.end = dateToday;
+                queryRange.end = dateTodayEnd;
                 queryRange.none = false;
                 break;
             case "thisMonth":
@@ -171,12 +165,12 @@ var AppOmarWfsAdmin = (function () {
                 break;
             case "last3Months":
                 queryRange.start = dateLast3Months;
-                queryRange.end = dateToday;
+                queryRange.end = dateTodayEnd;
                 queryRange.none = false;
                 break;
             case "last6Months":
                 queryRange.start = dateLast6Months;
-                queryRange.end = dateToday;
+                queryRange.end = dateTodayEnd;
                 queryRange.none = false;
                 break;
             case "customDateRange":
