@@ -27,6 +27,9 @@ within PostgreSQL and Accumulo.  It also allows users to view geospatially encod
 - [Maven >= 3](https://maven.apache.org/)
 - [Gradle](http://gradle.org/)
 
+## GVM: (http://gvmtool.net/)
+If managing multiple versions of grails with gvm. To switch between versions use "gvm use", e.g. grails 2.2.5 is default and grails 2.5.0 is needed, do: gvm use grails 2.5.0
+
 ## Installing from RPM
 
 This is the recommended installation method.
