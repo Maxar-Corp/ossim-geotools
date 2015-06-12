@@ -7,6 +7,8 @@ import groovy.xml.StreamingMarkupBuilder
 
 import org.springframework.beans.factory.InitializingBean
 
+import java.awt.Graphics2D
+import java.awt.Color
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 
@@ -133,6 +135,7 @@ class WebMappingService implements InitializingBean
       }
       catch ( def e )
       {
+        //println e
         // probably need to do an OGC exception here
         //  need to determine exception type and then return that type
 
@@ -143,6 +146,15 @@ class WebMappingService implements InitializingBean
        // ImageIO.write( image, outputFormat, result )
 
         //  e.printStackTrace()
+        BufferedImage img = new BufferedImage(cmd.width, cmd.height, BufferedImage.TYPE_4BYTE_ABGR)
+       // Graphics2D g = img.graphics
+
+        //g.setColor(new Color(255,0,0))
+        //g.drawRect(0,0,cmd.width,cmd.width)
+        //g.drawString("No Data", 0, cmd.height/2)
+        //g.dispose()
+        ImageIO.write(img,outputFormat,result)
+        img = null
       }
       finally
       {

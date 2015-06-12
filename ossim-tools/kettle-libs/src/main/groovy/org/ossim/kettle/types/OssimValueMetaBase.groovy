@@ -143,9 +143,11 @@ public class OssimValueMetaBase extends ValueMetaBase
 			case TYPE_CLONABLE_IMAGE:
 				switch ( storageType ) {
 					case STORAGE_TYPE_NORMAL:
-						if(object instanceof Image)
+						if(object instanceof BufferedImage)
 						{
-							result = (Image) object;
+							def planarImage = PlanarImage.wrapRenderedImage(object as RenderedImage)
+							result = JAI.create("NULL", planarImage)
+							result.data
 						}
 						else if(object instanceof PlanarImage)
 						{

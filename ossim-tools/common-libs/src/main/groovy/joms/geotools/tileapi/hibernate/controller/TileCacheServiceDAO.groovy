@@ -46,8 +46,12 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   TileCacheLayerInfoDAO layerInfoTableDAO
   Sql sql
   def sqlSession
-  def tableNamePrefix = "tilestore_"
+//  def tableNamePrefix = "tilestore_"
 
+  String getDefaultTileStoreTableName(TileCacheLayerInfo layerInfo)
+  {
+    "tiles_${layerInfo.id}"
+  }
   void setApplicationContext(ApplicationContext applicationContext) throws BeansException
   {
     this.applicationContext = applicationContext;
@@ -205,20 +209,23 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   @Transactional
   private void createTileStore(String target, Integer srid)
   {
-    // def tempSession = sessionFactory.openSession()
-    // Sql sql = new Sql(tempSession.connection())
-    //create_table_if_not_exists
-    //CREATE TABLE ${target} as select * from tile_cache_tile_table_template with no data;
+    if(!tableExists(target))
+    {
+      // def tempSession = sessionFactory.openSession()
+      // Sql sql = new Sql(tempSession.connection())
+      //create_table_if_not_exists
+      //CREATE TABLE ${target} as select * from tile_cache_tile_table_template with no data;
 //    String createStmt =  "CREATE TABLE ${target} as select * from tile_cache_tile_table_template with no data;"
 //
-    String createStmt = "CREATE TABLE ${target} ( LIKE tile_cache_tile_table_template, PRIMARY KEY (hash_id));"
-    String sqlString = """
+      String createStmt = "CREATE TABLE ${target} ( LIKE tile_cache_tile_table_template, PRIMARY KEY (hash_id));"
+      String sqlString = """
         SELECT create_table_if_not_exists('${target}','${createStmt}');
         SELECT UpdateGeometrySRID( '${target}', 'bounds', ${srid} );
         SELECT create_index_if_not_exists('${target}', 'bounds_idx', 'USING GIST(bounds)');
         SELECT create_index_if_not_exists('${target}', 'res_idx', '(res)');
     """.toString()
-    sql.execute( sqlString )
+      sql.execute( sqlString )
+    }
   }
 //        SELECT create_index_if_not_exists('${target}', 'hash_id_idx', '(hash_id)');
 
@@ -229,12 +236,12 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     if ( layer )
     {
       def oldTileStore = layer.tileStoreTable
-      String defaultTileStore = "${tableNamePrefix}${newName.toLowerCase()}_tiles"
-      layer.tileStoreTable = defaultTileStore
+      //String defaultTileStore ="${tableNamePrefix}${newName.toLowerCase()}_tiles"
+      //layer.tileStoreTable = defaultTileStore
       layer.name = newName
       layerInfoTableDAO.update( layer )
-      sql.execute( "ALTER TABLE ${oldTileStore} RENAME TO ${defaultTileStore}".toString() );
-      accumuloApi.renameTable( oldTileStore, defaultTileStore )
+      //sql.execute( "ALTER TABLE ${oldTileStore} RENAME TO ${defaultTileStore}".toString() );
+      //accumuloApi.renameTable( oldTileStore, defaultTileStore )
     }
     else
     {
@@ -245,7 +252,14 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   @Transactional
   TileCacheLayerInfo createOrUpdateLayer(TileCacheLayerInfo layerInfo)
   {
-    String defaultTileStore = "${tableNamePrefix}${layerInfo.name.toLowerCase()}_tiles"
+
+    String defaultTileStore
+
+    if(layerInfo.id != null)
+    {
+      defaultTileStore = this.getDefaultTileStoreTableName(layerInfo)
+    }
+
     TileCacheLayerInfo layer = layerInfoTableDAO.findByName( layerInfo.name )
 
     //println "TABLE ${defaultTileStore} Exists???? ${tableExists(defaultTileStore)}"
@@ -265,19 +279,30 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     }
     else
     {
-      if ( !layerInfo.tileStoreTable )
+      if(!layerInfo.tileStoreTable) layerInfo.tileStoreTable = defaultTileStore
+      // creating a new layer
+      if(layerInfo.id!=null)
       {
         layerInfo.tileStoreTable = defaultTileStore
+        layerInfoTableDAO.save(layerInfo)
       }
-
-      layerInfoTableDAO.save( layerInfo )
-      if ( !tableExists( layerInfo.tileStoreTable ) )
+      else
       {
-        Integer srid = layerInfo?.epsgCode?.split( ':' )[-1]?.toInteger()
-        createTileStore( layerInfo.tileStoreTable, srid )
+        layerInfo = layerInfoTableDAO.save(layerInfo)
+
+        if(layerInfo.id!=null)
+        {
+          layerInfo.tileStoreTable = getDefaultTileStoreTableName(layerInfo)
+          layerInfoTableDAO.update(layerInfo)
+        }
       }
-      accumuloApi.createTable( layerInfo.tileStoreTable )
       layer = layerInfo
+    }
+    if(layerInfo.tileStoreTable != null)
+    {
+      Integer srid = layerInfo?.epsgCode?.split( ':' )[-1]?.toInteger()
+      createTileStore( layerInfo.tileStoreTable, srid )
+      accumuloApi.createTable( layerInfo.tileStoreTable )
     }
     layer
   }

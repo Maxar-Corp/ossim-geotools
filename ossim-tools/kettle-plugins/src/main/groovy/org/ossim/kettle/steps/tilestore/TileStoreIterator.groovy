@@ -3,6 +3,7 @@ package org.ossim.kettle.steps.tilestore
 import geoscript.geom.Geometry
 import geoscript.geom.io.WktReader
 import geoscript.proj.Projection
+import groovy.sql.GroovyRowResult
 import groovy.sql.Sql
 import joms.geotools.tileapi.accumulo.ImageTileKey
 import joms.geotools.tileapi.accumulo.TileCacheImageTile
@@ -43,6 +44,17 @@ class TileStoreIterator  extends BaseStep implements StepInterface
    private Integer tileBoundsIdx
    private Integer tileEpsgIdx
    private Integer tileImageIdx
+   private Integer numberOfOutputFields
+   private Integer columnOffset
+   private Boolean nextRowFlag
+   private Sql     sql
+   private String  queryString
+   private Integer currentResultOffset = 0
+   private Integer batchSize = 100
+   private Integer currentRowIdx = 0
+   private TileCacheLayerInfo layerInfo
+   private def     sqlRows
+   private Object[] currentInputRow
 
    TileStoreIterator(StepMeta stepMeta, StepDataInterface stepDataInterface,
                      int copyNr, TransMeta transMeta, Trans trans) {
@@ -101,7 +113,6 @@ class TileStoreIterator  extends BaseStep implements StepInterface
                      String v = getInputRowMeta().getString(r,fieldIndex)
                      result = new WktReader().read(v)
                   }
-
                }
             }
             if(!result)
@@ -121,29 +132,30 @@ class TileStoreIterator  extends BaseStep implements StepInterface
    public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws KettleException
    {
       //++rowN
-      Object[] r = getRow();    // get row, set busy!
-      //println "ROW SIZE ============ ${r.size()}"
-      //println "ROW SET SIZE!! ${rowsetInputSize()}"
-      if (r == null)
+
+      if(nextRowFlag)
       {
-         setOutputDone();
-         //  println "TOTAL COUNT == ${rowN}"
-         //  println "TOTAL WRITTEN == ${count}"
-         return false;
-      }
-      if(!data.tileCacheService)
-      {
-         throw new KettleException("Unable to connect to tilestore")
+         currentInputRow = getRow();    // get row, set busy!
+         //println "ROW SIZE ============ ${r.size()}"
+         //println "ROW SET SIZE!! ${rowsetInputSize()}"
+         if (currentInputRow == null)
+         {
+            setOutputDone();
+            return false;
+         }
       }
       if(first)
       {
          first = false;
+         currentResultOffset = 0
          data.outputRowMeta = getInputRowMeta().clone()
+        // println "BEFORE SIZE ============= ${data.outputRowMeta.size()}"
          meta.getFields(data.outputRowMeta, getStepname(), null, null, this)
+        // println "AFTER SIZE ============= ${data.outputRowMeta.size()}"
          orderByClause = data?.tileCacheService.createOrderByClause([orderBy:"z+A"])
          selectedRowMeta = new RowMeta()
          meta.getFields(selectedRowMeta, getStepname(), null, null, this)
-         tileLevelIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_level"])
+         tileLevelIdx  = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_level"])
          tileHashIdIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_hashid"])
          tileRowIdx    = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_row"])
          tileColIdx    = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_col"])
@@ -151,38 +163,62 @@ class TileStoreIterator  extends BaseStep implements StepInterface
          tileBoundsIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_bounds"])
          tileEpsgIdx   = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_epsg"])
          tileImageIdx  = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_image"])
+
+         numberOfOutputFields = selectedRowMeta.size()
+         columnOffset = data.outputRowMeta.size()-numberOfOutputFields
+         sql = data.hibernate.cacheSql
       }
-      def numberOfOutputFields = selectedRowMeta.size() //meta.selectedFieldNames.size()
-      def offset = data.outputRowMeta.size()-numberOfOutputFields
-      if(numberOfOutputFields)
+
+      if(numberOfOutputFields<1)
       {
-         Boolean okToProcess = true
-         String layerName = getFieldValueAsString(meta?.layerName,r,meta,data)
-
-         if(!layerName)
+         putRow(inputRowMeta, currentInputRow)
+         return true
+      }
+      else
+      {
+         // setup query for paging data from the database
+         if(nextRowFlag)
          {
-            logError("Layername is empty")
-
-            okToProcess = false
-         }
-
-         TileCacheLayerInfo layerInfo = data.tileCacheService.getLayerInfoByName(layerName)
-
-         if(!layerInfo)
-         {
-            logError("Layername '${layerName}' not found in database")
-            okToProcess = false
-         }
-
-         if(okToProcess)
-         {
-            Sql sql = data.hibernate.cacheSql
-
+            String layerName = getFieldValueAsString(meta?.layerName,currentInputRow,meta,data)
+            Geometry geom
+            String aoiEpsg
+            String whereClause = ""
+            HashMap whereConstraints = []
+            def selectionClause = []
             String selectionString
-
             Boolean addHashId = true
 
-            def selectionClause = []
+            if(!layerName)
+            {
+               logError("Layername is empty")
+            }
+
+            layerInfo = data.tileCacheService.getLayerInfoByName(layerName)
+
+            if(!layerInfo)
+            {
+               logError("Layername '${layerName}' not found in database")
+               return true
+            }
+            geom = getGeometryField(meta?.aoi, currentInputRow, meta, data)
+            aoiEpsg = getFieldValueAsString(meta?.aoiEpsg,currentInputRow,meta,data)
+            if(geom&&aoiEpsg&&(aoiEpsg.toUpperCase()!=layerInfo.epsgCode.toUpperCase()))
+            {
+               Projection layerProjection = new Projection(layerInfo.epsgCode)
+               Projection aoiProjection   = new Projection(aoiEpsg)
+               if(layerProjection)
+               {
+                  geom = aoiProjection.transform(geom, layerProjection)
+               }
+            }
+
+            if(geom)
+            {
+               whereConstraints.intersects = geom.toString()
+               whereConstraints.intersectsSrid = layerInfo.epsgCode?.split(":")[-1]
+            }
+
+            whereClause = data?.tileCacheService.createWhereClause(whereConstraints)
             meta?.selectedFieldNames.each{field->
                def columnName = meta?.fieldNameDefinitions?."${field}"?.columnName
                if(columnName)
@@ -202,59 +238,68 @@ class TileStoreIterator  extends BaseStep implements StepInterface
                   }
                }
             }
-
-            String whereClause = ""
-            HashMap whereConstraints = []
-            Geometry geom = getGeometryField(meta?.aoi, r, meta, data)
-            String aoiEpsg = getFieldValueAsString(meta?.aoiEpsg,r,meta,data)
-            if(geom&&aoiEpsg&&(aoiEpsg.toUpperCase()!=layerInfo.epsgCode.toUpperCase()))
-            {
-               Projection layerProjection = new Projection(layerInfo.epsgCode)
-               Projection aoiProjection   = new Projection(aoiEpsg)
-               if(layerProjection)
-               {
-                  geom = aoiProjection.transform(geom, layerProjection)
-               }
-            }
-
-            if(geom)
-            {
-               whereConstraints.intersects = geom.toString()
-               whereConstraints.intersectsSrid = layerInfo.epsgCode?.split(":")[-1]
-            }
-
-            whereClause = data?.tileCacheService.createWhereClause(whereConstraints)
-
             if(addHashId) selectionClause << "hash_id"
-            String queryString = "select ${selectionClause.join(',')} from ${layerInfo.tileStoreTable} ${whereClause} ${orderByClause}".toString()
+            queryString = "select ${selectionClause.join(',')} from ${layerInfo.tileStoreTable} ${whereClause} ${orderByClause}".toString()
+            currentResultOffset = 0
+            nextRowFlag = false
+         }
 
-            def resultArray = new Object[numberOfOutputFields]
-            sql.eachRow(queryString){row->
+         // check to see if we need to reload the next sql batch
+         if(sqlRows)
+         {
+            if((currentRowIdx) >= sqlRows.size())
+            {
+               sqlRows = null
+            }
+         }
+
+         if(!sqlRows)
+         {
+            currentRowIdx = 0
+            sqlRows = sql.rows(queryString, currentResultOffset, batchSize);
+            if(!sqlRows)
+            {
+               nextRowFlag = true
+            }
+            else
+            {
+               currentResultOffset += sqlRows.size()
+               nextRowFlag = false
+            }
+         }
+         else
+         {
+            def sqlRow = sqlRows[currentRowIdx]
+            ++currentRowIdx
+
+       //     sqlRows.each{sqlRow->
+            if(sqlRow){
+               Object[] resultArray = new Object[numberOfOutputFields]
                if(tileLevelIdx>=0)
                {
-                  resultArray[tileLevelIdx] = row.z
+                  resultArray[tileLevelIdx] = sqlRow.z
                }
                if(tileHashIdIdx>=0)
                {
-                  resultArray[tileHashIdIdx] = row.hash_id
+                  resultArray[tileHashIdIdx] = sqlRow.hash_id
                }
                if(tileRowIdx >= 0)
                {
-                  resultArray[tileRowIdx] = row.y
+                  resultArray[tileRowIdx] = sqlRow.y
                }
                if(tileColIdx >= 0)
                {
-                  resultArray[tileColIdx] = row.x
+                  resultArray[tileColIdx] = sqlRow.x
                }
                if(tileResIdx >= 0)
                {
-                  resultArray[tileResIdx] = row.res
+                  resultArray[tileResIdx] = sqlRow.res
                }
                if(tileBoundsIdx >= 0)
                {
                   try
                   {
-                     resultArray[tileBoundsIdx] = new WktReader().read(row.bounds)?.g
+                     resultArray[tileBoundsIdx] = new WktReader().read(sqlRow.bounds)?.g
                   }
                   catch(e)
                   {
@@ -263,37 +308,41 @@ class TileStoreIterator  extends BaseStep implements StepInterface
                }
                if(tileEpsgIdx >= 0)
                {
-                  resultArray[tileEpsgIdx] = "EPSG:${row.bounds_srid}".toString()
+                  resultArray[tileEpsgIdx] = "EPSG:${sqlRow.bounds_srid}".toString()
                }
                if(tileImageIdx >= 0)
                {
                   def data = data?.tileCacheService.getTileDataByKey(layerInfo,
-                          new ImageTileKey(rowId:row.hash_id))
+                          new ImageTileKey(rowId:sqlRow.hash_id))
                   if(data)
                   {
-                   //  def img = ImageIO.read(new ByteArrayInputStream(data))
+                     //  def img = ImageIO.read(new ByteArrayInputStream(data))
 
                      //if()
                      //{
-                      //  def planarImage = PlanarImage.wrapRenderedImage(img as RenderedImage)
-                        // convert to a serializable planar image planar
-                      //  planarImage = JAI.create("NULL", planarImage)
-                      //  planarImage.data
+                     //  def planarImage = PlanarImage.wrapRenderedImage(img as RenderedImage)
+                     // convert to a serializable planar image planar
+                     //  planarImage = JAI.create("NULL", planarImage)
+                     //  planarImage.data
 
-                        resultArray[tileImageIdx] =  data
+                     resultArray[tileImageIdx] =  data
                      //}
                   }
                }
-               // println row
-               Object[] outputRow = RowDataUtil.addRowData(r,
-                       offset,//data.outputRowMeta.size()-(resultArray.size()),
-                       resultArray as Object []);
+               String id = "${sqlRow.z}${sqlRow.y}${sqlRow.x}"
 
-               putRow(data.outputRowMeta, outputRow);
+               def outputRow = []
+               (0..<inputRowMeta.size()).each { Integer i ->
+                  outputRow << currentInputRow[i]
+               }
+               resultArray.each{outputRow<<it}
+               putRow(data.outputRowMeta, outputRow as Object[]);
             }
+            //sqlRows = null
          }
       }
-      if ((linesRead%Const.ROWS_UPDATE)==0) logBasic("Linenr "+linesRead);  // Some basic logging every 5000 rows.
+
+//      if ((linesRead%Const.ROWS_UPDATE)==0) logBasic("Linenr "+linesRead);  // Some basic logging every 5000 rows.
 
       return true;
    }
@@ -308,6 +357,8 @@ class TileStoreIterator  extends BaseStep implements StepInterface
       {
          throw new KettleException("Unable to access the tilecache")
       }
+
+      nextRowFlag = true
       return super.init(smi, sdi);
    }
    public void dispose(StepMetaInterface smi, StepDataInterface sdi)
