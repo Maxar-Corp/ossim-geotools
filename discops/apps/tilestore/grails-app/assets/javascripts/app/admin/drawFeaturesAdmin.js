@@ -8,6 +8,7 @@ var AppDrawFeaturesAdmin = (function () {
     var $mapOmarInfo = $('#mapOmarInfo');
     var $ingestModalButton = $('#ingestModalButton');
     var $endCuts = $('#endCuts');
+    var $ingestImageModal = $('#ingestImageModal');
 
     var aoiFeature = new ol.Feature();
 
@@ -146,7 +147,7 @@ var AppDrawFeaturesAdmin = (function () {
     }
 
     // Remove the AOI feature if the user closes the ingest image modal window
-    $('#ingestImageModal').on('hidden.bs.modal', function (e) {
+    $ingestImageModal.on('hidden.bs.modal', function (e) {
         AppManageLayersAdmin.aoiVector.getSource().clear();
     });
 

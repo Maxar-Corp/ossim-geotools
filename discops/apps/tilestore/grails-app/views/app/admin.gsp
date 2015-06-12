@@ -695,7 +695,7 @@
                     <div class="row">
                         <div class="col-md-6 col-sm-6">
 
-                            <p>Select the desired minimum and maximum ingest levels for the selected image, and then
+                            <p>Pick the desired minimum and maximum ingest levels for the selected image, and then
                             click the Submit button to start the process.</p>
                             <p><small><em>Note: The initial min and max levels below are determined by the resolution of the
                             selected image.</em></small></p>
