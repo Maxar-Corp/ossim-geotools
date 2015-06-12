@@ -1,5 +1,10 @@
 package org.ossim.kettle.steps.imageop
 
+import com.vividsolutions.jts.geom.Coordinate
+import com.vividsolutions.jts.geom.Envelope
+import com.vividsolutions.jts.geom.Geometry
+import com.vividsolutions.jts.geom.GeometryCollection
+import org.geotools.geometry.jts.GeometryClipper
 import org.ossim.kettle.types.OssimValueMetaBase
 import org.pentaho.di.core.exception.KettleException
 import org.pentaho.di.trans.Trans
@@ -9,6 +14,15 @@ import org.pentaho.di.trans.step.StepDataInterface
 import org.pentaho.di.trans.step.StepInterface
 import org.pentaho.di.trans.step.StepMeta
 import org.pentaho.di.trans.step.StepMetaInterface
+
+import java.awt.Color
+import java.awt.Graphics
+import java.awt.Graphics2D
+import java.awt.Polygon
+import java.awt.Shape
+import java.awt.image.BufferedImage
+import java.awt.image.ColorModel
+import java.awt.image.WritableRaster
 
 /**
  * Created by gpotts on 6/3/15.
@@ -26,6 +40,46 @@ class TileCrop extends BaseStep implements StepInterface
                        int copyNr, TransMeta transMeta, Trans trans)
    {
       super(stepMeta, stepDataInterface, copyNr, transMeta, trans);
+   }
+   BufferedImage cloneImage(BufferedImage img)
+   {
+      ColorModel cm = img.getColorModel();
+      boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+      WritableRaster raster = img.copyData(null);
+      new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+   }
+   BufferedImage cropImage(BufferedImage image, Envelope imgEnv, geoscript.geom.Geometry cutGeom)
+   {
+      BufferedImage result
+      def xPoint = []
+      def yPoint = []
+     // def polyFillArea =  cutGeom.translate(-imgEnv.minX,-imgEnv.minY)
+      def xp = []
+      def yp = []
+      double deltaWidth = imgEnv.width
+      double deltaHeight = imgEnv.height
+
+      // convert to pixel space polygon
+      cutGeom.coordinates.each{pt->
+         xp<<Math.round((((pt.x - imgEnv.minX)/deltaWidth)*image.width))
+         yp<<Math.round((((imgEnv.maxY - pt.y)/deltaHeight)*image.height))
+      }
+
+      if(xp.size())
+      {
+         def shape = new java.awt.Polygon( xp as int[] , yp as int[], xp.size() );
+
+         result = new BufferedImage(image.width, image.height, BufferedImage.TYPE_4BYTE_ABGR)//cloneImage(image)
+
+         Graphics g2d = result.graphics
+         //g2d.setColor(new Color(0,0,0))
+         //g2d.fillRect(0,0, result.width, result.height)
+         g2d.setClip(shape)
+         g2d.drawImage(image,0,0,null)
+         g2d.dispose()
+      }
+
+      result
    }
    public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws KettleException
    {
@@ -54,12 +108,61 @@ class TileCrop extends BaseStep implements StepInterface
       }
 
       def image = imageConverter.getImage(r[tileFieldIdx])
+      def tileGeometry = r[tileAoiFieldIdx] as Geometry
+      def aoiGeometry  = r[aoiFieldIdx] as Geometry
 
+      // if we have the support to crop the image
+      if(image&&tileGeometry&&aoiGeometry)
+      {
+         if(tileGeometry.intersects(aoiGeometry))
+         {
 
-      r[tileFieldIdx] = image
+            if(!aoiGeometry.contains(tileGeometry))
+            {
+               BufferedImage bufferedImage = image.asBufferedImage
+               Envelope env = tileGeometry.envelopeInternal
+               Geometry intersectGeometry = tileGeometry.intersection(aoiGeometry)
 
+               if(aoiGeometry instanceof GeometryCollection)
+               //   if(intersectGeometry instanceof GeometryCollection)
+               {
+                  GeometryCollection geomCollection = intersectGeometry as GeometryCollection
+                 // GeometryCollection geomCollection = aoiGeometry as GeometryCollection
+                  Integer i = 0
 
-      putRow(data.outputRowMeta, r);
+                  def imageResult = bufferedImage
+                  for(i=0;i<geomCollection.numGeometries;++i)
+                  {
+                     // now crop the image
+                     Geometry g = geomCollection.getGeometryN(i)
+
+                     imageResult = cropImage(imageResult, env, geoscript.geom.Geometry.wrap(g))
+                  }
+                  image = imageResult
+               }
+               else
+               {
+                  //image = cropImage(bufferedImage, env, geoscript.geom.Geometry.wrap(intersectGeometry))
+                  image = cropImage(bufferedImage, env, geoscript.geom.Geometry.wrap(aoiGeometry))
+               }
+            }
+            else
+            {
+               // completely contained within the aoi
+            }
+         }
+         else
+         {
+            image = null
+         }
+      }
+      // only output valid data for now
+      if(image)
+      {
+         r[tileFieldIdx] = image
+
+         putRow(data.outputRowMeta, r);
+      }
 
       return true
    }

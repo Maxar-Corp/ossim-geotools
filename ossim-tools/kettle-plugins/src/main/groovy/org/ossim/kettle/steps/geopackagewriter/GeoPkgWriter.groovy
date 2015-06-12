@@ -1,5 +1,8 @@
 package org.ossim.kettle.steps.geopackagewriter
 
+import geoscript.geom.Bounds
+import geoscript.proj.Projection
+import joms.geotools.tileapi.BoundsUtil
 import joms.oms.GpkgWriter
 import joms.oms.ImageData
 import joms.oms.ossimImageData
@@ -71,26 +74,38 @@ class GeoPkgWriter extends BaseStep implements StepInterface
    }
    private Boolean initializeGeopackage(Object[] r)
    {
-      if(gpkgWriter)
-      {
-         gpkgWriter.delete()
-         gpkgWriter = null
-      }
+      String epsg
+      String writerMode
+      Integer minLevel
+      Integer maxLevel
+      String filenameString
+      File f
+      gpkgWriter?.delete()
+      gpkgWriter = null
       gpkgWriter = new GpkgWriter()
 
-      File f = new File(r[filenameIdx] as String)
-      String  epsg      = r[epsgIdx]
-      Integer minLevel  = r[minlevelIdx]
-      Integer maxLevel  = r[maxLevelIdx]
-      String writerMode =  environmentSubstitute(meta.writerMode?:"")
+      options = [:]
+      epsg      = r[epsgIdx]
+      minLevel  = r[minlevelIdx]
+      maxLevel  = r[maxLevelIdx]
+      writerMode =  environmentSubstitute(meta.writerMode?:"")
+      filenameString = r[filenameIdx]
+
+      f = filenameString as File
       epsg = epsg.toUpperCase().replace("EPSG:","")
 
-
-      options.filename    = f.toString()
+      options.filename    = filenameString
       options.epsg        = epsg.toString()
-      options.zoom_levels = "(${(minLevel..maxLevel).collect(){it}.join(',')})".toString()
 
+      if((minLevel!=null) && (maxLevel!=null))
+      {
+         options.zoom_levels = "(${(minLevel..maxLevel).collect(){it}.join(',')})".toString()
+      }
+
+      //Bounds b = BoundsUtil.getDefaultBounds(new Projection(r[epsgIdx]))
+      //options.cut_wms_bbox = "BBOX:${b.minX},${b.minY},${b.maxX},${b.maxY}".toString()
       options.writer_mode = writerMode?:"mixed"
+
       if(f.exists())
       {
          options.append = "true"
@@ -99,43 +114,30 @@ class GeoPkgWriter extends BaseStep implements StepInterface
       {
          options.append = "false"
       }
-//         options = [filename:"/tmp/myfile.gpkg",
-//                                   epsg:"3857",
-//                                   zoom_levels:"(${(0..20).collect(){it}.join(',')})".toString()]
-
-
-      // We will open the file here
-      //
-      openedFile = gpkgWriter.openFile(options)
+      openedFile = gpkgWriter?.openFile(options)
       if(!openedFile)
       {
          throw new KettleException("Unable to open geopackage with options ${options}")
       }
-
-
-      gpkgWriter.beginTileProcessing()
-
-      return openedFile
+      openedFile
    }
    public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws KettleException
    {
       Object[] r = getRow();
-      if (r==null)
+
+      if (!r)
       {
          setOutputDone()
-         gpkgWriter.finalizeTileProcessing()
-         if(gpkgWriter)
-         {
-            gpkgWriter.delete()
-            gpkgWriter = null
-         }
+         gpkgWriter?.finalizeTileProcessing()
+         gpkgWriter?.delete()
+         gpkgWriter = null
          return false
       }
       if (first)
       {
+         first = false
          currentGroupId = null
          groupId        = null
-
          openedFile = false
 
          def options = [:]
@@ -154,15 +156,18 @@ class GeoPkgWriter extends BaseStep implements StepInterface
          minlevelIdx      =  getInputRowMeta().indexOfValue(meta.minLevelField)
          maxLevelIdx      =  getInputRowMeta().indexOfValue(meta.maxLevelField)
          imageConverter   =  inputRowMeta.getValueMeta(imageIdx) as OssimValueMetaBase
-         if((imageIdx < 0)||(levelIdx < 0)||(rowIdx < 0)|| (colIdx < 0)||
-                 (epsgIdx<0)||(filenameIdx<0))
+         //if((imageIdx < 0)||(levelIdx < 0)||(rowIdx < 0)|| (colIdx < 0)||
+         //        (epsgIdx<0)||(filenameIdx<0))
+         //{
+         //   throw new KettleException("All input parameters need to be specified.  Image, Level, row, col, epsg, filename")
+         //}
+
+         if(!initializeGeopackage(r))
          {
-            throw new KettleException("All input parameters need to be specified.  Image, Level, row, col, epsg, filename")
+            throw new KettleException("Unable to initialize Geopackage writer")
          }
 
-         initializeGeopackage(r)
-
-         if(groupIdIdx)
+         if(groupIdIdx>=0)
          {
             groupId = r[groupIdIdx]
             currentGroupId = groupId
@@ -171,7 +176,8 @@ class GeoPkgWriter extends BaseStep implements StepInterface
          imageData.setOssimImageData(256, 256, 3, ossimScalarType.OSSIM_UINT8)
 
          oIData = imageData.asOssimImageData
-         first = false
+
+         gpkgWriter?.beginTileProcessing()
       }
       else
       {
@@ -180,24 +186,24 @@ class GeoPkgWriter extends BaseStep implements StepInterface
          //
          // If they changed we will configure another group
          //
-         if(currentGroupId != null)
+         if (currentGroupId != null)
          {
             currentGroupId = r[groupIdIdx]
-            if(currentGroupId != groupId)
+            if (currentGroupId != groupId)
             {
                initializeGeopackage(r)
             }
             groupId = currentGroupId
          }
-
       }
-      int level = r[levelIdx]
-      int row   = r[rowIdx]
-      int col   = r[colIdx]
+      int level      = r[levelIdx]
+      int rowValue   = r[rowIdx]
+      int colValue   = r[colIdx]
 
       if(r[imageIdx])
       {
          RenderedOp image = imageConverter.getImage(r[imageIdx]) //row[imageidx] as RenderedImage
+
 
          if(image.numBands > 0)
          {
@@ -207,13 +213,18 @@ class GeoPkgWriter extends BaseStep implements StepInterface
             }
             def modifedImage = image
 
-            if(image.numBands > 3)
-            {
-               modifedImage = JAI.create("BandSelect", image, [0,1,2] as int[])
-            }
-            else if(image.numBands < 3)
+            //if(image.numBands > 3)
+            //{
+            //   modifedImage = JAI.create("BandSelect", image, [0,1,2] as int[])
+            //}
+            // else if(image.numBands < 3)
+            if(image.numBands < 3)
             {
                modifedImage = JAI.create("BandSelect", image, [0,0,0] as int[])
+            }
+            else if(image.numBands > 4)
+            {
+               throw KettleException("Geopackage writer step only supports images with 1, 3 or 4 bands")
             }
             else
             {
@@ -222,14 +233,29 @@ class GeoPkgWriter extends BaseStep implements StepInterface
             SampleModel sampleModel = modifedImage.sampleModel
             if(sampleModel instanceof PixelInterleavedSampleModel)
             {
+               PixelInterleavedSampleModel pilSampleModel = sampleModel as PixelInterleavedSampleModel
+               // println "${pilSampleModel.numBands}, ${pilSampleModel.pixelStride}, ${pilSampleModel.scanlineStride}, ${pilSampleModel.bandOffsets}, ${pilSampleModel.bankIndices}"
                Raster raster = modifedImage?.data
                DataBuffer dataBuffer = raster?.dataBuffer
 
                if(dataBuffer instanceof DataBufferByte)
                {
-                  oIData.loadTile8(dataBuffer.data, ossimInterleaveType.OSSIM_BIP)
+                  oIData.makeBlank()
+                  if(pilSampleModel.pixelStride == 4)
+                  {
+                     oIData.loadTile8WithAlpha(dataBuffer.data, ossimInterleaveType.OSSIM_BIP)
+                  }
+                  else
+                  {
+                     oIData.loadTile8(dataBuffer.data, ossimInterleaveType.OSSIM_BIP)
+                  }
                   oIData.validate()
-                  gpkgWriter.writeTile(imageData, level, row, col)
+                  //println "STATUS: ${oIData.getDataObjectStatus()}"
+                //  println  "Writer Level, col, row: ${level}, ${colValue},${rowValue}"
+                  if(!gpkgWriter.writeTile(imageData, level, rowValue, colValue))
+                  {
+                     // println "UNABLE TO WRITE TILE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+                  }
                }
                else
                {
@@ -242,10 +268,6 @@ class GeoPkgWriter extends BaseStep implements StepInterface
             }
          }
       }
-
-//      println "REF PTR ==== ${refPtr}"
-
-
       return true
    }
    public boolean init(StepMetaInterface smi, StepDataInterface sdi)

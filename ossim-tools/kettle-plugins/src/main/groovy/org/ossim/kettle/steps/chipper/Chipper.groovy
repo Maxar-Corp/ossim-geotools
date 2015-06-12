@@ -219,7 +219,7 @@ class Chipper extends BaseStep implements StepInterface
 /*           if(cutEpsg&&(cutEpsg.epsg!=geographicProjection.epsg)) cutGeom = cutEpsg.transform(geoscript.geom.Geometry.wrap(cutGeom), geographicProjection)?.g
 */
             def geom = cutGeom.getGeometryN(0)
-            def geomColl = geom?.coordinates.collect{ "(${it.y},${it.x})" }
+            def geomColl = geom?.exteriorRing?.coordinates.collect{ "(${it.y},${it.x})" }
 
             if(geomColl) chipperOptionsMap.clip_poly_lat_lon = "(${geomColl.join(",")})".toString()
 
@@ -307,10 +307,17 @@ class Chipper extends BaseStep implements StepInterface
             }
             if(resultArray)
             {
-               Object[] outputRow = RowDataUtil.addRowData(r,
-                       data.outputRowMeta.size()-(resultArray.size()),
-                       resultArray as Object []);
-               putRow(data.outputRowMeta, outputRow);
+               def outputRow = []
+               (0..<inputRowMeta.size()).each { Integer i ->
+                  outputRow << r[i]
+               }
+               resultArray.each{outputRow<<it}
+               putRow(data.outputRowMeta, outputRow as Object[]);
+
+               //Object[] outputRow = RowDataUtil.addRowData(r,
+               //        data.outputRowMeta.size()-(resultArray.size()),
+               //        resultArray as Object []);
+               //putRow(data.outputRowMeta, outputRow);
             }
          }
       }

@@ -38,6 +38,40 @@ class BasicTiling extends BaseStep implements StepInterface
    private BasicTilingMeta meta = null;
    private BasicTilingData data = null;
    private selectedRowMeta
+   Integer tileIdIdx
+   Integer tileFilenamesIdx
+   Integer tileFileEntriesIdx
+   Integer tileLevelIdx
+   Integer tileRowIdx
+   Integer tileColIdx
+   Integer tileEpsgIdx
+   Integer tileMinxIdx
+   Integer tileMinyIdx
+   Integer tileMaxxIdx
+   Integer tileMaxyIdx
+   Integer tileNameIdx
+   Integer tileWidthIdx
+   Integer tileHeightIdx
+   Integer tileAoiIdx
+   Integer tileAoiEpsgIdx
+   Integer tileCropAoiIdx
+   Integer tileCropAoiEpsgIdx
+   Integer tileWithinIdx
+   Integer tileSummaryLevelInfoIdx
+   Integer tileSummaryMinxdx
+   Integer tileSummaryMinyIdx
+   Integer tileSummaryMaxxIdx
+   Integer tileSummaryMaxyIdx
+   Integer tileSummaryEpsgIdx
+   Integer tileSummaryMinLevelIdx
+   Integer tileSummaryMaxLevelIdx
+   Integer tileSummaryOriginIdx
+   Integer summaryNumberOfLevelZeroTilesXIdx
+   Integer summaryNumberOfLevelZeroTilesYIdx
+   Integer summaryTileWidthIdx
+   Integer summaryTileHeightIdx
+   Integer summaryDeltaxLevelZeroIdx
+   Integer summaryDeltayLevelZeroIdx
 
 
    public BasicTiling(StepMeta stepMeta, StepDataInterface stepDataInterface,
@@ -132,15 +166,44 @@ class BasicTiling extends BaseStep implements StepInterface
          first=false
          selectedRowMeta = new RowMeta()
          meta.getFields(selectedRowMeta, getStepname(), null, null, this)
-         //if(meta.mosaicInput)
-         //{
-         //  data.outputRowMeta = selectedRowMeta
-         //}
-         //else
-         //{
          data.outputRowMeta = getInputRowMeta().clone()
          meta.getFields(data.outputRowMeta, getStepname(), null, null, this)
-         //}
+
+         tileIdIdx          = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_id"])
+         tileFilenamesIdx   = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_filenames"])
+         tileFileEntriesIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_file_entries"])
+         tileLevelIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_level"])
+         tileRowIdx  = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_row"])
+         tileColIdx  = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_col"])
+         tileEpsgIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_epsg"])
+         tileMinxIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_minx"])
+         tileMinyIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_miny"])
+         tileMaxxIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_maxx"])
+         tileMaxyIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_maxy"])
+         tileNameIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_name"])
+         tileWidthIdx   = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_width"])
+         tileHeightIdx  = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_height"])
+         tileAoiIdx     = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_aoi"])
+         tileAoiEpsgIdx     = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_aoi_epsg"])
+         tileCropAoiIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_crop_aoi"])
+         tileCropAoiEpsgIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_crop_aoi_epsg"])
+         tileWithinIdx      = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_within"])
+         tileSummaryLevelInfoIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_level_info"])
+         tileSummaryMinxdx  = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_epsg_minx"])
+         tileSummaryMinyIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_epsg_miny"])
+         tileSummaryMaxxIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_epsg_maxx"])
+         tileSummaryMaxyIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_epsg_maxy"])
+         tileSummaryEpsgIdx     = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_epsg"])
+         tileSummaryMinLevelIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_min_level"])
+         tileSummaryMaxLevelIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_max_level"])
+         tileSummaryOriginIdx   = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_origin"])
+         summaryNumberOfLevelZeroTilesXIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_number_of_level_zero_tiles_x"])
+         summaryNumberOfLevelZeroTilesYIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_number_of_level_zero_tiles_y"])
+         summaryTileWidthIdx  = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_tile_width"])
+         summaryTileHeightIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_tile_height"])
+         summaryDeltaxLevelZeroIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_deltax_level_zero"])
+         summaryDeltayLevelZeroIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_deltay_level_zero"])
+
 
       }
       if(meta?.clampMinLevel)
@@ -237,7 +300,7 @@ class BasicTiling extends BaseStep implements StepInterface
                        minLevel: intersection.minLevel,
                        maxLevel: intersection.maxLevel
                ))
-               tileIterator.regionOfInterest = cropRegionOfInterest
+              // tileIterator.regionOfInterest = cropRegionOfInterest
             }
          }
          tileCacheSupport.delete()
@@ -263,48 +326,6 @@ class BasicTiling extends BaseStep implements StepInterface
          def numberOfOutputFields = selectedRowMeta.size() //meta.selectedFieldNames.size()
          def offset = data.outputRowMeta.size()-numberOfOutputFields
          //	println tileGenerator.levelInformationAsJSON
-         Integer tileIdIdx    = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_id"])
-         Integer tileFilenamesIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_filenames"])
-         Integer tileFileEntriesIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_file_entries"])
-         Integer tileLevelIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_level"])
-         Integer tileRowIdx  = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_row"])
-         Integer tileColIdx  = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_col"])
-         //Integer tileGlobalRowIdx  = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_global_row"])
-         //Integer tileGlobalColIdx  = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_global_col"])
-         Integer tileEpsgIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_epsg"])
-         Integer tileMinxIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_minx"])
-         Integer tileMinyIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_miny"])
-         Integer tileMaxxIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_maxx"])
-         Integer tileMaxyIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_maxy"])
-         Integer tileNameIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_name"])
-         Integer tileWidthIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_width"])
-         Integer tileHeightIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_height"])
-         Integer tileCropAoiIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_crop_aoi"])
-         Integer tileCropAoiEpsgIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_crop_aoi_epsg"])
-         Integer tileWithinIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_within"])
-         Integer tileSummaryLevelInfoIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_level_info"])
-         Integer tileSummaryMinxdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_epsg_minx"])
-         Integer tileSummaryMinyIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_epsg_miny"])
-         Integer tileSummaryMaxxIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_epsg_maxx"])
-         Integer tileSummaryMaxyIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_epsg_maxy"])
-//            def tileSummaryClipMinxIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_clip_minx"])
-//            def tileSummaryClipMaxxIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_clip_maxx"])
-//            def tileSummaryClipMinyIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_clip_miny"])
-//            def tileSummaryClipMaxyIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_clip_maxy"])
-//            def tileSummaryOrigMinxIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_orig_minx"])
-//            def tileSummaryOrigMinyIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_orig_miny"])
-//            def tileSummaryOrigMaxxIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_orig_maxx"])
-//            def tileSummaryOrigMaxyIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_orig_maxy"])
-         Integer tileSummaryEpsgIdx     = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_epsg"])
-         Integer tileSummaryMinLevelIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_min_level"])
-         Integer tileSummaryMaxLevelIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_max_level"])
-         Integer tileSummaryOriginIdx   = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_origin"])
-         Integer summaryNumberOfLevelZeroTilesXIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_number_of_level_zero_tiles_x"])
-         Integer summaryNumberOfLevelZeroTilesYIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_number_of_level_zero_tiles_y"])
-         Integer summaryTileWidthIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_tile_width"])
-         Integer summaryTileHeightIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_tile_height"])
-         Integer summaryDeltaxLevelZeroIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_deltax_level_zero"])
-         Integer summaryDeltayLevelZeroIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_deltay_level_zero"])
          if(numberOfOutputFields)
          {
             def resultArray = new Object[numberOfOutputFields]
@@ -393,10 +414,18 @@ class BasicTiling extends BaseStep implements StepInterface
             }
             if(meta.isSummaryOnly())
             {
-               Object[] outputRow = RowDataUtil.addRowData(r,
-                       data.outputRowMeta.size()-(resultArray.size()),
-                       resultArray as Object []);
-               putRow(data.outputRowMeta, outputRow);
+
+               def outputRow = []
+               (0..<inputRowMeta.size()).each { Integer i ->
+                  outputRow << r[i]
+               }
+               resultArray.each{outputRow<<it}
+               putRow(data.outputRowMeta, outputRow as Object[]);
+
+//               Object[] outputRow = RowDataUtil.addRowData(r,
+//                       data.outputRowMeta.size()-(resultArray.size()),
+//                       resultArray as Object []);
+//               putRow(data.outputRowMeta, outputRow);
             }
             else
             {
@@ -436,6 +465,14 @@ class BasicTiling extends BaseStep implements StepInterface
                      if(tileColIdx >-1)
                      {
                         resultArray[tileColIdx] = (Long)tile.x
+                     }
+                     if(tileAoiIdx>-1)
+                     {
+                        resultArray[tileAoiIdx] = tileBounds.geometry.g //geomMask.g
+                     }
+                     if(tileAoiEpsgIdx>-1)
+                     {
+                        resultArray[tileAoiEpsgIdx] = "EPSG:${pyramid.proj.epsg}" //geomMask.g
                      }
                      if(tileCropAoiIdx > -1)
                      {
@@ -497,11 +534,18 @@ class BasicTiling extends BaseStep implements StepInterface
                      {
                         resultArray[tileWithinIdx] = tileIterator.isTileWithin(tile)
                      }
-                     Object[] outputRow = RowDataUtil.addRowData(r,
-                             offset,//data.outputRowMeta.size()-(resultArray.size()),
-                             resultArray as Object []);
 
-                     putRow(data.outputRowMeta, outputRow);
+                     def outputRow = []
+                     (0..<inputRowMeta.size()).each { Integer i ->
+                        outputRow << r[i]
+                     }
+                     resultArray.each{outputRow<<it}
+                     putRow(data.outputRowMeta, outputRow as Object[]);
+//                     Object[] outputRow = RowDataUtil.addRowData(r,
+//                             offset,//data.outputRowMeta.size()-(resultArray.size()),
+//                             resultArray as Object []);
+
+//                     putRow(data.outputRowMeta, outputRow);
                   }
                }
             }

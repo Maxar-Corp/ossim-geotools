@@ -69,9 +69,10 @@ class TileCacheTileLayerIterator {
             }
             else
             {
+
                tiles = layer?.tiles(bounds, currentLevel);
             }
-            if(tiles?.hasNext())
+            if(!tiles?.empty)
             {
                result = true
                break

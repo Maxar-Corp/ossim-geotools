@@ -49,7 +49,6 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
             label "Tile Level"
             cCombo(id: "tileLevelField",
                     items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaBase.TYPE_INTEGER]),
-                    style: "READ_ONLY",
                     layoutData: "span,growx")
                     {
                        onEvent(type: 'Modify') {
@@ -59,7 +58,6 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
             label "Tile Row"
             cCombo(id: "tileRowField",
                     items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaBase.TYPE_INTEGER]),
-                    style: "READ_ONLY",
                     layoutData: "span,growx")
                     {
                        onEvent(type: 'Modify') {
@@ -69,7 +67,6 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
             label "Tile Col"
             cCombo(id: "tileColField",
                     items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaBase.TYPE_INTEGER]),
-                    style: "READ_ONLY",
                     layoutData: "span,growx")
                     {
                        onEvent(type: 'Modify') {
@@ -79,7 +76,6 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
             label "Tile Image"
             cCombo(id: "tileImageField",
                     items: SwtUtilities.previousStepFields(transMeta, stepname, [OssimValueMetaBase.TYPE_IMAGE, OssimValueMetaBase.TYPE_CLONABLE_IMAGE]),
-                    style: "READ_ONLY",
                     layoutData: "span,growx")
                     {
                        onEvent(type: 'Modify') {
@@ -92,7 +88,6 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
             label "Group Id"
             cCombo(id:"groupField",
                     items:SwtUtilities.previousStepFields(transMeta, stepname, [OssimValueMetaBase.TYPE_STRING, OssimValueMetaBase.TYPE_INTEGER]),
-                    style:"READ_ONLY",
                     layoutData:"span,growx")
                     {
                        onEvent(type:'Modify') {
@@ -113,7 +108,6 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
             label "Layer Name"
             cCombo(id:"layerNameField",
                     items:SwtUtilities.previousStepFields(transMeta, stepname, [OssimValueMetaBase.TYPE_STRING]),
-                    style:"READ_ONLY",
                     layoutData:"span,growx")
                     {
                        onEvent(type:'Modify') {
@@ -123,7 +117,6 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
             label "Epsg Code"
             cCombo(id:"epsgCodeField",
                     items:SwtUtilities.previousStepFields(transMeta, stepname, [OssimValueMetaBase.TYPE_STRING]),
-                    style:"READ_ONLY",
                     layoutData:"span,growx")
                     {
                        onEvent(type:'Modify') {
@@ -133,7 +126,6 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
             label "Min Level"
             cCombo(id:"minLevelField",
                     items:SwtUtilities.previousStepFields(transMeta, stepname, [OssimValueMetaBase.TYPE_INTEGER]),
-                    style:"READ_ONLY",
                     layoutData:"span,growx")
                     {
                        onEvent(type:'Modify') {
@@ -153,7 +145,6 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
             label "Writer Mode"
             cCombo(id:"writerMode",
                     items:["mixed", "jpeg", "png", "pnga"],
-                    style:"READ_ONLY",
                     layoutData:"span,growx")
                     {
                        onEvent(type:'Modify') {
