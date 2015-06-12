@@ -194,8 +194,8 @@ var AppOmarWfsAdmin = (function () {
     // Adds the OMAR WMS image to the map for previewing.
     function previewLayer(obj){
 
-        //TODO: Reset the clamp bounds from  previous 'preview'
-        AppIngestTileAdmin.$ingestModalButton.addClass('disabled');
+        //TODO: Need to reset the AOI if the user clicks on another preview image
+        AppManageLayersAdmin.aoiVector.getSource().clear();
 
         // Enable the tools menu for cutting out AOI's
         $("#omarMapToolsDropdown").removeClass("disabled");
