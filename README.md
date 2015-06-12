@@ -27,6 +27,9 @@ within PostgreSQL and Accumulo.  It also allows users to view geospatially encod
 - [Maven >= 3](https://maven.apache.org/)
 - [Gradle](http://gradle.org/)
 
+## GVM: (http://gvmtool.net/)
+If managing multiple versions of grails with gvm. To switch between versions use "gvm use", e.g. grails 2.2.5 is default and grails 2.5.0 is needed, do: gvm use grails 2.5.0
+
 ## Installing from RPM
 
 This is the recommended installation method.
@@ -130,10 +133,14 @@ Requires postgres to be installed and the full installation docs are beyond the 
 
 Once a database is setup you can setup a tilestore database.  You can choose anyname for your database and then point the variable `dataSource.url` to a jdbc connection string.  For example: dataSource.url = jdbc:postgresql://localhost:5432/raster-test to point to postgres on port 5432 with database raster-test.  Before the server can use the raster-test database you must set it up via a couple SQL commands
 
+psql -U postgres -c 'create DATABASE "raster-test"'
+or at the psql prompt:
 create DATABASE "raster-test";
 
 connect to raster-test then create postgis extension:
 
+psql -U postgres -c 'create extension postgis' raster-test
+or at the psql prompt connected to raster-test database:
 create extension postgis;
 
 

@@ -49,7 +49,7 @@ var AppIngestTileAdmin = (function () {
             data: AppOmarWfsAdmin.objImageClamp,
             // TODO: need to move this to a $promise
             success: function (data) {
-
+                console.log(data);
                 //console.log(data);
                 //$minIngestLevel.selectpicker('val', data.minLevel);
                 //$minIngestLevel.selectpicker('refresh');
