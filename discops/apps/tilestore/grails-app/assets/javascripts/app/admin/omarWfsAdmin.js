@@ -3,6 +3,7 @@ var AppOmarWfsAdmin = (function () {
 
     var loadParams;
     var wfsCards;
+    var wfsCardsCount;
     var filter;
 
     var previewFeatureVectorLayer, previewFeatureVectorSource, omarPreviewLayerId, omarPreviewLayer;
@@ -89,14 +90,22 @@ var AppOmarWfsAdmin = (function () {
             //console.log(queryNone);
             wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
-                "&maxFeatures=200&outputFormat=json&filter=" +
+                //"&maxFeatures=200&outputFormat=json&filter=" +
+                "&offset=0&maxFeatures=25&outputFormat=json&filter=" +
                 "&sortBy=" + sortByField +
                 ":" + sortByType;
+            wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
+                "=GetFeature&typeName=omar:raster_entry" +
+                    //"&maxFeatures=200&outputFormat=json&filter=" +
+                "&offset=0&maxFeatures=25&outputFormat=json&filter=" +
+                "&sortBy=" + sortByField +
+                ":" + sortByType + "&resultType=hits";
         }
         else {
             wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
-                "&maxFeatures=200&outputFormat=json&filter=" +
+                //"&maxFeatures=200&outputFormat=json&filter=" +
+                "&outputFormat=json&filter=" +
                 dateType +
                 "+between+" +
                 "'" + startDate + "'" +
@@ -104,8 +113,20 @@ var AppOmarWfsAdmin = (function () {
                 "'" + endDate + "'" +
                 "&sortBy=" + sortByField +
                 ":" + sortByType;
+            wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
+                "=GetFeature&typeName=omar:raster_entry" +
+                    //"&maxFeatures=200&outputFormat=json&filter=" +
+                "&outputFormat=json&filter=" +
+                dateType +
+                "+between+" +
+                "'" + startDate + "'" +
+                "+and+" +
+                "'" + endDate + "'" +
+                "&sortBy=" + sortByField +
+                ":" + sortByType + "&resultType=hits";
         }
         console.log(wfsCards);
+        console.log(wfsCardsCount);
 
         // TODO: Add functionality to restrict the query to a spatial extent (via BBox)
         $.ajax({
@@ -120,7 +141,7 @@ var AppOmarWfsAdmin = (function () {
 
                 // Clear the DOM before loading the wfs cards
                 $omarImageList.empty();
-                $imageCount.html(images.features.length);
+                //$imageCount.html(images.features.length);
                 $omarImageList.append(imageTemplate(images));
 
                 $('[data-toggle="tooltip"]').tooltip();
@@ -130,6 +151,23 @@ var AppOmarWfsAdmin = (function () {
                 toastr.error('Error fetching OMAR Feed images.', 'Error');
             }
         });
+
+        $.ajax({
+            url: wfsCardsCount,
+            dataType: 'jsonp',
+            success: function (imageCount){
+                console.log(imageCount);
+                $imageCount.html(imageCount.numberOfFeatures);
+            }
+        })
+
+
+    }
+
+    function pageCards(){
+
+
+
 
 
     }
