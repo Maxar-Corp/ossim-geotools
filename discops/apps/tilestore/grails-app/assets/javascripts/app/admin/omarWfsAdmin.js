@@ -2,22 +2,37 @@
 var AppOmarWfsAdmin = (function () {
 
     var loadParams;
+    var $omarFeed = $('#omarFeed');
+    var $omarImageList = $('#omarImageList');
+    var imageCountTotal;
+    var counterStart, counterEnd;
     var wfsCards;
+    var wfsCardsCount;
+    var $resultsSet = $('#resultsSet');
+    var $paginationButtons = $('.paginationButtons');
     var filter;
+    var filterDateType;
 
     var previewFeatureVectorLayer, previewFeatureVectorSource, omarPreviewLayerId, omarPreviewLayer;
     var previewFeatureArray = [];
+    var $omarMapToolsDropdown = $("#omarMapToolsDropdown");
+    var $omarMapToolsDropdownItem = $("#omarMapToolsDropdownItem");
+
     var objImageClamp = {
         layerName: '', // layer dropdrown
         resLevels: 0, // number_of_res_levels: from wfs
         res: 0, // gsdy from wfs
         resUnits: 'meters' // gsd_unit from wfs
     };
+
     var $imageCount = $('#imageCount');
+    var $prevWfsImages = $('.prevWfsImages');
+    var $nextWfsImages = $('.nextWfsImages');
 
     var $wfsFilter = $('#wfsFilter');
     var $filterWfsModal = $('#filterWfsModal');
-    var $imageFilterType = $('.imageFilterType');
+    var $imageFilterDate = $('#imageFilterDate');
+    var $imageFilterRange = $('#imageFilterRange');
     var $imageFilter = $('.imageFilter');
     var $ingestDateRadioLabel = $('#ingestDateRadioLabel');
     var $dateRangeSelect = $('#dateRangeSelect');
@@ -28,7 +43,8 @@ var AppOmarWfsAdmin = (function () {
         dateType: '',
         startDate: '',
         endDate: '',
-        queryNone: false
+        queryNone: false,
+        offset: 0
     }
     var queryRange = {
         start: '',
@@ -62,10 +78,20 @@ var AppOmarWfsAdmin = (function () {
 
     function getWfsCards(params){
 
+        if ($('#acquisitionDateRadioLabel').radio('isChecked')){
+            console.log('acq. is checked');
+            filterDateType = 'Acquisition';
+        }
+        else{
+            console.log('acq NOT checked');
+            filterDateType = 'Ingest';
+        }
+
         var dateType = params.dateType || 'ingest_date'; // default value
         var startDate = params.startDate || dateLast7Days; // default value
         var endDate = params.endDate ||  dateToday; // default value
         var queryNone = params.queryNone || true;
+        var offset = params.offset || 0;
         var sortByField = $sortByFieldSelect.selectlist('selectedItem').value || 'ingest_date';
         var sortByType = $sortByTypeSelect.selectlist('selectedItem').value || 'A';
 
@@ -74,29 +100,39 @@ var AppOmarWfsAdmin = (function () {
         var sortByTypeText = $sortByTypeSelect.selectlist('selectedItem').text;
 
         //console.log('queryNone after being called:');
-        //console.log(params);
+        console.log('offset --> ' + offset);
 
         // Feedback on the UI for the current filter
-        $imageFilterType.html($dateRangeSelect.selectlist('selectedItem').text);
+        $imageFilterDate.html('Date = ' + filterDateType);
+        $imageFilterRange.html('Range = ' + $dateRangeSelect.selectlist('selectedItem').text);
+
         if ($dateRangeSelect.selectlist('selectedItem').text != 'None'){
-            $imageFilter.html(dateTypeText + " from " + startDate + " to " + endDate + " (Sort field: " + sortByFieldText + " Sort: " + sortByTypeText + ")");
+            $imageFilter.html(dateTypeText + " from " + startDate + " to " + endDate + " Sort field: " + sortByFieldText + ", Sort: " + sortByTypeText);
         }
         else {
-            $imageFilter.html(" (Sort field: " + sortByFieldText + " Sort: " + sortByTypeText + ")")
+            $imageFilter.html(" Sort field: " + sortByFieldText + ", Sort type: " + sortByTypeText);
         }
 
         if (params.queryNone === true || params.queryNone === undefined){
             //console.log(queryNone);
             wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
-                "&maxFeatures=200&outputFormat=json&filter=" +
+                //"&maxFeatures=200&outputFormat=json&filter=" +
+                "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter=" +
                 "&sortBy=" + sortByField +
                 ":" + sortByType;
+            wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
+                "=GetFeature&typeName=omar:raster_entry" +
+                    //"&maxFeatures=200&outputFormat=json&filter=" +
+                "&offset=0&maxFeatures=25&outputFormat=json&filter=" +
+                "&sortBy=" + sortByField +
+                ":" + sortByType + "&resultType=hits";
         }
         else {
             wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
-                "&maxFeatures=200&outputFormat=json&filter=" +
+                //"&maxFeatures=200&outputFormat=json&filter=" +
+                "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter=" +
                 dateType +
                 "+between+" +
                 "'" + startDate + "'" +
@@ -104,8 +140,20 @@ var AppOmarWfsAdmin = (function () {
                 "'" + endDate + "'" +
                 "&sortBy=" + sortByField +
                 ":" + sortByType;
+            wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
+                "=GetFeature&typeName=omar:raster_entry" +
+                    //"&maxFeatures=200&outputFormat=json&filter=" +
+                "&outputFormat=json&filter=" +
+                dateType +
+                "+between+" +
+                "'" + startDate + "'" +
+                "+and+" +
+                "'" + endDate + "'" +
+                "&sortBy=" + sortByField +
+                ":" + sortByType + "&resultType=hits";
         }
-        console.log(wfsCards);
+        //console.log(wfsCards);
+        //console.log(wfsCardsCount);
 
         // TODO: Add functionality to restrict the query to a spatial extent (via BBox)
         $.ajax({
@@ -120,7 +168,7 @@ var AppOmarWfsAdmin = (function () {
 
                 // Clear the DOM before loading the wfs cards
                 $omarImageList.empty();
-                $imageCount.html(images.features.length);
+                //$imageCount.html(images.features.length);
                 $omarImageList.append(imageTemplate(images));
 
                 $('[data-toggle="tooltip"]').tooltip();
@@ -131,8 +179,104 @@ var AppOmarWfsAdmin = (function () {
             }
         });
 
+        $.ajax({
+            url: wfsCardsCount,
+            dataType: 'jsonp',
+            success: function (imageCount){
+                //console.log(imageCount);
+                imageCountTotal = imageCount.numberOfFeatures;
+                console.log(imageCountTotal);
+                $imageCount.html(imageCount.numberOfFeatures);
+                if (imageCountTotal > 25) {
+                    //console.log('showing pagination buttons...')
+                    $paginationButtons.show();
+                    $resultsSet.show();
+                }
+                else{
+                    $paginationButtons.hide();
+                    $resultsSet.hide();
+                }
+            }
+        })
 
     }
+
+    function pageCardsNext(){
+
+        // TODO: Account for the result set beind smaller than 25 images
+        // (Example: a filter has been run)
+
+        console.log('imageCountTotal: ' + imageCountTotal);
+        counterStart = filterOpts.offset + 26;
+        counterEnd = filterOpts.offset + 50;
+
+        if (counterEnd >= imageCountTotal){
+            console.log('yep, counterEnd <= imageCountTotal');
+            //console.log('offset: ' + filterOpts.offset + 'imageCountTotal: ' + imageCountTotal);
+            counterEnd = imageCountTotal;
+            $nextWfsImages.addClass("disabled");
+        }
+        else{
+            console.log('nope, counterEnd < imageCountTotal');
+        }
+
+        console.log('counterStart: ' + counterStart);
+        console.log('counterEnd: ' + counterEnd);
+
+        // TODO: cache DOM elements
+        $('#startResult').html(counterStart);
+        $('#endResult').html(counterEnd);
+
+        if (counterEnd >= 25){
+            $prevWfsImages.removeClass("disabled");
+        }
+        else{
+            $prevWfsImages.addClass("disabled");
+        }
+
+        filterOpts.offset += 25;
+        getWfsCards(filterOpts);
+        $omarFeed.animate({
+            scrollTop: 0,
+        }, 'slow');
+
+    }
+    $nextWfsImages.on('click', pageCardsNext);
+
+    function pageCardsPrevious(){
+
+        // TODO: Account for the result set beind smaller than 25 images
+        // (Example: a filter has been run)
+
+        counterStart = filterOpts.offset - 24;
+        counterEnd = filterOpts.offset;
+
+        console.log(counterStart + ' ' + counterEnd);
+
+        // TODO: cache DOM elements
+        $('#startResult').html(counterStart);
+        $('#endResult').html(counterEnd);
+
+        filterOpts.offset -= 25;
+        if (filterOpts.offset === 0){
+            $prevWfsImages.addClass("disabled");
+        }
+        else{
+            $prevWfsImages.removeClass("disabled");
+        }
+
+        console.log('imageCountTotal: ' + imageCountTotal + ' offset: ' + (filterOpts.offset + 24));
+        if(imageCountTotal >= (filterOpts.offset+ 25)) {
+            $nextWfsImages.removeClass("disabled");
+        }
+
+        getWfsCards(filterOpts);
+        $omarFeed.animate({
+            scrollTop: 0,
+        }, 'slow');
+
+    }
+    $prevWfsImages.on('click', pageCardsPrevious);
 
     function getQueryType(){
         var querySelectedItem = $dateRangeSelect.selectlist('selectedItem').value;
@@ -198,8 +342,8 @@ var AppOmarWfsAdmin = (function () {
         AppManageLayersAdmin.aoiVector.getSource().clear();
 
         // Enable the tools menu for cutting out AOI's
-        $("#omarMapToolsDropdown").removeClass("disabled");
-        $("#omarMapToolsDropdownItem").removeClass("disabled");
+        $omarMapToolsDropdown.removeClass("disabled");
+        $omarMapToolsDropdownItem.removeClass("disabled");
 
         $("#card-" + obj.properties.id).on("click",function() {
             $(this).addClass("image-card-highlight").siblings().removeClass("image-card-highlight");
@@ -352,6 +496,9 @@ var AppOmarWfsAdmin = (function () {
         //console.log('dateLast3Months: ' + dateLast3Months);
         //console.log('dateLast6Months: ' + dateLast6Months);
 
+        // reset the offset to 0
+        filterOpts.offset = 0;
+
         var queryRange = getQueryType();
         //console.log(queryRange.none);
 
@@ -401,10 +548,8 @@ var AppOmarWfsAdmin = (function () {
         }
     });
 
-    var $omarImageList = $('#omarImageList');
-
-    var imageSource = $('#image-template').html();
-    var imageTemplate = Handlebars.compile(imageSource);
+    var $imageSource = $('#image-template').html();
+    var imageTemplate = Handlebars.compile($imageSource);
 
     Handlebars.registerHelper("formatDate", function convertDate(date){
 
