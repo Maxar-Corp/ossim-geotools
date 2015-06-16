@@ -44,6 +44,7 @@ grails.project.dependency.resolution = {
               ":rest-client-builder:2.1.1") {
             export = false
         }
+        compile ":asset-pipeline:2.2.3"
     }
 }
 grails.plugin.location.ossimCommon    = "../../plugins/ossim-common"
