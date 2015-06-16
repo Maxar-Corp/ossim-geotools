@@ -4,6 +4,7 @@ import grails.converters.JSON
 import grails.transaction.Transactional
 import joms.geotools.web.HttpStatus
 import org.ossim.common.FetchDataCommand
+import org.springframework.beans.factory.InitializingBean
 
 @Transactional
 class JobService
@@ -13,6 +14,85 @@ class JobService
    def columnNames = [
            'id', 'jobId', 'jobDir', 'type', 'name', 'username', 'status', 'statusMessage', 'percentComplete', 'submitDate', 'startDate', 'endDate'
    ]
+
+
+   def createTableModel()
+   {
+      def clazz = Job.class
+      def domain = grailsApplication.getDomainClass( clazz.name )
+
+      def tempColumnNames = columnNames.clone()
+      tempColumnNames.remove("jobDir")
+      def columns = tempColumnNames?.collect {column->
+         def property = ( column == 'id' ) ? domain?.identifier : domain?.getPersistentProperty( column )
+         def sortable = !(property?.name in ["type"])
+         [field: property?.name, type: property?.type, title: property?.naturalName, sortable: sortable]
+      }
+      columns.remove("jobDir")
+      def tableModel = [
+              columns: [columns]
+      ]
+      //  println tableModel
+      return tableModel
+   }
+
+   def cancel(GetJobCommand cmd)
+   {
+      def result = [status:HttpStatus.OK, message:""]
+
+      if(cmd.jobId)
+      {
+         def jobId = cmd.jobId
+         def jobCallback
+         def jobStatus
+         Job.withTransaction{
+            def job     = Job.findByJobId(jobId)
+
+            if(!job)
+            {
+               result.httpStatus = HttpStatus.NOT_FOUND
+               result.message = "Job ${cmd.jobId} not found.  Unable to cancel job."
+
+               return result
+            }
+            jobCallback = job?.jobCallback
+            jobStatus   = job?.status
+         }
+         if(jobCallback)
+         {
+            if(jobStatus==JobStatus.RUNNING||jobStatus==JobStatus.CANCELED)
+            {
+               try{
+            //      def messageBuilder = new RabbitMessageBuilder()
+            //      messageBuilder.send(jobCallback, new AbortMessage(jobId:jobId).toJsonString())
+               }
+               catch(e)
+               {
+            //      println "CAUGHT EXCEPTION ---------------- ${e}"
+            //      result.httpStatus = HttpStatus.BAD_REQUEST
+            //      result.message=e.toString()
+               }
+            }
+            else
+            {
+               result.httpStatus = HttpStatus.BAD_REQUEST
+               result.message="Job ${jobId} not running.  Can only cancel 'running' or 'ready' jobs."
+            }
+         }
+         else
+         {
+            result.httpStatus = HttpStatus.BAD_REQUEST
+            result.message="Job ${jobId} currently has no callback to allow for canceling"
+         }
+      }
+      else
+      {
+         result.httpStatus = HttpStatus.BAD_REQUEST
+         result.message="Can't cancel. No job id given."
+      }
+
+      result
+   }
 
    def listJobs(FetchDataCommand cmd)
    {
@@ -55,7 +135,7 @@ class JobService
          result.status = HttpStatus.BAD_REQUEST
          result.message = "Exception: ${e.toString}"
       }
-      result.data = [total: total, rows: rows]
+      result.data = [total: total?:0, rows: rows?:[:]]
 
       result
    }
@@ -70,10 +150,13 @@ class JobService
       def row
 
       try{
-         Job.withTransaction {
+         def session = grailsApplication.mainContext.sessionFactory.currentSession
 
-            if(cmd?.id != null) row = Job.findById(cmd.id?.toInteger());
+         Job.withTransaction {
+            if(cmd?.id != null) row = Job.findById(cmd.id);
             else if(cmd?.jobId) row = Job.findByJobId(cmd.jobId);
+
+          //  println row
             if(row)
             {
                jobArchive = row.getArchive()
@@ -89,7 +172,7 @@ class JobService
       catch(e)
       {
          result.status = HttpStatus.BAD_REQUEST;
-         result.message = "Exception: ${e.toString}"
+         result.message = "Exception: ${e.toString()}"
       }
       if(result.status == HttpStatus.OK)
       {
@@ -112,12 +195,10 @@ class JobService
          }
          catch(e)
          {
-            //println "ERROR!!!!!!!!!!!!!!!! ${e}"
             result.status = HttpStatus.BAD_REQUEST;
-            result.message = "Exception: ${e.toString}"
+            result.message = "Exception: ${e.toString()}"
          }
       }
-
       result
    }
    def updateJob(CreateJobCommand cmd)
@@ -282,8 +363,7 @@ class JobService
             columnNames.inject( [:] ) { a, b -> a[b] = row[b]; a }
          }
       }
-
-      result.data = [total: rows?.size(), rows: rows]
+      result.data = [total: rows?.size()?:0, rows: rows?:[:]]
 
 
       result
