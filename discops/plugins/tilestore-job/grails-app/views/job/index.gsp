@@ -17,16 +17,14 @@
 </head>
 <body class="easyui-layout" id="JobPagId">
 
-<!--
 <div region="north" class="banner">
-    <tilestore:securityClassificationBanner/>
+    <tilestore:securityClassificationBanner class="row text-center"/>
 </div>
 
 <div region="south" class="banner">
-    <tilestore:securityClassificationBanner/>
+    <tilestore:securityClassificationBanner class="row text-center"/>
 </div>
 
--->
 
 <div region="center" split="true">
     <div class="easyui-layout" fit="true">
