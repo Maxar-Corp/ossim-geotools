@@ -86,8 +86,16 @@ class GeoPkgWriter extends BaseStep implements StepInterface
 
       options = [:]
       epsg      = r[epsgIdx]
-      minLevel  = r[minlevelIdx]
-      maxLevel  = r[maxLevelIdx]
+
+      if(minlevelIdx >=0)
+      {
+         if(r[minlevelIdx]!=null) minLevel  = inputRowMeta.getInteger(r, minlevelIdx)
+      }
+      if(maxLevelIdx >= 0)
+      {
+         if(r[maxLevelIdx]!=null) maxLevel  = inputRowMeta.getInteger(r, maxLevelIdx)
+      }
+
       writerMode =  environmentSubstitute(meta.writerMode?:"")
       filenameString = r[filenameIdx]
 
@@ -114,6 +122,8 @@ class GeoPkgWriter extends BaseStep implements StepInterface
       {
          options.append = "false"
       }
+
+      println "OPTIONS ========= ${options}"
       openedFile = gpkgWriter?.openFile(options)
       if(!openedFile)
       {
@@ -156,11 +166,11 @@ class GeoPkgWriter extends BaseStep implements StepInterface
          minlevelIdx      =  getInputRowMeta().indexOfValue(meta.minLevelField)
          maxLevelIdx      =  getInputRowMeta().indexOfValue(meta.maxLevelField)
          imageConverter   =  inputRowMeta.getValueMeta(imageIdx) as OssimValueMetaBase
-         //if((imageIdx < 0)||(levelIdx < 0)||(rowIdx < 0)|| (colIdx < 0)||
-         //        (epsgIdx<0)||(filenameIdx<0))
-         //{
-         //   throw new KettleException("All input parameters need to be specified.  Image, Level, row, col, epsg, filename")
-         //}
+         if((imageIdx < 0)||(levelIdx < 0)||(rowIdx < 0)|| (colIdx < 0)||
+                 (epsgIdx<0)||(filenameIdx<0))
+         {
+            throw new KettleException("All input parameters need to be specified.  Image, Level, row, col, epsg, filename")
+         }
 
          if(!initializeGeopackage(r))
          {

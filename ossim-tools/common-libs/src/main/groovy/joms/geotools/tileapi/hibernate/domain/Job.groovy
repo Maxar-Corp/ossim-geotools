@@ -1,5 +1,4 @@
 package joms.geotools.tileapi.hibernate.domain
-
 import org.hibernate.annotations.Index
 import org.hibernate.annotations.Type
 
@@ -11,12 +10,12 @@ import javax.persistence.Id
 import javax.persistence.SequenceGenerator
 import javax.persistence.Table
 import javax.persistence.Version
-
 /**
  * Created by gpotts on 2/24/15.
  */
+
 @Entity
-@Table(name = "job")//,
+@Table(name = "job")
 class Job
 {
   static constraints = {
@@ -41,7 +40,7 @@ class Job
   Long id;
 
   @Version
-  @Column (name = "version")
+  @Column(name="version", nullable=false)
   Long version=0
 
   @Column(name="job_id", nullable = false, unique = true)
