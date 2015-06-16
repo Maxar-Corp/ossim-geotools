@@ -210,7 +210,7 @@
         <div id="omarFeed" class="col-md-2">
             <div>
                 <p>
-                    <strong>Your Filter:&nbsp;</strong>
+                    <strong>Current Filter:&nbsp;</strong>
                     <span id="imageFilterDate" class="label label-primary"></span>
                     &nbsp;<span class="label label-success">and</span>&nbsp;
                     <span id="imageFilterRange" class="label label-primary"></span>
