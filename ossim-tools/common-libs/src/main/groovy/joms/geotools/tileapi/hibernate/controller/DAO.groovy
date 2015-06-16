@@ -1,4 +1,6 @@
-package joms.geotools.tileapi.hibernate.controller;
+package joms.geotools.tileapi.hibernate.controller
+
+import org.hibernate.Criteria;
 
 /**
  * Created by gpotts on 1/21/15.
@@ -10,4 +12,6 @@ public interface DAO<T> {
   void delete(T t)
   T update(T t)
   T saveOrUpdate(T t)
+  Criteria createCriteria()
+  List<T> listWithCriteria(Criteria crit)
 }

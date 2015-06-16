@@ -1,5 +1,6 @@
 package joms.geotools.tileapi.hibernate.controller
 
+import org.hibernate.Criteria
 import org.hibernate.Session
 import org.hibernate.SessionFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -58,8 +59,6 @@ public abstract class DAOImpl<T> implements DAO<T> {
     s.save(t);
 
     return t
-    //  getSession().persist(t);
-  //  return t;
   }
 
   @Override
@@ -68,5 +67,16 @@ public abstract class DAOImpl<T> implements DAO<T> {
     getSession().delete(t);
   }
 
+  @Override
+  @Transactional
+  List<T> listWithCriteria(Criteria crit)
+  {
+    crit.list()
+  }
 
+  @Override
+  Criteria createCriteria()
+  {
+    this.session.createCriteria(type.class)
+  }
 }
