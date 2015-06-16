@@ -211,7 +211,9 @@
             <div>
                 <p>
                     <strong>Your Filter:&nbsp;</strong>
-                    <span class="imageFilterType label label-primary"></span>
+                    <span id="imageFilterDate" class="label label-primary"></span>
+                    &nbsp;<span class="label label-success">and</span>&nbsp;
+                    <span id="imageFilterRange" class="label label-primary"></span>
                 </p>
                 <p>
                     <small><em><span class="imageFilter"></span></em></small>
@@ -226,15 +228,33 @@
                         </span>
                     </a>
                 </p>
-                <p>Displaying <span id="startResult">1</span> through <span id="endResult">25</span></p>
+
+                <p id="resultsSet" style="display: none;"><small><em>Displaying <span id="startResult">1</span> through
+                    <span id="endResult">25</span></em></small></p>
+
+                <div class="paginationButtons" style="height: 50px; display: none">
+                    <div class="btn-group text-center col-md-12" >
+                        <div class="center-block">
+                            <button type="button" class="btn btn-primary prevWfsImages disabled">Prev
+                            </button>
+                            <button type="button" class="btn btn-primary nextWfsImages">Next</button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div id="omarImageList"></div>
-            <div class="btn-group text-center col-md-12">
-                <div class="center-block">
-                    <button id="prevWfsImages" type="button" class="btn btn-primary disabled">Prev</button>
-                    <button id="nextWfsImages" type="button" class="btn btn-primary">Next</button>
+
+            <div class="paginationButtons" style="height: 50px; display: none">
+                <div class="btn-group text-center col-md-12">
+                    <div class="center-block">
+                        <button type="button" class="btn btn-primary prevWfsImages disabled">Prev
+                        </button>
+                        <button type="button" class="btn btn-primary nextWfsImages">Next</button>
+                    </div>
                 </div>
             </div>
+
         </div>
 
         <div id="mapOmar" class="col-md-5">
@@ -594,7 +614,7 @@
                                 </div>
                             </div>
                         </div>
-    </div>
+                    </div>
                     <br>
 
                     <!-- Date type radios -->
