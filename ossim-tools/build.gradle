@@ -4,6 +4,7 @@ enum AccumuloTarget {
 
 def accumuloTarget
 
+def kettleVersion="5.3.0.0-213"
 println configurations
 switch(System.properties?.hadoopDist?.toLowerCase())
 {
@@ -29,11 +30,31 @@ switch(System.properties?.hadoopDist?.toLowerCase())
 
 }
 
+if(System.properties?.kettleVersion)
+{
+   kettleVersion = System.proeprties?.kettleVersion
+}
+
 def kettleDependencies = [
-        'pentaho-kettle:kettle-core:5.3.0.0-213',
-        'pentaho-kettle:kettle-engine:5.3.0.0-213',
-        'pentaho-kettle:kettle-ui-swt:5.3.0.0-213',
-        'pentaho:pentaho-hadoop-shims-api:5.3.0.0-213'
+/*        'pentaho-kettle:kettle-core:TRUNK-SNAPSHOT',
+        'pentaho-kettle:kettle-engine:TRUNK-SNAPSHOT',
+        'pentaho-kettle:kettle-ui-swt:TRUNK-SNAPSHOT',
+        'pentaho:pentaho-hadoop-shims-api:TRUNK-SNAPSHOT'
+*/
+/*
+         'pentaho-kettle:kettle-core:5.3.0.4-350',
+         'pentaho-kettle:kettle-engine:5.3.0.4-350',
+         'pentaho-kettle:kettle-ui-swt:5.3.0.4-350',
+         'pentaho:pentaho-hadoop-shims-api:5.3.0.4-350'
+*/
+
+
+        "pentaho-kettle:kettle-core:${kettleVersion}",
+        "pentaho-kettle:kettle-engine:${kettleVersion}",
+        "pentaho-kettle:kettle-ui-swt:${kettleVersion}",
+        "pentaho:pentaho-hadoop-shims-api:${kettleVersion}"
+
+
 /*        'pentaho-kettle:kettle-core:5.2.1.1-210',
         'pentaho-kettle:kettle-engine:5.2.1.1-210',
         'pentaho-kettle:kettle-ui-swt:5.2.1.1-210',
