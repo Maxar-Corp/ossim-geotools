@@ -2,31 +2,51 @@ package tilestore.job
 
 import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
+import grails.plugin.springsecurity.ui.SpringSecurityUiService
 import joms.geotools.web.HttpStatus
 import org.ossim.common.FetchDataCommand
 
 class JobController {
    def jobService
+   def grailsLinkGenerator
+   def springSecurityService
    static allowedMethods = [create:['POST'],
                             remove:['POST'],
                             update:['POST'],
                             ingest:['POST'],
-                            list:['GET']
+                            list:['GET','POST'],
+                            show:['GET','POST'],
+                            index:['GET', 'POST']
                            ]
 
    @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
-   def index() { }
-   //@Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
-   @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
-
+   def index() {
+      [
+              initParams:[tableModel  : jobService.createTableModel(),
+                          url: grailsLinkGenerator.link( controller: 'job', action: 'list' ),
+                      urls:[
+                      remove:grailsLinkGenerator.link( controller: 'job', action: 'remove' ),
+                      download:grailsLinkGenerator.link( controller: 'job', action: 'download' ),
+                      update:grailsLinkGenerator.link( controller: 'job', action: 'update' ),
+                      cancel:grailsLinkGenerator.link( controller: 'job', action: 'cancel' ) ,
+                      base:grailsLinkGenerator.serverBaseURL
+                        ]
+         ]as JSON
+      ]
+   }
+   @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
    def list(FetchDataCommand cmd)
    {
       def usernameRestriction =""
-      /*
-      if ( SpringSecurityUtils.ifNotGranted( "ROLE_ADMIN" ) )
+
+      Boolean adminFlag = springSecurityService.authentication.authorities*.toString().find(){it == "ROLE_ADMIN"}
+      Boolean userFlag = springSecurityService.authentication.authorities*.toString().find(){it == "ROLE_USER"}
+
+
+      if(!adminFlag)
       {
-         // println      springSecurityService.principal.username
-         if(springSecurityService.isLoggedIn())
+
+         if (userFlag)
          {
             usernameRestriction = "(username='${springSecurityService.principal.username}')"
          }
@@ -34,22 +54,19 @@ class JobController {
          {
             usernameRestriction = "(username='anonymous')"
          }
-         if(usernameRestriction)
+      }
+      if(usernameRestriction)
+      {
+         if(!cmd.filter)
          {
-            if(!cmd.filter)
-            {
-               cmd.filter = "${usernameRestriction}"
-            }
-            else
-            {
-               cmd.filter = "${cmd.filter} AND ${usernameRestriction}"
-            }
+            cmd.filter = "${usernameRestriction}"
+         }
+         else
+         {
+            cmd.filter = "${cmd.filter} AND ${usernameRestriction}"
          }
       }
-      */
-      // println "-------------------------${cmd.filter}"
       def result = jobService.listJobs( cmd )
-
 
       if(result.status != HttpStatus.OK)
       {
@@ -61,11 +78,10 @@ class JobController {
       }
    }
 
-   @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
-   def create(CreateJobCommand cmd)
+   @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
+   def cancel(GetJobCommand cmd)
    {
-      def result = jobService.create(cmd)
-
+      def result = jobService.cancel(cmd)
       response.status = result.status.value
 
       if(result.status != HttpStatus.OK)
@@ -76,6 +92,23 @@ class JobController {
       {
          render contentType: 'application/json', text: result.data as JSON
       }
+   }
+   @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
+   def create(CreateJobCommand cmd)
+   {
+      def result = jobService.create(cmd)
+
+      println result
+      response.status = result.status.value
+
+     // if(result.status != HttpStatus.OK)
+     // {
+         render contentType: 'application/json', text: [message:result.message] as JSON
+      //}
+      //else
+      //{
+      //   render contentType: 'application/json', text: result.data as JSON
+      //}
    }
 
    @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
