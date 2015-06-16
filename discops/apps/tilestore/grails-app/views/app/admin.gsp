@@ -212,7 +212,7 @@
 <!-- mapsRow -->
 <div class="container-fluid">
     <div id="mapsRow" class="row">
-
+        
         <div id="omarFeed" class="col-md-2">
             <div>
                 <p>
@@ -234,6 +234,12 @@
                 </p>
             </div>
             <div id="omarImageList"></div>
+            <div class="btn-group text-center col-md-12">
+                <div class="center-block">
+                    <button id="prevWfsImages" type="button" class="btn btn-primary disabled">Prev</button>
+                    <button id="nextWfsImages" type="button" class="btn btn-primary">Next</button>
+                </div>
+            </div>
         </div>
 
         <div id="mapOmar" class="col-md-5">
