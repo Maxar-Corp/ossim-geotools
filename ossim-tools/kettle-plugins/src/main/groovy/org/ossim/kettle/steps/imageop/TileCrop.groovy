@@ -41,11 +41,11 @@ class TileCrop extends BaseStep implements StepInterface
    {
       super(stepMeta, stepDataInterface, copyNr, transMeta, trans);
    }
-   BufferedImage cloneImage(BufferedImage img)
+   BufferedImage cloneEmptyImage(BufferedImage img)
    {
       ColorModel cm = img.getColorModel();
       boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-      WritableRaster raster = img.copyData(null);
+      WritableRaster raster = img.colorModel.createCompatibleWritableRaster(img.width, img.height) //img.copyData(null);
       new BufferedImage(cm, raster, isAlphaPremultiplied, null);
    }
    BufferedImage cropImage(BufferedImage image, Envelope imgEnv, geoscript.geom.Geometry cutGeom)
@@ -64,12 +64,12 @@ class TileCrop extends BaseStep implements StepInterface
          xp<<Math.round((((pt.x - imgEnv.minX)/deltaWidth)*image.width))
          yp<<Math.round((((imgEnv.maxY - pt.y)/deltaHeight)*image.height))
       }
-
       if(xp.size())
       {
          def shape = new java.awt.Polygon( xp as int[] , yp as int[], xp.size() );
 
-         result = new BufferedImage(image.width, image.height, BufferedImage.TYPE_4BYTE_ABGR)//cloneImage(image)
+         result = cloneEmptyImage(image)//new BufferedImage(image.width, image.height, BufferedImage.TYPE_INT_ARGB)//cloneImage(image)
+         //result = cloneImage(image)
 
          Graphics g2d = result.graphics
          //g2d.setColor(new Color(0,0,0))
