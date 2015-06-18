@@ -35,7 +35,7 @@
                                                                                    style="width: 40px; height: 40px; padding-top: 10px; margin-left: 60px;"
                                                                                    src="app/rbt_symbol.png"
                                                                                    alt="RBT Logo"/></g:link>
-                <a class="navbar-brand">&nbsp;&nbsp;RBT | Tiles Administrator</a>
+                <a class="navbar-brand">&nbsp;&nbsp;Tiles Administrator</a>
             </div>
 
             <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
@@ -76,9 +76,11 @@
                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
                         class="fa fa-user"></i>&nbsp;&nbsp;<sec:loggedInUserInfo field="username"/><b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        %{--<li><a href="user/search"><i class="fa fa-users"></i>&nbsp;&nbsp;User Settings</a></li>--}%
-                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-gears">&nbsp;&nbsp;<g:link title="Security" controller="user"
-                                    action="search">Security Settings</g:link></i></li>
+                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-table">&nbsp;&nbsp;<g:link title="Job Status"
+                                                                                               controller="job" target="_blank">Job Status</g:link></i></li>
+                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-unlock-alt">&nbsp;&nbsp;<g:link title="Security"
+                                                                                           controller="user"
+                                    action="search" target="_blank">Security Settings</g:link></i></li>
                         <li class="divider"></li>
                         <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-power-off">&nbsp;&nbsp;<g:link controller='logout'>Logout</g:link></i></li>
                     </ul>

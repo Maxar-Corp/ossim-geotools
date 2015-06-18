@@ -151,7 +151,7 @@ DragBoxClient = (function () {
                     maxLevel:null,
                     properties:{
                         "format":"image/gpkg",
-                        "filename":"output",
+                        "filename":"image",
                         "writerMode":"mixed"
                     }
                 };

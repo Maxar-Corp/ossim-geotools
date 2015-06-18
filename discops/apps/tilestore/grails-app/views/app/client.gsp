@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
 
-    <title>RBT | Tiles Viewer</title>
+    <title>Tiles Viewer</title>
 
     <asset:stylesheet src="app/client.css"/>
 
@@ -29,7 +29,7 @@
                             <span class="icon-bar"></span>
                         </button>
                         <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left" style="width: 40px; height: 40px; padding-top: 10px; margin-left: 60px;" src="app/rbt_symbol.png" alt="RBT Logo"/></g:link>
-                        <a class="navbar-brand">&nbsp;&nbsp;RBT | Tiles Viewer</a>
+                        <a class="navbar-brand">&nbsp;&nbsp;Tiles Viewer</a>
                     </div>
 
                     <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
@@ -75,6 +75,9 @@
                                     %{--<li><a href="#"><span class="glyphicon glyphicon-user"></span>Profile</a></li>--}%
                                     %{--<li><a href="#"><span class="glyphicon glyphicon-cog"></span>Settings</a></li>--}%
                                     %{--<li class="divider"></li>--}%
+                                    <li>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-table">&nbsp;&nbsp;<g:link title="Job Status"
+                                                                                                           controller="job" target="_blank">Job Status</g:link></i></li>
+                                    <li class="divider"></li>
                                     <li>&nbsp;&nbsp;<i class="fa fa-power-off">&nbsp;&nbsp;<g:link controller='logout'>Logout</g:link></i></li>
                                 </ul>
                             </li>
