@@ -34,7 +34,8 @@ class DiskCacheService {
    def getNextLocation()
    {
       def result = [status:HttpStatus.OK,
-                     message:""
+                     message:"",
+                     directory:""
       ]
 
       DiskCache.withTransaction {
@@ -116,18 +117,27 @@ class DiskCacheService {
    }
    def create(CreateCommand cmd){
       def result = [status:HttpStatus.OK,
-                    message:""];
+                    message:"",
+                    data:[:]];
       try{
-         DiskCache.withTransaction {
-            def diskCache = new DiskCache(cmd.properties);
-            if(!diskCache.save(flush:true))
-            {
-               diskCache.errors.allErrors.each {result.message = "${result.message?'\n':''} ${messageSource.getMessage(it, null)}"  }
-               result.status = HttpStatus.BAD_REQUEST
-            }
-            else
-            {
-               result.message = "";
+         if(!cmd.directory)
+         {
+            result.status = HttpStatus.BAD_REQUEST
+            result.message = "No directory given."
+         }
+         else
+         {
+            DiskCache.withTransaction {
+               def diskCache = new DiskCache(cmd.properties);
+               if(!diskCache.save(flush:true))
+               {
+                  diskCache.errors.allErrors.each {result.message = "${result.message?'\n':''} ${messageSource.getMessage(it, null)}"  }
+                  result.status = HttpStatus.BAD_REQUEST
+               }
+               else
+               {
+                  result.message = "";
+               }
             }
          }
       }
@@ -140,39 +150,55 @@ class DiskCacheService {
    }
    def update(UpdateCommand cmd){
       def result = [status:HttpStatus.OK,
-                    message:""];
+                    message:"",
+                    data:[:]];
       try{
          DiskCache.withTransaction {
-            def row
-            println cmd
+            DiskCache row
             if(cmd?.id!=null) row = DiskCache.findById(cmd?.id);
             else if(cmd?.directory) row = DiskCache.findByDirectory(cmd.directory);
             // cmd.remove("id")
             if(row)
             {
-               row.directory=cmd.directory!=null?cmd.directory:row.directory
+               row.directory=cmd.directory?:row.directory
                row.maxSize=cmd.maxSize!=null?cmd.maxSize:row.maxSize
                row.currentSize=cmd.currentSize!=null?cmd.currentSize:row.currentSize
                row.expirePeriod=cmd.expirePeriod!=null?cmd.expirePeriod:row.expirePeriod
+               if(!row.validate())
+               {
+                  def fieldErrors = []
+                  row.errors.each { error ->
+                     error.getFieldErrors().each { fieldError ->
+                        //println field.field
+                        fieldErrors << fieldError.field
+                     }
+                  }
 
-               row.save(flush:true)
+                  result.status = HttpStatus.BAD_REQUEST
+                  result.message = "Bad field value for fields: ${fieldErrors}"
+               }
+               else
+               {
+                  row.save(flush:true)
+               }
             }
             else
             {
                result.status = HttpStatus.BAD_REQUEST
-               result.message = "Unable to find directory = ${params?.directory} for updating";
+               result.message = "Unable to find directory = ${cmd?.directory} for updating";
             }
          }
 
       }
       catch(e)
       {
+         //println e
          result.status = HttpStatus.BAD_REQUEST
          result.mesage = e.toString();
       }
       result;
    }
-   def remove(def params){
+   def remove(RemoveCommand cmd){
       def result = [status:HttpStatus.OK,
                     message:""];
 
@@ -180,8 +206,8 @@ class DiskCacheService {
          DiskCache.withTransaction {
             def row
 
-            if(params?.id) row = DiskCache.findById(params?.id?.toInteger());
-            else if(params?.directory) row = DiskCache.findByDirectory(params.directory);
+            if(cmd?.id) row = DiskCache.findById(cmd?.id?.toInteger());
+            else if(cmd?.directory) row = DiskCache.findByDirectory(cmd.directory);
 
             if(row)
             {
@@ -199,8 +225,7 @@ class DiskCacheService {
       result;
    }
    def list(FetchDataCommand cmd){
-      println cmd
-      def result = [total: 0, rows: null,
+      def result = [data:[:],
                     status:HttpStatus.OK,
                     message:""];
 
@@ -233,9 +258,8 @@ class DiskCacheService {
             rows = tempRows.collect { row ->
                columnNames.inject([:]) { a, b -> a[b] = row[b].toString(); a }
             }
+            result.data = [total: rows?.size()?:0, rows: rows?:[:]]
 
-            result.total = rows.size()
-            result.rows = rows
          }
       }
       catch(e)

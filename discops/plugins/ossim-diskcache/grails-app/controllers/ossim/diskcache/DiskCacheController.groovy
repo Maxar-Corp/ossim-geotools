@@ -3,6 +3,7 @@ package ossim.diskcache
 import grails.converters.JSON
 import grails.converters.XML
 import grails.plugin.springsecurity.annotation.Secured
+import joms.geotools.web.HttpStatus
 
 //import grails.plugins.springsecurity.Secured
 import org.apache.commons.collections.map.CaseInsensitiveMap
@@ -12,12 +13,20 @@ class DiskCacheController
 {
 
   def diskCacheService
+  static allowedMethods = [create:['POST'],
+                           remove:['POST'],
+                           update:['POST'],
+                           list:['GET','POST'],
+                           index:['GET', 'POST']
+  ]
 
   @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
   def index()
   {
-    render view: 'index', model: [
-        tableModel: diskCacheService.createTableModel()
+    [
+            initParams:[
+                    tableModel: diskCacheService.createTableModel()
+            ] as JSON
     ]
   }
 
@@ -52,47 +61,62 @@ class DiskCacheController
       }
     }
   }
-  // @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
-  @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
+   @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def list(FetchDataCommand cmd)
   {
-    def data = diskCacheService.list( cmd )
+    def result = diskCacheService.list( cmd )
 
-    response.status = data.status.value
-    data.remove( "status" )
-    data.remove( "message" )
-    // for now just remove the status and message and render the rest
-
+    response.status = result.status.value
     response.withFormat {
       json {
-        render contentType: 'application/json', text: data as JSON
+        if(result.status != HttpStatus.OK)
+        {
+          render contentType: 'application/json', text: [message:result.message] as JSON
+        }
+        else
+        {
+          render contentType: 'application/json', text: result.data as JSON
+        }
       }
       xml {
-        render contentType: 'application/xml', text: data as XML
+        if(result.status != HttpStatus.OK)
+        {
+          render contentType: 'application/json', text: [message:result.message] as XML
+        }
+        else
+        {
+          render contentType: 'application/xml', text: result.data as XML
+        }
       }
     }
 
   }
 
-  @Secured(['ROLE_ADMIN'])
+  @Secured( ['ROLE_ADMIN', "ROLE_USER"] )
   def create(CreateCommand cmd)
   {
-    def data
-
-    if ( request.method.toLowerCase() == "post" )
-    {
-      cmd.initFromJson( request.JSON )
-    }
-    data = diskCacheService.create( cmd )
-    response.status = data.status.value
-    data.remove( "status" )
-    data.remove( "message" )
+    def result = diskCacheService.create( cmd )
+    response.status = result.status.value
     response.withFormat {
       json {
-        render contentType: 'application/json', text: data as JSON
+        if(result.status != HttpStatus.OK)
+        {
+          render contentType: 'application/json', text: [message:result.message] as JSON
+        }
+        else
+        {
+          render contentType: 'application/json', text: result.data as JSON
+        }
       }
       xml {
-        render contentType: 'application/xml', text: data as XML
+        if(result.status != HttpStatus.OK)
+        {
+          render contentType: 'application/json', text: [message:result.message] as XML
+        }
+        else
+        {
+          render contentType: 'application/xml', text: result.data as XML
+        }
       }
     }
   }
@@ -100,15 +124,28 @@ class DiskCacheController
   @Secured(['ROLE_ADMIN'])
   def update(UpdateCommand cmd)
   {
-    def data = diskCacheService.update( cmd )//new CaseInsensitiveMap(params));
-    data.remove( "status" )
-    data.remove( "message" )
+    def result = diskCacheService.update( cmd )//new CaseInsensitiveMap(params));
+    response.status = result.status.value
     response.withFormat {
       json {
-        render contentType: 'application/json', text: data as JSON
+        if(result.status != HttpStatus.OK)
+        {
+          render contentType: 'application/json', text: [message:result.message] as JSON
+        }
+        else
+        {
+          render contentType: 'application/json', text: result.data as JSON
+        }
       }
       xml {
-        render contentType: 'application/xml', text: data as XML
+        if(result.status != HttpStatus.OK)
+        {
+          render contentType: 'application/json', text: [message:result.message] as XML
+        }
+        else
+        {
+          render contentType: 'application/xml', text: result.data as XML
+        }
       }
     }
   }
@@ -116,7 +153,7 @@ class DiskCacheController
   @Secured( ['ROLE_ADMIN'] )
   def remove(RemoveCommand cmd)
   {
-    def data = diskCacheService.remove( new CaseInsensitiveMap( cmd ) );
+    def data = diskCacheService.remove( cmd );
     data.remove( "status" )
     data.remove( "message" )
     response.withFormat {
