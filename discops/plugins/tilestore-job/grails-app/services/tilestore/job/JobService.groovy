@@ -259,7 +259,7 @@ class JobService
    {
       def result = [status : HttpStatus.OK,
                     message: "",
-                    data   : []
+                    data   : [:]
       ]
       if(!cmd.submitDate)
       {
