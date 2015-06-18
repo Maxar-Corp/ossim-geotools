@@ -83,14 +83,9 @@ class ProductService {
                                           inputFile:jobDir,
                                           deleteInputAfterArchiving:true
                                   ]
-               ]as JSON
+                                 ]as JSON
 
-
-
-               println jobSpec
-               def test = jobService.create(new CreateJobCommand(jobSpec))
-
-               println test
+               result = jobService.create(new CreateJobCommand(jobSpec))
             }
          }
       }
