@@ -286,10 +286,20 @@ class JobService
             {
                if (job.save())
                {
-                  if (grailsApplication.config.rabbitmq.enabled)
+                  if(grailsApplication.config.rabbitmq.enabled)
                   {
-                     rabbitProducer.sendIngestMessage(job.message)
+                     def type = cmd.type?.toLowerCase()
+                     if(type.contains("export"))
+                     {
+                        rabbitProducer.sendProductMessage(job.message)
+                     }
+                     else
+                     {
+                        rabbitProducer.sendIngestMessage(job.message)
+                     }
                   }
+
+                  result.data = job.toMap()
                }
                else
                {

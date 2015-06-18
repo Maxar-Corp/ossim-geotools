@@ -8,7 +8,7 @@ class TilestoreJobFilters {
             new RemoveJobCommand().fixParamNames( params )
          }
       }
-      show(controller:"job", action:"getJob"){
+      show(controller:"job", action:"show"){
          before = {
             new GetJobCommand().fixParamNames( params )
          }
@@ -29,7 +29,7 @@ class TilestoreJobFilters {
          }
       }
 
-      all(controller: 'diskCache', action: '*') {
+      all(controller: 'job', action: '*') {
          before = {
             response.setHeader( "Access-Control-Allow-Origin", "*" );
             response.setHeader( "Access-Control-Allow-Methods", "POST, GET")

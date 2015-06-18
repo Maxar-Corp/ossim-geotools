@@ -17,9 +17,10 @@ class LayerManagerController
   }
 
   @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
-  def getActualBounds()
+  def getActualBounds(GetActualBoundsCommand cmd)
   {
-    def bounds = layerManagerService.getActualBounds( params )
+
+    def bounds = layerManagerService.getActualBounds( cmd )
 
     render contentType: "application/json", ( bounds as JSON ).toString()
   }

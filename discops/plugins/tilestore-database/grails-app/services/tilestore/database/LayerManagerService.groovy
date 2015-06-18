@@ -349,16 +349,31 @@ class LayerManagerService implements InitializingBean
       result
    }
 
-   def getActualBounds(def params)
+   def getActualBounds(GetActualBoundsCommand cmd)
    {
+      def result
+      TileCacheLayerInfo layerInfo
       def constraints = [:]
 
-      if ( params.aoi )
+      if ( cmd.aoi && cmd.layer )
       {
-         constraints.intersects = "${params.aoi}"
+         layerInfo = daoTileCacheService.getLayerInfoByName(cmd.layer)
+         constraints.intersects = "${cmd.aoi}"
+
+         if(!cmd.aoiEpsg)
+         {
+
+            constraints.intersectsSrid = "${layerInfo.epsgCode.split(":")[-1]}".toString()
+         }
+         else
+         {
+            constraints.intersectsSrid = "${cmd.aoiEpsg.split(":")[-1]}".toString()
+         }
       }
 
-      daoTileCacheService.getActualLayerBounds( params?.name, constraints )
+      if(layerInfo) result = daoTileCacheService.getActualLayerBounds(layerInfo, constraints )
+
+      result
    }
 
    def createTileLayers(String[] layerNames)
