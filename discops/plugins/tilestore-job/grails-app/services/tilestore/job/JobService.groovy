@@ -471,13 +471,13 @@ class JobService
                {
                   response.contentType = "application/octet-stream"
                   response.setHeader( "Content-disposition", "attachment; filename=${archive.name}.zip" )
-                  Utility.zipDirToStream(archive.toString(), cmd.jobId)
+                  Utility.zipDirToStream(archive.toString(), response.outputStream, cmd.jobId)
                }
             }
             catch(e)
             {
 
-              // println "ERROR ============ ${e}"
+               println "ERROR ============ ${e}"
                response.status = HttpStatus.BAD_REQUEST.value
                errorMessage = "ERROR: ${e}"
                response.contentType = "text/plain"
