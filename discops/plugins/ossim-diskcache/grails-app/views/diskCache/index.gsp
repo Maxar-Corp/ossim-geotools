@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <asset:stylesheet src="app/diskCachePage.css"/>
-<title>OMAR <g:meta name="app.version"/>: Disk Cache Locations</title>
+<title>Tilestore <g:meta name="app.version"/>: Disk Cache Locations</title>
 <asset:javascript src="app/diskCache.js"/>
 <style type="text/css">
 
