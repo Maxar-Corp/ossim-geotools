@@ -2,18 +2,42 @@ package tilestore
 
 import grails.converters.JSON
 import joms.geotools.tileapi.job.TileCacheMessage
+import joms.geotools.web.HttpStatus
+import org.codehaus.groovy.grails.web.binding.bindingsource.JsonDataBindingSourceCreator
 import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.json.JSONObject
+import org.springframework.security.access.annotation.Secured
+import tilestore.job.CreateJobCommand
 
 class ProductController
 {
    def rabbitProducer
    def grailsApplication
    def productService
+   def jobService
+   static allowedMethods = [export:['POST'],
+                            index:['GET', 'POST']
+   ]
+
    def index() {}
 
-   def export()
+   @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
+   def export(ProductExportCommand cmd)
    {
+      def result = productService.export(cmd)
+
+      if ( result.status != HttpStatus.OK )
+      {
+         response.status = result.status.value
+         render contentType: "application/json", ( [message: result.message] as JSON ).toString()
+      }
+      else
+      {
+         render contentType: "application/json", ( result.data as JSON ).toString()
+      }
+
+      /*
+      println params
       response.setHeader( "Access-Control-Allow-Origin", "*" );
       response.setHeader( "Access-Control-Allow-Origin", "*" );
       response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
@@ -22,6 +46,7 @@ class ProductController
 
       def data = productService.export()
 
+      def spec
       switch ( request.method.toLowerCase() )
       {
          case "post":
@@ -36,7 +61,19 @@ class ProductController
                   println 'json array'
                   break
                case JSONObject:
+
+                  spec = [type:"TileServerProductMessage",
+                          jobName:"Export",
+                          aoi:input.aoi,
+                          aoiEpsg:"EPSG:3857",
+                          layer:"reference",
+                          minLevel:0,
+                          maxLevel:20,
+                          format:[type:"image/gpkg"],
+                          writerProperties:[:]
+                          ]
                   println 'json object'
+                  println input
                   break
                default:
                   println 'no idea what this is!'
@@ -48,7 +85,10 @@ class ProductController
 //      println "MESSAGE STRING: ${inputString}"
 
             try{
-               rabbitProducer.sendMessage(grailsApplication.config.rabbitmq.product.queue, (input as JSON).toString())
+               if(spec)
+               {
+                  rabbitProducer.sendMessage(grailsApplication.config.rabbitmq.product.queue, (spec as JSON).toString())
+               }
             }
             catch(e)
             {
@@ -61,7 +101,8 @@ class ProductController
 //      message.newJobId()
 //
 //      def result = ( [jobId: message.jobId] as JSON ).toString()
-            render contentType: "application/json",/* result*/ ( [message: "Heck YEA!! "] as JSON ).toString()
+         def result = [message: "MESSAGE DONE!!"]
+            render contentType: "application/json",result as JSON ).toString()
             break
          default:
             render contentType: "text/plain", "ERROR:  Only accept posts"//([message:"Heck YEA!! "] as JSON).toString()
@@ -74,7 +115,7 @@ class ProductController
 //    println request.JSON
       // allow cross domain
       // println output
-
+        */
    }
 
    def estimate()
