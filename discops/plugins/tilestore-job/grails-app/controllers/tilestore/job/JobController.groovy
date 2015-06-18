@@ -16,7 +16,8 @@ class JobController {
                             ingest:['POST'],
                             list:['GET','POST'],
                             show:['GET','POST'],
-                            index:['GET', 'POST']
+                            index:['GET', 'POST'],
+                            download:['GET', 'POST']
                            ]
 
    @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
@@ -161,4 +162,18 @@ class JobController {
          render contentType: 'application/json', text: result.data as JSON
       }
    }
+   @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
+   def download(DowloadJobCommand cmd)
+   {
+      try{
+         jobService.download(cmd, response)
+      }
+      catch(e)
+      {
+         println e
+      }
+
+      null
+   }
+
 }
