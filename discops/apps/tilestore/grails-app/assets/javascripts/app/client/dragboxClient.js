@@ -137,10 +137,24 @@ DragBoxClient = (function () {
 
                 // IN PROGRESS: Submit job to tile server for processing.  For now we can simulate this with a setTimeout function.  Add progress bar.
 
-                productTest.aoi = outputWkt;
+                //productTest.aoi = outputWkt;
                 // TODO: Need to add these to these so that we can pass in layers
 //                productTest.layers = ["highres_us"];
-                productTest.layers = ["highres_3857"];
+                //productTest.layers = ["highres_3857"];
+
+                productTest = {
+                    type:"GeopackageExport",
+                    layer:"reference",
+                    aoi:outputWkt,
+                    aoiEpsg:"EPSG:3857",
+                    minLevel:null,
+                    maxLevel:null,
+                    properties:{
+                        "format":"image/gpkg",
+                        "filename":"image",
+                        "writerMode":"mixed"
+                    }
+                };
 
                 $.ajax({
                     url: urlProductExport,

@@ -9,12 +9,6 @@
 
     <title>RBT | Tiles Administrator</title>
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
     <asset:stylesheet src="app/admin.css"/>
 
 </head>
@@ -41,7 +35,7 @@
                                                                                    style="width: 40px; height: 40px; padding-top: 10px; margin-left: 60px;"
                                                                                    src="app/rbt_symbol.png"
                                                                                    alt="RBT Logo"/></g:link>
-                <a class="navbar-brand">&nbsp;&nbsp;RBT | Tiles Administrator</a>
+                <a class="navbar-brand">&nbsp;&nbsp;Tiles Administrator</a>
             </div>
 
             <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
@@ -82,9 +76,11 @@
                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
                         class="fa fa-user"></i>&nbsp;&nbsp;<sec:loggedInUserInfo field="username"/><b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        %{--<li><a href="user/search"><i class="fa fa-users"></i>&nbsp;&nbsp;User Settings</a></li>--}%
-                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-gears">&nbsp;&nbsp;<g:link title="Security" controller="user"
-                                    action="search">Security Settings</g:link></i></li>
+                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-table">&nbsp;&nbsp;<g:link title="Job Status"
+                                                                                               controller="job" target="_blank">Job Status</g:link></i></li>
+                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-unlock-alt">&nbsp;&nbsp;<g:link title="Security"
+                                                                                           controller="user"
+                                    action="search" target="_blank">Security Settings</g:link></i></li>
                         <li class="divider"></li>
                         <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-power-off">&nbsp;&nbsp;<g:link controller='logout'>Logout</g:link></i></li>
                     </ul>
@@ -216,14 +212,16 @@
         <div id="omarFeed" class="col-md-2">
             <div>
                 <p>
-                    <strong>Your Filter:&nbsp;</strong>
-                    <span class="imageFilterType label label-primary"></span>
+                    <strong>Current Filter:&nbsp;</strong>
+                    <span id="imageFilterDate" class="label label-primary"></span>
+                    &nbsp;<span class="label label-success">and</span>&nbsp;
+                    <span id="imageFilterRange" class="label label-primary"></span>
                 </p>
                 <p>
                     <small><em><span class="imageFilter"></span></em></small>
                 </p>
                 <p>
-                    <strong>Results:&nbsp;</strong>
+                    <strong>Number of Results:&nbsp;</strong>
                     <a href="#" data-toggle="tooltip" data-placement="bottom"
                        title="Number of images in current filter">
                         <span class="label label-primary label-as-badge">
@@ -232,14 +230,33 @@
                         </span>
                     </a>
                 </p>
+
+                <p id="resultsSet" style="display: none;"><small><em>Displaying <span id="startResult">1</span> through
+                    <span id="endResult">25</span></em></small></p>
+
+                <div class="paginationButtons" style="height: 50px; display: none">
+                    <div class="btn-group text-center col-md-12" >
+                        <div class="center-block">
+                            <button type="button" class="btn btn-primary prevWfsImages disabled">Prev
+                            </button>
+                            <button type="button" class="btn btn-primary nextWfsImages">Next</button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div id="omarImageList"></div>
-            <div class="btn-group text-center col-md-12">
-                <div class="center-block">
-                    <button id="prevWfsImages" type="button" class="btn btn-primary disabled">Prev</button>
-                    <button id="nextWfsImages" type="button" class="btn btn-primary">Next</button>
+
+            <div class="paginationButtons" style="height: 50px; display: none">
+                <div class="btn-group text-center col-md-12">
+                    <div class="center-block">
+                        <button type="button" class="btn btn-primary prevWfsImages disabled">Prev
+                        </button>
+                        <button type="button" class="btn btn-primary nextWfsImages">Next</button>
+                    </div>
                 </div>
             </div>
+
         </div>
 
         <div id="mapOmar" class="col-md-5">
@@ -599,7 +616,7 @@
                                 </div>
                             </div>
                         </div>
-    </div>
+                    </div>
                     <br>
 
                     <!-- Date type radios -->
