@@ -47,7 +47,7 @@ grails.project.dependency.resolution = {
       export = false
     }
 
-    // build ":spring-security-core:2.0-RC4"
+     compile ":asset-pipeline:2.2.3"
   }
 }
 

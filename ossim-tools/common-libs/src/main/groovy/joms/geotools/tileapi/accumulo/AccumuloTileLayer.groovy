@@ -54,7 +54,8 @@ class AccumuloTileLayer extends ImageTileLayer//TileLayer<ImageTile>
          }
          else
          {
-            result = null
+
+            //result = null
          }
       }
 
