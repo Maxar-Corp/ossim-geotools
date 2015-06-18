@@ -1,11 +1,14 @@
 package ossim.diskcache
 
+import org.ossim.common.FetchDataCommand
+
 class OssimDiskCacheFilters {
 
     def filters = {
          diskCacheCreate(controller:"diskCache", action:"create"){
             before = {
-               CreateCommand.fixParamNames(params)
+
+               new CreateCommand().fixParamNames(params)
             }
             after = { Map model ->
 
@@ -14,9 +17,31 @@ class OssimDiskCacheFilters {
 
             }
         }
+       list(controller:"diskCache", action:"list"){
+          before = {
+             new FetchDataCommand().fixParamNames(params)
+          }
+          after = { Map model ->
+
+          }
+          afterView = { Exception e ->
+
+          }
+       }
+       diskCacheRemove(conrtoller:"diskCache", action:"remove"){
+          before = {
+             new RemoveCommand().fixParamNames(params)
+          }
+          after = { Map model ->
+
+          }
+          afterView = { Exception e ->
+
+          }
+       }
        diskCacheUpdate(controller:"diskCache", action:"update"){
           before = {
-             UpdateCommand.fixParamNames(params)
+            new UpdateCommand().fixParamNames(params)
           }
           after = { Map model ->
 
