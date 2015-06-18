@@ -35,21 +35,13 @@
 
     </div>
     <div class="row text-center">
-        <br>
-        <br>
-        <br>
-
         <h2><img src="http://radiantblue.com/wp-content/themes/radiantblue/images/logo.png"
-                 alt=""><br><strong>Tile Server</strong></h2>
+                 alt=""><br><strong>Tile Store</strong></h2>
         <hr>
     </div>
     <br>
-    <br>
-    <br>
-
     <div class="row text-center">
         <div class="col-md-1"></div>
-
         <div class="col-md-4">
             <div class="fa fa-cube fa-5x"></div>
 
