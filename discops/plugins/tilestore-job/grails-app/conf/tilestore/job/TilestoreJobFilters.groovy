@@ -28,6 +28,11 @@ class TilestoreJobFilters {
             new CreateJobCommand().fixParamNames( params )
          }
       }
+      update(controller:"job", action:"download"){
+         before = {
+            new DowloadJobCommand().fixParamNames( params )
+         }
+      }
 
       all(controller: 'job', action: '*') {
          before = {

@@ -3,7 +3,10 @@ package tilestore.job
 import grails.converters.JSON
 import grails.transaction.Transactional
 import joms.geotools.web.HttpStatus
+import org.apache.commons.collections.map.CaseInsensitiveMap
+import org.apache.commons.io.FilenameUtils
 import org.ossim.common.FetchDataCommand
+import org.ossim.common.Utility
 import org.springframework.beans.factory.InitializingBean
 
 @Transactional
@@ -378,4 +381,111 @@ class JobService
 
       result
    }
+
+   def download(DowloadJobCommand cmd, def response)
+   {
+      //println params
+      def httpStatus = HttpStatus.OK
+      def errorMessage = ""
+      def archive
+      def jobStatus
+      def jobFound
+      def contentType = "text/plain"
+      if(cmd.jobId)
+      {
+         def job
+         Job.withTransaction {
+            job = Job.findByJobId(cmd.jobId)
+            archive = job?.getArchive()
+            jobStatus = job?.status
+            jobFound = job != null
+         }
+         if(jobFound) {
+            if (jobStatus == JobStatus.FINISHED) {
+               archive = job?.getArchive()
+               // println "ARCHIVE ====== ${archive}"
+               if (archive)
+               {
+                  def ext = FilenameUtils.getExtension(archive.toString()).toLowerCase()
+
+                  // println "EXT === ${ext}"
+                  switch (ext) {
+                     case "zip":
+                        contentType = "application/octet-stream"
+                        break
+                     case "tgz":
+                        contentType = "application/x-compressed"
+                        break
+                  }
+               }
+               else
+               {
+                  File jobDir = job.jobDir as File
+                  if(jobDir.exists())
+                  {
+                     archive = jobDir
+                  }
+                  else
+                  {
+                     httpStatus = HttpStatus.NOT_FOUND
+                     errorMessage = "ERROR: Archive for Job ${cmd.jobId} is no longer present"
+                  }
+               }
+            }
+            else
+            {
+               httpStatus = HttpStatus.NOT_FOUND
+               errorMessage = "ERROR: Can only download finished jobs.  The current status is ${job?.status.toString()}"
+            }
+         }
+         else
+         {
+            httpStatus = HttpStatus.NOT_FOUND
+            errorMessage = "ERROR: Job ${cmd.jobId} not found"
+         }
+
+
+         if(errorMessage)
+         {
+            response.status = httpStatus.value
+            response.contentType = contentType
+            response.sendError(response.status, errorMessage)
+            //response.outputStream.write(errorMessage.bytes)
+         }
+         else
+         {
+            try
+            {
+               response.status = httpStatus.value
+
+               if(archive.isFile())
+               {
+                  response.setHeader("Accept-Ranges", "bytes");
+                  def tempFile = archive as File
+                  response.contentType = contentType
+                  response.setContentLength((int)tempFile.length());
+                  response.setHeader( "Content-disposition", "attachment; filename=${archive.name}" )
+                  Utility.writeFileToOutputStream(archive, response.outputStream)
+               }
+               else if(archive.isDirectory())
+               {
+                  response.contentType = "application/octet-stream"
+                  response.setHeader( "Content-disposition", "attachment; filename=${archive.name}.zip" )
+                  Utility.zipDirToStream(archive.toString(), cmd.jobId)
+               }
+            }
+            catch(e)
+            {
+
+              // println "ERROR ============ ${e}"
+               response.status = HttpStatus.BAD_REQUEST.value
+               errorMessage = "ERROR: ${e}"
+               response.contentType = "text/plain"
+               response.outputStream.write(errorMessage.bytes)
+            }
+         }
+
+      }
+   }
+
 }
