@@ -58,6 +58,8 @@ class RabbitMQInput extends BaseStep implements StepInterface
 	private RabbitMQInputData data = null
 	private ArrayBlockingQueue freeQueue
 	private monitoringEnabled = false
+	private Long timeStamp = System.currentTimeMillis()
+
 /*
 	private def cf    = null
 	private def admin = null
@@ -180,7 +182,7 @@ class RabbitMQInput extends BaseStep implements StepInterface
 			def delivery = rabbitmq?.consumer?.nextDelivery(1000)
 			if(delivery&&(!isStopped())&&(this.status != StepExecutionStatus.STATUS_HALTING))
 			{
-
+				timeStamp = System.currentTimeMillis()
 				++linesRead
 				def message = new String(delivery.body, "UTF-8")
 				//println message
@@ -213,10 +215,25 @@ class RabbitMQInput extends BaseStep implements StepInterface
 			if((!isStopped())&&(this.status != StepExecutionStatus.STATUS_HALTING)&&
 					  (!blockSizeMet) )
 			{
-				// only keep going if the stop flag is not specified
-				if(delivery||(!delivery&&!meta.stopIfNoMoreMessages))
+				if(delivery)
 				{
 					return true
+				}
+				else if(!meta.stopIfNoMoreMessages)
+				{
+					return true
+				}
+				else
+				{
+					Long delta = System.currentTimeMillis() - timeStamp
+
+  					if(meta.delayStopAfterNoMoreMessages)
+					{
+					  if(delta < meta.delayStopAfterNoMoreMessages)
+					  {
+						  return true
+					  }
+					}
 				}
 			}
 		}

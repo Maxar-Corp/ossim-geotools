@@ -156,12 +156,17 @@ public class RabbitMQInputDialog extends BaseStepDialog implements
           onEvent(type:'Modify') { input.setChanged() }
         }
         checkBox(id:"stopIfNoMoreMessages",
-                text:"Stop If No More Messages:",//Messages.getString("StageRasterDialog.outputResultCheckbox.Label"),
-                selection:false){
+                text:"Stop If No More Messages:",
+                selection:false,
+                layoutData:"split 3"){
           onEvent(type:"Selection"){
             input.setChanged()
-            //swt.resultColumnName.enabled = swt.outputResultCheckbox.selection
+            swt.delayStopAfterNoMoreMessages.enabled = swt.stopIfNoMoreMessages.selection
           }
+        }
+        label "Delay (millis)"
+        text(id:"delayStopAfterNoMoreMessages", layoutData:"width 100:100:200", text: ""){
+          onEvent(type:'Modify') { input.setChanged() }
         }
         label ""
         label "Stop After N Messages:"
@@ -247,6 +252,8 @@ public class RabbitMQInputDialog extends BaseStepDialog implements
     swt.verifyPassword.text 	= input.password
     swt.stopIfNoMoreMessages.selection = input.stopIfNoMoreMessages
     swt.stopAfterNMessages.text       = input.stopAfterNMessages.toString()
+    swt.delayStopAfterNoMoreMessages.text = input.delayStopAfterNoMoreMessages.toString()
+    swt.delayStopAfterNoMoreMessages.enabled = input.stopIfNoMoreMessages
 
     loadAllFields()
 
@@ -423,6 +430,14 @@ public class RabbitMQInputDialog extends BaseStepDialog implements
     if(swt.stopAfterNMessages.text)
     {
       input.stopAfterNMessages   = swt.stopAfterNMessages.text.toInteger()
+    }
+    if(swt.delayStopAfterNoMoreMessages.text)
+    {
+      input.delayStopAfterNoMoreMessages = swt.delayStopAfterNoMoreMessages.text.toInteger()
+    }
+    else
+    {
+      input.delayStopAfterNoMoreMessages = swt.delayStopAfterNoMoreMessages.text.toInteger()
     }
     dispose();
   }

@@ -118,7 +118,12 @@ public class GeomOpDialog extends BaseStepDialog implements
                           }
 
                   label ("Target EPSG: ")
-                  text(id:"transformTargetEpsg", layoutData:"span,growx")
+						cCombo(id:"transformTargetEpsg",
+								  items:SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaBase.TYPE_STRING]),
+								  layoutData:"span,growx")
+								  {
+									  onEvent(type:'Selection') { changed = true }
+								  }
 
                   label Messages.getString("GeomOpDialog.inputGeomField1.Label")
                   cCombo(id:"transformInputGeometry",
