@@ -1,3 +1,7 @@
+// TODO: use strict
+
+
+
 DragBoxClient = (function () {
 
     var output, outputWkt, formatWkt, aoiLodSlider;
@@ -39,6 +43,7 @@ DragBoxClient = (function () {
 
     return {
         initialize: function (dragBoxParams) {
+            console.log(dragBoxParams);
             urlProductExport = dragBoxParams.urlProductExport;
             urlLayerActualBounds = dragBoxParams.urlLayerActualBounds;
 
@@ -92,13 +97,16 @@ DragBoxClient = (function () {
 
                 // Use an ajax request to pull the level of detail and the bounding box for the AOI
                 $.ajax({
-                    url: urlLayerActualBounds + "?name=" + gpkgInputTileLayer + "&aoi=" + outputWkt,
+                    url: urlLayerActualBounds + "?layer=" + gpkgInputTileLayer + "&aoi=" + outputWkt,
                     type: 'GET',
                     dataType: 'json',
+                    // TODO: Add $promise function for success
                     success: function (data) {
+                        console.log(data);
                         $('#aoiLod').html(data.minLevel + ' to ' + data.maxLevel);
-                        $('#aoiBbox').html('minx: ' + data.minx + ', miny: ' + data.miny + ', maxx: ' + data.maxx + ', maxy: ' + data.maxy);
+                        //$('#aoiBbox').html('minx: ' + data.minx + ', miny: ' + data.miny + ', maxx: ' + data.maxx + ', maxy: ' + data.maxy);
                     },
+                    // TODO: Add $promise function for error
                     error: function (jqXHR, exception) {
                         if (jqXHR.status === 0) {
                             alert('Not connected.\n Verify Network.');
@@ -144,13 +152,13 @@ DragBoxClient = (function () {
 
                 productTest = {
                     type:"GeopackageExport",
-                    layer:"reference",
+                    layer:"reference", // from layer selectlist
                     aoi:outputWkt,
-                    aoiEpsg:"EPSG:3857",
-                    minLevel:null,
-                    maxLevel:null,
+                    aoiEpsg:"EPSG:3857", // add to modal
+                    minLevel:null, // add to modal as selectlist
+                    maxLevel:null, // add to modal as selectlist
                     properties:{
-                        "format":"image/gpkg",
+                        "format":"image/gpkg", // add to modal as select (disabled)
                         "filename":"image",
                         "writerMode":"mixed"
                     }

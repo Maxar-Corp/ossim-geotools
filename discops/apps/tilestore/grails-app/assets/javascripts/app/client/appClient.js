@@ -55,9 +55,9 @@ AppClient = (function () {
                 map.addLayer(obj);
             });
 
-            // Add Full Screen
-            var fullScreenControl = new ol.control.FullScreen();
-            map.addControl(fullScreenControl);
+            //// Add Full Screen
+            //var fullScreenControl = new ol.control.FullScreen();
+            //map.addControl(fullScreenControl);
 
             // Add Zoom Slider
             var zoomslider = new ol.control.ZoomSlider();
@@ -81,13 +81,6 @@ AppClient = (function () {
                         $("#tilesList").append(
                             "<tr><td>" + obj.properties.name + "</td><td>" + obj.properties.id + "</td><td>" + obj.properties.min_level + "</td><td>" + obj.properties.max_level + "</td></tr>"
                         );
-
-                        //$.each(selectValues, function(key, value) {
-                        //    $('#mySelect')
-                        //        .append($('<option>', { value : key })
-                        //            .text(value));
-                        //});
-
                     });
 
                 }

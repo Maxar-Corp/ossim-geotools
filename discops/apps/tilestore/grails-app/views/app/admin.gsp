@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
 
-    <title>RBT | Tiles Administrator</title>
+    <title>Tilestore Administrator</title>
 
     <asset:stylesheet src="app/admin.css"/>
 
@@ -35,7 +35,7 @@
                                                                                    style="width: 40px; height: 40px; padding-top: 10px; margin-left: 60px;"
                                                                                    src="app/rbt_symbol.png"
                                                                                    alt="RBT Logo"/></g:link>
-                <a class="navbar-brand">&nbsp;&nbsp;Tiles Administrator</a>
+                <a class="navbar-brand">&nbsp;&nbsp;Tilestore Administrator</a>
             </div>
 
             <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
