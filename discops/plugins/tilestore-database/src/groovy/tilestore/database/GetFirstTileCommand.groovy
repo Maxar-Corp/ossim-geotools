@@ -12,7 +12,10 @@ import org.ossim.common.CaseInsensitiveBind
 class GetFirstTileCommand implements CaseInsensitiveBind
 {
    String layer
+   String targetEpsg
+
    static constraints = {
       layer nullable: false
+      targetEpsg nullable:true
    }
 }
