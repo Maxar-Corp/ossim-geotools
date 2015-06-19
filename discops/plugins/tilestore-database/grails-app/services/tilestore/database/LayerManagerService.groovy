@@ -4,6 +4,7 @@ import geoscript.GeoScript
 import geoscript.geom.Bounds
 import geoscript.geom.Geometry
 import geoscript.geom.Polygon
+import geoscript.proj.Projection
 import grails.converters.JSON
 import grails.transaction.Transactional
 import groovy.xml.StreamingMarkupBuilder
@@ -426,9 +427,21 @@ class LayerManagerService implements InitializingBean
             if(tempResult.bounds)
             {
                Geometry g = GeoScript.wrap(tempResult.bounds)
-               Bounds b = g.bounds
-               tempResult.bounds = tempResult.bounds.toString()
 
+               Bounds b = g.bounds
+
+               println g.toString()
+               println tempResult.bounds.toString()
+
+               if(cmd.targetEpsg)
+               {
+                  b.proj = new Projection(layerInfo.epsgCode)
+                  g = b.proj.transform(g, new Projection(cmd.targetEpsg))
+                  b = g.bounds
+                  tempResult.bounds = g.toString()
+               }
+
+               tempResult.bounds = g.toString()
                tempResult.centerX =(b.minX+b.maxX)*0.5
                tempResult.centerY =(b.minY+b.maxY)*0.5
                tempResult.minx = b.minX
