@@ -9,9 +9,6 @@ import org.pentaho.di.trans.step.BaseStepMeta
 import org.pentaho.di.trans.step.StepDialogInterface
 import org.pentaho.di.ui.trans.step.BaseStepDialog
 
-/**
- * Created by gpotts on 6/22/15.
- */
 class DirWatchDialog extends BaseStepDialog implements
         StepDialogInterface
 {
@@ -27,7 +24,6 @@ class DirWatchDialog extends BaseStepDialog implements
    public String open()
    {
       Shell parent = getParent();
-      Display display = parent.getDisplay();
       swt = new KettleSwtBuilder()
       shell = swt.shell(parent) {
          migLayout(layoutConstraints:"wrap 1", columnConstraints: "[grow]")

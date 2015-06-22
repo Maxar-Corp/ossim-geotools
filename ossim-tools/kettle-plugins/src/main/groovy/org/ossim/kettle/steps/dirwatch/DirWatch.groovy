@@ -9,9 +9,6 @@ import org.pentaho.di.trans.step.StepInterface
 import org.pentaho.di.trans.step.StepMeta
 import org.pentaho.di.trans.step.StepMetaInterface
 
-/**
- * Created by gpotts on 6/22/15.
- */
 class DirWatch extends BaseStep implements StepInterface
 {
    private DirWatchMeta meta = null;

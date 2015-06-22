@@ -130,7 +130,7 @@ class DirWatchMeta extends BaseStepMeta implements StepMetaInterface
    }
    void check(List<CheckResultInterface> remarks, TransMeta transmeta, StepMeta stepinfo, RowMetaInterface prev, String[] inputList, String[] outputList, RowMetaInterface info)
    {
-      CheckResult cr;
+     // CheckResult cr;
 
       // WIll comment all these out.  These are some examples you can use for checking your meta and returning errors, warnings, ok, ... etc
       /*
