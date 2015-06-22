@@ -23,6 +23,7 @@ import org.pentaho.di.trans.step.StepMeta
 import org.pentaho.di.trans.step.StepMetaInterface
 import org.w3c.dom.Node
 
+/*
 @Step(
         // Change your ID here.  I will prefix it so not to clobber any other ID by accident
         id="OSSIMPluginTemplate",
@@ -32,6 +33,7 @@ import org.w3c.dom.Node
         image="org/ossim/kettle/steps/plugintemplate/icon.png",
         i18nPackageName="org.ossim.steps.kettle.dirwatch"
 )
+*/
 class PluginTemplateMeta extends BaseStepMeta implements StepMetaInterface
 {
   // Add attributes here for your step.  Here is an example string attribute
