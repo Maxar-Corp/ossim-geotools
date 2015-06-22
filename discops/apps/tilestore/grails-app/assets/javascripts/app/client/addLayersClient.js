@@ -146,6 +146,7 @@ AddLayerClient = (function ()
 
             $.each( addLayersClientParams.tilestoreLayers, function ( idx, tilestoreLayer )
             {
+                //console.log(tilestoreLayer.name);
                 var tileLayer = new ol.layer.Tile( {
                     opacity: 1.0,
                     source: new ol.source.TileWMS( {

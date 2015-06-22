@@ -62,6 +62,10 @@
                                     <select class="form-control selectpicker show-tick" id="tileLayerSelect">
                                     </select>
                                 </div>
+                                <button type="button" id="zoomFirstValidTile" class="btn btn-primary"
+                                        data-toggle="tooltip" data-placement="bottom"
+                                        title="Zoom to the first valid tile in the layer"><i
+                                        class="fa fa-crosshairs fa-lg"></i>&nbsp;&nbsp;First Tile</button>
                             </div>
                         </form>
                     </div>
@@ -88,37 +92,68 @@
         <tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
 
         <!-- Export to Geopackage Form -->
-        <div class="modal fade" id="exportGeopackageModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" Saria-hidden="true">
+        <div class="modal fade" id="exportProductModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" Saria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h3 class="modal-title"><i class="fa fa-cube fa-lg"></i>&nbsp;&nbsp;Export to Geopackage</h3>
+                        <h3 class="modal-title"><i class="fa fa-cube fa-lg"></i>&nbsp;&nbsp;Export Product</h3>
                     </div>
                     <div class="modal-body">
-                        <form class="form-inline">
+                        <form>
                             <div class="container">
                                 <div class="row col-sm-6 col-md-6">
-                                    <div>
-                                        <h4>Parameters</h4>
-                                            %{--<p><strong>Bounding Box:</strong><br><span id="aoiBbox"></span></p>--}%
-                                            <p><strong>Levels of Detail:</strong>&nbsp;<span id="aoiLod"></span></p>
-                                            <b><span id="minLodTxt">Min: 0</span>&nbsp;&nbsp;&nbsp;</b><input style="width: 180px" type="text" data-slider-min="0" data-slider-max="22" data-slider-step="1" data-slider-value="[0,22]" id="aoiLodSlider"><b>&nbsp;&nbsp;&nbsp;<span id="maxLodTxt">Max: 22</span></b>
-                                            <br>
-                                            <br>
-                                            <button type="button" id="submitAoi" class="btn btn-success">Submit</button>
-                                            <button type="button" id="cancelAoi" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                                        </div>
-                                        <div>
-                                            <h4>Submitted Job Information:</h4>
-                                            <p>Waiting on submission...</p>
-                                            <div id="aoiJobInfo" class="alert alert-success">
-                                                <p><strong>ID:</strong>&nbsp;<span id="aoiJobId"></span></p>
-                                            </div>
-                                        </div>
+                                    %{--<b><span id="minLodTxt">Min: 0</span>&nbsp;&nbsp;&nbsp;</b><input style="width: 180px" type="text" data-slider-min="0" data-slider-max="22" data-slider-step="1" data-slider-value="[0,22]" id="aoiLodSlider"><b>&nbsp;&nbsp;&nbsp;<span id="maxLodTxt">Max: 22</span></b>--}%
+                                    <div class="form-group" id="productForm">
+                                        <label for="productName">File Name&nbsp;</label>
+                                        <input id="productName" type="text"
+                                               %{--pattern="^[A-Za-z](?:_?[A-Za-z0-9]+)*$"--}%
+                                               maxlength="45"
+                                               class="form-control" required>
+                                        %{--<span class="help-block"><small><em>Start with alphabetic, up to 45--}%
+                                        %{--letters, numbers and underscores (case insensitive).  No spaces.</em></small></span>--}%
+                                        %{--<span class="help-block with-errors"></span>--}%
+                                        <label for="minTileLevel">Product Type</label>
+                                        <select id="minTileLevel" class="form-control selectpicker show-tick"
+                                                maxOptions="10" data-live-search="true" disabled>
+                                            <option value="gpkg">Geopackage</option>
+                                        </select>
+                                        <br>
+                                        <br>
+                                        <p><strong>Current tile layer levels of detail:</strong>
+                                            &nbsp;<span
+                                                id="aoiLod"></span></p>
+                                        <label for="productMinTileLevel">Minimum Product Level</label>
+                                        <select id="productMinTileLevel" class="form-control selectpicker show-tick"
+                                                maxOptions="10" data-live-search="true">
+                                        </select>
+                                        <label for="productMaxTileLevel">Maximum Product Level</label>
+                                        <select id="productMaxTileLevel" class="form-control selectpicker show-tick"
+                                                maxOptions="10"
+                                                data-live-search="true">
+                                        </select><br><br>
+                                        <label for="productEpsgCode">Product output projection</label>
+                                        <select id="productEpsgCode" class="form-control selectpicker show-tick"
+                                                disabled>
+                                            <option value="EPSG:3857">EPSG: 3857</option>
+                                            <option value="EPSG:4326">EPSG: 4326</option>
+                                        </select>&nbsp;&nbsp;
+
+                                        <br>
+                                        <br>
+                                        <button type="button" id="submitAoi" class="btn btn-success">Submit</button>
+                                        <button type="button" id="cancelAoi" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                    </div>
+                                    <br>
+                                    <div id="aoiJobInfo" class="alert alert-success">
+                                        <h4>Submitted Job Information:</h4>
+                                        <p><strong>ID:</strong>&nbsp;<span id="aoiJobId"></span></p>
+                                        <p>Download product:&nbsp;&nbsp;
+                                            <button id="downloadProduct" type="button" href="javascript:void(0)"
+                                                     class="btn btn-primary fileDownloadPromise disabled">Click
+                                        Here</button></p>
                                     </div>
                                 </div>
-                            </div>
                         </form>
                     </div><!-- /.modal-body -->
                 </div><!-- /.modal-content -->
@@ -131,7 +166,7 @@
             var initParams = ${raw( initParams.toString() )};
             AddLayerClient.initialize( initParams );
             AppClient.initialize( initParams );
-            DragBoxClient.initialize( initParams );
+            CreateProductClient.initialize( initParams );
             LayerManagerClient.initialize( initParams );
             ZoomToClient.initialize( initParams );
     </g:javascript>

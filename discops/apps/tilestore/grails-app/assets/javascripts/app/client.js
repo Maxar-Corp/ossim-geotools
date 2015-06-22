@@ -13,11 +13,12 @@
 //= require client/bootstrap-slider.js
 //= require client/geopoint.js
 //= require client/toastr.js
+//= require common/jquery.fileDownload.js
 
 /* App specific libs */
 //= require client/addLayersClient.js
 //= require client/appClient.js
-//= require client/dragboxClient.js
+//= require client/createProductClient.js
 //= require client/layerManagerClient.js
 //= require common/coordinate.js
 //= require common/zoomTo.js
