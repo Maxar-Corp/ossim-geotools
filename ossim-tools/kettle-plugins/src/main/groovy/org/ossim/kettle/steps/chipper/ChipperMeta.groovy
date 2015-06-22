@@ -36,7 +36,7 @@ import org.pentaho.di.core.row.value.ValueMetaBase
 
 import org.ossim.core.SynchOssimInit
 @Step(
-		  id="Chipper",
+		  id="OSSIMChipper",
 		  name="name",
 		  description="description",
 		  categoryDescription="categoryDescription",

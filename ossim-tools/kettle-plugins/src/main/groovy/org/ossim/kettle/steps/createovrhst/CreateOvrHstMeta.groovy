@@ -29,14 +29,17 @@ import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.trans.step.StepMetaInterface;
 import org.w3c.dom.Node;
 
+// will take this out of the plugin list temporarily
+/*
 @Step(
-		id="CreateOvrHst",
+		id="OSSIMCreateOvrHst",
 		name="name",
 		description="description",
 		categoryDescription="categoryDescription", 
 		image="org/ossim/kettle/steps/createovrhst/icon.png",
 		i18nPackageName="org.omar.kettle.steps.createovrhst"
-) 
+)
+*/
 public class CreateOvrHstMeta extends BaseStepMeta implements StepMetaInterface {
 
 	public enum Tag {

@@ -24,7 +24,7 @@ import org.w3c.dom.Node
  * Created by gpotts on 5/18/15.
  */
 @Step(
-        id="TileStoreReader",
+        id="OSSIMTileStoreReader",
         name="reader.name",
         description="reader.description",
         categoryDescription="categoryDescription",

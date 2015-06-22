@@ -36,7 +36,7 @@ import org.ossim.core.SynchOssimInit
 import geoscript.proj.Projection
 import org.ossim.core.RabbitType
 @Step(
-		id="RabbitMQOutput",
+		id="OSSIMRabbitMQOutput",
 		name="RabbitMQOutput.name",
 		description="RabbitMQOutput.description",
 		categoryDescription="RabbitMQOutput.categoryDescription", 

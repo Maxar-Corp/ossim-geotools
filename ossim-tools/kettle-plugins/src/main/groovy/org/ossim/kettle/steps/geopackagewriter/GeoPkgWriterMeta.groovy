@@ -28,7 +28,7 @@ import org.w3c.dom.Node
  * Created by gpotts on 5/27/15.
  */
 @Step(
-        id="GeoPkgWriter",
+        id="OSSIMGeoPkgWriter",
         name="GeoPkgWriter.name",
         description="GeoPkgWriter.description",
         categoryDescription="categoryDescription",

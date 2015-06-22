@@ -34,7 +34,7 @@ import org.w3c.dom.Node;
 import org.ossim.kettle.types.OssimValueMetaBase;
 import org.ossim.core.SynchOssimInit
 @Step(
-		id="QuadTileWriter",
+		id="OSSIMQuadTileWriter",
 		name="name",
 		description="description",
 		categoryDescription="categoryDescription", 

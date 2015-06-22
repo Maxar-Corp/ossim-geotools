@@ -30,7 +30,7 @@ import org.w3c.dom.Node
  * Created by gpotts on 5/14/15.
  */
 @Step(
-        id="TileStoreIterator",
+        id="OSSIMTileStoreIterator",
         name="iterator.name",
         description="iterator.description",
         categoryDescription="categoryDescription",
