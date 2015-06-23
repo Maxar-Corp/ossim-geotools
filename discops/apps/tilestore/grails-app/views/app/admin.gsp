@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
 
-    <title>RBT | Tiles Administrator</title>
+    <title>Tilestore Administrator</title>
 
     <asset:stylesheet src="app/admin.css"/>
 
@@ -35,7 +35,7 @@
                                                                                    style="width: 40px; height: 40px; padding-top: 10px; margin-left: 60px;"
                                                                                    src="app/rbt_symbol.png"
                                                                                    alt="RBT Logo"/></g:link>
-                <a class="navbar-brand">&nbsp;&nbsp;Tiles Administrator</a>
+                <a class="navbar-brand">&nbsp;&nbsp;Tilestore Administrator</a>
             </div>
 
             <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
@@ -44,7 +44,8 @@
                         <div class="form-group">
                             <div class="input-group">
                                 <div class="input-group-btn">
-                                    <select  class="form-control selectpicker" data-style="btn-primary" id="coordSelect" >
+                                    <select  class="form-control selectpicker show-tick" data-style="btn-primary"
+                                             id="coordSelect" >
                                         <option data-icon="glyphicon-map-marker" value="dd">DD&nbsp;&nbsp;&nbsp;</option>
                                         <option data-icon="glyphicon-time" value="dms">DMS&nbsp;&nbsp;</option>
                                         <option data-icon="glyphicon-th-large" value="mgrs">MGRS</option>
@@ -303,13 +304,13 @@
                                 <select id="maxTileLevel" class="form-control selectpicker show-tick" maxOptions="10"
                                         data-live-search="true">
                                 </select><br><br>
-                                <label for="epsg">Projection</label>
-                                <select id="epsgCode" class="form-control selectpicker" id="epsg">
+                                <label for="epsgCode">Projection</label>
+                                <select id="epsgCode" class="form-control selectpicker show-tick">
                                     <option value="EPSG:3857">EPSG: 3857</option>
                                     <option value="EPSG:4326">EPSG: 4326</option>
                                 </select>&nbsp;&nbsp;
                                 <label for="tileSize">Tile Size</label>
-                                <select class="form-control selectpicker" id="tileSize" disabled>
+                                <select class="form-control selectpicker show-tick" id="tileSize" disabled>
                                     <option value="256x256">256 x 256</option>
                                     <option value="512x512">512 x 512</option>
                                 </select><br><br>
@@ -835,9 +836,9 @@
                 <strong>Mission: </strong><span>{{formatString properties.mission_id}}</span>
                 <hr>
                 &nbsp;&nbsp;
-                <a href="#"><i id="viewMetadata" class="fa fa-ellipsis-h fa-lg" onclick="alert('viewing metadata');"
-                               data-toggle="tooltip" data-placement="bottom"
-                   title="View image metadata"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                %{--<a href="#"><i id="viewMetadata" class="fa fa-ellipsis-h fa-lg" onclick="alert('viewing metadata');"--}%
+                               %{--data-toggle="tooltip" data-placement="bottom"--}%
+                   %{--title="View image metadata"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--}%
                 <a href="${grailsApplication.config.omar.url}/mapView/imageSpace?layers={{properties.id}}"
                    target="_blank"><i id="viewInOmar" class="fa fa-globe fa-lg" data-toggle="tooltip" data-placement="bottom"
                                       title="View image in OMAR"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

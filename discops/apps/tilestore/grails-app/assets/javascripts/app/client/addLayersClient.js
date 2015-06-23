@@ -146,6 +146,7 @@ AddLayerClient = (function ()
 
             $.each( addLayersClientParams.tilestoreLayers, function ( idx, tilestoreLayer )
             {
+                //console.log(tilestoreLayer.name);
                 var tileLayer = new ol.layer.Tile( {
                     opacity: 1.0,
                     source: new ol.source.TileWMS( {
@@ -164,20 +165,20 @@ AddLayerClient = (function ()
                 layersArray.push( tileLayer ); //highres_us
             } );
 
-            $.each( addLayersClientParams.overlayLayers, function ( idx, overlayLayer )
-            {
-                var osmOverlay = new ol.layer.Tile( {
-                    opacity: 1.0,
-                    //visible: false,
-                    source: new ol.source.TileWMS( {
-                        url: overlayLayer.url,
-                        params: {'LAYERS': overlayLayer.name, 'TILED': true}
-                    } ),
-                    name: overlayLayer.title
-                } );
-                layersArray.push( osmOverlay );
-
-            } );
+            //$.each( addLayersClientParams.overlayLayers, function ( idx, overlayLayer )
+            //{
+            //    var osmOverlay = new ol.layer.Tile( {
+            //        opacity: 1.0,
+            //        //visible: false,
+            //        source: new ol.source.TileWMS( {
+            //            url: overlayLayer.url,
+            //            params: {'LAYERS': overlayLayer.name, 'TILED': true}
+            //        } ),
+            //        name: overlayLayer.title
+            //    } );
+            //    //layersArray.push( osmOverlay );
+            //
+            //} );
 
             if ( addLayersClientParams.wmtsTileGrid )
             {                
