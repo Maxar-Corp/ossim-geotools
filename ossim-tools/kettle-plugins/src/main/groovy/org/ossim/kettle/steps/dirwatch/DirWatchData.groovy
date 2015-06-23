@@ -10,6 +10,7 @@ class DirWatchData extends BaseStepData implements StepDataInterface
 {
    public RowMetaInterface outputRowMeta;
 
+
    public DirWatchData()
    {
       super();

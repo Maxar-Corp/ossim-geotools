@@ -21,6 +21,7 @@ import org.pentaho.di.trans.step.StepDataInterface
 import org.pentaho.di.trans.step.StepInterface
 import org.pentaho.di.trans.step.StepMeta
 import org.pentaho.di.trans.step.StepMetaInterface
+
 import org.w3c.dom.Node
 
 @Step(
@@ -35,8 +36,17 @@ import org.w3c.dom.Node
 class DirWatchMeta extends BaseStepMeta implements StepMetaInterface
 {
   // Add attributes here for your step.  Here is an example string attribute
+   Boolean fileInputFromField
+   String  fieldFilename
+   String  fieldWildcard
+   String  fieldWildcardExclude
+   String  fieldRecurseSubfolders
 
-   String exampleTemplateFieldName
+   // This variable is used if fileInputFromField is false.
+   // This will allow variable substituion or fixed
+   //
+   def fileDefinitions = []
+
 
    DirWatchMeta()
    {
@@ -48,9 +58,23 @@ class DirWatchMeta extends BaseStepMeta implements StepMetaInterface
    {
       StringBuffer retval = new StringBuffer(400);
 
-      retval.append("        ").append(XMLHandler.addTagValue("exampleTemplateFieldName", exampleTemplateFieldName)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      retval.append("        ").append(XMLHandler.addTagValue("fileInputFromField", fileInputFromField.toString()));
+      retval.append("        ").append(XMLHandler.addTagValue("fieldFilename", fieldFilename));
+      retval.append("        ").append(XMLHandler.addTagValue("fieldWildcard", fieldWildcard));
+      retval.append("        ").append(XMLHandler.addTagValue("fieldWildcardExclude", fieldWildcardExclude));
+      retval.append("        ").append(XMLHandler.addTagValue("fieldRecurseSubfolders", fieldRecurseSubfolders));
       // Add XML save states here
 
+      retval.append("   <fileDefinitions>")
+      fileDefinitions.each{fileDefinition->
+         retval.append("      <fileDefinition>")
+         retval.append("         ").append(XMLHandler.addTagValue("filename", fileDefinition.filename?:""));
+         retval.append("         ").append(XMLHandler.addTagValue("wildcard", fileDefinition.wildcard?:""));
+         retval.append("         ").append(XMLHandler.addTagValue("wildcardExclude", fileDefinition.wildcardExclude));
+         retval.append("         ").append(XMLHandler.addTagValue("recurseSubfolders", fileDefinition.recurseSubfolders));
+         retval.append("      </fileDefinition>")
+      }
+      retval.append("   </fileDefinitions>")
       retval.toString()
    }
 
@@ -76,21 +100,44 @@ class DirWatchMeta extends BaseStepMeta implements StepMetaInterface
 
    private void readData(Node stepnode, List<DatabaseMeta> databases) throws KettleXMLException
    {
-      //  load any XMl configuration for this step
       try
       {
-         exampleTemplateFieldName  = XMLHandler.getTagValue(stepnode, "exampleTemplateFieldName");
+         String fileInputFromFieldString  = XMLHandler.getTagValue(stepnode, "fileInputFromField");
+         if(fileInputFromFieldString!=null) fileInputFromField = fileInputFromFieldString.toBoolean()
+         fieldFilename          = XMLHandler.getTagValue(stepnode, "fieldFilename")?:"";
+         fieldWildcard          = XMLHandler.getTagValue(stepnode, "fieldWildcard")?:"";
+         fieldWildcardExclude   = XMLHandler.getTagValue(stepnode, "fieldWildcardExclude")?:"";
+         fieldRecurseSubfolders = XMLHandler.getTagValue(stepnode, "fieldRecurseSubfolders")?:"";
+
+
+         def fileDefinitionsNode  = XMLHandler.getSubNode(stepnode, "fileDefinitions")
+         def fileDefinitionList   = XMLHandler.getNodes(fileDefinitionsNode,     "fileDefinition")
+
+         fileDefinitionList.each{fileDefinition->
+            fileDefinitions << [
+                    filename:XMLHandler.getTagValue(fileDefinition, "filename")?:"",
+                    wildcard:XMLHandler.getTagValue(fileDefinition, "wildcard")?:"",
+                    wildcardExclude:XMLHandler.getTagValue(fileDefinition, "wildcardExclude")?:"",
+                    recurseSubfolders:XMLHandler.getTagValue(fileDefinition, "recurseSubfolders")?:""
+                    ]
+         }
       }
       catch (e)
       {
          throw new KettleXMLException(Messages.getString("DirWatchMeta.Exception.UnableToReadStepInfo"), e);
-         //$NON-NLS-1$
 
       }
    }
 
    void setDefault()
    {
+      fileInputFromField     = true
+      fieldFilename          = ""
+      fieldWildcard          = ""
+      fieldWildcardExclude   = ""
+      fieldRecurseSubfolders = ""
+
+      fileDefinitions = []
    }
 
    void readRep(Repository rep, ObjectId id_step, List<DatabaseMeta> databases, Map<String, Counter> counters) throws KettleException
@@ -98,12 +145,28 @@ class DirWatchMeta extends BaseStepMeta implements StepMetaInterface
       this.setDefault();
       try
       {
-         // Example reading from a string.
-         //
-         // do checks here on any fields and format them the way you want. Please see interface for the Repository
-         // to read other things like Imntegers, ... etc  rep.getStepAttributeInteger, rep.getStepAttributeBoolean
-         //
-         exampleTemplateFieldName = rep.getStepAttributeString(id_step, "exampleTemplateFieldName");
+         def nFilenames        = rep.countNrStepAttributes(id_step, "filename");
+         def nWildcards        = rep.countNrStepAttributes(id_step, "wildcard");
+         def nWildcardExcludes = rep.countNrStepAttributes(id_step, "wildcardExclude");
+         def nRecurseSubfolders = rep.countNrStepAttributes(id_step, "nRecurseSubfolders");
+
+         if(nFilenames)
+         {
+            (0..<nFilenames).each { i ->
+               fileDefinitions << [
+                  filename: rep.getStepAttributeString(id_step, i, "filename") ?: "",
+                  wildcard: rep.getStepAttributeString(id_step, i, "wildcard") ?: "",
+                  wildcardExclude: rep.getStepAttributeString(id_step, i, "wildcardExclude") ?: "",
+                  recurseSubfolders: rep.getStepAttributeString(id_step, i, "recurseSubfolders") ?: ""
+               ]
+            }
+         }
+
+         fileInputFromField     = rep.getStepAttributeBoolean(id_step, "fileInputFromField");
+         fieldFilename          = rep.getStepAttributeString(id_step, "fieldFilename");
+         fieldWildcard          = rep.getStepAttributeString(id_step, "fieldWildcard");
+         fieldWildcardExclude   = rep.getStepAttributeString(id_step, "fieldWildcardExclude");
+         fieldRecurseSubfolders = rep.getStepAttributeString(id_step, "fieldRecurseSubfolders");
 
       }
       catch (e)
@@ -115,13 +178,27 @@ class DirWatchMeta extends BaseStepMeta implements StepMetaInterface
    {
       try
       {
-         /*
-         Example for saving an attribute
-          */
          rep.saveStepAttribute(id_transformation,
-                 id_step, "exampleTemplateFieldName",
-                 exampleTemplateFieldName)
-
+                 id_step, "fileInputFromField",
+                 host?:"")
+         rep.saveStepAttribute(id_transformation,
+                 id_step, "fieldFilename",
+                 host?:"")
+         rep.saveStepAttribute(id_transformation,
+                 id_step, "fieldWildcard",
+                 host?:"")
+         rep.saveStepAttribute(id_transformation,
+                 id_step, "fieldWildcardExclude",
+                 host?:"")
+         rep.saveStepAttribute(id_transformation,
+                 id_step, "fieldRecurseSubfolders",
+                 host?:"")
+         fileDefinitions.eachWithIndex{fileDefinition, i->
+            rep.saveStepAttribute(id_transformation, id_step, i, "filename",    fileDefinition.filename?:"");
+            rep.saveStepAttribute(id_transformation, id_step, i, "wildcard", fileDefinition.wildcard?:"");
+            rep.saveStepAttribute(id_transformation, id_step, i, "wildcardExclude", fileDefinition.wildcardExclude?:"");
+            rep.saveStepAttribute(id_transformation, id_step, i, "fieldRecurseSubfolders", fileDefinition.fieldRecurseSubfolders?:"");
+         }
       }
       catch(e)
       {
@@ -158,16 +235,6 @@ class DirWatchMeta extends BaseStepMeta implements StepMetaInterface
       }
       */
    }
-
-   // If your GUI to edit your step's meta is outside the same package path or has a difference name than
-   // DirWatchDialog you must sepcify here.
-
-   /*
-   @Override
-   String getDialogClassName() {
-      return CreateOvrHstDialog.class.name;
-   }
-   */
 
    StepInterface getStep(StepMeta stepMeta, StepDataInterface stepDataInterface, int cnr, TransMeta transMeta, Trans disp)
    {

@@ -9,6 +9,11 @@ import org.pentaho.di.trans.step.StepInterface
 import org.pentaho.di.trans.step.StepMeta
 import org.pentaho.di.trans.step.StepMetaInterface
 
+import java.sql.Connection
+import java.sql.DriverManager
+import java.sql.ResultSet
+import java.sql.Statement
+
 class DirWatch extends BaseStep implements StepInterface
 {
    private DirWatchMeta meta = null;
@@ -29,6 +34,27 @@ class DirWatch extends BaseStep implements StepInterface
 
       if (first)
       {
+
+         /*
+         Class.forName("org.h2.Driver");
+         Connection conn = DriverManager.getConnection("jdbc:h2:~/DIR_WATCH_DB");
+         Statement stat = conn.createStatement();
+         // this line would initialize the database
+         // from the SQL script file 'init.sql'
+         // stat.execute("runscript from 'init.sql'");
+
+         stat.execute("create table IF NOT EXISTS watch(id int primary key, name TEXT, last_modified TIMESTAMP)");
+         stat.execute("MERGE INTO watch values(1, 'Hello','2015-10-10 12:34:45.1234')");
+         ResultSet rs;
+         rs = stat.executeQuery("select * from watch");
+         while (rs.next()) {
+            println "Name: ${rs.getString("name")}, Last modified = ${rs.getTimestamp("last_modified")}"
+
+         }
+         stat.close();
+         conn.close();
+           */
+
          first=false
 
          data.outputRowMeta = getInputRowMeta().clone()
