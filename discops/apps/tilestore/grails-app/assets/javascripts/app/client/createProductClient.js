@@ -226,6 +226,7 @@ var CreateProductClient = (function () {
 
                         $aoiJobId.html(data.jobId);
                         var jobId = data.jobId;
+                        //jobData = data;
 
                         function checkJobStatus(jobId) {
                             console.log('checkJobStatus: ' + jobId);
@@ -236,14 +237,15 @@ var CreateProductClient = (function () {
                                 success: function (data) {
 
                                     console.log(data);
-                                    console.log(data.rows[0].status.name);
+                                    console.log(data.rows[0].status);
 
                                     //TODO: If not not running then, click here for download, or job status
                                     // is unavailable for download
 
                                     // Product build 'Finished'
-                                    if (data.rows[0].jobId === jobId && data.rows[0].status.name === 'FINISHED'){
+                                    if (data.rows[0].jobId === jobId && data.rows[0].status === 'FINISHED'){
 
+                                        console.log('Yep, the job is done baby!!!');
                                         clearInterval(checkForProduct);
                                         $('#prodcutProgress').hide();
                                         $aoiJobInfo.removeClass('alert-warning').addClass('alert-success');
@@ -251,32 +253,31 @@ var CreateProductClient = (function () {
 
                                         $downloadProduct.show();
                                         $(document).on("click", "button.fileDownload", function(){
-                                            console.log('fileDownload: ' + jobId);
+                                            console.log('right before filedownload: ' + jobId);
                                             $.fileDownload("/tilestore/job/download?jobId=" + jobId)
-                                                .done(function() {alert('success!');})
+                                                //.done(function() {alert('success!');})
                                                 .fail(function(){
                                                     toastr.error('Product failed to' +
-                                                    ' download', 'Product download Error');
+                                                        ' download', 'Product download Error');
                                                 });
-                                                $exportProductModal.modal('hide');
-                                                resetProductForm();
-
+                                            $exportProductModal.modal('hide');
+                                            resetProductForm();
                                         });
 
                                     }
                                     // Product build 'READY'
-                                    else if (data.rows[0].jobId === jobId && data.rows[0].status.name === 'READY'){
+                                    else if (data.rows[0].jobId === jobId && data.rows[0].status === 'READY'){
                                         $('#productStatus').html('<i class="fa fa-cog fa-spin' +
                                             ' fa-2x"></i>&nbsp;&nbsp;Product added to build queue.');
                                     }
                                     // Product build 'RUNNING'
-                                    else if (data.rows[0].jobId === jobId && data.rows[0].status.name === 'RUNNING'){
+                                    else if (data.rows[0].jobId === jobId && data.rows[0].status === 'RUNNING'){
                                         $aoiJobInfo.removeClass('alert-info').addClass('alert-warning');
                                         $('#productStatus').html('<i class="fa fa-cog fa-spin' +
                                             ' fa-2x"></i>&nbsp;&nbsp;Product is being built. Please wait...');
                                     }
                                     // Product build 'FAILED'
-                                    else if (data.rows[0].jobId === jobId && data.rows[0].status.name === 'FAILED'){
+                                    else if (data.rows[0].jobId === jobId && data.rows[0].status === 'FAILED'){
                                         clearInterval(checkForProduct);
                                         toastr.error('Product build failed', 'Error');
                                     }
@@ -288,11 +289,11 @@ var CreateProductClient = (function () {
                             });
                         };
 
-                        checkForProduct = setInterval(
+
+                        checkForProduct =  setInterval(
                             function(){
-                                console.log(jobId);
                                 checkJobStatus(jobId);
-                        }, 1000);
+                            }, 500);
 
                     },
                     error: function (jqXHR, exception) {
