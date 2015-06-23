@@ -38,7 +38,7 @@ import org.w3c.dom.Node
  * Created by gpotts on 3/19/15.
  */
 @Step(
-        id="TileStoreWriter",
+        id="OSSIMTileStoreWriter",
         name="name",
         description="description",
         categoryDescription="categoryDescription",

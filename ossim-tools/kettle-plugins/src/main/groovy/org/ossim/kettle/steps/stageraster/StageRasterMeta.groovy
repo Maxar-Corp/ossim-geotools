@@ -35,7 +35,7 @@ import org.ossim.core.SynchOssimInit
 
 
 @Step(
-		id="StageRaster",
+		id="OSSIMStageRaster",
 		name="name",
 		description="description",
 		categoryDescription="categoryDescription", 

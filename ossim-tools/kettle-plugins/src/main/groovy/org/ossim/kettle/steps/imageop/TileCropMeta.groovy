@@ -25,7 +25,7 @@ import org.w3c.dom.Node
  * Created by gpotts on 6/3/15.
  */
 @Step(
-        id="TileCrop",
+        id="OSSIMTileCrop",
         name="TileCrop.name",
         description="TileCrop.description",
         categoryDescription="categoryDescription",
