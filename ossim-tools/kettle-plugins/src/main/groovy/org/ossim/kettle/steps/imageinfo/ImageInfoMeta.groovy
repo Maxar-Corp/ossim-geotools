@@ -35,7 +35,7 @@ import org.ossim.kettle.types.OssimValueMetaBase;
 import org.ossim.core.SynchOssimInit
 
 @Step(
-		id="ImageInfo",
+		id="OSSIMImageInfo",
 		name="name",
 		description="description",
 		categoryDescription="categoryDescription", 

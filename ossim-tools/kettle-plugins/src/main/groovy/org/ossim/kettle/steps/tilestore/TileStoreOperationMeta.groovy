@@ -29,7 +29,7 @@ import org.w3c.dom.Node
  */
 
 /*@Step(
-        id="TileStoreOperation",
+        id="OSSIMTileStoreOperation",
         name="operation.name",
         description="operation.description",
         categoryDescription="categoryDescription",
