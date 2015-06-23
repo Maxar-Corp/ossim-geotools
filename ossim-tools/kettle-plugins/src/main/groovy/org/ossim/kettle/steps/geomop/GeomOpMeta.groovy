@@ -36,7 +36,7 @@ import org.ossim.kettle.types.OssimValueMetaBase;
 import org.ossim.kettle.steps.geomop.GeomOpData.GeomOpType
 
 @Step(
-		  id="GeomOperation",
+		  id="OSSIMGeomOperation",
 		  name="name",
 		  description="description",
 		  categoryDescription="categoryDescription",

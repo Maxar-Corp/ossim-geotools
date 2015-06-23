@@ -38,7 +38,7 @@ import org.ossim.core.RabbitType
 import org.ossim.kettle.steps.jobmessage.ProductMessageInputData.InputType
 
 @Step(
-        id="ProductMessageInput",
+        id="OSSIMProductMessageInput",
         name="JobMessageInput.name",
         description="JobMessageInput.description",
         categoryDescription="JobMessageInput.categoryDescription",

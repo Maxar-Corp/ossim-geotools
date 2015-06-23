@@ -41,7 +41,7 @@ import org.ossim.core.SynchOssimInit
 import geoscript.proj.Projection
 
 @Step(
-		id="BasicTiling",
+		id="OSSIMBasicTiling",
 		name="name",
 		description="description",
 		categoryDescription="categoryDescription", 
