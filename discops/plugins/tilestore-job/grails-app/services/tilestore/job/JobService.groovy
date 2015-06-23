@@ -339,7 +339,7 @@ class JobService
             sqlRestriction "(id in (${ids.collect{"${it}" }.join(',')}))"
          }
          rows = tempRows.collect { row ->
-            columnNames.inject( [:] ) { a, b -> a[b] = row[b]; a }
+            columnNames.inject( [:] ) { a, b -> a[b] = row[b].toString(); a }
          }
 
       }
@@ -350,7 +350,7 @@ class JobService
             sqlRestriction "(job_id in (${jobIds.collect{"'${it}'" }.join(',')}))"
          }
          rows = tempRows.collect { row ->
-            columnNames.inject( [:] ) { a, b -> a[b] = row[b]; a }
+            columnNames.inject( [:] ) { a, b -> a[b] = row[b].toString(); a }
          }
       }
       else if(cmd.ids != null)
@@ -361,7 +361,7 @@ class JobService
             sqlRestriction "(id in (${ids.collect{"${it}" }.join(',')}))"
          }
          rows = tempRows.collect { row ->
-            columnNames.inject( [:] ) { a, b -> a[b] = row[b]; a }
+            columnNames.inject( [:] ) { a, b -> a[b] = row[b].toString(); a }
          }
 
       }
@@ -373,7 +373,7 @@ class JobService
             sqlRestriction "(job_id in (${jobIds.collect{"'${it}'" }.join(',')}))"
          }
          rows = tempRows.collect { row ->
-            columnNames.inject( [:] ) { a, b -> a[b] = row[b]; a }
+            columnNames.inject( [:] ) { a, b -> a[b] = row[b].toString(); a }
          }
       }
       result.data = [total: rows?.size()?:0, rows: rows?:[:]]
