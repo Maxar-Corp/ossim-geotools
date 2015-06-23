@@ -174,19 +174,19 @@ omar{
 }
 
 tilestore {
-   disableAccumulo = false
-   maxTileConnections = 50
-   wmtsTileGrid = false
-   referenceLayers = [
+  disableAccumulo = false
+  maxTileConnections = 50
+  wmtsTileGrid = false
+  referenceLayers = [
 //      [url: "http://localhost:8080/geoserver/wms", name: 'trident-spectre:trident-spectre', title: 'Reference Layer']
       [url: 'http://52.0.52.104/geoserver/ged/wms', name: 'osm-group', title: 'Reference Layer']
   ]
-   overlayLayers = [
-//      [url: "http://localhost:8080/geoserver/wms", name: 'topp:states', title: 'States'],
-//      [url: "http://localhost:8080/geoserver/wms", name: 'trident-spectre:ne_10m_populated_places', title: 'Place Names']
-[url: "http://52.0.52.104/geoserver/ged/wms", name: 'planet_osm_line', title: 'Streets'],
-[url: "http://52.0.52.104/geoserver/ged/wms", name: 'ne_10m_populated_places_all', title: 'Place Names']
-   ]
+//  overlayLayers = [
+////      [url: "http://localhost:8080/geoserver/wms", name: 'topp:states', title: 'States'],
+////      [url: "http://localhost:8080/geoserver/wms", name: 'trident-spectre:ne_10m_populated_places', title: 'Place Names']
+//      [url: "http://52.0.52.104/geoserver/ged/wms", name: 'planet_osm_line', title: 'Streets'],
+//      [url: "http://52.0.52.104/geoserver/ged/wms", name: 'ne_10m_populated_places_all', title: 'Place Names']
+//  ]
 }
 
 security {
