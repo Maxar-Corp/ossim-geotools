@@ -148,11 +148,15 @@
                                     <div id="aoiJobInfo" class="alert alert-success">
                                         <h4>Submitted Job Information:</h4>
                                         <p><strong>ID:</strong>&nbsp;<span id="aoiJobId"></span></p>
-                                        <p>Download product:&nbsp;&nbsp;
-                                            <button id="downloadProduct" type="button" href="javascript:void(0)"
-                                                     class="btn btn-primary fileDownloadPromise disabled">Click
-                                        Here</button></p>
                                     </div>
+                                    <div id="prodcutProgress" style="display: none"><i
+                                            class="fa fa-cog fa-spin fa-3x"></i>
+                                        &nbsp;&nbsp;Generating product.  Please wait...</div>
+                                    <p id="downloadProduct" style="display: none">Product ready for
+                                    download:&nbsp;&nbsp;
+                                        <button id="downloadProductButton" type="button" href="javascript:void(0)"
+                                                class="btn btn-primary fileDownload">Click
+                                        Here</button></p>
                                 </div>
                         </form>
                     </div><!-- /.modal-body -->

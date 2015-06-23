@@ -17,8 +17,12 @@ var CreateProductClient = (function () {
     var $aoiLod = $('#aoiLod');
     var $prodcutEpsg = $('#prodcutEpsg');
 
+    var jobData;
+
     //var $cancelGpButton = $('#cancelGpButton');
     var $aoiJobInfo = $('#aoiJobInfo');
+
+    var $downloadProduct = $('#downloadProduct');
 
     var $aoiJobId = $('#aoiJobId');
     var $submitAoi = $('#submitAoi');
@@ -144,7 +148,7 @@ var CreateProductClient = (function () {
                         $productMinLevel.empty();
                         $productMaxLevel.empty();
 
-                        console.log('min: ' + min);
+                        //console.log('min: ' + min);
 
                         for (min; min <= max; min++) {
                             //console.log('min: ' + min);
@@ -190,10 +194,7 @@ var CreateProductClient = (function () {
 
             $submitAoi.on("click", function () {
 
-                //console.log('Output min: ' + parseInt($("#aoiLodSlider").data('slider').value[0]));
-                //console.log('Output max: ' + parseInt($("#aoiLodSlider").data('slider').value[1]));
-
-                //productTest.aoi = outputWkt;
+                $('#prodcutProgress').show();
 
                 var product = {
                     type:"GeopackageExport",
@@ -227,21 +228,17 @@ var CreateProductClient = (function () {
                         $aoiJobInfo.show();
                         $productForm.hide();
 
-                        //TODO: Need to reset the form and clear it out
-
                         $aoiJobId.html(data.jobId);
                         var jobId = data.jobId;
+                        jobData = data;
 
                         function checkJobStatus(jobId) {
                             //alert("/tilestore/job/show?jobId=" + jobId);
                             $.ajax({
                                 url: "/tilestore/job/show?jobId=" + jobId,
                                 type: 'GET',
-                                //contentType: 'application/json',
-                                //data: JSON.stringify(product),
                                 dataType: 'JSON',
                                 success: function (data) {
-                                    console.log(data);
                                 },
                                 error: function(){
                                     alert('error!');
@@ -249,23 +246,30 @@ var CreateProductClient = (function () {
                             });
                         };
 
-
-                        setTimeout(
+                        var checkForProduct;
+                        checkForProduct =  setInterval(
                             function(){
                                 checkJobStatus(jobId);
+                                console.log(jobData);
+                                console.log(jobData.status);
+                                if (jobData.status === 'READY'){
+                                    clearInterval(checkForProduct);
+                                    $('#prodcutProgress').hide();
+                                    $downloadProduct.show();
+                                    $(document).on("click", "button.fileDownload", function(){
 
-                                //TODO: Enable download button
-                                $('button.fileDownloadPromise').removeClass('disabled');
+                                        $.fileDownload("/tilestore/job/download?jobId=" + jobId)
+                                            .done(function() {alert('success!');})
+                                            .fail(function(){
+                                                toastr.error('Product failed to' +
+                                                ' download', 'Product download Error');
+                                            });
+                                            $exportProductModal.modal('hide');
+                                            resetProductForm();
+                                    });
 
-                                $(document).on("click", "button.fileDownloadPromise", function(){
+                                }
 
-                                    $.fileDownload("/tilestore/job/download?jobId=" + jobId)
-                                        .done(function() {alert('success!');})
-                                        .fail(function(){
-                                            toastr.error('Product failed to' +
-                                            ' download', 'Product download Error');
-                                        });
-                                })
                         }, 5000);
 
                     },
@@ -334,6 +338,7 @@ var CreateProductClient = (function () {
                 $aoiJobId.html("");
                 $aoiJobInfo.hide();
                 $productForm.show();
+                $downloadProduct.hide();
 
                 $createGp.addClass('disabled');
 
