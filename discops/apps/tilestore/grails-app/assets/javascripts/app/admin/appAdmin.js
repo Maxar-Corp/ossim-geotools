@@ -68,9 +68,8 @@ var AppAdmin = (function () {
         //]),
         layers: AppManageLayersAdmin.layers,
         view: new ol.View({
-            zoom: 14,
-            //projection: 'EPSG:4326',
-            center: melbourneFlorida3857
+            zoom: 2,
+            center: ol.proj.transform([-21,33], 'EPSG:4326', 'EPSG:3857')
         }),
         target: 'mapOmar'
     });

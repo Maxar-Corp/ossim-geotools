@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
 
-    <title>Tilestore</title>
+    <title>Tilestore Home</title>
 
     <asset:stylesheet src="app/main.css"/>
 
@@ -33,12 +33,13 @@
         </p>
     </div>
     <div class="row">
-        <div class="page-header">
-            <h1>Tilestore</h1>
-            <em><h4 style="color:#337ab7">Web services for managing geospatial imagery within PostgreSQL and
-                Accumulo</h4></em>
-        </div>
+
+        <h1>Tilestore</h1>
+        <em><h4 style="color:#337ab7">Web services for managing geospatial imagery within PostgreSQL and
+            Accumulo</h4></em>
+
     </div>
+    <hr/>
     <div class="row text-center">
         <div class="col-md-1"></div>
         <sec:ifAllGranted roles="ROLE_LAYER_ADMIN">
@@ -72,7 +73,6 @@
             </div>
         </sec:ifAllGranted>
     </div>
-    <br>
     <div class="row text-center">
         <div class="col-md-3"></div>
         <div class="col-md-3 well">

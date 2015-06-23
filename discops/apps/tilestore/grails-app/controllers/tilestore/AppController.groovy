@@ -34,7 +34,11 @@ class AppController
             tilestoreWmsURL: grailsLinkGenerator.link( controller: 'wms', action: 'index', absolute: true ),
             referenceLayers: grailsApplication.config.tilestore.referenceLayers,
             overlayLayers: grailsApplication.config.tilestore.overlayLayers,
-            tilestoreLayers: tilestoreLayers
+            tilestoreLayers: tilestoreLayers,
+            layerManagerUrl:grailsLinkGenerator.link(controller: 'layerManager'),
+            jobUrl:grailsLinkGenerator.link(controller: 'job'),
+            getFirstValidTileUrl:grailsLinkGenerator.link(controller: 'layerManager', action: "getFirstValidTile"),
+
         ] as JSON
     ]
   }
