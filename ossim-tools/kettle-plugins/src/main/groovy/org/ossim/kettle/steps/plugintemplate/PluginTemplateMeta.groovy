@@ -93,6 +93,7 @@ class PluginTemplateMeta extends BaseStepMeta implements StepMetaInterface
 
    void setDefault()
    {
+      exampleTemplateFieldName = ""
    }
 
    void readRep(Repository rep, ObjectId id_step, List<DatabaseMeta> databases, Map<String, Counter> counters) throws KettleException
