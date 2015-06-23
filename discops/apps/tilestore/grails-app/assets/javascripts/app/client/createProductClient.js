@@ -17,7 +17,7 @@ var CreateProductClient = (function () {
     var $aoiLod = $('#aoiLod');
     var $prodcutEpsg = $('#prodcutEpsg');
 
-    var jobData;
+    var checkForProduct;
 
     //var $cancelGpButton = $('#cancelGpButton');
     var $aoiJobInfo = $('#aoiJobInfo');
@@ -130,20 +130,16 @@ var CreateProductClient = (function () {
                     dataType: 'json',
                     // TODO: Add $promise function for success
                     success: function (data) {
-                        console.log(data);
+                        //console.log(data);
                         $aoiLod.html(data.minLevel + ' to ' + data.maxLevel);
                         //$('#aoiBbox').html('minx: ' + data.minx + ', miny: ' + data.miny + ', maxx: ' + data.maxx + ', maxy: ' + data.maxy);
 
-                        //$productMinLevel.selectpicker('val', '0');
-                        //$productMinLevel.selectpicker('render');
-                        //$productMaxLevel.selectpicker('val', '22');
-                        //$productMaxLevel.selectpicker('render');
 
                         var min = data.minLevel;
                         var max = data.maxLevel;
 
-                        console.log(data.minLevel);
-                        console.log(data.maxLevel);
+                        //console.log(data.minLevel);
+                        //console.log(data.maxLevel);
 
                         $productMinLevel.empty();
                         $productMaxLevel.empty();
@@ -216,7 +212,7 @@ var CreateProductClient = (function () {
                 product.minLevel = null;
                 product.maxLevel = null
 
-                console.log(product);
+                //console.log(product);
 
                 $.ajax({
                     url: urlProductExport,
@@ -230,47 +226,73 @@ var CreateProductClient = (function () {
 
                         $aoiJobId.html(data.jobId);
                         var jobId = data.jobId;
-                        jobData = data;
+                        //jobData = data;
 
                         function checkJobStatus(jobId) {
-                            //alert("/tilestore/job/show?jobId=" + jobId);
                             $.ajax({
                                 url: "/tilestore/job/show?jobId=" + jobId,
                                 type: 'GET',
                                 dataType: 'JSON',
                                 success: function (data) {
+
+                                    console.log(data);
+                                    console.log(data.rows[0].status.name);
+
+                                    //TODO: If not not running then, click here for download, or job status
+                                    // is unavailable for download
+
+                                    // Product build 'Finished'
+                                    if (data.rows[0].jobId === jobId && data.rows[0].status.name === 'FINISHED'){
+
+                                        console.log('Yep, the job is done baby!!!');
+                                        clearInterval(checkForProduct);
+                                        $('#prodcutProgress').hide();
+                                        $aoiJobInfo.removeClass('alert-warning').addClass('alert-success');
+                                        $('#jobHeader').html('Product build complete!');
+
+                                        $downloadProduct.show();
+                                        $(document).on("click", "button.fileDownload", function(){
+
+                                            $.fileDownload("/tilestore/job/download?jobId=" + jobId)
+                                                //.done(function() {alert('success!');})
+                                                .fail(function(){
+                                                    toastr.error('Product failed to' +
+                                                    ' download', 'Product download Error');
+                                                });
+                                                $exportProductModal.modal('hide');
+                                                resetProductForm();
+                                        });
+
+                                    }
+                                    // Product build 'READY'
+                                    else if (data.rows[0].jobId === jobId && data.rows[0].status.name === 'READY'){
+                                        $('#productStatus').html('<i class="fa fa-cog fa-spin' +
+                                            ' fa-2x"></i>&nbsp;&nbsp;Product added to build queue.');
+                                    }
+                                    // Product build 'RUNNING'
+                                    else if (data.rows[0].jobId === jobId && data.rows[0].status.name === 'RUNNING'){
+                                        $aoiJobInfo.removeClass('alert-info').addClass('alert-warning');
+                                        $('#productStatus').html('<i class="fa fa-cog fa-spin' +
+                                            ' fa-2x"></i>&nbsp;&nbsp;Product is being built. Please wait...');
+                                    }
+                                    // Product build 'FAILED'
+                                    else if (data.rows[0].jobId === jobId && data.rows[0].status.name === 'FAILED'){
+                                        clearInterval(checkForProduct);
+                                        toastr.error('Product build failed', 'Error');
+                                    }
+
                                 },
                                 error: function(){
-                                    alert('error!');
+                                    toastr.error('Product build failed', 'Error');
                                 }
                             });
                         };
 
-                        var checkForProduct;
+
                         checkForProduct =  setInterval(
                             function(){
                                 checkJobStatus(jobId);
-                                console.log(jobData);
-                                console.log(jobData.status);
-                                if (jobData.status === 'READY'){
-                                    clearInterval(checkForProduct);
-                                    $('#prodcutProgress').hide();
-                                    $downloadProduct.show();
-                                    $(document).on("click", "button.fileDownload", function(){
-
-                                        $.fileDownload("/tilestore/job/download?jobId=" + jobId)
-                                            .done(function() {alert('success!');})
-                                            .fail(function(){
-                                                toastr.error('Product failed to' +
-                                                ' download', 'Product download Error');
-                                            });
-                                            $exportProductModal.modal('hide');
-                                            resetProductForm();
-                                    });
-
-                                }
-
-                        }, 5000);
+                        }, 500);
 
                     },
                     error: function (jqXHR, exception) {
@@ -322,15 +344,12 @@ var CreateProductClient = (function () {
 
             function resetProductForm(){
 
+                clearInterval(checkForProduct);
+
                 $productName.val('');;
 
                 $productType.selectpicker('val', 'EPSG:3857');
                 $productType.selectpicker('render');
-
-                //$productMinLevel.selectpicker('val', '0');
-                //$productMinLevel.selectpicker('render');
-                //$productMaxLevel.selectpicker('val', '22');
-                //$productMaxLevel.selectpicker('render');
 
                 $prodcutEpsg.selectpicker('val', 'EPSG:3857');
                 $prodcutEpsg.selectpicker('render');
@@ -340,10 +359,12 @@ var CreateProductClient = (function () {
                 $productForm.show();
                 $downloadProduct.hide();
 
+                $aoiJobInfo.addClass('alert-info').removeClass('alert-success');
+                $('#jobHeader').html('Submitted Job Information:');
+
                 $createGp.addClass('disabled');
 
                 console.log('reset fired!');
-
 
             }
 

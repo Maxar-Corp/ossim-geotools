@@ -150,7 +150,6 @@ class JobController {
    def show(GetJobCommand cmd)
    {
       def result = jobService.show(cmd)
-      println cmd
       response.status = result.status.value
 
       if(result.status != HttpStatus.OK)

@@ -145,18 +145,25 @@
                                         <button type="button" id="cancelAoi" class="btn btn-default" data-dismiss="modal">Cancel</button>
                                     </div>
                                     <br>
-                                    <div id="aoiJobInfo" class="alert alert-success">
-                                        <h4>Submitted Job Information:</h4>
+                                    <div id="aoiJobInfo" class="alert alert-info">
+                                        <h4 id="jobHeader">Submitted Job Information:</h4>
                                         <p><strong>ID:</strong>&nbsp;<span id="aoiJobId"></span></p>
                                     </div>
-                                    <div id="prodcutProgress" style="display: none"><i
-                                            class="fa fa-cog fa-spin fa-3x"></i>
-                                        &nbsp;&nbsp;Generating product.  Please wait...</div>
-                                    <p id="downloadProduct" style="display: none">Product ready for
+                                    <div id="prodcutProgress" style="display: none">
+                                        <div class="alert alert-info">Note: You can close this dialog if you do
+                                        not
+                                        wish
+                                        to wait
+                                        for the product to be created.  To obtain the product at a later time
+                                        visit the jobs page.</div>
+                                        <div id="productStatus"></div>
+
+                                    </div>
+                                    <p id="downloadProduct" style="display: none"><i
+                                            class="fa fa-check fa-2x"></i>&nbsp;&nbsp;Ready for
                                     download:&nbsp;&nbsp;
                                         <button id="downloadProductButton" type="button" href="javascript:void(0)"
-                                                class="btn btn-primary fileDownload">Click
-                                        Here</button></p>
+                                                class="btn btn-primary fileDownload">Download</button></p>
                                 </div>
                         </form>
                     </div><!-- /.modal-body -->
