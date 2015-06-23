@@ -226,9 +226,9 @@ var CreateProductClient = (function () {
 
                         $aoiJobId.html(data.jobId);
                         var jobId = data.jobId;
-                        //jobData = data;
 
                         function checkJobStatus(jobId) {
+                            console.log('checkJobStatus: ' + jobId);
                             $.ajax({
                                 url: "/tilestore/job/show?jobId=" + jobId,
                                 type: 'GET',
@@ -244,7 +244,6 @@ var CreateProductClient = (function () {
                                     // Product build 'Finished'
                                     if (data.rows[0].jobId === jobId && data.rows[0].status.name === 'FINISHED'){
 
-                                        console.log('Yep, the job is done baby!!!');
                                         clearInterval(checkForProduct);
                                         $('#prodcutProgress').hide();
                                         $aoiJobInfo.removeClass('alert-warning').addClass('alert-success');
@@ -252,15 +251,16 @@ var CreateProductClient = (function () {
 
                                         $downloadProduct.show();
                                         $(document).on("click", "button.fileDownload", function(){
-
+                                            console.log('fileDownload: ' + jobId);
                                             $.fileDownload("/tilestore/job/download?jobId=" + jobId)
-                                                //.done(function() {alert('success!');})
+                                                .done(function() {alert('success!');})
                                                 .fail(function(){
                                                     toastr.error('Product failed to' +
                                                     ' download', 'Product download Error');
                                                 });
                                                 $exportProductModal.modal('hide');
                                                 resetProductForm();
+
                                         });
 
                                     }
@@ -288,11 +288,11 @@ var CreateProductClient = (function () {
                             });
                         };
 
-
-                        checkForProduct =  setInterval(
+                        checkForProduct = setInterval(
                             function(){
+                                console.log(jobId);
                                 checkJobStatus(jobId);
-                        }, 500);
+                        }, 1000);
 
                     },
                     error: function (jqXHR, exception) {

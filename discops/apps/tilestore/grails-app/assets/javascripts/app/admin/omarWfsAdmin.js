@@ -156,6 +156,7 @@ var AppOmarWfsAdmin = (function () {
         //console.log(wfsCardsCount);
 
         // TODO: Add functionality to restrict the query to a spatial extent (via BBox)
+        alert(wfsCards);
         $.ajax({
             url: wfsCards,
             dataType: 'jsonp',
