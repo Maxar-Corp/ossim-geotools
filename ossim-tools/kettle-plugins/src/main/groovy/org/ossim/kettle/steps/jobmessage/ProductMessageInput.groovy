@@ -136,7 +136,7 @@ class ProductMessageInput extends BaseStep implements StepInterface
 		   // send status RUNNING message
 			try{
 				synchronized(currentMessageLock){
-					currentMessage = MessageFactory.getMessageInstance(message)//= new ChipperMessage()
+					currentMessage = new ChipperMessage()
 					//currentMessage//.fromJsonString(message)
 					currentMessageAborted = false
 				}
