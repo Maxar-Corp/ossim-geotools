@@ -91,7 +91,7 @@
 
         <tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
 
-        <!-- Export to Geopackage Form -->
+        <!-- Export to Product Form -->
         <div class="modal fade" id="exportProductModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" Saria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -100,10 +100,10 @@
                         <h3 class="modal-title"><i class="fa fa-cube fa-lg"></i>&nbsp;&nbsp;Export Product</h3>
                     </div>
                     <div class="modal-body">
-                        <form data-toggle="validator">
+                        <form id="productForm" data-toggle="validator">
                             <div class="container">
                                 <div class="row col-sm-6 col-md-6">
-                                    <div id="productForm">
+                                    <div id="productFormElements">
                                         <div class="form-group" >
                                             <label for="productName">File Name&nbsp;</label>
                                             <input id="productName" type="text"
@@ -178,12 +178,17 @@
     <asset:javascript src="app/client.js"/>
 
     <g:javascript>
+
             var initParams = ${raw( initParams.toString() )};
             AddLayerClient.initialize( initParams );
             AppClient.initialize( initParams );
             CreateProductClient.initialize( initParams );
             LayerManagerClient.initialize( initParams );
             ZoomToClient.initialize( initParams );
+
+            //Use polyfill to utilize HTML5 form validation in IE9
+            H5F.setup(document.getElementById("productForm"));
+
     </g:javascript>
 
 </body>
