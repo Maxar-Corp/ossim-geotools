@@ -100,52 +100,55 @@
                         <h3 class="modal-title"><i class="fa fa-cube fa-lg"></i>&nbsp;&nbsp;Export Product</h3>
                     </div>
                     <div class="modal-body">
-                        <form>
+                        <form data-toggle="validator">
                             <div class="container">
                                 <div class="row col-sm-6 col-md-6">
-                                    %{--<b><span id="minLodTxt">Min: 0</span>&nbsp;&nbsp;&nbsp;</b><input style="width: 180px" type="text" data-slider-min="0" data-slider-max="22" data-slider-step="1" data-slider-value="[0,22]" id="aoiLodSlider"><b>&nbsp;&nbsp;&nbsp;<span id="maxLodTxt">Max: 22</span></b>--}%
-                                    <div class="form-group" id="productForm">
-                                        <label for="productName">File Name&nbsp;</label>
-                                        <input id="productName" type="text"
-                                               pattern="^[A-Za-z](?:_?[A-Za-z0-9]+)*$"
-                                               maxlength="45"
-                                               class="form-control" required>
-                                        <span class="help-block"><small><em>Start with alphabetic, up to 45
-                                        letters, numbers and underscores (case insensitive).  No spaces.  (Do
-                                        not add file extensions)</em></small></span>
-                                        <span class="help-block with-errors"></span>
-                                        <label for="minTileLevel">Product Type</label>
-                                        <select id="minTileLevel" class="form-control selectpicker show-tick"
-                                                maxOptions="10" data-live-search="true" disabled>
-                                            <option value="gpkg">Geopackage</option>
-                                        </select>
-                                        <br>
-                                        <br>
-                                        <p><strong>Current tile layer levels of detail:</strong>
-                                            &nbsp;<span
-                                                id="aoiLod"></span></p>
-                                        <label for="productMinTileLevel">Minimum Product Level</label>
-                                        <select id="productMinTileLevel" class="form-control selectpicker show-tick"
-                                                maxOptions="10" data-live-search="true">
-                                        </select>
-                                        <label for="productMaxTileLevel">Maximum Product Level</label>
-                                        <select id="productMaxTileLevel" class="form-control selectpicker show-tick"
-                                                maxOptions="10"
-                                                data-live-search="true">
-                                        </select><br><br>
-                                        <label for="productEpsgCode">Product output projection</label>
-                                        <select id="productEpsgCode" class="form-control selectpicker show-tick"
-                                                disabled>
-                                            <option value="EPSG:3857">EPSG: 3857</option>
-                                            <option value="EPSG:4326">EPSG: 4326</option>
-                                        </select>&nbsp;&nbsp;
+                                    <div id="productForm">
+                                        <div class="form-group" >
+                                            <label for="productName">File Name&nbsp;</label>
+                                            <input id="productName" type="text"
+                                                   pattern="^[A-Za-z](?:_?[A-Za-z0-9]+)*$"
+                                                   maxlength="45"
+                                                   class="form-control" required>
+                                            <span class="help-block"><small><em>Start with alphabetic, up to 45
+                                            letters, numbers and underscores (case insensitive).  No spaces. <br>
+                                                (Do not add file extensions)</em></small></span>
+                                            <span class="help-block with-errors"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="minTileLevel">Product Type</label>
+                                            <select id="minTileLevel" class="form-control selectpicker show-tick"
+                                                    maxOptions="10" data-live-search="true" disabled>
+                                                <option value="gpkg">Geopackage</option>
+                                            </select>
+                                            <br>
+                                            <br>
+                                            <p><strong>Current tile layer levels of detail:</strong>
+                                                &nbsp;<span
+                                                    id="aoiLod"></span></p>
+                                            <label for="productMinTileLevel">Minimum Product Level</label>
+                                            <select id="productMinTileLevel" class="form-control selectpicker show-tick"
+                                                    maxOptions="10" data-live-search="true">
+                                            </select>
+                                            <label for="productMaxTileLevel">Maximum Product Level</label>
+                                            <select id="productMaxTileLevel" class="form-control selectpicker show-tick"
+                                                    maxOptions="10"
+                                                    data-live-search="true">
+                                            </select><br><br>
+                                            <label for="productEpsgCode">Product output projection</label>
+                                            <select id="productEpsgCode" class="form-control selectpicker show-tick"
+                                                    disabled>
+                                                <option value="EPSG:3857">EPSG: 3857</option>
+                                                <option value="EPSG:4326">EPSG: 4326</option>
+                                            </select>&nbsp;&nbsp;
 
+                                            <br>
+                                            <br>
+                                            <button type="button" id="submitAoi" class="btn btn-success">Submit</button>
+                                            <button type="button" id="cancelAoi" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                        </div>
                                         <br>
-                                        <br>
-                                        <button type="button" id="submitAoi" class="btn btn-success">Submit</button>
-                                        <button type="button" id="cancelAoi" class="btn btn-default" data-dismiss="modal">Cancel</button>
                                     </div>
-                                    <br>
                                     <div id="aoiJobInfo" class="alert alert-info">
                                         <h4 id="jobHeader">Submitted Job Information:</h4>
                                         <p><strong>ID:</strong>&nbsp;<span id="aoiJobId"></span></p>
