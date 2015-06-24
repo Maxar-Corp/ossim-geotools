@@ -11,6 +11,8 @@
 //= require client/bootstrap-filestyle.js
 //= require client/bootstrap-datepicker.js
 //= require client/bootstrap-slider.js
+//= require common/H5F.js /* Needed for IE9 form validation */
+//= require common/validator.js
 //= require client/geopoint.js
 //= require client/toastr.js
 //= require common/jquery.fileDownload.js
