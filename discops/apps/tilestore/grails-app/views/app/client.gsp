@@ -107,12 +107,13 @@
                                     <div class="form-group" id="productForm">
                                         <label for="productName">File Name&nbsp;</label>
                                         <input id="productName" type="text"
-                                               %{--pattern="^[A-Za-z](?:_?[A-Za-z0-9]+)*$"--}%
+                                               pattern="^[A-Za-z](?:_?[A-Za-z0-9]+)*$"
                                                maxlength="45"
                                                class="form-control" required>
-                                        %{--<span class="help-block"><small><em>Start with alphabetic, up to 45--}%
-                                        %{--letters, numbers and underscores (case insensitive).  No spaces.</em></small></span>--}%
-                                        %{--<span class="help-block with-errors"></span>--}%
+                                        <span class="help-block"><small><em>Start with alphabetic, up to 45
+                                        letters, numbers and underscores (case insensitive).  No spaces.  (Do
+                                        not add file extensions)</em></small></span>
+                                        <span class="help-block with-errors"></span>
                                         <label for="minTileLevel">Product Type</label>
                                         <select id="minTileLevel" class="form-control selectpicker show-tick"
                                                 maxOptions="10" data-live-search="true" disabled>
