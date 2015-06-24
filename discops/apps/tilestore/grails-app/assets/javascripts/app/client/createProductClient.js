@@ -9,7 +9,7 @@ var CreateProductClient = (function () {
 
     // Product modal DOM elements
     var $exportProductModal = $('#exportProductModal');
-    var $productForm = $('#productForm');
+    var $productFormElements = $('#productFormElements');
     var $productName = $('#productName');
     var $productType = $('#productType');
     var $productMinLevel = $('#productMinTileLevel');
@@ -201,7 +201,7 @@ var CreateProductClient = (function () {
                     dataType: 'JSON',
                     success: function (data) {
                         $aoiJobInfo.show();
-                        $productForm.hide();
+                        $productFormElements.hide();
 
                         $aoiJobId.html(data.jobId);
                         jobId = data.jobId;
@@ -353,7 +353,7 @@ var CreateProductClient = (function () {
 
                 $aoiJobId.html("");
                 $aoiJobInfo.hide();
-                $productForm.show();
+                $productFormElements.show();
                 $downloadProduct.hide();
 
                 $aoiJobInfo.addClass('alert-info').removeClass('alert-success');
