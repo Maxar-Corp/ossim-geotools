@@ -1,7 +1,7 @@
 "use strict";
 var CreateProductClient = (function () {
 
-    // Cache the DOM elements
+    // Cache all the DOM elements
 
     // Navbar DOM elements
     var $tileLayerSelect = $('#tileLayerSelect');
@@ -9,7 +9,7 @@ var CreateProductClient = (function () {
 
     // Product modal DOM elements
     var $exportProductModal = $('#exportProductModal');
-    var $productForm = $('#productForm');
+    var $productFormElements = $('#productFormElements');
     var $productName = $('#productName');
     var $productType = $('#productType');
     var $productMinLevel = $('#productMinTileLevel');
@@ -28,12 +28,9 @@ var CreateProductClient = (function () {
     var $submitAoi = $('#submitAoi');
     var $cancelAoi = $('#cancelAoi');
 
-    // cache selectPicker elements
-    //var $select = $('.selectpicker').selectpicker();
+    var jobId;
 
-    var jobTimeoutId = -1;
-
-    var output, outputWkt, formatWkt, aoiLodSlider;
+    var output, outputWkt, formatWkt;
 
     var urlProductExport;
     var urlLayerActualBounds;
@@ -108,18 +105,6 @@ var CreateProductClient = (function () {
                 aoiFeature.setGeometry(output);
                 aoiFeatureOverlay.addFeature(aoiFeature);
 
-                //aoiLodSlider = $('#aoiLodSlider').slider({
-                //    min: '0',
-                //    max: '22',
-                //    tooltip: 'show',
-                //    formater: function (value) {
-                //        return parseInt(value);
-                //    }
-                //
-                //});
-                //console.log('Initial min: ' + $("#aoiLodSlider").data('slider').min);
-                //console.log('Initial max: ' + $("#aoiLodSlider").data('slider').max);
-
                 //console.log($('#tileLayerSelect').val());
                 var gpkgInputTileLayer = $tileLayerSelect.val();
 
@@ -132,14 +117,9 @@ var CreateProductClient = (function () {
                     success: function (data) {
                         //console.log(data);
                         $aoiLod.html(data.minLevel + ' to ' + data.maxLevel);
-                        //$('#aoiBbox').html('minx: ' + data.minx + ', miny: ' + data.miny + ', maxx: ' + data.maxx + ', maxy: ' + data.maxy);
-
 
                         var min = data.minLevel;
                         var max = data.maxLevel;
-
-                        //console.log(data.minLevel);
-                        //console.log(data.maxLevel);
 
                         $productMinLevel.empty();
                         $productMaxLevel.empty();
@@ -155,7 +135,6 @@ var CreateProductClient = (function () {
                             $productMaxLevel.selectpicker('refresh');
 
                         }
-
 
                     },
                     // TODO: Add $promise function for error
@@ -222,10 +201,10 @@ var CreateProductClient = (function () {
                     dataType: 'JSON',
                     success: function (data) {
                         $aoiJobInfo.show();
-                        $productForm.hide();
+                        $productFormElements.hide();
 
                         $aoiJobId.html(data.jobId);
-                        var jobId = data.jobId;
+                        jobId = data.jobId;
                         //jobData = data;
 
                         function checkJobStatus(jobId) {
@@ -236,33 +215,31 @@ var CreateProductClient = (function () {
                                 dataType: 'JSON',
                                 success: function (data) {
 
-                                    console.log(data);
+                                    //console.log(data);
                                     console.log(data.rows[0].status);
-
-                                    //TODO: If not not running then, click here for download, or job status
-                                    // is unavailable for download
 
                                     // Product build 'Finished'
                                     if (data.rows[0].jobId === jobId && data.rows[0].status === 'FINISHED'){
 
-                                        console.log('Yep, the job is done baby!!!');
                                         clearInterval(checkForProduct);
                                         $('#prodcutProgress').hide();
                                         $aoiJobInfo.removeClass('alert-warning').addClass('alert-success');
                                         $('#jobHeader').html('Product build complete!');
 
                                         $downloadProduct.show();
-                                        $(document).on("click", "button.fileDownload", function(){
-                                            console.log('right before filedownload: ' + jobId);
-                                            $.fileDownload("/tilestore/job/download?jobId=" + jobId)
-                                                //.done(function() {alert('success!');})
-                                                .fail(function(){
-                                                    toastr.error('Product failed to' +
-                                                        ' download', 'Product download Error');
-                                                });
-                                            $exportProductModal.modal('hide');
-                                            resetProductForm();
-                                        });
+                                        //$(document).on("click", "button.fileDownload", function(){
+                                        //    console.log('right before filedownload: ' + jobId);
+                                        //    $.fileDownload("/tilestore/job/download?jobId=" + jobId)
+                                        //        .done(function() {alert('success!');})
+                                        //        .fail(function(){
+                                        //            toastr.error('Product failed to' +
+                                        //                ' download', 'Product download Error');
+                                        //        });
+                                        //fileDownload(jobId);
+
+                                        //$exportProductModal.modal('hide');
+                                        //resetProductForm();
+                                        //});
 
                                     }
                                     // Product build 'READY'
@@ -290,10 +267,12 @@ var CreateProductClient = (function () {
                         };
 
 
+
+
                         checkForProduct =  setInterval(
                             function(){
                                 checkJobStatus(jobId);
-                            }, 500);
+                            }, 1000);
 
                     },
                     error: function (jqXHR, exception) {
@@ -328,6 +307,23 @@ var CreateProductClient = (function () {
 
             });
 
+            function fileDownload(downloadNumber){
+                console.log('filedownload jobNumber: ' + downloadNumber);
+                $.fileDownload("/tilestore/job/download?jobId=" + downloadNumber)
+                    .done(function() {alert('success!');})
+                    .fail(function(){
+                        toastr.error('Product failed to' +
+                            ' download', 'Product download Error');
+                    });
+                $exportProductModal.modal('hide');
+                resetProductForm();
+            }
+
+            $(document).on("click", "button.fileDownload",function(){
+                console.log('your jobId is: ' + jobId);
+                fileDownload(jobId);
+            });
+
             $cancelAoi.on("click", function () {
                 aoiFeatureOverlay.removeFeature(aoiFeature);
                 $createGp.removeClass("disabled");
@@ -357,7 +353,7 @@ var CreateProductClient = (function () {
 
                 $aoiJobId.html("");
                 $aoiJobInfo.hide();
-                $productForm.show();
+                $productFormElements.show();
                 $downloadProduct.hide();
 
                 $aoiJobInfo.addClass('alert-info').removeClass('alert-success');
