@@ -36,7 +36,7 @@
                             <button type="button" id="createGp" class="btn btn-primary disabled"
                                     data-toggle="tooltip" data-placement="bottom"
                                     title="Use the <Alt> key to generate an AOI for the Geopackage"><i
-                                    class="fa fa-cube"></i>&nbsp;&nbsp;Create Geopackage</button>
+                                    class="fa fa-cube"></i>&nbsp;&nbsp;Create Product</button>
                         </form>
                         <form class="navbar-form" role="search" id="zoomToForm">
                             <div class="form-group">
@@ -64,20 +64,43 @@
                                 </div>
                                 <button type="button" id="zoomFirstValidTile" class="btn btn-primary"
                                         data-toggle="tooltip" data-placement="bottom"
-                                        title="Zoom to the first valid tile in the layer"><i
+                                        title="Zoom to the first valid tile in the active tile layer"><i
                                         class="fa fa-crosshairs fa-lg"></i>&nbsp;&nbsp;First Tile</button>
                             </div>
                         </form>
                     </div>
                     <div class="nav navbar-nav navbar-right">
-                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
-                                class="fa fa-user"></i>&nbsp;&nbsp;<sec:loggedInUserInfo field="username"/><b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-table">&nbsp;&nbsp;<g:link title="Job Status" controller="job" target="_blank">Job Status</g:link></i></li>
-                                <li class="divider"></li>
-                                <li>&nbsp;&nbsp;<i class="fa fa-power-off">&nbsp;&nbsp;<g:link controller='logout'>Logout</g:link></i></li>
+
+                        <div class="collapse navbar-collapse" id="mapToolsNavbar">
+                            <ul class="nav navbar-nav navbar-right">
+                                <li id="mapToolsDropdown" class="dropdown">
+                                    <a id="MapToolsDropdownItem" class="dropdown-toggle"
+                                       data-toggle="dropdown" href="#"><i
+                                            class="fa fa-cog"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+
+                                        <li role="presentation" class="dropdown-header">Cutting</li>
+                                        <li class="disabled"><a id="drawRectangle" href="#"><i
+                                                class="fa fa-square-o fa-lg"></i>&nbsp;&nbsp;by
+                                        Rectangle</a></li>
+                                        <li class="disabled"><a id="drawPolygon" href="#"><i
+                                                class="fa fa-lemon-o fa-lg"></i>&nbsp;&nbsp;by
+                                        Freehand Polygon</a></li>
+                                        <li><a id="uploadCutFile" href="#"><i
+                                                class="fa fa-upload fa-lg"></i>&nbsp;&nbsp;Upload Cut File</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
+                                        class="fa fa-user"></i>&nbsp;&nbsp;<sec:loggedInUserInfo field="username"/><b class="caret"></b>&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                                    <ul class="dropdown-menu">
+                                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-table">&nbsp;&nbsp;<g:link title="Job Status" controller="job" target="_blank">Job Status</g:link></i></li>
+                                        <li class="divider"></li>
+                                        <li>&nbsp;&nbsp;<i class="fa fa-power-off">&nbsp;&nbsp;<g:link controller='logout'>Logout</g:link></i></li>
+                                    </ul>
+                                </li>
                             </ul>
-                        </li>
+                        </div>
+
                     </div>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
@@ -91,100 +114,138 @@
 
         <tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
 
-        <!-- Export to Product Form -->
-        <div class="modal fade" id="exportProductModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" Saria-hidden="true">
+        <!-- Export to Product Modal -->
+        <div class="modal fade" id="uploadCutByFileModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+             Saria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h3 class="modal-title"><i class="fa fa-cube fa-lg"></i>&nbsp;&nbsp;Export Product</h3>
+                        <h3 class="modal-title"><i class="fa fa-scissors fa-lg"></i>&nbsp;&nbsp;Upload Cut File</h3>
                     </div>
                     <div class="modal-body">
-                        <form id="productForm" data-toggle="validator">
+                        <form id="uploadCutByFileForm" data-toggle="validator">
                             <div class="container">
                                 <div class="row col-sm-6 col-md-6">
-                                    <div id="productFormElements">
-                                        <div class="form-group" >
-                                            <label for="productName">File Name&nbsp;</label>
-                                            <input id="productName" type="text"
-                                                   pattern="^[A-Za-z](?:_?[A-Za-z0-9]+)*$"
-                                                   maxlength="45"
-                                                   class="form-control" required>
-                                            <span class="help-block"><small><em>Start with alphabetic, up to 45
-                                            letters, numbers and underscores (case insensitive).  No spaces. <br>
-                                                (Do not add file extensions)</em></small></span>
-                                            <span class="help-block with-errors"></span>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="minTileLevel">Product Type</label>
-                                            <select id="minTileLevel" class="form-control selectpicker show-tick"
-                                                    maxOptions="10" data-live-search="true" disabled>
-                                                <option value="gpkg">Geopackage</option>
-                                            </select>
-                                            <br>
-                                            <br>
-                                            <p><strong>Current tile layer levels of detail:</strong>
-                                                &nbsp;<span
-                                                    id="aoiLod"></span></p>
-                                            <label for="productMinTileLevel">Minimum Product Level</label>
-                                            <select id="productMinTileLevel" class="form-control selectpicker show-tick"
-                                                    maxOptions="10" data-live-search="true">
-                                            </select>
-                                            <label for="productMaxTileLevel">Maximum Product Level</label>
-                                            <select id="productMaxTileLevel" class="form-control selectpicker show-tick"
-                                                    maxOptions="10"
-                                                    data-live-search="true">
-                                            </select><br><br>
-                                            <label for="productEpsgCode">Product output projection</label>
-                                            <select id="productEpsgCode" class="form-control selectpicker show-tick"
-                                                    disabled>
-                                                <option value="EPSG:3857">EPSG: 3857</option>
-                                                <option value="EPSG:4326">EPSG: 4326</option>
-                                            </select>&nbsp;&nbsp;
+                                    <div id="uploadCutByFormElements">
 
-                                            <br>
-                                            <br>
-                                            <button type="button" id="submitAoi" class="btn btn-success">Submit</button>
-                                            <button type="button" id="cancelAoi" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                        <div class="input-group">
+                                            <span class="input-group-btn">
+                                                <span class="btn btn-primary btn-file">
+                                                    Browse&hellip; <input type="file" multiple>
+                                                </span>
+                                            </span>
+                                            <input type="text" class="form-control" readonly>
                                         </div>
-                                        <br>
-                                    </div>
-                                    <div id="aoiJobInfo" class="alert alert-info">
-                                        <h4 id="jobHeader">Submitted Job Information:</h4>
-                                        <p><strong>ID:</strong>&nbsp;<span id="aoiJobId"></span></p>
-                                    </div>
-                                    <div id="prodcutProgress" style="display: none">
-                                        <div class="alert alert-info">Note: You can close this dialog if you do
-                                        not
-                                        wish
-                                        to wait
-                                        for the product to be created.  To obtain the product at a later time
-                                        visit the jobs page.</div>
-                                        <div id="productStatus"></div>
+                                        <span class="help-block">
+                                            Try selecting one or more files and watch the feedback
+                                        </span>
 
                                     </div>
-                                    <p id="downloadProduct" style="display: none"><i
-                                            class="fa fa-check fa-2x"></i>&nbsp;&nbsp;Ready for
-                                    download:&nbsp;&nbsp;
-                                        <button id="downloadProductButton" type="button" href="javascript:void(0)"
-                                                class="btn btn-primary fileDownload">Download</button></p>
                                 </div>
+                            </div>
                         </form>
                     </div><!-- /.modal-body -->
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog modal-lg -->
-        </div><!-- /.modal fade "exportGeopackageModal" -->
+        </div><!-- /.modal fade "uploadCutByFileModal" -->
+
+        <!-- Cut By File Modal -->
+    <div class="modal fade" id="exportProductModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" Saria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title"><i class="fa fa-cube fa-lg"></i>&nbsp;&nbsp;Export Product</h3>
+                </div>
+                <div class="modal-body">
+                    <form id="productForm" data-toggle="validator">
+                        <div class="container">
+                            <div class="row col-sm-6 col-md-6">
+                                <div id="productFormElements">
+                                    <div class="form-group" >
+                                        <label for="productName">File Name&nbsp;</label>
+                                        <input id="productName" type="text"
+                                               pattern="^[A-Za-z](?:_?[A-Za-z0-9]+)*$"
+                                               maxlength="45"
+                                               class="form-control" required>
+                                        <span class="help-block"><small><em>Start with alphabetic, up to 45
+                                        letters, numbers and underscores (case insensitive).  No spaces. <br>
+                                            (Do not add file extensions)</em></small></span>
+                                        <span class="help-block with-errors"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="minTileLevel">Product Type</label>
+                                        <select id="minTileLevel" class="form-control selectpicker show-tick"
+                                                maxOptions="10" data-live-search="true" disabled>
+                                            <option value="gpkg">Geopackage</option>
+                                        </select>
+                                        <br>
+                                        <br>
+                                        <p><strong>Current tile layer levels of detail:</strong>
+                                            &nbsp;<span
+                                                id="aoiLod"></span></p>
+                                        <label for="productMinTileLevel">Minimum Product Level</label>
+                                        <select id="productMinTileLevel" class="form-control selectpicker show-tick"
+                                                maxOptions="10" data-live-search="true">
+                                        </select>
+                                        <label for="productMaxTileLevel">Maximum Product Level</label>
+                                        <select id="productMaxTileLevel" class="form-control selectpicker show-tick"
+                                                maxOptions="10"
+                                                data-live-search="true">
+                                        </select><br><br>
+                                        <label for="productEpsgCode">Product output projection</label>
+                                        <select id="productEpsgCode" class="form-control selectpicker show-tick"
+                                                disabled>
+                                            <option value="EPSG:3857">EPSG: 3857</option>
+                                            <option value="EPSG:4326">EPSG: 4326</option>
+                                        </select>&nbsp;&nbsp;
+
+                                        <br>
+                                        <br>
+                                        <button type="button" id="submitAoi" class="btn btn-success">Submit</button>
+                                        <button type="button" id="cancelAoi" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                    </div>
+                                    <br>
+                                </div>
+                                <div id="aoiJobInfo" class="alert alert-info">
+                                    <h4 id="jobHeader">Submitted Job Information:</h4>
+                                    <p><strong>ID:</strong>&nbsp;<span id="aoiJobId"></span></p>
+                                </div>
+                                <div id="prodcutProgress" style="display: none">
+                                    <div class="alert alert-info">Note: You can close this dialog if you do
+                                    not
+                                    wish
+                                    to wait
+                                    for the product to be created.  To obtain the product at a later time
+                                    visit the jobs page.</div>
+                                    <div id="productStatus"></div>
+
+                                </div>
+                                <p id="downloadProduct" style="display: none"><i
+                                        class="fa fa-check fa-2x"></i>&nbsp;&nbsp;Ready for
+                                download:&nbsp;&nbsp;
+                                    <button id="downloadProductButton" type="button" href="javascript:void(0)"
+                                            class="btn btn-primary fileDownload">Download</button></p>
+                            </div>
+                    </form>
+                </div><!-- /.modal-body -->
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog modal-lg -->
+    </div><!-- /.modal fade "exportGeopackageModal" -->
+
 
     <asset:javascript src="app/client.js"/>
 
     <g:javascript>
 
-            var initParams = ${raw( initParams.toString() )};
-            AddLayerClient.initialize( initParams );
-            AppClient.initialize( initParams );
-            CreateProductClient.initialize( initParams );
-            LayerManagerClient.initialize( initParams );
-            ZoomToClient.initialize( initParams );
+            var initParams = ${raw(initParams.toString())};
+            AddLayerClient.initialize(initParams);
+            AppClient.initialize(initParams);
+            CreateProductClient.initialize(initParams);
+            CutByFileClient.initialize(initParams);
+            LayerManagerClient.initialize(initParams);
+            ZoomToClient.initialize(initParams);
 
             //Use polyfill to utilize HTML5 form validation in IE9
             H5F.setup(document.getElementById("productForm"));
