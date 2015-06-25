@@ -38,7 +38,7 @@ var AppOmarWfsAdmin = (function () {
     var $dateRangeSelect = $('#dateRangeSelect');
     var $sortByFieldSelect = $('#sortByFieldSelect');
     var $sortByTypeSelect = $('#sortByTypeSelect');
-    var dateToday, dateTodayEnd, dateYesterday, dateLast7Days, dateThisMonth, dateLast3Months, dateLast6Months;
+    var dateToday, dateTodayEnd, dateYesterday, dateYesterdayEnd, dateLast7Days, dateThisMonth, dateLast3Months, dateLast6Months;
     var filterOpts = {
         dateType: '',
         startDate: '',
@@ -58,11 +58,12 @@ var AppOmarWfsAdmin = (function () {
 
     dateToday = moment().format('MM-DD-YYYY 00:00');
     dateTodayEnd = moment().format('MM-DD-YYYY 23:59');
-    dateYesterday = moment().subtract(1, 'days').format('MM-DD-YYYY');
-    dateLast7Days = moment().subtract(7, 'days').format('MM-DD-YYYY');
-    dateThisMonth = moment().subtract(1, 'months').format('MM-DD-YYYY');
-    dateLast3Months = moment().subtract(3, 'months').format('MM-DD-YYYY');
-    dateLast6Months = moment().subtract(6, 'months').format('MM-DD-YYYY');
+    dateYesterday = moment().subtract(1, 'days').format('MM-DD-YYYY 00:00');
+    dateYesterdayEnd = moment().subtract(1, 'days').format('MM-DD-YYYY 23:59');
+    dateLast7Days = moment().subtract(7, 'days').format('MM-DD-YYYY 00:00');
+    dateThisMonth = moment().subtract(1, 'months').format('MM-DD-YYYY 00:00');
+    dateLast3Months = moment().subtract(3, 'months').format('MM-DD-YYYY 00:00');
+    dateLast6Months = moment().subtract(6, 'months').format('MM-DD-YYYY 00:00');
 
     $dateRangeSelect.selectlist('selectByText', 'None');
     $customStartDateFilter.datepicker({
@@ -78,19 +79,28 @@ var AppOmarWfsAdmin = (function () {
 
     function getWfsCards(params){
 
+        console.log('params.queryNone coming in is :' + params.queryNone);
         if ($('#acquisitionDateRadioLabel').radio('isChecked')){
-            console.log('acq. is checked');
+            //console.log('acq. is checked');
             filterDateType = 'Acquisition';
         }
         else{
-            console.log('acq NOT checked');
+            //console.log('acq NOT checked');
             filterDateType = 'Ingest';
         }
 
         var dateType = params.dateType || 'ingest_date'; // default value
-        var startDate = params.startDate || dateLast7Days; // default value
-        var endDate = params.endDate ||  dateToday; // default value
-        var queryNone = params.queryNone || true;
+        var startDate = params.startDate // || dateLast7Days; // default value
+        var endDate = params.endDate // ||  dateToday; // default value
+        var queryNone;
+        if (params.queryNone === false){
+            queryNone = false;
+        }
+        else {
+            queryNone = true;
+        }
+        console.log('queryNone is now set as:' + queryNone);
+
         var offset = params.offset || 0;
         var sortByField = $sortByFieldSelect.selectlist('selectedItem').value || 'ingest_date';
         var sortByType = $sortByTypeSelect.selectlist('selectedItem').value || 'A';
@@ -100,7 +110,7 @@ var AppOmarWfsAdmin = (function () {
         var sortByTypeText = $sortByTypeSelect.selectlist('selectedItem').text;
 
         //console.log('queryNone after being called:');
-        console.log('offset --> ' + offset);
+        //console.log('offset --> ' + offset);
 
         // Feedback on the UI for the current filter
         $imageFilterDate.html('Date = ' + filterDateType);
@@ -113,8 +123,9 @@ var AppOmarWfsAdmin = (function () {
             $imageFilter.html(" Sort field: " + sortByFieldText + ", Sort type: " + sortByTypeText);
         }
 
-        if (params.queryNone === true || params.queryNone === undefined){
-            //console.log(queryNone);
+        //if (params.queryNone === true || params.queryNone === undefined){
+        if (queryNone === true){ //params.queryNone === undefined){
+            console.log('queryNone: ' + queryNone);
             wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
                 //"&maxFeatures=200&outputFormat=json&filter=" +
@@ -129,6 +140,7 @@ var AppOmarWfsAdmin = (function () {
                 ":" + sortByType + "&resultType=hits";
         }
         else {
+            console.log('else queryNone value: ' + queryNone);
             wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
                 //"&maxFeatures=200&outputFormat=json&filter=" +
@@ -152,11 +164,11 @@ var AppOmarWfsAdmin = (function () {
                 "&sortBy=" + sortByField +
                 ":" + sortByType + "&resultType=hits";
         }
-        //console.log(wfsCards);
+
+        console.log(wfsCards);
         //console.log(wfsCardsCount);
 
         // TODO: Add functionality to restrict the query to a spatial extent (via BBox)
-        alert(wfsCards);
         $.ajax({
             url: wfsCards,
             dataType: 'jsonp',
@@ -164,7 +176,7 @@ var AppOmarWfsAdmin = (function () {
             // TODO: Refactor using promises...
             success: function (images) {
 
-                //console.log(images);
+                console.log(images);
                 //console.log(images.features.properties);
 
                 // Clear the DOM before loading the wfs cards
@@ -204,15 +216,12 @@ var AppOmarWfsAdmin = (function () {
 
     function pageCardsNext(){
 
-        // TODO: Account for the result set beind smaller than 25 images
-        // (Example: a filter has been run)
-
-        console.log('imageCountTotal: ' + imageCountTotal);
+        //console.log('imageCountTotal: ' + imageCountTotal);
         counterStart = filterOpts.offset + 26;
         counterEnd = filterOpts.offset + 50;
 
         if (counterEnd >= imageCountTotal){
-            console.log('yep, counterEnd <= imageCountTotal');
+            //console.log('yep, counterEnd <= imageCountTotal');
             //console.log('offset: ' + filterOpts.offset + 'imageCountTotal: ' + imageCountTotal);
             counterEnd = imageCountTotal;
             $nextWfsImages.addClass("disabled");
@@ -221,8 +230,8 @@ var AppOmarWfsAdmin = (function () {
             console.log('nope, counterEnd < imageCountTotal');
         }
 
-        console.log('counterStart: ' + counterStart);
-        console.log('counterEnd: ' + counterEnd);
+        //console.log('counterStart: ' + counterStart);
+        //console.log('counterEnd: ' + counterEnd);
 
         // TODO: cache DOM elements
         $('#startResult').html(counterStart);
@@ -236,6 +245,14 @@ var AppOmarWfsAdmin = (function () {
         }
 
         filterOpts.offset += 25;
+
+        // TODO: Need to check to see if filter is set to 'none' here
+        if ($dateRangeSelect.selectlist('selectedItem').value === 'none') {
+            filterOpts.queryNone = true;
+        }
+
+        console.log('Next Button => filter options below:');
+        console.log(filterOpts);
         getWfsCards(filterOpts);
         $omarFeed.animate({
             scrollTop: 0,
@@ -271,6 +288,15 @@ var AppOmarWfsAdmin = (function () {
             $nextWfsImages.removeClass("disabled");
         }
 
+        // TODO: Need to check to see if filter is set to 'none' here
+        if ($dateRangeSelect.selectlist('selectedItem').value === 'none') {
+            filterOpts.queryNone = true;
+        }
+
+        console.log('Next Button => filter options below:');
+        console.log(filterOpts);
+        getWfsCards(filterOpts);
+
         getWfsCards(filterOpts);
         $omarFeed.animate({
             scrollTop: 0,
@@ -295,7 +321,7 @@ var AppOmarWfsAdmin = (function () {
                 break;
             case "yesterday":
                 queryRange.start = dateYesterday;
-                queryRange.end = dateTodayEnd;
+                queryRange.end = dateYesterdayEnd;
                 queryRange.none = false;
                 break;
             case "last7Days":
@@ -501,14 +527,24 @@ var AppOmarWfsAdmin = (function () {
         filterOpts.offset = 0;
 
         var queryRange = getQueryType();
-        //console.log(queryRange.none);
+        console.log(queryRange.none);
 
         if ($dateRangeSelect.selectlist('selectedItem').value === 'none') {
+
             console.log('none firing!');
             filterOpts.queryNone = true;
             console.log(filterOpts.queryNone);
 
             getWfsCards(filterOpts);
+
+        }
+        else {
+
+            console.log('we need to filter');
+            filterOpts.queryNone = false;
+            console.log(filterOpts.queryNone);
+
+            //getWfsCards(filterOpts);
 
         }
 
@@ -532,8 +568,6 @@ var AppOmarWfsAdmin = (function () {
             getWfsCards(filterOpts);
 
         }
-
-
 
         $filterWfsModal.modal('hide');
 
