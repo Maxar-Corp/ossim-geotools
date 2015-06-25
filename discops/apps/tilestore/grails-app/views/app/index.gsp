@@ -17,7 +17,7 @@
 
 <body>
 
-<tilestore:securityClassificationBanner class="row text-center"/>
+<tilestore:securityClassificationBanner class="text-center"/>
 
 <div class="corner-ribbon top-left sticky red shadow">Alpha</div>
 
@@ -33,13 +33,11 @@
         </p>
     </div>
     <div class="row">
-
         <h1>Tilestore</h1>
         <em><h4 style="color:#337ab7">Web services for managing geospatial imagery within PostgreSQL and
             Accumulo</h4></em>
-
     </div>
-    <hr/>
+    <hr>
     <div class="row text-center">
         <div class="col-md-1"></div>
         <sec:ifAllGranted roles="ROLE_LAYER_ADMIN">
@@ -91,6 +89,12 @@
         </div>
     </div>
 </div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 
 <tilestore:securityClassificationBanner class="navbar-default navbar-fixed-bottom text-center"/>
