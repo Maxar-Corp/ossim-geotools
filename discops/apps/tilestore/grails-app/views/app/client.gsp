@@ -36,7 +36,7 @@
                             <button type="button" id="createGp" class="btn btn-primary disabled"
                                     data-toggle="tooltip" data-placement="bottom"
                                     title="Use the <Alt> key to generate an AOI for the Geopackage"><i
-                                    class="fa fa-cube"></i>&nbsp;&nbsp;Create Geopackage</button>
+                                    class="fa fa-cube"></i>&nbsp;&nbsp;Create Product</button>
                         </form>
                         <form class="navbar-form" role="search" id="zoomToForm">
                             <div class="form-group">
@@ -64,20 +64,43 @@
                                 </div>
                                 <button type="button" id="zoomFirstValidTile" class="btn btn-primary"
                                         data-toggle="tooltip" data-placement="bottom"
-                                        title="Zoom to the first valid tile in the layer"><i
+                                        title="Zoom to the first valid tile in the active tile layer"><i
                                         class="fa fa-crosshairs fa-lg"></i>&nbsp;&nbsp;First Tile</button>
                             </div>
                         </form>
                     </div>
                     <div class="nav navbar-nav navbar-right">
-                        <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
-                                class="fa fa-user"></i>&nbsp;&nbsp;<sec:loggedInUserInfo field="username"/><b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-table">&nbsp;&nbsp;<g:link title="Job Status" controller="job" target="_blank">Job Status</g:link></i></li>
-                                <li class="divider"></li>
-                                <li>&nbsp;&nbsp;<i class="fa fa-power-off">&nbsp;&nbsp;<g:link controller='logout'>Logout</g:link></i></li>
+
+                        <div class="collapse navbar-collapse" id="mapToolsNavbar">
+                            <ul class="nav navbar-nav navbar-right">
+                                <li id="mapToolsDropdown" class="dropdown">
+                                    <a id="MapToolsDropdownItem" class="dropdown-toggle"
+                                       data-toggle="dropdown" href="#"><i
+                                            class="fa fa-cog"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+
+                                        <li role="presentation" class="dropdown-header">Cutting</li>
+                                        <li class="disabled"><a id="drawRectangle" href="#"><i
+                                                class="fa fa-square-o fa-lg"></i>&nbsp;&nbsp;by
+                                        Rectangle</a></li>
+                                        <li class="disabled"><a id="drawPolygon" href="#"><i
+                                                class="fa fa-lemon-o fa-lg"></i>&nbsp;&nbsp;by
+                                        Freehand Polygon</a></li>
+                                        <li><a id="uploadCutFile" href="#"><i
+                                                class="fa fa-upload fa-lg"></i>&nbsp;&nbsp;Upload Cut File</a></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
+                                        class="fa fa-user"></i>&nbsp;&nbsp;<sec:loggedInUserInfo field="username"/><b class="caret"></b>&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                                    <ul class="dropdown-menu">
+                                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-table">&nbsp;&nbsp;<g:link title="Job Status" controller="job" target="_blank">Job Status</g:link></i></li>
+                                        <li class="divider"></li>
+                                        <li>&nbsp;&nbsp;<i class="fa fa-power-off">&nbsp;&nbsp;<g:link controller='logout'>Logout</g:link></i></li>
+                                    </ul>
+                                </li>
                             </ul>
-                        </li>
+                        </div>
+
                     </div>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
@@ -159,7 +182,8 @@
                                         wish
                                         to wait
                                         for the product to be created.  To obtain the product at a later time
-                                        visit the jobs page.</div>
+                                        visit the <a href="${createLink(controller:'job')}" target="_blank">jobs
+                                        page</a>.</div>
                                         <div id="productStatus"></div>
 
                                     </div>
@@ -179,12 +203,13 @@
 
     <g:javascript>
 
-            var initParams = ${raw( initParams.toString() )};
-            AddLayerClient.initialize( initParams );
-            AppClient.initialize( initParams );
-            CreateProductClient.initialize( initParams );
-            LayerManagerClient.initialize( initParams );
-            ZoomToClient.initialize( initParams );
+            var initParams = ${raw(initParams.toString())};
+            AddLayerClient.initialize(initParams);
+            AppClient.initialize(initParams);
+            CreateProductClient.initialize(initParams);
+            CutByFileClient.initialize(initParams);
+            LayerManagerClient.initialize(initParams);
+            ZoomToClient.initialize(initParams);
 
             //Use polyfill to utilize HTML5 form validation in IE9
             H5F.setup(document.getElementById("productForm"));
