@@ -19,9 +19,10 @@ var CreateProductClient = (function () {
 
     var checkForProduct;
 
-    //var $cancelGpButton = $('#cancelGpButton');
     var $aoiJobInfo = $('#aoiJobInfo');
-
+    var $productStatus = $('#productStatus');
+    var $prodcutProgress = $('#prodcutProgress');
+    var $jobHeader = $('#jobHeader');
     var $downloadProduct = $('#downloadProduct');
 
     var $aoiJobId = $('#aoiJobId');
@@ -80,12 +81,6 @@ var CreateProductClient = (function () {
                 $exportProductModal.modal('show');
 
             });
-
-            //$cancelGpButton.on("click", function () {
-            //    //alert('removeInteraction fired!');
-            //    AppClient.map.removeInteraction(dragBoxControl);
-            //    $("#createGp").removeClass("disabled");
-            //});
 
             dragBoxControl.on('boxend', function () {
 
@@ -169,7 +164,7 @@ var CreateProductClient = (function () {
 
             $submitAoi.on("click", function () {
 
-                $('#prodcutProgress').show();
+                $prodcutProgress.show();
 
                 var product = {
                     type:"GeopackageExport",
@@ -205,7 +200,6 @@ var CreateProductClient = (function () {
 
                         $aoiJobId.html(data.jobId);
                         jobId = data.jobId;
-                        //jobData = data;
 
                         function checkJobStatus(jobId) {
                             console.log('checkJobStatus: ' + jobId);
@@ -215,61 +209,70 @@ var CreateProductClient = (function () {
                                 dataType: 'JSON',
                                 success: function (data) {
 
-                                    //console.log(data);
-                                    console.log(data.rows[0].status);
+                                    // Make sure data is being returned.  If not the job has been terminated, and an
+                                    // error needs to be returned.
+                                    if (data && data.total > 0){
+                                        console.log('total: ' + data.total);
+                                        console.log(data.rows[0].status);
 
-                                    // Product build 'Finished'
-                                    if (data.rows[0].jobId === jobId && data.rows[0].status === 'FINISHED'){
+                                        // Product build 'Finished'
+                                        if (data.rows[0].jobId === jobId && data.rows[0].status === 'FINISHED'){
 
+                                            // Stop polling the status
+                                            clearInterval(checkForProduct);
+
+                                            $prodcutProgress.hide();
+                                            $aoiJobInfo.removeClass('alert-warning').addClass('alert-success');
+                                            $jobHeader.html('Product build complete!');
+                                            $downloadProduct.show();
+
+                                        }
+                                        // Product build 'READY'
+                                        else if (data.rows[0].jobId === jobId && data.rows[0].status === 'READY'){
+
+                                            $productStatus.html('<i class="fa fa-cog fa-spin' +
+                                                ' fa-2x"></i>&nbsp;&nbsp;Product added to build queue.');
+
+                                        }
+                                        // Product build 'RUNNING'
+                                        else if (data.rows[0].jobId === jobId && data.rows[0].status === 'RUNNING'){
+
+                                            $aoiJobInfo.removeClass('alert-info').addClass('alert-warning');
+                                            $productStatus.html('<i class="fa fa-cog fa-spin' +
+                                                ' fa-2x"></i>&nbsp;&nbsp;Product is being built. Please wait...');
+
+                                        }
+                                        // Product build 'FAILED'
+                                        else if (data.rows[0].jobId === jobId && data.rows[0].status === 'FAILED'){
+
+                                            // Stop polling the status
+                                            clearInterval(checkForProduct);
+                                            resetProductForm();
+                                            toastr.error('Product build failed', 'Error');
+
+                                        }
+                                    }
+                                    else {
+
+                                        // Stop polling the status
                                         clearInterval(checkForProduct);
-                                        $('#prodcutProgress').hide();
-                                        $aoiJobInfo.removeClass('alert-warning').addClass('alert-success');
-                                        $('#jobHeader').html('Product build complete!');
 
-                                        $downloadProduct.show();
-                                        //$(document).on("click", "button.fileDownload", function(){
-                                        //    console.log('right before filedownload: ' + jobId);
-                                        //    $.fileDownload("/tilestore/job/download?jobId=" + jobId)
-                                        //        .done(function() {alert('success!');})
-                                        //        .fail(function(){
-                                        //            toastr.error('Product failed to' +
-                                        //                ' download', 'Product download Error');
-                                        //        });
-                                        //fileDownload(jobId);
-
-                                        //$exportProductModal.modal('hide');
-                                        //resetProductForm();
-                                        //});
+                                        $exportProductModal.hide();
+                                        resetProductForm();
+                                        toastr.error('Product build failed.  Job no longer exists.', 'Error');
 
                                     }
-                                    // Product build 'READY'
-                                    else if (data.rows[0].jobId === jobId && data.rows[0].status === 'READY'){
-                                        $('#productStatus').html('<i class="fa fa-cog fa-spin' +
-                                            ' fa-2x"></i>&nbsp;&nbsp;Product added to build queue.');
-                                    }
-                                    // Product build 'RUNNING'
-                                    else if (data.rows[0].jobId === jobId && data.rows[0].status === 'RUNNING'){
-                                        $aoiJobInfo.removeClass('alert-info').addClass('alert-warning');
-                                        $('#productStatus').html('<i class="fa fa-cog fa-spin' +
-                                            ' fa-2x"></i>&nbsp;&nbsp;Product is being built. Please wait...');
-                                    }
-                                    // Product build 'FAILED'
-                                    else if (data.rows[0].jobId === jobId && data.rows[0].status === 'FAILED'){
-                                        clearInterval(checkForProduct);
-                                        toastr.error('Product build failed', 'Error');
-                                    }
-
                                 },
                                 error: function(){
-                                    toastr.error('Product build failed', 'Error');
+
+                                    toastr.error('Product build failed.', 'Error');
+
                                 }
                             });
                         };
 
+                        checkForProduct = setInterval(
 
-
-
-                        checkForProduct =  setInterval(
                             function(){
                                 checkJobStatus(jobId);
                             }, 1000);
@@ -300,14 +303,12 @@ var CreateProductClient = (function () {
                     }
                 });
 
-                //AppClient.map.removeInteraction(dragBoxControl);
-                //dragBoxControl.setActive(false);
-
                 $createGp.removeClass("disabled");
 
             });
 
             function fileDownload(downloadNumber){
+
                 console.log('filedownload jobNumber: ' + downloadNumber);
                 $.fileDownload("/tilestore/job/download?jobId=" + downloadNumber)
                     .done(function() {alert('success!');})
@@ -317,23 +318,27 @@ var CreateProductClient = (function () {
                     });
                 $exportProductModal.modal('hide');
                 resetProductForm();
+
             }
 
             $(document).on("click", "button.fileDownload",function(){
+
                 console.log('your jobId is: ' + jobId);
                 fileDownload(jobId);
+
             });
 
             $cancelAoi.on("click", function () {
+
                 aoiFeatureOverlay.removeFeature(aoiFeature);
                 $createGp.removeClass("disabled");
-
-                // TODO: Reset the form on the modal
                 resetProductForm();
+
             });
 
             // Remove the AOI feature if the user closes the product modal window
             $exportProductModal.on('hidden.bs.modal', function (e) {
+
                 aoiFeatureOverlay.removeFeature(aoiFeature);
                 resetProductForm();
 
@@ -353,11 +358,12 @@ var CreateProductClient = (function () {
 
                 $aoiJobId.html("");
                 $aoiJobInfo.hide();
+
                 $productFormElements.show();
                 $downloadProduct.hide();
 
                 $aoiJobInfo.addClass('alert-info').removeClass('alert-success');
-                $('#jobHeader').html('Submitted Job Information:');
+                $jobHeader.html('Submitted Job Information:');
 
                 $createGp.addClass('disabled');
 

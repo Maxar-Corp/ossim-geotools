@@ -182,18 +182,16 @@ var AppOmarWfsAdmin = (function () {
             $imageFilter.html(" Sort field: " + sortByFieldText + ", Sort type: " + sortByTypeText);
         }
 
-        //if (params.queryNone === true || params.queryNone === undefined){
-        if (queryNone === true){ //params.queryNone === undefined){
+
+        if (queryNone === true){
             console.log('queryNone: ' + queryNone);
             wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
-                //"&maxFeatures=200&outputFormat=json&filter=" +
                 "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter=" +
                 "&sortBy=" + sortByField +
                 ":" + sortByType;
             wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
-                    //"&maxFeatures=200&outputFormat=json&filter=" +
                 "&offset=0&maxFeatures=25&outputFormat=json&filter=" +
                 "&sortBy=" + sortByField +
                 ":" + sortByType + "&resultType=hits";
@@ -202,7 +200,6 @@ var AppOmarWfsAdmin = (function () {
             console.log('else queryNone value: ' + queryNone);
             wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
-                //"&maxFeatures=200&outputFormat=json&filter=" +
                 "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter=" +
                 dateType +
                 "+between+" +
@@ -213,7 +210,6 @@ var AppOmarWfsAdmin = (function () {
                 ":" + sortByType;
             wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
-                    //"&maxFeatures=200&outputFormat=json&filter=" +
                 "&outputFormat=json&filter=" +
                 dateType +
                 "+between+" +
@@ -362,6 +358,9 @@ var AppOmarWfsAdmin = (function () {
     function resetPagination(){
         // TODO: We need to reset all of the pagination after a filter
         //       has been applied
+        $prevWfsImages.addClass("disabled");
+        $nextWfsImages.removeClass("disabled");
+
         filterOpts.offset = 0;
         counterStart = filterOpts.offset + 26;
         counterEnd = filterOpts.offset + 50;
@@ -392,16 +391,12 @@ var AppOmarWfsAdmin = (function () {
             filterOpts.queryNone = true;
             console.log(filterOpts.queryNone);
 
-            //getWfsCards(filterOpts);
-
         }
         else {
 
             console.log('we need to filter');
             filterOpts.queryNone = false;
             console.log(filterOpts.queryNone);
-
-            //getWfsCards(filterOpts);
 
         }
 
@@ -410,9 +405,6 @@ var AppOmarWfsAdmin = (function () {
             filterOpts.dateType = 'ingest_date';
             filterOpts.startDate =  queryRange.start;
             filterOpts.endDate = queryRange.end;
-            //filterOpts.queryNone = false;
-
-            //getWfsCards(filterOpts);
 
         }
         else {
@@ -420,11 +412,9 @@ var AppOmarWfsAdmin = (function () {
             filterOpts.dateType = 'acquisition_date';
             filterOpts.startDate = queryRange.start;
             filterOpts.endDate = queryRange.end;
-            filterOpts.queryNone = false;
-
-            //getWfsCards(filterOpts);
 
         }
+
         getWfsCards(filterOpts);
 
         $filterWfsModal.modal('hide');
@@ -477,6 +467,8 @@ var AppOmarWfsAdmin = (function () {
 
     // Adds the OMAR WMS image to the map for previewing.
     function previewLayer(obj){
+
+        //$('#ingestImageFromCard').show();
 
         //TODO: Need to reset the AOI if the user clicks on another preview image
         AppManageLayersAdmin.aoiVector.getSource().clear();
