@@ -114,7 +114,7 @@
 
         <tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
 
-        <!-- Export to Product Form -->
+        <!-- Export to product form -->
         <div class="modal fade" id="exportProductModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" Saria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -193,12 +193,57 @@
                                         <button id="downloadProductButton" type="button" href="javascript:void(0)"
                                                 class="btn btn-primary fileDownload">Download</button></p>
                                 </div>
-                        </form>
+                            </div><!-- /.container -->
+                        </form><!-- /#productForm -->
                     </div><!-- /.modal-body -->
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog modal-lg -->
         </div><!-- /.modal fade "exportGeopackageModal" -->
 
+    <!-- Upload cut by file form -->
+    <div class="modal fade" id="uploadCutByFileModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+         Saria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title"><i class="fa fa-scissors fa-lg"></i>&nbsp;&nbsp;Upload cut from file
+                    </h3>
+                </div>
+                <div class="modal-body">
+                    <form id="uploadCutByFileForm" data-toggle="validator">
+                        <div class="container">
+                            <div class="row col-sm-6 col-md-6">
+
+                                <div id="uploadCutByFormElements">
+                                    <p>Select a KML or shapefile, and upload the server to perform a cut for the
+                                    specified
+                                    geometries contained in the file.</p>
+                                    <!-- The fileinput-button span is used to style the file input field as button -->
+                                    <span class="btn btn-success fileinput-button">
+                                        <i class="glyphicon glyphicon-plus"></i>
+                                        <span>Select files...</span>
+                                        <!-- The file input field used as target for the file upload widget -->
+                                        <input id="fileupload" type="file" name="files[]" multiple>
+                                    </span>
+                                    <br>
+                                    <br>
+                                    <!-- The global progress bar -->
+                                    <div id="progress" class="progress">
+                                        <div class="progress-bar progress-bar-success"></div>
+                                    </div>
+                                    <!-- The container for the uploaded files -->
+                                    <div id="files" class="files"></div>
+
+                                </div>
+
+                            </div>
+                        </div><!-- /.container -->
+                    </form><!-- /#uploadCutByFileForm -->
+                </div><!-- /.modal-body -->
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog modal-lg -->
+    </div><!-- /.modal fade "exportGeopackageModal" -->
     <asset:javascript src="app/client.js"/>
 
     <g:javascript>
