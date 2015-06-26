@@ -38,7 +38,7 @@ var AppOmarWfsAdmin = (function () {
     var $dateRangeSelect = $('#dateRangeSelect');
     var $sortByFieldSelect = $('#sortByFieldSelect');
     var $sortByTypeSelect = $('#sortByTypeSelect');
-    var dateToday, dateTodayEnd, dateYesterday, dateLast7Days, dateThisMonth, dateLast3Months, dateLast6Months;
+    var dateToday, dateTodayEnd, dateYesterday, dateYesterdayEnd, dateLast7Days, dateThisMonth, dateLast3Months, dateLast6Months;
     var filterOpts = {
         dateType: '',
         startDate: '',
@@ -55,229 +55,17 @@ var AppOmarWfsAdmin = (function () {
     var $customEndDateFilter = $('#customEndDateFilter');
 
     var $submitFilter = $('#submitFilter');
+    var $startResult = $('#startResult');
+    var $endResult = $('#endResult')
 
     dateToday = moment().format('MM-DD-YYYY 00:00');
     dateTodayEnd = moment().format('MM-DD-YYYY 23:59');
-    dateYesterday = moment().subtract(1, 'days').format('MM-DD-YYYY');
-    dateLast7Days = moment().subtract(7, 'days').format('MM-DD-YYYY');
-    dateThisMonth = moment().subtract(1, 'months').format('MM-DD-YYYY');
-    dateLast3Months = moment().subtract(3, 'months').format('MM-DD-YYYY');
-    dateLast6Months = moment().subtract(6, 'months').format('MM-DD-YYYY');
-
-    $dateRangeSelect.selectlist('selectByText', 'None');
-    $customStartDateFilter.datepicker({
-        allowPastDates: true
-    });
-    $customEndDateFilter.datepicker({
-        allowPastDates: true
-    });
-
-    $wfsFilter.on('click', function(){
-        $filterWfsModal.modal('show');
-    });
-
-    function getWfsCards(params){
-
-        if ($('#acquisitionDateRadioLabel').radio('isChecked')){
-            console.log('acq. is checked');
-            filterDateType = 'Acquisition';
-        }
-        else{
-            console.log('acq NOT checked');
-            filterDateType = 'Ingest';
-        }
-
-        var dateType = params.dateType || 'ingest_date'; // default value
-        var startDate = params.startDate || dateLast7Days; // default value
-        var endDate = params.endDate ||  dateToday; // default value
-        var queryNone = params.queryNone || true;
-        var offset = params.offset || 0;
-        var sortByField = $sortByFieldSelect.selectlist('selectedItem').value || 'ingest_date';
-        var sortByType = $sortByTypeSelect.selectlist('selectedItem').value || 'A';
-
-        var dateTypeText = $dateRangeSelect.selectlist('selectedItem').text;
-        var sortByFieldText = $sortByFieldSelect.selectlist('selectedItem').text;
-        var sortByTypeText = $sortByTypeSelect.selectlist('selectedItem').text;
-
-        //console.log('queryNone after being called:');
-        console.log('offset --> ' + offset);
-
-        // Feedback on the UI for the current filter
-        $imageFilterDate.html('Date = ' + filterDateType);
-        $imageFilterRange.html('Range = ' + $dateRangeSelect.selectlist('selectedItem').text);
-
-        if ($dateRangeSelect.selectlist('selectedItem').text != 'None'){
-            $imageFilter.html(dateTypeText + " from " + startDate + " to " + endDate + " Sort field: " + sortByFieldText + ", Sort: " + sortByTypeText);
-        }
-        else {
-            $imageFilter.html(" Sort field: " + sortByFieldText + ", Sort type: " + sortByTypeText);
-        }
-
-        if (params.queryNone === true || params.queryNone === undefined){
-            //console.log(queryNone);
-            wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
-                "=GetFeature&typeName=omar:raster_entry" +
-                //"&maxFeatures=200&outputFormat=json&filter=" +
-                "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter=" +
-                "&sortBy=" + sortByField +
-                ":" + sortByType;
-            wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
-                "=GetFeature&typeName=omar:raster_entry" +
-                    //"&maxFeatures=200&outputFormat=json&filter=" +
-                "&offset=0&maxFeatures=25&outputFormat=json&filter=" +
-                "&sortBy=" + sortByField +
-                ":" + sortByType + "&resultType=hits";
-        }
-        else {
-            wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
-                "=GetFeature&typeName=omar:raster_entry" +
-                //"&maxFeatures=200&outputFormat=json&filter=" +
-                "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter=" +
-                dateType +
-                "+between+" +
-                "'" + startDate + "'" +
-                "+and+" +
-                "'" + endDate + "'" +
-                "&sortBy=" + sortByField +
-                ":" + sortByType;
-            wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
-                "=GetFeature&typeName=omar:raster_entry" +
-                    //"&maxFeatures=200&outputFormat=json&filter=" +
-                "&outputFormat=json&filter=" +
-                dateType +
-                "+between+" +
-                "'" + startDate + "'" +
-                "+and+" +
-                "'" + endDate + "'" +
-                "&sortBy=" + sortByField +
-                ":" + sortByType + "&resultType=hits";
-        }
-        //console.log(wfsCards);
-        //console.log(wfsCardsCount);
-
-        // TODO: Add functionality to restrict the query to a spatial extent (via BBox)
-        alert(wfsCards);
-        $.ajax({
-            url: wfsCards,
-            dataType: 'jsonp',
-
-            // TODO: Refactor using promises...
-            success: function (images) {
-
-                //console.log(images);
-                //console.log(images.features.properties);
-
-                // Clear the DOM before loading the wfs cards
-                $omarImageList.empty();
-                //$imageCount.html(images.features.length);
-                $omarImageList.append(imageTemplate(images));
-
-                $('[data-toggle="tooltip"]').tooltip();
-
-            },
-            error: function(){
-                toastr.error('Error fetching OMAR Feed images.', 'Error');
-            }
-        });
-
-        $.ajax({
-            url: wfsCardsCount,
-            dataType: 'jsonp',
-            success: function (imageCount){
-                //console.log(imageCount);
-                imageCountTotal = imageCount.numberOfFeatures;
-                console.log(imageCountTotal);
-                $imageCount.html(imageCount.numberOfFeatures);
-                if (imageCountTotal > 25) {
-                    //console.log('showing pagination buttons...')
-                    $paginationButtons.show();
-                    $resultsSet.show();
-                }
-                else{
-                    $paginationButtons.hide();
-                    $resultsSet.hide();
-                }
-            }
-        })
-
-    }
-
-    function pageCardsNext(){
-
-        // TODO: Account for the result set beind smaller than 25 images
-        // (Example: a filter has been run)
-
-        console.log('imageCountTotal: ' + imageCountTotal);
-        counterStart = filterOpts.offset + 26;
-        counterEnd = filterOpts.offset + 50;
-
-        if (counterEnd >= imageCountTotal){
-            console.log('yep, counterEnd <= imageCountTotal');
-            //console.log('offset: ' + filterOpts.offset + 'imageCountTotal: ' + imageCountTotal);
-            counterEnd = imageCountTotal;
-            $nextWfsImages.addClass("disabled");
-        }
-        else{
-            console.log('nope, counterEnd < imageCountTotal');
-        }
-
-        console.log('counterStart: ' + counterStart);
-        console.log('counterEnd: ' + counterEnd);
-
-        // TODO: cache DOM elements
-        $('#startResult').html(counterStart);
-        $('#endResult').html(counterEnd);
-
-        if (counterEnd >= 25){
-            $prevWfsImages.removeClass("disabled");
-        }
-        else{
-            $prevWfsImages.addClass("disabled");
-        }
-
-        filterOpts.offset += 25;
-        getWfsCards(filterOpts);
-        $omarFeed.animate({
-            scrollTop: 0,
-        }, 'slow');
-
-    }
-    $nextWfsImages.on('click', pageCardsNext);
-
-    function pageCardsPrevious(){
-
-        // TODO: Account for the result set beind smaller than 25 images
-        // (Example: a filter has been run)
-
-        counterStart = filterOpts.offset - 24;
-        counterEnd = filterOpts.offset;
-
-        console.log(counterStart + ' ' + counterEnd);
-
-        // TODO: cache DOM elements
-        $('#startResult').html(counterStart);
-        $('#endResult').html(counterEnd);
-
-        filterOpts.offset -= 25;
-        if (filterOpts.offset === 0){
-            $prevWfsImages.addClass("disabled");
-        }
-        else{
-            $prevWfsImages.removeClass("disabled");
-        }
-
-        console.log('imageCountTotal: ' + imageCountTotal + ' offset: ' + (filterOpts.offset + 24));
-        if(imageCountTotal >= (filterOpts.offset+ 25)) {
-            $nextWfsImages.removeClass("disabled");
-        }
-
-        getWfsCards(filterOpts);
-        $omarFeed.animate({
-            scrollTop: 0,
-        }, 'slow');
-
-    }
-    $prevWfsImages.on('click', pageCardsPrevious);
+    dateYesterday = moment().subtract(1, 'days').format('MM-DD-YYYY 00:00');
+    dateYesterdayEnd = moment().subtract(1, 'days').format('MM-DD-YYYY 23:59');
+    dateLast7Days = moment().subtract(7, 'days').format('MM-DD-YYYY 00:00');
+    dateThisMonth = moment().subtract(1, 'months').format('MM-DD-YYYY 00:00');
+    dateLast3Months = moment().subtract(3, 'months').format('MM-DD-YYYY 00:00');
+    dateLast6Months = moment().subtract(6, 'months').format('MM-DD-YYYY 00:00');
 
     function getQueryType(){
         var querySelectedItem = $dateRangeSelect.selectlist('selectedItem').value;
@@ -295,7 +83,7 @@ var AppOmarWfsAdmin = (function () {
                 break;
             case "yesterday":
                 queryRange.start = dateYesterday;
-                queryRange.end = dateTodayEnd;
+                queryRange.end = dateYesterdayEnd;
                 queryRange.none = false;
                 break;
             case "last7Days":
@@ -335,6 +123,357 @@ var AppOmarWfsAdmin = (function () {
         //console.log(queryRange.start + " " + queryRange.end);
         return queryRange;
     }
+
+    $dateRangeSelect.selectlist('selectByText', 'None');
+    $customStartDateFilter.datepicker({
+        allowPastDates: true
+    });
+    $customEndDateFilter.datepicker({
+        allowPastDates: true
+    });
+
+    $wfsFilter.on('click', function(){
+        $filterWfsModal.modal('show');
+    });
+
+    function getWfsCards(params){
+
+        console.log('params.queryNone coming in is :' + params.queryNone);
+        if ($('#acquisitionDateRadioLabel').radio('isChecked')){
+            //console.log('acq. is checked');
+            filterDateType = 'Acquisition';
+        }
+        else{
+            //console.log('acq NOT checked');
+            filterDateType = 'Ingest';
+        }
+
+        var dateType = params.dateType || 'ingest_date'; // default value
+        var startDate = params.startDate // || dateLast7Days; // default value
+        var endDate = params.endDate // ||  dateToday; // default value
+        var queryNone;
+        if (params.queryNone === false){
+            queryNone = false;
+        }
+        else {
+            queryNone = true;
+        }
+        console.log('queryNone is now set as:' + queryNone);
+
+        var offset = params.offset || 0;
+        var sortByField = $sortByFieldSelect.selectlist('selectedItem').value || 'ingest_date';
+        var sortByType = $sortByTypeSelect.selectlist('selectedItem').value || 'A';
+
+        var dateTypeText = $dateRangeSelect.selectlist('selectedItem').text;
+        var sortByFieldText = $sortByFieldSelect.selectlist('selectedItem').text;
+        var sortByTypeText = $sortByTypeSelect.selectlist('selectedItem').text;
+
+        //console.log('queryNone after being called:');
+        //console.log('offset --> ' + offset);
+
+        // Feedback on the UI for the current filter
+        $imageFilterDate.html('Date = ' + filterDateType);
+        $imageFilterRange.html('Range = ' + $dateRangeSelect.selectlist('selectedItem').text);
+
+        if ($dateRangeSelect.selectlist('selectedItem').text != 'None'){
+            $imageFilter.html(dateTypeText + " from " + startDate + " to " + endDate + " Sort field: " + sortByFieldText + ", Sort: " + sortByTypeText);
+        }
+        else {
+            $imageFilter.html(" Sort field: " + sortByFieldText + ", Sort type: " + sortByTypeText);
+        }
+
+        //if (params.queryNone === true || params.queryNone === undefined){
+        if (queryNone === true){ //params.queryNone === undefined){
+            console.log('queryNone: ' + queryNone);
+            wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
+                "=GetFeature&typeName=omar:raster_entry" +
+                //"&maxFeatures=200&outputFormat=json&filter=" +
+                "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter=" +
+                "&sortBy=" + sortByField +
+                ":" + sortByType;
+            wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
+                "=GetFeature&typeName=omar:raster_entry" +
+                    //"&maxFeatures=200&outputFormat=json&filter=" +
+                "&offset=0&maxFeatures=25&outputFormat=json&filter=" +
+                "&sortBy=" + sortByField +
+                ":" + sortByType + "&resultType=hits";
+        }
+        else {
+            console.log('else queryNone value: ' + queryNone);
+            wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
+                "=GetFeature&typeName=omar:raster_entry" +
+                //"&maxFeatures=200&outputFormat=json&filter=" +
+                "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter=" +
+                dateType +
+                "+between+" +
+                "'" + startDate + "'" +
+                "+and+" +
+                "'" + endDate + "'" +
+                "&sortBy=" + sortByField +
+                ":" + sortByType;
+            wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
+                "=GetFeature&typeName=omar:raster_entry" +
+                    //"&maxFeatures=200&outputFormat=json&filter=" +
+                "&outputFormat=json&filter=" +
+                dateType +
+                "+between+" +
+                "'" + startDate + "'" +
+                "+and+" +
+                "'" + endDate + "'" +
+                "&sortBy=" + sortByField +
+                ":" + sortByType + "&resultType=hits";
+        }
+
+        console.log(wfsCards);
+        //console.log(wfsCardsCount);
+
+        // TODO: Add functionality to restrict the query to a spatial extent (via BBox)
+        $.ajax({
+            url: wfsCards,
+            dataType: 'jsonp',
+
+            // TODO: Refactor using promises...
+            success: function (images) {
+
+                console.log(images);
+                //console.log(images.features.properties);
+
+                // Clear the DOM before loading the wfs cards
+                $omarImageList.empty();
+                //$imageCount.html(images.features.length);
+                $omarImageList.append(imageTemplate(images));
+
+                $('[data-toggle="tooltip"]').tooltip();
+
+            },
+            error: function(){
+                toastr.error('Error fetching OMAR Feed images.', 'Error');
+            }
+        });
+
+        $.ajax({
+            url: wfsCardsCount,
+            dataType: 'jsonp',
+            success: function (imageCount){
+                //console.log(imageCount);
+                imageCountTotal = imageCount.numberOfFeatures;
+                console.log(imageCountTotal);
+                $imageCount.html(imageCount.numberOfFeatures);
+                if (imageCountTotal > 25) {
+                    //console.log('showing pagination buttons...')
+                    $paginationButtons.show();
+                    $resultsSet.show();
+                }
+                else{
+                    $paginationButtons.hide();
+                    $resultsSet.hide();
+                }
+            }
+        })
+
+    }
+
+    function pageCardsNext(){
+
+        //console.log('imageCountTotal: ' + imageCountTotal);
+        counterStart = filterOpts.offset + 26;
+        counterEnd = filterOpts.offset + 50;
+
+        if (counterEnd >= imageCountTotal){
+            //console.log('yep, counterEnd <= imageCountTotal');
+            //console.log('offset: ' + filterOpts.offset + 'imageCountTotal: ' + imageCountTotal);
+            counterEnd = imageCountTotal;
+            $nextWfsImages.addClass("disabled");
+        }
+        else{
+            console.log('nope, counterEnd < imageCountTotal');
+        }
+
+        //console.log('counterStart: ' + counterStart);
+        //console.log('counterEnd: ' + counterEnd);
+
+        $startResult.html(counterStart);
+        $endResult.html(counterEnd);
+
+        if (counterEnd >= 25){
+            $prevWfsImages.removeClass("disabled");
+        }
+        else{
+            $prevWfsImages.addClass("disabled");
+        }
+
+        filterOpts.offset += 25;
+
+        // Need to check to see if filter is set to 'none' here
+        if ($dateRangeSelect.selectlist('selectedItem').value === 'none') {
+            filterOpts.queryNone = true;
+        }
+
+        console.log('Next Button => filter options below:');
+        console.log(filterOpts);
+        getWfsCards(filterOpts);
+        $omarFeed.animate({
+            scrollTop: 0,
+        }, 'slow');
+
+    }
+    $nextWfsImages.on('click', pageCardsNext);
+
+    function pageCardsPrevious(){
+
+        counterStart = filterOpts.offset - 24;
+        counterEnd = filterOpts.offset;
+
+        console.log(counterStart + ' ' + counterEnd);
+
+        $startResult.html(counterStart);
+        $endResult.html(counterEnd);
+
+        filterOpts.offset -= 25;
+        if (filterOpts.offset === 0){
+            $prevWfsImages.addClass("disabled");
+        }
+        else{
+            $prevWfsImages.removeClass("disabled");
+        }
+
+        console.log('imageCountTotal: ' + imageCountTotal + ' offset: ' + (filterOpts.offset + 24));
+        if(imageCountTotal >= (filterOpts.offset+ 25)) {
+            $nextWfsImages.removeClass("disabled");
+        }
+
+        // Need to check to see if filter is set to 'none' here
+        if ($dateRangeSelect.selectlist('selectedItem').value === 'none') {
+            filterOpts.queryNone = true;
+        }
+
+        console.log('Next Button => filter options below:');
+        console.log(filterOpts);
+        getWfsCards(filterOpts);
+
+        getWfsCards(filterOpts);
+        $omarFeed.animate({
+            scrollTop: 0,
+        }, 'slow');
+
+    }
+    $prevWfsImages.on('click', pageCardsPrevious);
+
+    function resetPagination(){
+        // TODO: We need to reset all of the pagination after a filter
+        //       has been applied
+        filterOpts.offset = 0;
+        counterStart = filterOpts.offset + 26;
+        counterEnd = filterOpts.offset + 50;
+        $startResult.html('1');
+        $endResult.html('25');
+
+    }
+
+    $submitFilter.on('click', function(){
+
+        //console.log('dateToday: ' + dateToday);
+        //console.log('dateYesterday: ' + dateYesterday);
+        //console.log('dateLast7Days: ' + dateLast7Days);
+        //console.log('dateLastMonth: ' + dateLastMonth);
+        //console.log('dateLast3Months: ' + dateLast3Months);
+        //console.log('dateLast6Months: ' + dateLast6Months);
+
+        // reset the offset to 0
+        //filterOpts.offset = 0;
+        resetPagination();
+
+        var queryRange = getQueryType();
+        console.log(queryRange.none);
+
+        if ($dateRangeSelect.selectlist('selectedItem').value === 'none') {
+
+            console.log('none firing!');
+            filterOpts.queryNone = true;
+            console.log(filterOpts.queryNone);
+
+            //getWfsCards(filterOpts);
+
+        }
+        else {
+
+            console.log('we need to filter');
+            filterOpts.queryNone = false;
+            console.log(filterOpts.queryNone);
+
+            //getWfsCards(filterOpts);
+
+        }
+
+        if ($ingestDateRadioLabel.radio('isChecked')){
+
+            filterOpts.dateType = 'ingest_date';
+            filterOpts.startDate =  queryRange.start;
+            filterOpts.endDate = queryRange.end;
+            //filterOpts.queryNone = false;
+
+            //getWfsCards(filterOpts);
+
+        }
+        else {
+
+            filterOpts.dateType = 'acquisition_date';
+            filterOpts.startDate = queryRange.start;
+            filterOpts.endDate = queryRange.end;
+            filterOpts.queryNone = false;
+
+            //getWfsCards(filterOpts);
+
+        }
+        getWfsCards(filterOpts);
+
+        $filterWfsModal.modal('hide');
+
+    });
+
+    $dateRangeSelect.on('changed.fu.selectlist', function () {
+        console.log('selected list changed!');
+        if ($dateRangeSelect.selectlist('selectedItem').value === 'customDateRange'){
+            $('#customFilterDates').show();
+        }
+        else{
+            $('#customFilterDates').hide();
+        }
+    });
+
+    var $imageSource = $('#image-template').html();
+    var imageTemplate = Handlebars.compile($imageSource);
+
+    Handlebars.registerHelper("formatDate", function convertDate(date){
+
+        if(date){
+            var inDate, outDate, options;
+
+            //inDate = new Date(date);
+            //options = { year: '2-digit', month: 'numeric', day: 'numeric', hour12: 'true', hour: 'numeric', minute: 'numeric', second: 'numeric' }
+            //outDate = inDate.toLocaleDateString('en-US', options);
+            var outDate = moment(date).format('YYYY-MM-DD HH:mm:ss');
+
+            return outDate;
+        }
+        else{
+            return "Unknown";
+        }
+    });
+
+    Handlebars.registerHelper("formatString", function convertFirstToCaps(s){
+        if(s){
+            // Set to lower case and then capitalize first letter
+            return s.toLowerCase().replace( /\b./g, function(a){ return a.toUpperCase(); } );
+        }
+        else{
+            return "Unknown";
+        }
+    });
+
+    Handlebars.registerHelper('json', function(context) {
+        return JSON.stringify(context);
+    });
 
     // Adds the OMAR WMS image to the map for previewing.
     function previewLayer(obj){
@@ -488,100 +627,6 @@ var AppOmarWfsAdmin = (function () {
 
     }
 
-    $submitFilter.on('click', function(){
-
-        //console.log('dateToday: ' + dateToday);
-        //console.log('dateYesterday: ' + dateYesterday);
-        //console.log('dateLast7Days: ' + dateLast7Days);
-        //console.log('dateLastMonth: ' + dateLastMonth);
-        //console.log('dateLast3Months: ' + dateLast3Months);
-        //console.log('dateLast6Months: ' + dateLast6Months);
-
-        // reset the offset to 0
-        filterOpts.offset = 0;
-
-        var queryRange = getQueryType();
-        //console.log(queryRange.none);
-
-        if ($dateRangeSelect.selectlist('selectedItem').value === 'none') {
-            console.log('none firing!');
-            filterOpts.queryNone = true;
-            console.log(filterOpts.queryNone);
-
-            getWfsCards(filterOpts);
-
-        }
-
-        if ($ingestDateRadioLabel.radio('isChecked')){
-
-            filterOpts.dateType = 'ingest_date';
-            filterOpts.startDate =  queryRange.start;
-            filterOpts.endDate = queryRange.end;
-            filterOpts.queryNone = false;
-
-            getWfsCards(filterOpts);
-
-        }
-        else {
-
-            filterOpts.dateType = 'acquisition_date';
-            filterOpts.startDate = queryRange.start;
-            filterOpts.endDate = queryRange.end;
-            filterOpts.queryNone = false;
-
-            getWfsCards(filterOpts);
-
-        }
-
-
-
-        $filterWfsModal.modal('hide');
-
-    });
-
-    $dateRangeSelect.on('changed.fu.selectlist', function () {
-        console.log('selected list changed!');
-        if ($dateRangeSelect.selectlist('selectedItem').value === 'customDateRange'){
-            $('#customFilterDates').show();
-        }
-        else{
-            $('#customFilterDates').hide();
-        }
-    });
-
-    var $imageSource = $('#image-template').html();
-    var imageTemplate = Handlebars.compile($imageSource);
-
-    Handlebars.registerHelper("formatDate", function convertDate(date){
-
-        if(date){
-            var inDate, outDate, options;
-
-            //inDate = new Date(date);
-            //options = { year: '2-digit', month: 'numeric', day: 'numeric', hour12: 'true', hour: 'numeric', minute: 'numeric', second: 'numeric' }
-            //outDate = inDate.toLocaleDateString('en-US', options);
-            var outDate = moment(date).format('YYYY-MM-DD HH:mm:ss');
-
-            return outDate;
-        }
-        else{
-            return "Unknown";
-        }
-    });
-
-    Handlebars.registerHelper("formatString", function convertFirstToCaps(s){
-        if(s){
-            // Set to lower case and then capitalize first letter
-            return s.toLowerCase().replace( /\b./g, function(a){ return a.toUpperCase(); } );
-        }
-        else{
-            return "Unknown";
-        }
-    });
-
-    Handlebars.registerHelper('json', function(context) {
-        return JSON.stringify(context);
-    });
 
     return {
         initialize: function (initParams) {
