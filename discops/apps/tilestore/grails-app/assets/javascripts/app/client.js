@@ -16,6 +16,9 @@
 //= require client/geopoint.js
 //= require client/toastr.js
 //= require common/jquery.fileDownload.js
+//= require common/jquery.ui.widget.js
+//= require common/jquery.iframe-transport.js
+//= require common/jquery.fileupload.js
 
 /* App specific libs */
 //= require client/addLayersClient.js
