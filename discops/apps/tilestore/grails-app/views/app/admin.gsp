@@ -458,6 +458,7 @@
 
                     <!-- Custom date pickers -->
                     <div id="customFilterDates" style="display: none">
+                    <label class="control-label" for="customStartDateFilter">Start Date</label>
                         <div class="datepicker fuelux" id="customStartDateFilter">
                             <div class="input-group">
                                 <input class="form-control" id="customStartDateFilterInput" type="text" />
@@ -538,6 +539,7 @@
                             </div>
                         </div>
                         <br>
+                        <label class="control-label" for="customEndDateFilter">End Date</label>
                         <div class="datepicker fuelux" id="customEndDateFilter">
                             <div class="input-group">
                                 <input class="form-control" id="customEndDateFilterInput" type="text" />
@@ -730,68 +732,11 @@
 
                         <div class="col-md-3 col-sm-3">
 
-                            %{--<label class="control-label" for="minIngestLevelSpin">Min</label>--}%
-                            %{--<div class="controls">--}%
-                                %{--<div class="spinbox" id="minIngestLevelSpin">--}%
-                                    %{--<input type="text" class="form-control input-mini spinbox-input" value="1" >--}%
-                                    %{--<div class="spinbox-buttons btn-group btn-group-vertical">--}%
-                                        %{--<button class="btn btn-default spinbox-up btn-xs">--}%
-                                            %{--<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>--}%
-                                        %{--</button>--}%
-                                        %{--<button class="btn btn-default spinbox-down btn-xs">--}%
-                                            %{--<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>--}%
-                                        %{--</button>--}%
-                                    %{--</div>--}%
-                                    %{--<span class="help-block">Minimum Ingest Level</span>--}%
-                                %{--</div>--}%
-                            %{--</div>--}%
-
-                            %{--<label for="minIngestLevel">Minimum Level</label>--}%
-                            %{--<select id="minIngestLevel" class="form-control selectpicker">--}%
-                            %{--</select>--}%
-
-                            %{--<label class="control-label" for="minIngestLevelSelect">Minimum Level</label>--}%
-                            %{--<div class="btn-group selectlist" style="width: 100%"--}%
-                                 %{--data-initialize="selectlist"--}%
-                                 %{--id="minIngestLevelSelect" >--}%
-                                %{--<button class="btn btn-default dropdown-toggle" style="width: inherit"--}%
-                                        %{--data-toggle="dropdown"--}%
-                                        %{--type="button">--}%
-                                    %{--<span class="selected-label">Min. Level</span>--}%
-                                    %{--<span class="caret"></span>--}%
-                                %{--</button>--}%
-                                %{--<ul class="dropdown-menu" role="menu" style="width:100%;">--}%
-                                    %{--<li data-value="none"><a href="#">None</a></li>--}%
-                                    %{--<li data-value="some"><a href="#">Some</a></li>--}%
-                                %{--</ul>--}%
-                                %{--<input class="hidden hidden-field" name="minIngestLevelSelect" readonly="readonly"--}%
-                                       %{--aria-hidden="true" type="text">--}%
-                            %{--</div>--}%
-
                             <label for="minIngestLevel">Minimum Level</label>
                             <select id="minIngestLevel" class="form-control"></select>
 
                         </div>
                         <div class="col-md-3 col-sm-3">
-                            %{--<label class="control-label" for="maxIngestLevelSpin">Max</label>--}%
-                            %{--<div class="controls">--}%
-                                %{--<div class="spinbox" id="maxIngestLevelSpin">--}%
-                                    %{--<input type="text" class="form-control input-mini spinbox-input" value="1" >--}%
-                                    %{--<div class="spinbox-buttons btn-group btn-group-vertical">--}%
-                                        %{--<button class="btn btn-default spinbox-up btn-xs">--}%
-                                            %{--<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>--}%
-                                        %{--</button>--}%
-                                        %{--<button class="btn btn-default spinbox-down btn-xs">--}%
-                                            %{--<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>--}%
-                                        %{--</button>--}%
-                                    %{--</div>--}%
-                                    %{--<span class="help-block">Maximum Ingest Level</span>--}%
-                                %{--</div>--}%
-                            %{--</div>--}%
-
-                            %{--<label for="maxIngestLevel">Maximum Level</label>--}%
-                            %{--<select id="maxIngestLevel" class="form-control selectpicker">--}%
-                            %{--</select>--}%
 
                             <label for="maxIngestLevel">Maximum Level</label>
                             <select id="maxIngestLevel" class="form-control"></select>
@@ -842,12 +787,12 @@
                 <a href="${grailsApplication.config.omar.url}/mapView/imageSpace?layers={{properties.id}}"
                    target="_blank"><i id="viewInOmar" class="fa fa-globe fa-lg" data-toggle="tooltip" data-placement="bottom"
                                       title="View image in OMAR"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <a target="_blank"><i id="ingestToCurrentTileLayer"
-                                      data-name="{{properties.id}}"
-                                      onclick="AppIngestTileAdmin.ingestModalShow({{json this}})"
-                                      class="fa fa-sign-in fa-lg ingestToCurrentTileLayer" data-toggle="tooltip"
-                                      data-placement="bottom"
-                                      title="Ingest image into currently selected tile layer"></i></a>
+                %{--<a target="_blank" id="ingestImageFromCard" style="display: none;"><i id="ingestToCurrentTileLayer"--}%
+                                      %{--data-name="{{properties.id}}"--}%
+                                      %{--onclick="AppIngestTileAdmin.ingestModalShow({{json this}})"--}%
+                                      %{--class="fa fa-sign-in fa-lg ingestToCurrentTileLayer" data-toggle="tooltip"--}%
+                                      %{--data-placement="bottom"--}%
+                                      %{--title="Ingest image into currently selected tile layer"></i></a>--}%
                 <br>
                 <br>
             </div>

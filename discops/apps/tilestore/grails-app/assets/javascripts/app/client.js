@@ -16,12 +16,16 @@
 //= require client/geopoint.js
 //= require client/toastr.js
 //= require common/jquery.fileDownload.js
+//= require common/jquery.ui.widget.js
+//= require common/jquery.iframe-transport.js
+//= require common/jquery.fileupload.js
 
 /* App specific libs */
 //= require client/addLayersClient.js
 //= require client/appClient.js
 //= require client/createProductClient.js
 //= require client/layerManagerClient.js
+//= require client/cutByFileClient.js
 //= require common/coordinate.js
 //= require common/zoomTo.js
 //= require client/sidebars.js
