@@ -3,8 +3,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+ <link rel="shortcut icon" href="${assetPath(src: 'favicon.ico')}" type="image/x-icon">
 <asset:stylesheet src="app/diskCachePage.css"/>
-<title>Tilestore <g:meta name="app.version"/>: Disk Cache Locations</title>
+<title>Tilestore Disk Cache</title>
 <asset:javascript src="app/diskCache.js"/>
 <style type="text/css">
 
