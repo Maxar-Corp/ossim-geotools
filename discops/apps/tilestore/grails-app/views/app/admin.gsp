@@ -33,8 +33,8 @@
                 </button>
 
                 <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left"
-                                                                                   style="width: 40px; height: 40px; padding-top: 10px; margin-left: 60px;"
-                                                                                   src="app/rbt_symbol.png"
+                                                                                   style="padding-top: 5px; margin-left: 60px;"
+                                                                                   src="logo_nav.png"
                                                                                    alt="RBT Logo"/></g:link>
                 <a class="navbar-brand">&nbsp;&nbsp;Tilestore Administrator</a>
             </div>
