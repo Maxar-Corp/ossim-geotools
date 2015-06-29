@@ -24,7 +24,6 @@
 //= require client/addLayersClient.js
 //= require client/appClient.js
 //= require client/createProductClient.js
-//= require client/client.layer-manager.js
 //= require client/cutByFileClient.js
 //= require common/coordinate.js
 //= require common/zoomTo.js
