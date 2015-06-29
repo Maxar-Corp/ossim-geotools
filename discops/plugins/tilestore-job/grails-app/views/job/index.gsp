@@ -3,9 +3,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<asset:stylesheet src="app/jobPage.css"/>
+    <link rel="shortcut icon" href="${assetPath(src: 'favicon.ico')}" type="image/x-icon">
+    <asset:stylesheet src="app/jobPage.css"/>
 
-<title>Tilestore <g:meta name="app.version"/>: Job Page</title>
+    <title>Tilestore <g:meta name="app.version"/>: Job Page</title>
 
 <asset:javascript src="app/job.js"/>
 
