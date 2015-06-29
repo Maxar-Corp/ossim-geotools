@@ -6,7 +6,7 @@
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
-
+    <link rel="shortcut icon" href="${assetPath(src: 'favicon.ico')}" type="image/x-icon">
     <title>Tilestore Home</title>
 
     <asset:stylesheet src="app/main.css"/>
@@ -33,6 +33,10 @@
         </p>
     </div>
     <div class="row">
+        <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left"
+                                                                           style="width: 100px; height: 100px; padding-top: 10px; padding-right: 10px; margin-left: 60px;"
+                                                                           src="/logo.png"
+                                                                           alt="Tilestore Logo"/></g:link>
         <h1>Tilestore</h1>
         <em><h4 style="color:#337ab7">Web services for managing geospatial imagery within PostgreSQL and
             Accumulo</h4></em>
