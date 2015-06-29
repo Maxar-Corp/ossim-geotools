@@ -98,13 +98,6 @@ var AppAdmin = (function () {
         target: 'mapTile'
     });
 
-
-
-    //Add Full Screen
-    //var fullScreenControl = new ol.control.FullScreen();
-    //mapOmar.addControl(fullScreenControl);
-    //mapTile.addControl(fullScreenControl);
-    //
     // Add Zoom Slider
     var zoomsliderMapOmar = new ol.control.ZoomSlider();
     var zoomsliderMapTile = new ol.control.ZoomSlider();
@@ -127,25 +120,19 @@ var AppAdmin = (function () {
     function switchCurrentLayer(removeOldLayer, addNewLayer){
 
         mapTile.removeLayer(removeOldLayer);
-        //TODO: Refactor this so that it works similar to the previewLayer
-        //      function in omarWfs.js.  We should really be recreating
-        //      a new addNewLayer each time this function is fired.  It
-        //      should be created once, and the source should be updated
-        //      thereafter.
-
 
         //console.log('Now loading: ' + addNewLayer);
 
-        console.message()
-            .span({
-                color: '#337ab7', fontSize: 14
-            })
-            .text('(appAdmin.js 144): ')
-            .spanEnd()
-            .text('Now loading: ' + addNewLayer, {
-                color: 'green', fontSize: 14
-            })
-            .print();
+        //console.message()
+        //    .span({
+        //        color: '#337ab7', fontSize: 14
+        //    })
+        //    .text('(appAdmin.js 144): ')
+        //    .spanEnd()
+        //    .text('Now loading: ' + addNewLayer, {
+        //        color: 'green', fontSize: 14
+        //    })
+        //    .print();
 
         addNewLayer = new ol.layer.Tile( {
             opacity: 1.0,
@@ -206,7 +193,6 @@ var AppAdmin = (function () {
     $(window).resize(function(){
         resizeMapRow();
     });
-
 
     // End map stuff #################################################################
 
@@ -610,7 +596,7 @@ var AppAdmin = (function () {
             var source = new ol.source.TileWMS( {
                 url: loadParams.tilestoreWmsURL,
                 params: {'LAYERS': currentTileLayer, 'TILED': true, 'VERSION': '1.1.1'}
-            } )
+            });
 
             function addInitialLayer(){
 
@@ -618,20 +604,17 @@ var AppAdmin = (function () {
                     opacity: 1.0,
                     source: source,
                     name: currentTileLayer,
-                    //imageLoadFunction: function(){
-                    //    alert('hello!');
-                    //}
                 } );
-                source.on('tileloadstart', function(event) {
-                    //progress.addLoaded();
-                    //console.log('tile load started...');
-                    //$('#mapTileSpinner').show();
-                });
-                source.on('tileloadend', function(event) {
-                    //progress.addLoaded();
-                    //console.log('all tiles loaded...');
-                    //$('#mapTileSpinner').hide();
-                });
+                //source.on('tileloadstart', function(event) {
+                //    //progress.addLoaded();
+                //    //console.log('tile load started...');
+                //    //$('#mapTileSpinner').show();
+                //});
+                //source.on('tileloadend', function(event) {
+                //    //progress.addLoaded();
+                //    //console.log('all tiles loaded...');
+                //    //$('#mapTileSpinner').hide();
+                //});
                 mapTile.addLayer(initLayer);
 
             }
