@@ -134,6 +134,20 @@ class TilestoreDatabaseFilters {
 
             }
         }
+       rename(controller:"layerManager", action:"convertGeometry" ) {
+          before = {
+             response.setHeader( "Access-Control-Allow-Methods", "POST, GET" );
+             //println "before: ${params}"
+             new ConvertGeometryCommand().fixParamNames( params )
+             //println "after: ${params}"
+          }
+          after = { Map model ->
+
+          }
+          afterView = { Exception e ->
+
+          }
+       }
 
         all(controller:'*', action:'*') {
             before = {
