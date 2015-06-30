@@ -87,9 +87,6 @@ grails.project.dependency.resolution = {
         // runtime 'mysql:mysql-connector-java:5.1.27'
         runtime 'org.postgresql:postgresql:9.3-1103-jdbc41'
         test "org.grails:grails-datastore-test-support:1.0.2-grails-2.4"
-        compile( 'org.ossim:ossim-common-libs:1.0-SNAPSHOT' ) {
-            excludes 'slf4j-log4j12', 'ehcache', 'javassist'
-        }
         runtime 'org.geotools:gt-imagemosaic-jdbc:13.0'
     }
 
