@@ -29,6 +29,8 @@ var CreateProductClient = (function () {
     var $submitAoi = $('#submitAoi');
     var $cancelAoi = $('#cancelAoi');
 
+    var product; // holds the definitions/parameters
+
     var jobId;
 
     var output, outputWkt, formatWkt;
@@ -63,6 +65,67 @@ var CreateProductClient = (function () {
     // by using the <ALT> and <SHIFT> key and defining a box
     AppClient.map.addInteraction(dragBoxControl);
 
+    function createAoi(wkt){
+        $aoiJobInfo.hide();
+
+        //console.log($('#tileLayerSelect').val());
+        var gpkgInputTileLayer = $tileLayerSelect.val();
+        $.ajax({
+            url: urlLayerActualBounds + "?layer=" + gpkgInputTileLayer + "&aoi=" + wkt,
+            type: 'GET',
+            dataType: 'json',
+            // TODO: Add $promise function for success
+            success: function (data) {
+                //console.log(data);
+                $aoiLod.html(data.minLevel + ' to ' + data.maxLevel);
+
+                var min = data.minLevel;
+                var max = data.maxLevel;
+
+                $productMinLevel.empty();
+                $productMaxLevel.empty();
+
+                //console.log('min: ' + min);
+
+                for (min; min <= max; min++) {
+                    //console.log('min: ' + min);
+                    $productMinLevel.append('<option value="' + min + '">' + min + '</option>');
+                    $productMaxLevel.append('<option value="' + min + '">' + min + '</option>');
+                    $productMinLevel.selectpicker('refresh');
+                    $productMaxLevel.selectpicker('val', data.maxLevel);
+                    $productMaxLevel.selectpicker('refresh');
+
+                }
+
+            },
+            // TODO: Add $promise function for error
+            error: function (jqXHR, exception) {
+                if (jqXHR.status === 0) {
+                    alert('Not connected.\n Verify Network.');
+                }
+                else if (jqXHR.status == 404) {
+                    alert('Requested page not found. [404] ' + urlLayerActualBounds);
+                }
+                else if (jqXHR.status == 500) {
+                    alert('Internal Server Error [500].');
+                }
+                else if (exception === 'parsererror') {
+                    alert('Requested JSON parse failed.');
+                }
+                else if (exception === 'timeout') {
+                    alert('Time out error.');
+                }
+                else if (exception === 'abort') {
+                    alert('Ajax request aborted.');
+                }
+                else {
+                    alert('Uncaught Error.\n' + jqXHR.responseText);
+                }
+            }
+        });
+
+    }
+
     return {
         initialize: function (initParams) {
             //console.log(initParams);
@@ -76,6 +139,7 @@ var CreateProductClient = (function () {
                 $exportProductModal.modal('show');
 
             });
+
 
             dragBoxControl.on('boxend', function () {
 
@@ -96,62 +160,63 @@ var CreateProductClient = (function () {
                 aoiFeatureOverlay.addFeature(aoiFeature);
 
                 //console.log($('#tileLayerSelect').val());
-                var gpkgInputTileLayer = $tileLayerSelect.val();
-
+                //var gpkgInputTileLayer = $tileLayerSelect.val();
                 // Use an ajax request to pull the level of detail and the bounding box for the AOI
-                $.ajax({
-                    url: urlLayerActualBounds + "?layer=" + gpkgInputTileLayer + "&aoi=" + outputWkt,
-                    type: 'GET',
-                    dataType: 'json',
-                    // TODO: Add $promise function for success
-                    success: function (data) {
-                        //console.log(data);
-                        $aoiLod.html(data.minLevel + ' to ' + data.maxLevel);
+                //$.ajax({
+                //    url: urlLayerActualBounds + "?layer=" + gpkgInputTileLayer + "&aoi=" + outputWkt,
+                //    type: 'GET',
+                //    dataType: 'json',
+                //    // TODO: Add $promise function for success
+                //    success: function (data) {
+                //        //console.log(data);
+                //        $aoiLod.html(data.minLevel + ' to ' + data.maxLevel);
+                //
+                //        var min = data.minLevel;
+                //        var max = data.maxLevel;
+                //
+                //        $productMinLevel.empty();
+                //        $productMaxLevel.empty();
+                //
+                //        //console.log('min: ' + min);
+                //
+                //        for (min; min <= max; min++) {
+                //            //console.log('min: ' + min);
+                //            $productMinLevel.append('<option value="' + min + '">' + min + '</option>');
+                //            $productMaxLevel.append('<option value="' + min + '">' + min + '</option>');
+                //            $productMinLevel.selectpicker('refresh');
+                //            $productMaxLevel.selectpicker('val', data.maxLevel);
+                //            $productMaxLevel.selectpicker('refresh');
+                //
+                //        }
+                //
+                //    },
+                //    // TODO: Add $promise function for error
+                //    error: function (jqXHR, exception) {
+                //        if (jqXHR.status === 0) {
+                //            alert('Not connected.\n Verify Network.');
+                //        }
+                //        else if (jqXHR.status == 404) {
+                //            alert('Requested page not found. [404] ' + urlLayerActualBounds);
+                //        }
+                //        else if (jqXHR.status == 500) {
+                //            alert('Internal Server Error [500].');
+                //        }
+                //        else if (exception === 'parsererror') {
+                //            alert('Requested JSON parse failed.');
+                //        }
+                //        else if (exception === 'timeout') {
+                //            alert('Time out error.');
+                //        }
+                //        else if (exception === 'abort') {
+                //            alert('Ajax request aborted.');
+                //        }
+                //        else {
+                //            alert('Uncaught Error.\n' + jqXHR.responseText);
+                //        }
+                //    }
+                //});
 
-                        var min = data.minLevel;
-                        var max = data.maxLevel;
-
-                        $productMinLevel.empty();
-                        $productMaxLevel.empty();
-
-                        //console.log('min: ' + min);
-
-                        for (min; min <= max; min++) {
-                            //console.log('min: ' + min);
-                            $productMinLevel.append('<option value="' + min + '">' + min + '</option>');
-                            $productMaxLevel.append('<option value="' + min + '">' + min + '</option>');
-                            $productMinLevel.selectpicker('refresh');
-                            $productMaxLevel.selectpicker('val', data.maxLevel);
-                            $productMaxLevel.selectpicker('refresh');
-
-                        }
-
-                    },
-                    // TODO: Add $promise function for error
-                    error: function (jqXHR, exception) {
-                        if (jqXHR.status === 0) {
-                            alert('Not connected.\n Verify Network.');
-                        }
-                        else if (jqXHR.status == 404) {
-                            alert('Requested page not found. [404] ' + urlLayerActualBounds);
-                        }
-                        else if (jqXHR.status == 500) {
-                            alert('Internal Server Error [500].');
-                        }
-                        else if (exception === 'parsererror') {
-                            alert('Requested JSON parse failed.');
-                        }
-                        else if (exception === 'timeout') {
-                            alert('Time out error.');
-                        }
-                        else if (exception === 'abort') {
-                            alert('Ajax request aborted.');
-                        }
-                        else {
-                            alert('Uncaught Error.\n' + jqXHR.responseText);
-                        }
-                    }
-                });
+                createAoi(outputWkt);
 
                 $createGp.removeClass("disabled");
 
@@ -161,7 +226,7 @@ var CreateProductClient = (function () {
 
                 $prodcutProgress.show();
 
-                var product = {
+                product = {
                     type:"GeopackageExport",
                     layer:"reference", // from layer selectlist
                     aoi: outputWkt,
@@ -372,6 +437,9 @@ var CreateProductClient = (function () {
 
         },
         aoiStyle: aoiStyle,
-        aoiFeatureOverlay: aoiFeatureOverlay
+        aoiFeatureOverlay: aoiFeatureOverlay,
+        product: product,
+        $createGp: $createGp,
+        createAoi: createAoi
     };
 })();

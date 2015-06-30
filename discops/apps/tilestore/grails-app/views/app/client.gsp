@@ -29,7 +29,7 @@
                     </button>
                     <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left"
                                                                                        style="padding-top: 5px; margin-left: 60px;" src="logo_nav.png" alt="RBT Logo"/></g:link>
-                    <a class="navbar-brand">&nbsp;&nbsp;Tiles Viewer</a>
+                    <a class="navbar-brand">&nbsp;&nbsp;Tilestore Viewer</a>
                 </div>
 
                 <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
@@ -217,7 +217,7 @@
                         <div class="container">
                             <div class="row col-sm-6 col-md-6">
 
-                                < id="uploadCutByFormElements">
+                                <div id="uploadCutByFormElements">
                                     <p>Select a KML or shapefile, and upload the server to perform a cut for the
                                     specified
                                     geometries contained in the file.</p>
