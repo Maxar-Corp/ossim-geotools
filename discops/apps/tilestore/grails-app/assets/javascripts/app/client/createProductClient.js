@@ -56,12 +56,7 @@ var CreateProductClient = (function () {
     // A DragBox interaction used to pass the geometry to the aoiFeatureOverlay
     var dragBoxControl = new ol.interaction.DragBox({
         condition: ol.events.condition.altShiftKeysOnly,
-        style: new ol.style.Style({
-            stroke: new ol.style.Stroke({
-                color: '#ffcc33',
-                width: 5
-            })
-        })
+        style: aoiStyle
     });
 
     // Add the DragBox control upon app load.  The interaction is available
@@ -375,6 +370,8 @@ var CreateProductClient = (function () {
 
             $('[data-toggle="tooltip"]').tooltip();
 
-        }
+        },
+        aoiStyle: aoiStyle,
+        aoiFeatureOverlay: aoiFeatureOverlay
     };
 })();
