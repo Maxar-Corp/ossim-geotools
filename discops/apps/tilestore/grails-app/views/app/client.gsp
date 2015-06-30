@@ -216,10 +216,11 @@
                         <div class="container">
                             <div class="row col-sm-6 col-md-6">
 
-                                <div id="uploadCutByFormElements">
+                                < id="uploadCutByFormElements">
                                     <p>Select a KML or shapefile, and upload the server to perform a cut for the
                                     specified
                                     geometries contained in the file.</p>
+                                    <input id="targetEpsg" type="text" name="targetEpsg" value="EPSG:3857">
                                     <!-- The fileinput-button span is used to style the file input field as button -->
                                     <span class="btn btn-success fileinput-button">
                                         <i class="glyphicon glyphicon-plus"></i>
