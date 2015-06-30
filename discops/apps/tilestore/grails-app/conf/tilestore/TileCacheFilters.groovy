@@ -23,6 +23,20 @@ class TileCacheFilters
       }
 
     }
+    convertCut( controller:"layerManager", action: "convertCut") {
+      before = {
+        response.setHeader( "Access-Control-Allow-Origin", "*" );
+        response.setHeader( "Access-Control-Allow-Methods", "POST" );
+        response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
+      }
+      after = { Map model ->
+
+      }
+      afterView = { Exception e ->
+
+      }
+
+    }
 
 
   }
