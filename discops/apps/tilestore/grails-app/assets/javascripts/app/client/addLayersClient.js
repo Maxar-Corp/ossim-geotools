@@ -59,17 +59,6 @@ var AddLayerClient = (function () {
     $tileLayerSelect.on('change', function() {
          console.log('select on change:' + $tileLayerSelect.val())
 
-        //console.message()
-        //    .span({
-        //        color: '#337ab7', fontSize: 14
-        //    })
-        //    .text('(appAdmin.js 241): ')
-        //    .spanEnd()
-        //    .text('$tileLayerSelect.on.change value: ' + $tileLayerSelect.val(), {
-        //        color: 'green', fontSize: 14
-        //    })
-        //    .print();
-
         switchCurrentLayer(initLayer, $tileLayerSelect.val());
     });
 
