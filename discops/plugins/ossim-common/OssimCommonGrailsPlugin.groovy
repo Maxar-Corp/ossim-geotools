@@ -1,3 +1,5 @@
+import java.util.zip.ZipInputStream
+
 class OssimCommonGrailsPlugin {
     // the plugin version
     def version = "0.1"
@@ -46,6 +48,56 @@ Brief summary/description of the plugin.
 
     def doWithDynamicMethods = { ctx ->
         // TODO Implement registering dynamic methods to classes (optional)
+        File.metaClass.unzip = { String dest ->
+            //in metaclass added methods, 'delegate' is the object on which
+            //the method is called. Here it's the file to unzip
+            def result = new ZipInputStream(new FileInputStream(delegate))
+            def destFile = new File(dest)
+            if(dest)
+            {
+                if(!destFile.exists())
+                {
+                    destFile.mkdirs();
+                }
+            }
+            result.withStream{
+                def entry
+                while(entry = result.nextEntry)
+                {
+                    if (!entry.isDirectory())
+                    {
+                        if(dest)
+                        {
+                            new File(dest + File.separator + entry.name).parentFile?.mkdirs()
+                        }
+                        else
+                        {
+                            new File(entry.name).parentFile?.mkdirs()
+                        }
+                        def output = new FileOutputStream(dest + File.separator
+                                + entry.name)
+                        output.withStream{
+                            int len = 0;
+                            byte[] buffer = new byte[4096]
+                            while ((len = result.read(buffer)) > 0){
+                                output.write(buffer, 0, len);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if(dest)
+                        {
+                            new File(dest + File.separator + entry.name).mkdir()
+                        }
+                        else
+                        {
+                            new File(entry.name).mkdir()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     def doWithApplicationContext = { ctx ->

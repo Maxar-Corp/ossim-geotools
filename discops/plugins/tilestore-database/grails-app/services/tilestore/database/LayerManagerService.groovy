@@ -4,6 +4,9 @@ import geoscript.GeoScript
 import geoscript.geom.Bounds
 import geoscript.geom.Geometry
 import geoscript.geom.Polygon
+import geoscript.layer.Layer
+import geoscript.layer.Shapefile
+import geoscript.layer.io.KmlReader
 import geoscript.proj.Projection
 import grails.converters.JSON
 import grails.transaction.Transactional
@@ -14,13 +17,18 @@ import joms.geotools.tileapi.hibernate.controller.TileCacheServiceDAO
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
 import joms.geotools.web.HttpStatus
 import joms.oms.ossimGpt
+import liquibase.util.file.FilenameUtils
 import org.geotools.factory.Hints
+import org.ossim.common.GeoscriptUtil
 import org.springframework.beans.factory.InitializingBean
+import org.springframework.web.multipart.commons.CommonsMultipartFile
 import tilestore.job.CreateJobCommand
 import tilestore.job.JobStatus
 
+import javax.servlet.http.HttpServletRequest
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.LinkedBlockingQueue
+import groovy.io.FileType
 
 @Transactional
 class LayerManagerService implements InitializingBean
@@ -39,28 +47,28 @@ class LayerManagerService implements InitializingBean
 
    void afterPropertiesSet() throws Exception
    {
-      Hints.putSystemDefault( Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE )
+      Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE)
 
-      if ( ! grailsApplication.config.tilestore.disableAccumulo  )
+      if (!grailsApplication.config.tilestore.disableAccumulo)
       {
          hibernate = new TileCacheHibernate()
          dataSourceProps = grailsApplication.config.dataSource.toProperties()
-         hibernate.initialize( [
-                 dbCreate: dataSourceProps.dbCreate,
-                 driverClassName: dataSourceProps.driverClassName,
-                 username: dataSourceProps.username,
-                 password: dataSourceProps.password,
-                 url: dataSourceProps.url,
+         hibernate.initialize([
+                 dbCreate          : dataSourceProps.dbCreate,
+                 driverClassName   : dataSourceProps.driverClassName,
+                 username          : dataSourceProps.username,
+                 password          : dataSourceProps.password,
+                 url               : dataSourceProps.url,
                  accumuloInstanceName: grailsApplication.config.accumulo.instance,
-                 accumuloPassword: grailsApplication.config.accumulo.password,
-                 accumuloUsername: grailsApplication.config.accumulo.username,
+                 accumuloPassword  : grailsApplication.config.accumulo.password,
+                 accumuloUsername  : grailsApplication.config.accumulo.username,
                  accumuloZooServers: grailsApplication.config.accumulo.zooServers
-         ] )
-         daoTileCacheService = hibernate.applicationContext.getBean( "tileCacheServiceDAO" );
+         ])
+         daoTileCacheService = hibernate.applicationContext.getBean("tileCacheServiceDAO");
       }
 
-      getMapBlockingQueue = new LinkedBlockingQueue( grailsApplication.config.tilestore.maxTileConnections ?: 20 )
-      ( 0..<10 ).each { getMapBlockingQueue.put( it ) }
+      getMapBlockingQueue = new LinkedBlockingQueue(grailsApplication.config.tilestore.maxTileConnections ?: 20)
+      (0..<10).each { getMapBlockingQueue.put(it) }
 
       // println "DATA SOURCE ===== ${dataSource}"
       // println "DATA SOURCE UNPROXIED ===== ${dataSourceUnproxied}"
@@ -81,52 +89,51 @@ class LayerManagerService implements InitializingBean
    def createOrUpdate(CreateLayerCommand cmd)
    {
       def result = [status: HttpStatus.OK,
-                    data: null,
+                    data  : null,
                     message: ""]
 
-      result.data = daoTileCacheService.getLayerInfoByName( cmd.name )
-      if ( !result.data )
+      result.data = daoTileCacheService.getLayerInfoByName(cmd.name)
+      if (!result.data)
       {
          result.data = daoTileCacheService.createOrUpdateLayer(
-                 new TileCacheLayerInfo( name: cmd.name,
+                 new TileCacheLayerInfo(name: cmd.name,
                          bounds: cmd.clip,
                          epsgCode: cmd.epsgCode,
                          tileHeight: cmd.tileHeight,
                          tileWidth: cmd.tileWidth,
                          minLevel: cmd.minLevel,
-                         maxLevel: cmd.maxLevel )
+                         maxLevel: cmd.maxLevel)
          )
-      }
-      else
+      } else
       {
-         if ( cmd.bbox != null )
+         if (cmd.bbox != null)
          {
             result.data.bounds = cmd.clip
          }
-         if ( cmd.tileWidth != null )
+         if (cmd.tileWidth != null)
          {
             result.data.tileWidth = cmd.tileWidth
          }
-         if ( cmd.tileHeight != null )
+         if (cmd.tileHeight != null)
          {
             result.data.tileHeight = cmd.tileHeight
          }
-         if ( cmd.epsgCode != null )
+         if (cmd.epsgCode != null)
          {
             result.data.epsgCode = cmd.epsgCode
          }
-         if ( cmd.minLevel != null )
+         if (cmd.minLevel != null)
          {
             result.data.minLevel = cmd.minLevel
          }
-         if ( cmd.maxLevel != null )
+         if (cmd.maxLevel != null)
          {
             result.data.maxLevel = cmd.maxLevel
          }
 
-         result.data = daoTileCacheService.createOrUpdateLayer( result.data )
+         result.data = daoTileCacheService.createOrUpdateLayer(result.data)
       }
-      if ( !result.data )
+      if (!result.data)
       {
          result.status = HttpStatus.NOT_FOUND
          result.message = "Unable to update or create layer with name ${cmd.name}"
@@ -136,46 +143,44 @@ class LayerManagerService implements InitializingBean
 
    def create(CreateLayerCommand cmd)
    {
-      def result = [data: null,
+      def result = [data  : null,
                     status: HttpStatus.OK,
                     message: ""]
-      def layer = daoTileCacheService.getLayerInfoByName( cmd.name )
-      if ( !layer )
+      def layer = daoTileCacheService.getLayerInfoByName(cmd.name)
+      if (!layer)
       {
          TileCacheLayerInfo info = daoTileCacheService.createOrUpdateLayer(
-                 new TileCacheLayerInfo( name: cmd.name,
+                 new TileCacheLayerInfo(name: cmd.name,
                          bounds: cmd.clip,
                          epsgCode: cmd.epsgCode,
                          tileHeight: cmd.tileHeight,
                          tileWidth: cmd.tileWidth,
                          minLevel: cmd.minLevel,
-                         maxLevel: cmd.maxLevel )
+                         maxLevel: cmd.maxLevel)
          )
 
-         if ( info )
+         if (info)
          {
-            Bounds b = new Polygon( info.bounds ).bounds
+            Bounds b = new Polygon(info.bounds).bounds
 
-            result.data = [name: info.name,
-                           bbox: "${b.minX},${b.minY},${b.maxX},${b.maxY}", //new Projection( params.epsgCode ).bounds.polygon.g,
-                           epsgCode: info.epsgCode,
+            result.data = [name     : info.name,
+                           bbox     : "${b.minX},${b.minY},${b.maxX},${b.maxY}", //new Projection( params.epsgCode ).bounds.polygon.g,
+                           epsgCode : info.epsgCode,
                            tileHeight: info.tileHeight,
                            tileWidth: info.tileWidth,
-                           minLevel: info.minLevel,
-                           maxLevel: info.maxLevel]
-         }
-         else
+                           minLevel : info.minLevel,
+                           maxLevel : info.maxLevel]
+         } else
          {
             result.status = HttpStatus.BAD_REQUEST
             result.message = "Unable to create layer name ${cmd.name}"
          }
-         if ( !result.data )
+         if (!result.data)
          {
             result.status = HttpStatus.BAD_REQUEST
             result.message = "Unable create layer with name ${cmd.name}"
          }
-      }
-      else
+      } else
       {
          result.status = HttpStatus.BAD_REQUEST
          result.message = "Unable to create a new layer.  Layer ${cmd.name} already exists."
@@ -187,20 +192,19 @@ class LayerManagerService implements InitializingBean
    def show(String name)
    {
       def result = [status: HttpStatus.OK, message: ""]
-      TileCacheLayerInfo info = daoTileCacheService.getLayerInfoByName( name )
-      if ( info )
+      TileCacheLayerInfo info = daoTileCacheService.getLayerInfoByName(name)
+      if (info)
       {
-         Bounds b = new Polygon( info.bounds ).bounds
+         Bounds b = new Polygon(info.bounds).bounds
 
-         result.data = [name: info.name,
-                        bbox: "${b.minX},${b.minY},${b.maxX},${b.maxY}", //new Projection( params.epsgCode ).bounds.polygon.g,
-                        epsgCode: info.epsgCode,
+         result.data = [name     : info.name,
+                        bbox     : "${b.minX},${b.minY},${b.maxX},${b.maxY}", //new Projection( params.epsgCode ).bounds.polygon.g,
+                        epsgCode : info.epsgCode,
                         tileHeight: info.tileHeight,
                         tileWidth: info.tileWidth,
-                        minLevel: info.minLevel,
-                        maxLevel: info.maxLevel]
-      }
-      else
+                        minLevel : info.minLevel,
+                        maxLevel : info.maxLevel]
+      } else
       {
          result.status = HttpStatus.NOT_FOUND
          result.message = "Unable to find layer name ${name}"
@@ -213,15 +217,14 @@ class LayerManagerService implements InitializingBean
    {
       def result = [status: HttpStatus.OK,
                     message: ""]
-      TileCacheLayerInfo layerInfo = daoTileCacheService.getLayerInfoByName( name )
-      if ( layerInfo )
+      TileCacheLayerInfo layerInfo = daoTileCacheService.getLayerInfoByName(name)
+      if (layerInfo)
       {
-         daoTileCacheService.deleteLayer( name )
-         layerInfo = daoTileCacheService.getLayerInfoByName( name )
+         daoTileCacheService.deleteLayer(name)
+         layerInfo = daoTileCacheService.getLayerInfoByName(name)
 
          result.message = "Layer ${name} removed"
-      }
-      else
+      } else
       {
          result.status = HttpStatus.BAD_REQUEST
          result.message = "Layer name '${name}' does not exist for deleting"
@@ -232,29 +235,29 @@ class LayerManagerService implements InitializingBean
 
    def list()
    {
-      def result = [data: [total: 0, rows: []],
+      def result = [data  : [total: 0, rows: []],
                     status: HttpStatus.OK,
                     message: ""];
       daoTileCacheService.listAllLayers().each { info ->
          Bounds b
-         if ( info.bounds )
+         if (info.bounds)
          {
-            b = new Polygon( info.bounds ).bounds
+            b = new Polygon(info.bounds).bounds
          }
 
          def boundsStr = ""
-         if ( b )
+         if (b)
          {
             boundsStr = "${b.minX},${b.minY},${b.maxX},${b.maxY}"
          }
-         def tempInfoMap = [id: info.id,
-                            name: info.name,
-                            bbox: boundsStr,
-                            epsgCode: info.epsgCode,
+         def tempInfoMap = [id       : info.id,
+                            name     : info.name,
+                            bbox     : boundsStr,
+                            epsgCode : info.epsgCode,
                             tileHeight: info.tileHeight,
                             tileWidth: info.tileWidth,
-                            minLevel: info.minLevel,
-                            maxLevel: info.maxLevel]
+                            minLevel : info.minLevel,
+                            maxLevel : info.maxLevel]
 
          result.data.rows << tempInfoMap
       }
@@ -273,9 +276,9 @@ class LayerManagerService implements InitializingBean
       def result = [status: HttpStatus.OK, message: ""]
       try
       {
-         daoTileCacheService.renameLayer( oldName, newName )
+         daoTileCacheService.renameLayer(oldName, newName)
       }
-      catch ( e )
+      catch (e)
       {
          result.status = HttpStatus.BAD_REQUEST
          result.message = "${e}"
@@ -288,12 +291,12 @@ class LayerManagerService implements InitializingBean
    {
       def result = ""
 
-      if ( params.layer )
+      if (params.layer)
       {
 
-         TileCacheLayerInfo layerInfo = daoTileCacheService.getLayerInfoByName( params.layer )
+         TileCacheLayerInfo layerInfo = daoTileCacheService.getLayerInfoByName(params.layer)
 
-         if ( layerInfo )
+         if (layerInfo)
          {
             def masterTableName = 'tile_cache_layer_info'
             def layerName = layerInfo.name
@@ -302,45 +305,45 @@ class LayerManagerService implements InitializingBean
 
             def x = {
                mkp.xmlDeclaration()
-               config( version: '1.0' ) {
-                  coverageName( name: layerName )
-                  coordsys( name: 'EPSG:4326' )
-                  scaleop( interpolation: 1 )
-                  axisOrder( ignore: false )
-                  spatialExtension( name: 'custom' )
-                  jdbcAccessClassName( name: tileAccessClass )
+               config(version: '1.0') {
+                  coverageName(name: layerName)
+                  coordsys(name: 'EPSG:4326')
+                  scaleop(interpolation: 1)
+                  axisOrder(ignore: false)
+                  spatialExtension(name: 'custom')
+                  jdbcAccessClassName(name: tileAccessClass)
                   connect {
-                     dstype( value: 'DBCP' )
-                     username( value: "${dataSourceProps.username}" )
-                     password( value: "${dataSourceProps.password}" )
-                     jdbcUrl( value: "${dataSourceProps.url}" )
-                     driverClassName( value: "${dataSourceProps.driverClassName}" )
-                     maxActive( value: 10 )
-                     maxIdle( value: 0 )
+                     dstype(value: 'DBCP')
+                     username(value: "${dataSourceProps.username}")
+                     password(value: "${dataSourceProps.password}")
+                     jdbcUrl(value: "${dataSourceProps.url}")
+                     driverClassName(value: "${dataSourceProps.driverClassName}")
+                     maxActive(value: 10)
+                     maxIdle(value: 0)
 
-                     accumuloPassword( value: "${grailsApplication.config.accumulo.password}" )
-                     accumuloUsername( value: "${grailsApplication.config.accumulo.username}" )
-                     accumuloInstanceName( value: "${grailsApplication.config.accumulo.instance}" )
-                     accumuloZooServers( value: "${grailsApplication.config.accumulo.zooServers}" )
+                     accumuloPassword(value: "${grailsApplication.config.accumulo.password}")
+                     accumuloUsername(value: "${grailsApplication.config.accumulo.username}")
+                     accumuloInstanceName(value: "${grailsApplication.config.accumulo.instance}")
+                     accumuloZooServers(value: "${grailsApplication.config.accumulo.zooServers}")
                   }
                   mapping {
-                     masterTable( name: masterTableName ) {
-                        coverageNameAttribute( name: 'name' )
-                        tileTableNameAtribute( name: 'tile_store_table' )
-                        spatialTableNameAtribute( name: 'tile_store_table' )
+                     masterTable(name: masterTableName) {
+                        coverageNameAttribute(name: 'name')
+                        tileTableNameAtribute(name: 'tile_store_table')
+                        spatialTableNameAtribute(name: 'tile_store_table')
                      }
                      tileTable {
-                        keyAttributeName( name: 'hash_id' )
+                        keyAttributeName(name: 'hash_id')
                      }
                      spatialTable {
-                        keyAttributeName( name: 'hash_id' )
-                        geomAttributeName( name: 'bounds' )
+                        keyAttributeName(name: 'hash_id')
+                        geomAttributeName(name: 'bounds')
                      }
 
                   }
                }
             }
-            def builder = new StreamingMarkupBuilder().bind( x )
+            def builder = new StreamingMarkupBuilder().bind(x)
 
             result = builder.toString()
          }
@@ -356,23 +359,22 @@ class LayerManagerService implements InitializingBean
       TileCacheLayerInfo layerInfo
       def constraints = [:]
 
-      if ( cmd.aoi && cmd.layer )
+      if (cmd.aoi && cmd.layer)
       {
          layerInfo = daoTileCacheService.getLayerInfoByName(cmd.layer)
          constraints.intersects = "${cmd.aoi}"
 
-         if(!cmd.aoiEpsg)
+         if (!cmd.aoiEpsg)
          {
 
             constraints.intersectsSrid = "${layerInfo.epsgCode.split(":")[-1]}".toString()
-         }
-         else
+         } else
          {
             constraints.intersectsSrid = "${cmd.aoiEpsg.split(":")[-1]}".toString()
          }
       }
 
-      if(layerInfo) result = daoTileCacheService.getActualLayerBounds(layerInfo, constraints )
+      if (layerInfo) result = daoTileCacheService.getActualLayerBounds(layerInfo, constraints)
 
       result
    }
@@ -386,14 +388,14 @@ class LayerManagerService implements InitializingBean
          //   def gridReader = gridFormat.getReader( new URL( "${tileAccessUrl}?layer=${layer}" ) )
          //   def mosaic = new GridReaderLayer( gridReader, new RasterSymbolizer().gtStyle )
 
-         def l = layerCache.get( layer )
-         if ( !l )
+         def l = layerCache.get(layer)
+         if (!l)
          {
-            l = daoTileCacheService.newGeoscriptTileLayer( layer )
-            layerCache.put( layer, l )
+            l = daoTileCacheService.newGeoscriptTileLayer(layer)
+            layerCache.put(layer, l)
          }
          // println l
-         if ( l )
+         if (l)
          {
             layers << l
          }
@@ -408,32 +410,32 @@ class LayerManagerService implements InitializingBean
 
    def deleteSession(def session)
    {
-      getMapBlockingQueue.put( session )
+      getMapBlockingQueue.put(session)
    }
 
    def getFirstTileMeta(GetFirstTileCommand cmd)
    {
       def result = [status : HttpStatus.OK,
                     message: "",
-                    data   : [] ]
+                    data   : []]
 
-      if(cmd.layer)
+      if (cmd.layer)
       {
          def layerInfo = daoTileCacheService.getLayerInfoByName(cmd.layer)
-         if(layerInfo)
+         if (layerInfo)
          {
-            def tileList = daoTileCacheService.getTilesMetaWithinConstraints(layerInfo, [offset:0, maxRows:1,orderBy:"Z+D"])
+            def tileList = daoTileCacheService.getTilesMetaWithinConstraints(layerInfo, [offset: 0, maxRows: 1, orderBy: "Z+D"])
             HashMap tempResult = tileList[0]
-            if(tempResult.bounds)
+            if (tempResult.bounds)
             {
                Geometry g = GeoScript.wrap(tempResult.bounds)
 
                Bounds b = g.bounds
 
-               println g.toString()
-               println tempResult.bounds.toString()
+              // println g.toString()
+              // println tempResult.bounds.toString()
 
-               if(cmd.targetEpsg)
+               if (cmd.targetEpsg)
                {
                   b.proj = new Projection(layerInfo.epsgCode)
                   g = b.proj.transform(g, new Projection(cmd.targetEpsg))
@@ -442,8 +444,8 @@ class LayerManagerService implements InitializingBean
                }
 
                tempResult.bounds = g.toString()
-               tempResult.centerX =(b.minX+b.maxX)*0.5
-               tempResult.centerY =(b.minY+b.maxY)*0.5
+               tempResult.centerX = (b.minX + b.maxX) * 0.5
+               tempResult.centerY = (b.minY + b.maxY) * 0.5
                tempResult.minx = b.minX
                tempResult.miny = b.minY
                tempResult.maxx = b.maxX
@@ -457,6 +459,7 @@ class LayerManagerService implements InitializingBean
 
       result
    }
+
    def getClampedBounds(GetClampedBoundsCommand cmd)
    {
       def result = [status : HttpStatus.OK,
@@ -467,28 +470,26 @@ class LayerManagerService implements InitializingBean
 
       TileCachePyramid pyramid = daoTileCacheService.newPyramidGivenLayerName(cmd.layerName)
       String resUnits = cmd.resUnits?.toLowerCase()
-      if(pyramid)
+      if (pyramid)
       {
-         if(pyramid.proj.epsg == 4326)
+         if (pyramid.proj.epsg == 4326)
          {
             // make sure the units are geographic
-            if(resUnits&&(resUnits != "degrees"))
+            if (resUnits && (resUnits != "degrees"))
             {
-               cmd.res = cmd.res*(1.0/gpt.metersPerDegree().y)
+               cmd.res = cmd.res * (1.0 / gpt.metersPerDegree().y)
             }
-         }
-         else
+         } else
          {
             // make sure the units are meters
-            if(resUnits&&(resUnits!= "meters"))
+            if (resUnits && (resUnits != "meters"))
             {
-               cmd.res = cmd.res*(gpt.metersPerDegree().y)
+               cmd.res = cmd.res * (gpt.metersPerDegree().y)
             }
          }
 
          result.data = pyramid.clampLevels(cmd.res, cmd.resLevels)
-      }
-      else
+      } else
       {
          result.status = HttpStatus.NOT_FOUND
          result.message = "Can't get information from layer name = ${cmd.layerName}."
@@ -499,61 +500,57 @@ class LayerManagerService implements InitializingBean
 
       result
    }
+
    def ingest(IngestCommand cmd)
    {
       def result = [status : HttpStatus.OK,
                     message: "",
                     data   : []
       ]
-      if(cmd.layer.name)
+      if (cmd.layer.name)
       {
 
          TileCacheLayerInfo layerInfo = daoTileCacheService.getLayerInfoByName(cmd.layer.name)
-         if(layerInfo)
+         if (layerInfo)
          {
             TileCachePyramid pyramid = daoTileCacheService.newPyramidGivenLayerInfo(layerInfo)
 
             //Integer minLevel
             //Integer maxLevel
 
-            cmd.layer.epsg       = layerInfo.epsgCode
-            cmd.layer.tileWidth  = layerInfo.tileWidth
+            cmd.layer.epsg = layerInfo.epsgCode
+            cmd.layer.tileWidth = layerInfo.tileWidth
             cmd.layer.tileHeight = layerInfo.tileHeight
-
 
             // check and clamp to the layer levels
             //
-            if(cmd.minLevel!=null&&cmd.maxLevel!=null)
+            if (cmd.minLevel != null && cmd.maxLevel != null)
             {
                HashMap levels = pyramid.intersectLevels(cmd.minLevel, cmd.maxLevel)
 
-               if(levels)
+               if (levels)
                {
                   cmd.minLevel = levels.minLevel
                   cmd.maxLevel = levels.maxLevel
-               }
-               else
+               } else
                {
                   result.status = HttpStatus.NOT_FOUND
                   result.message = "The Requested min and max levels do not intersect the layer."
                   return result
                }
-            }
-            else
+            } else
             {
                cmd.minLevel = layerInfo.minLevel
                cmd.maxLevel = layerInfo.maxLevel
             }
-         }
-         else
+         } else
          {
             result.status = HttpStatus.NOT_FOUND
             result.message = "Layer name ${cmd.input.name}"
             return result
          }
 
-      }
-      else
+      } else
       {
          result.status = HttpStatus.NOT_FOUND
          result.message = "Layer name can't be empty."
@@ -563,7 +560,7 @@ class LayerManagerService implements InitializingBean
 
       String jobId = UUID.randomUUID().toString()
       HashMap ingestCommand = cmd.toMap();
-      ingestCommand.jobName = ingestCommand.jobName?:"Ingest"
+      ingestCommand.jobName = ingestCommand.jobName ?: "Ingest"
       ingestCommand.jobId = jobId
       ingestCommand.type = "TileServerIngestMessage"
 
@@ -581,6 +578,174 @@ class LayerManagerService implements InitializingBean
       )
 
       result = jobService.create(jobCommand)
+
+      result
+   }
+
+   def convertGeometry(ConvertGeometryCommand cmd, HttpServletRequest request)
+   {
+      def result = [status : HttpStatus.OK,
+                    message: "",
+                    data   : [:]
+                  ]
+      Geometry geom
+      File tempFile
+      try
+      {
+         if(request.fileNames)
+         {
+            tempFile = File.createTempDir("tilestore-database", "")
+            tempFile?.deleteOnExit()
+            if (!tempFile.exists())
+            {
+               result.status = HttpStatus.BAD_REQUEST
+               result.message = "Unable to create temporary file for downloading images"
+
+               return result
+            }
+            request.fileNames.each {
+               def file = request.getFile(it)
+
+               file.each { f ->
+
+                  if (f instanceof CommonsMultipartFile)
+                  {
+                     CommonsMultipartFile commonsMultipartFile = f as CommonsMultipartFile
+
+                     String original = f.originalFilename
+                     String originalFilename = original.toLowerCase()
+                     if (originalFilename.endsWith("zip"))
+                     {
+                        File outputFile = new File(tempFile, commonsMultipartFile.originalFilename)
+                        commonsMultipartFile.transferTo(outputFile)
+                        outputFile.unzip(outputFile.parentFile.toString())
+
+                        File subDirectory = new File(FilenameUtils.removeExtension(outputFile.toString()))
+                        if(subDirectory.exists())
+                        {
+                           subDirectory.eachFileRecurse(FileType.FILES){File fileTest->
+                              String fileTestString = fileTest.toString().toLowerCase()
+                              Layer layer = null
+                              if(fileTestString.endsWith("shp"))
+                              {
+                                 Shapefile shapeFile = new Shapefile(fileTest)
+
+                                 layer = shapeFile
+                                 // everything ok
+                                 //
+                              }
+                              else if(fileTestString.endsWith("kml"))
+                              {
+                                 layer =  new KmlReader().read([:], fileTest.text)
+                              }
+
+                              if(layer)
+                              {
+                                 if(!layer.proj)
+                                 {
+                                    if(cmd.sourceEpsg) layer.proj = new Projection(cmd.sourceEpsg)
+                                 }
+                                 if(cmd.targetEpsg)
+                                 {
+                                    if(!layer.proj)
+                                    {
+                                       //result.status = HttpStatus.BAD_REQUEST
+                                       //result.message = "Unable to determine projection."
+
+                                       throw new Exception("Unable to determine projection.")
+                                       // error
+                                    }
+                                 }
+                                 geom = GeoscriptUtil.mergeGeometries(layer, geom,cmd.targetEpsg)
+                                 //println geom
+                              }
+
+                           }
+                        }
+                        //println outputFile
+                     }
+                     else if (originalFilename.endsWith("kml"))
+                     {
+
+                        Layer layer =  new KmlReader().read([:], new String(commonsMultipartFile.bytes, "UTF-8"))
+                        if(!layer.proj)
+                        {
+                           if(cmd.sourceEpsg) layer.proj = new Projection(cmd.sourceEpsg)
+                        }
+                        if(cmd.targetEpsg)
+                        {
+                           if(!layer.proj)
+                           {
+                              //result.status = HttpStatus.BAD_REQUEST
+                              //result.message = "Unable to determine projection."
+                              throw new Exception("Unable to determine projection.")
+                              // error
+                           }
+                        }
+                        geom = GeoscriptUtil.mergeGeometries(layer, geom,cmd.targetEpsg)
+                     }
+                  }
+                  //println new String(commonsMultipartFile.bytes, "UTF-8")
+               }
+            }
+            if(!geom)
+            {
+               result.status = HttpStatus.BAD_REQUEST
+               result.message = "Unable to convert files to a geometry."
+            }
+         }
+         // Now lets see if there was any post variables
+         if(cmd.geometry)
+         {
+            //try
+            try
+            {
+               Layer layer =  new KmlReader().read([:], cmd.geometry)
+
+               if(layer)
+               {
+                  if(!layer.proj)
+                  {
+                     if(cmd.sourceEpsg) layer.proj = new Projection(cmd.sourceEpsg)
+                  }
+                  if(cmd.targetEpsg)
+                  {
+                     if(!layer.proj)
+                     {
+                        //result.status = HttpStatus.BAD_REQUEST
+                        //result.message = "Unable to determine projection."
+
+                        throw new Exception("Unable to determine projection.")
+                        // error
+                     }
+                  }
+                  geom = GeoscriptUtil.mergeGeometries(layer, geom, cmd.targetEpsg)
+               }
+            }
+            catch(e)
+            {
+               result.status = HttpStatus.BAD_REQUEST
+               result.message = "Unable to parse Geometry"
+            }
+         }
+         //println file
+      }
+      catch (e)
+      {
+         geom = null
+         result.status = HttpStatus.BAD_REQUEST
+         result.message = e.toString()
+      }
+      finally
+      {
+         if(tempFile?.exists())
+         {
+            if(tempFile?.isFile()) tempFile?.delete()
+            else tempFile?.deleteDir()
+         }
+      }
+
+      if(geom) result.data=[wkt:geom.wkt]
 
       result
    }
