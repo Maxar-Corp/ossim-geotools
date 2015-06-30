@@ -100,10 +100,6 @@ var AppClient = (function () {
             }
             toastr.info('Use the < ALT > and < SHIFT > keys together to define an Area of Interest, and then click "Create Geopackage" to generate a .gpkg file.', 'Define Geopackage AOI');
 
-            $.each(AddLayerClient.layersArray, function (i, obj) {
-                map.addLayer(obj);
-            });
-
             // Add Zoom Slider
             var zoomslider = new ol.control.ZoomSlider();
             map.addControl(zoomslider);

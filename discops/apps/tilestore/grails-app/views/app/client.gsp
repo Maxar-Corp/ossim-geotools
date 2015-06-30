@@ -27,7 +27,8 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left" style="width: 40px; height: 40px; padding-top: 10px; margin-left: 60px;" src="app/rbt_symbol.png" alt="RBT Logo"/></g:link>
+                    <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left"
+                                                                                       style="padding-top: 5px; margin-left: 60px;" src="logo_nav.png" alt="RBT Logo"/></g:link>
                     <a class="navbar-brand">&nbsp;&nbsp;Tiles Viewer</a>
                 </div>
 
@@ -255,7 +256,6 @@
             AppClient.initialize(initParams);
             CreateProductClient.initialize(initParams);
             CutByFileClient.initialize(initParams);
-            LayerManagerClient.initialize(initParams);
             ZoomToClient.initialize(initParams);
 
             //Use polyfill to utilize HTML5 form validation in IE9
