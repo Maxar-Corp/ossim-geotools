@@ -32,15 +32,16 @@ var CutByFileClient = (function () {
     // http://blueimp.github.io/jQuery-File-Upload/basic.html
 
     //// Change this to the location of your server-side upload handler:
-    var url = window.location.hostname === 'blueimp.github.io' ?
-        '//jquery-file-upload.appspot.com/' : 'server/php/';
+    var url = "/tilestore/layerManager/convertGeometry";
     $('#fileupload').fileupload({
         url: url,
         dataType: 'json',
         done: function (e, data) {
-            $.each(data.result.files, function (index, file) {
-                $('<p/>').text(file.name).appendTo('#files');
-            });
+            alert(JSON.stringify(data.result.wkt));
+            //alert(JSON.stringify(data));
+            //$.each(data.result.files, function (index, file) {
+            //    $('<p/>').text(file.name).appendTo('#files');
+            //});
         },
         progressall: function (e, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
