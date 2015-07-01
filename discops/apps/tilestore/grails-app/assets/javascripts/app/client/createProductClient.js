@@ -244,20 +244,6 @@ var CreateProductClient = (function () {
 
                 $prodcutProgress.show();
 
-                //product = {
-                //    type:"GeopackageExport",
-                //    layer:"reference", // from layer selectlist
-                //    aoi: outputWkt,
-                //    aoiEpsg:"EPSG:3857", // add to modal
-                //    minLevel:null, // add to modal as selectlist
-                //    maxLevel:null, // add to modal as selectlist
-                //    properties:{
-                //        "format":"image/gpkg", // add to modal as select (disabled)
-                //        "filename":"image",
-                //        "writerMode":"mixed"
-                //    }
-                //};
-
                 console.log('---------------------------------');
                 console.log('product.aoi' + product.aoi);
                 console.log('---------------------------------');
