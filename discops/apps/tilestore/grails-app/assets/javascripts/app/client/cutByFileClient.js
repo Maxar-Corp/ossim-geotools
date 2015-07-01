@@ -1,6 +1,9 @@
 "use strict";
 var CutByFileClient = (function () {
 
+    $('#cutFormTargetEpsg').val(AppClient.mapEpsg);
+    alert($('#cutFormTargetEpsg').val());
+
     // Cache DOM elements
     var $uploadCutFile = $('#uploadCutFile');  // supports shapefile and kml
     var $uploadCutByFileModal = $('#uploadCutByFileModal');
@@ -46,6 +49,7 @@ var CutByFileClient = (function () {
     $fileupload.fileupload({
         url: url,
         dataType: 'json',
+        //autoUpload: false,
         done: function (e, data) {
             //alert(JSON.stringify(data.result.wkt));
             //alert(JSON.stringify(data));

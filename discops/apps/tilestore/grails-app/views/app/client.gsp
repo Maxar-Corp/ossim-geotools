@@ -218,14 +218,17 @@
                             <div class="row col-sm-6 col-md-6">
 
                                 <div id="uploadCutByFormElements">
-                                    <p>Select a KML or shapefile, and upload the server to perform a cut for the
+                                    <p>Select a KML or shapefile, and upload  to the server to perform a cut for the
                                     specified
                                     geometries contained in the file.</p>
-                                    <input id="targetEpsg" type="text" name="targetEpsg" value="EPSG:3857">
+                                    <p class="alert alert-info">You can also drag and drop a KML or shapefile into
+                                    the map to perform a cut.</p>
+                                    <input type="hidden" id="cutFormTargetEpsg" type="text" name="targetEpsg"
+                                           value="EPSG:3857">
                                     <!-- The fileinput-button span is used to style the file input field as button -->
-                                    <span class="btn btn-success fileinput-button">
-                                        <i class="glyphicon glyphicon-plus"></i>
-                                        <span>Select files...</span>
+                                    <span class="btn btn-success fileinput-button">&nbsp;&nbsp;
+                                        <i class="fa fa-upload"></i>
+                                        <span>Browse</span>
                                         <!-- The file input field used as target for the file upload widget -->
                                         <input id="fileupload" type="file" name="files[]" multiple>
                                     </span>
