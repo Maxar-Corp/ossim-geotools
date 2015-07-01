@@ -226,8 +226,8 @@
                                     <input type="hidden" id="cutFormTargetEpsg" type="text" name="targetEpsg"
                                            value="EPSG:3857">
                                     <!-- The fileinput-button span is used to style the file input field as button -->
-                                    <span class="btn btn-success fileinput-button">&nbsp;&nbsp;
-                                        <i class="fa fa-upload"></i>
+                                    <span class="btn btn-primary fileinput-button">
+                                        <i class="fa fa-upload"></i>&nbsp;&nbsp;
                                         <span>Browse</span>
                                         <!-- The file input field used as target for the file upload widget -->
                                         <input id="fileupload" type="file" name="files[]" multiple>
@@ -236,10 +236,12 @@
                                     <br>
                                     <!-- The global progress bar -->
                                     <div id="progress" class="progress">
-                                        <div class="progress-bar progress-bar-success"></div>
+                                        <div class="progress-bar progress-bar-success progress-bar-striped"></div>
                                     </div>
                                     <!-- The container for the uploaded files -->
-                                    <div id="files" class="files"></div>
+                                    <div id="files" class="files alert alert-success">Successfully uploaded: </div>
+                                    <label for="productName">Paste geometry string (WKT or KML)&nbsp;</label>
+                                    <textarea id="wktUploadTextArea" class="form-control" rows="3"></textarea>
 
                                 </div>
 
