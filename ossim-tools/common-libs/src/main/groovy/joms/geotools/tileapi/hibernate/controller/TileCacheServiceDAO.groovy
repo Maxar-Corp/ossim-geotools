@@ -470,6 +470,26 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
         }
         whereClause += "(y = ${constraints.y})"
       }
+      if((constraints.minLevel!=null)||(constraints.maxLevel!=null))
+      {
+        if(whereClause)
+        {
+          whereClause += conjunction
+        }
+
+        if((constraints.minLevel!=null)&&(constraints.maxLevel!=null))
+        {
+          whereClause += "((z >= ${constraints.minLevel}) AND (z<=${constraints.maxLevel}))"
+        }
+        else if(constraints.minLevel!=null)
+        {
+          whereClause += "(z >= ${constraints.minLevel})"
+        }
+        else
+        {
+          whereClause += "(z <= ${constraints.maxLevel})"
+        }
+      }
       result = whereClause ? "where ${whereClause}" : whereClause
     }
     // println "WHERE CLAUSE = ${result}"
