@@ -118,8 +118,4 @@ class ProductController
         */
    }
 
-   def estimate()
-   {
-
-   }
 }

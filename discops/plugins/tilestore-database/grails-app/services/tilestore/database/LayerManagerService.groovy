@@ -4,12 +4,16 @@ import geoscript.GeoScript
 import geoscript.geom.Bounds
 import geoscript.geom.Geometry
 import geoscript.geom.Polygon
+import geoscript.layer.Grid
 import geoscript.layer.Layer
 import geoscript.layer.Shapefile
+import geoscript.layer.TileCursor
+import geoscript.layer.TileLayer
 import geoscript.layer.io.KmlReader
 import geoscript.proj.Projection
 import grails.converters.JSON
 import grails.transaction.Transactional
+import groovy.sql.Sql
 import groovy.xml.StreamingMarkupBuilder
 import joms.geotools.tileapi.TileCachePyramid
 import joms.geotools.tileapi.hibernate.TileCacheHibernate
@@ -29,6 +33,8 @@ import javax.servlet.http.HttpServletRequest
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.LinkedBlockingQueue
 import groovy.io.FileType
+
+import java.util.regex.Pattern
 
 @Transactional
 class LayerManagerService implements InitializingBean
@@ -363,15 +369,16 @@ class LayerManagerService implements InitializingBean
       {
          layerInfo = daoTileCacheService.getLayerInfoByName(cmd.layer)
          constraints.intersects = "${cmd.aoi}"
-
          if (!cmd.aoiEpsg)
          {
-
             constraints.intersectsSrid = "${layerInfo.epsgCode.split(":")[-1]}".toString()
-         } else
+         }
+         else
          {
             constraints.intersectsSrid = "${cmd.aoiEpsg.split(":")[-1]}".toString()
          }
+         if(cmd.minLevel!=null) constraints.minLevel = cmd.minLevel
+         if(cmd.maxLevel!= null) constraints.maxLevel = cmd.maxLevel
       }
 
       if (layerInfo) result = daoTileCacheService.getActualLayerBounds(layerInfo, constraints)
@@ -595,7 +602,9 @@ class LayerManagerService implements InitializingBean
          if(request.fileNames)
          {
             tempFile = File.createTempDir("tilestore-database", "")
-            tempFile?.deleteOnExit()
+            //println tempFile
+
+              tempFile?.deleteOnExit()
             if (!tempFile.exists())
             {
                result.status = HttpStatus.BAD_REQUEST
@@ -606,6 +615,7 @@ class LayerManagerService implements InitializingBean
             request.fileNames.each {
                def file = request.getFile(it)
 
+               // transfer files to temporary directory
                file.each { f ->
 
                   if (f instanceof CommonsMultipartFile)
@@ -620,80 +630,79 @@ class LayerManagerService implements InitializingBean
                         commonsMultipartFile.transferTo(outputFile)
                         outputFile.unzip(outputFile.parentFile.toString())
 
-                        File subDirectory = new File(FilenameUtils.removeExtension(outputFile.toString()))
-                        if(subDirectory.exists())
-                        {
-                           subDirectory.eachFileRecurse(FileType.FILES){File fileTest->
-                              String fileTestString = fileTest.toString().toLowerCase()
-                              Layer layer = null
-                              if(fileTestString.endsWith("shp"))
-                              {
-                                 Shapefile shapeFile = new Shapefile(fileTest)
-
-                                 layer = shapeFile
-                                 // everything ok
-                                 //
-                              }
-                              else if(fileTestString.endsWith("kml"))
-                              {
-                                 layer =  new KmlReader().read([:], fileTest.text)
-                              }
-
-                              if(layer)
-                              {
-                                 if(!layer.proj)
-                                 {
-                                    if(cmd.sourceEpsg) layer.proj = new Projection(cmd.sourceEpsg)
-                                 }
-                                 if(cmd.targetEpsg)
-                                 {
-                                    if(!layer.proj)
-                                    {
-                                       //result.status = HttpStatus.BAD_REQUEST
-                                       //result.message = "Unable to determine projection."
-
-                                       throw new Exception("Unable to determine projection.")
-                                       // error
-                                    }
-                                 }
-                                 geom = GeoscriptUtil.mergeGeometries(layer, geom,cmd.targetEpsg)
-                                 //println geom
-                              }
-
-                           }
-                        }
+                        outputFile.delete()
                         //println outputFile
-                     }
-                     else if (originalFilename.endsWith("kml"))
+                     } else if (originalFilename.endsWith("kml"))
                      {
-
-                        Layer layer =  new KmlReader().read([:], new String(commonsMultipartFile.bytes, "UTF-8"))
-                        if(!layer.proj)
-                        {
-                           if(cmd.sourceEpsg) layer.proj = new Projection(cmd.sourceEpsg)
-                        }
-                        if(cmd.targetEpsg)
-                        {
-                           if(!layer.proj)
-                           {
-                              //result.status = HttpStatus.BAD_REQUEST
-                              //result.message = "Unable to determine projection."
-                              throw new Exception("Unable to determine projection.")
-                              // error
-                           }
-                        }
-                        geom = GeoscriptUtil.mergeGeometries(layer, geom,cmd.targetEpsg)
+                        File outputFile = new File(tempFile, commonsMultipartFile.originalFilename)
+                        commonsMultipartFile.transferTo(outputFile)
                      }
                   }
                   //println new String(commonsMultipartFile.bytes, "UTF-8")
                }
             }
-            if(!geom)
-            {
-               result.status = HttpStatus.BAD_REQUEST
-               result.message = "Unable to convert files to a geometry."
+         }
+
+         if(tempFile.exists())
+         {
+            tempFile.eachFileRecurse(FileType.FILES){File fileTest->
+               println fileTest
+               String fileTestString = fileTest.toString().toLowerCase()
+               Layer layer = null
+
+               try{
+                  if(fileTestString.endsWith("shp"))
+                  {
+                     Shapefile shapeFile = new Shapefile(fileTest)
+
+                     layer = shapeFile
+                     // everything ok
+                     //
+                  }
+                  else if(fileTestString.endsWith("kml"))
+                  {
+                     layer =  new KmlReader().read([:], fileTest.text)
+                  }
+               }
+               catch(e)
+               {
+
+               }
+               if(layer)
+               {
+                  if(!layer.proj)
+                  {
+                     if(cmd.sourceEpsg) layer.proj = new Projection(cmd.sourceEpsg)
+                  }
+                  if(cmd.targetEpsg)
+                  {
+                     if(!layer.proj)
+                     {
+                        //result.status = HttpStatus.BAD_REQUEST
+                        //result.message = "Unable to determine projection."
+
+                        throw new Exception("Unable to determine projection.")
+                        // error
+                     }
+                  }
+                  try{
+                     geom = GeoscriptUtil.mergeGeometries(layer, geom,cmd.targetEpsg)
+
+                  }
+                  catch(e)
+                  {
+                     // ignore this one
+                  }
+                  //layer = null
+                  //println geom
+
+               }
+
             }
          }
+
+
+
          // Now lets see if there was any post variables
          if(cmd.geometry)
          {
@@ -720,6 +729,8 @@ class LayerManagerService implements InitializingBean
                      }
                   }
                   geom = GeoscriptUtil.mergeGeometries(layer, geom, cmd.targetEpsg)
+
+                  layer.workspace.close()
                }
             }
             catch(e)
@@ -745,9 +756,79 @@ class LayerManagerService implements InitializingBean
          }
       }
 
+      if(!geom)
+      {
+         result.status = HttpStatus.BAD_REQUEST
+         result.message = "Unable to convert files to a geometry."
+      }
+
       if(geom) result.data=[wkt:geom.wkt]
 
       result
    }
 
+   def estimate(EstimateCommand cmd)
+   {
+      def result = [status : HttpStatus.OK,
+                    message: "",
+                    data   : [:]
+      ]
+
+      try{
+         TileCacheLayerInfo layerInfo = daoTileCacheService.getLayerInfoByName(cmd.layer)
+
+
+         if(layerInfo)
+         {
+            Geometry geom = cmd.transformGeometry(layerInfo.epsgCode)
+            def constraints = [:]
+            if(geom)
+            {
+               constraints.intersects     = "${geom}"
+               constraints.intersectsSrid = "${layerInfo.epsgCode.split(":")[-1]}".toString()
+            }
+            constraints.minLevel = cmd.minLevel
+            constraints.maxLevel = cmd.maxLevel
+
+            def queryString = "select Count(*) from ${layerInfo?.tileStoreTable} ${daoTileCacheService.createWhereClause( constraints )}".toString()
+            Sql sql = hibernate.cacheSql
+
+            def queryCount = sql.firstRow(queryString)
+            long count = queryCount.count
+
+            result.data.numberOfTiles = count
+
+            GetActualBoundsCommand boundsCmd = new GetActualBoundsCommand([aoi:geom.toString(),
+                                                                             aoiEpsg:layerInfo.epsgCode,
+                                                                             minLevel: cmd.minLevel,
+                                                                             maxLevel: cmd.maxLevel,
+                                                                             layer: cmd.layer])
+
+            result.data.actualBounds = getActualBounds(boundsCmd)
+
+            Long maxLevel = result.data.actualBounds.maxLevel?:layerInfo.maxLevel
+            TileLayer tileLayer = daoTileCacheService.newGeoscriptTileLayer(layerInfo)
+
+            TileCursor cursor = tileLayer.tiles(new Bounds(result.data.actualBounds.minx, result.data.actualBounds.miny,
+                                                    result.data.actualBounds.maxx, result.data.actualBounds.maxy),maxLevel)
+
+            result.data.imageWidth = (Long)(cursor.width*tileLayer.pyramid.tileWidth)
+            result.data.imageHeight = (Long)(cursor.height*tileLayer.pyramid.tileHeight)
+
+            println  result.data
+
+         }
+
+      }
+      catch (e)
+      {
+        // println e
+         result.status = HttpStatus.BAD_REQUEST
+         result.message = e.toString()
+      }
+
+
+      //println result.data
+      result
+   }
 }
