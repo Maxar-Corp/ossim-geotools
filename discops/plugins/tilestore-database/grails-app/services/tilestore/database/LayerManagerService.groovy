@@ -10,6 +10,7 @@ import geoscript.layer.io.KmlReader
 import geoscript.proj.Projection
 import grails.converters.JSON
 import grails.transaction.Transactional
+import groovy.sql.Sql
 import groovy.xml.StreamingMarkupBuilder
 import joms.geotools.tileapi.TileCachePyramid
 import joms.geotools.tileapi.hibernate.TileCacheHibernate
@@ -366,7 +367,6 @@ class LayerManagerService implements InitializingBean
 
          if (!cmd.aoiEpsg)
          {
-
             constraints.intersectsSrid = "${layerInfo.epsgCode.split(":")[-1]}".toString()
          } else
          {
@@ -630,6 +630,7 @@ class LayerManagerService implements InitializingBean
                               {
                                  Shapefile shapeFile = new Shapefile(fileTest)
 
+                                 println fileTest
                                  layer = shapeFile
                                  // everything ok
                                  //
@@ -656,8 +657,17 @@ class LayerManagerService implements InitializingBean
                                        // error
                                     }
                                  }
-                                 geom = GeoscriptUtil.mergeGeometries(layer, geom,cmd.targetEpsg)
+                                 try{
+                                    geom = GeoscriptUtil.mergeGeometries(layer, geom,cmd.targetEpsg)
+
+                                 }
+                                 catch(e)
+                                 {
+                                    // ignore this one
+                                 }
+                                 //layer = null
                                  //println geom
+
                               }
 
                            }
@@ -750,4 +760,47 @@ class LayerManagerService implements InitializingBean
       result
    }
 
+   def estimate(EstimateCommand cmd)
+   {
+      def result = [status : HttpStatus.OK,
+                    message: "",
+                    data   : [:]
+      ]
+
+      try{
+         TileCacheLayerInfo layerInfo = daoTileCacheService.getLayerInfoByName(cmd.layer)
+
+
+         if(layerInfo)
+         {
+            Geometry geom = cmd.transformGeometry(layerInfo.epsgCode)
+            def constraints = [:]
+            if(geom)
+            {
+               constraints.intersects     = "${geom}"
+               constraints.intersectsSrid = "${layerInfo.epsgCode.split(":")[-1]}".toString()
+            }
+            constraints.minLevel = cmd.minLevel
+            constraints.maxLevel = cmd.maxLevel
+
+            def queryString = "select Count(*) from ${layerInfo?.tileStoreTable} ${createWhereClause( constraints )}".toString()
+            Sql sql = hibernate.cacheSql
+
+            def queryCount = sql.firstRow(queryString)
+            long count = queryCount.cont
+
+            result.data.numberOfTiles = count
+
+         }
+
+      }
+      catch (e)
+      {
+         result.status = HttpStatus.BAD_REQUEST
+         result.message = e.toString()
+      }
+
+
+      result
+   }
 }
