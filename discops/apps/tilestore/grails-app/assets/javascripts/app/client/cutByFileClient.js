@@ -2,45 +2,48 @@
 var CutByFileClient = (function () {
 
     // Cache DOM elements
-    var $uploadCutFile = $('#uploadCutFile');
+    var $uploadCutFile = $('#uploadCutFile');  // supports shapefile and kml
     var $uploadCutByFileModal = $('#uploadCutByFileModal');
+    var $fileupload = $('#fileupload');
+
+    var cutFeature, // holds the polygons from the kml/shapefile cut files
+        cutFeatureExtent, // holds the geometry extent of the cut feature polygons
+        removeFeature, // previously uploaded feature
+        progress // file upload progress percentage
 
     function addWktToMap(wktString){
 
-        console.log('addWktToMap fired');
-        console.log(wktString);
+        //console.log('addWktToMap fired');
+        //console.log(wktString);
+
         var format = new ol.format.WKT();
+        cutFeature = format.readFeature(wktString);
+        console.log(cutFeature);
+        console.log(cutFeature.getGeometry().getExtent());
+        cutFeatureExtent = cutFeature.getGeometry().getExtent();
 
-        var features = format.readFeature(wktString);
+        console.log(CreateProductClient.aoiFeatureOverlay.getFeatures().getArray().length);
 
-        // TODO: Need to be able to run this transform if the projection
-        //       is not 3857
-        //feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
+        if (CreateProductClient.aoiFeatureOverlay.getFeatures().getArray().length >= 1 ) {
 
-        //var aoiStyle = new ol.style.Style({
-        //    stroke: new ol.style.Stroke({
-        //        color: 'cyan',
-        //        width: 5
-        //    }),
-        //    fill: new ol.style.Fill({
-        //        color: 'rgba(0, 255, 255, 0.3)'
-        //    })
-        //});
+            console.log('aoiFeatureOverlay.getFeatures().getArray().length >= 1');
+            console.log(CreateProductClient.aoiFeatureOverlay.getFeatures().getArray()[0]);
+            removeFeature = CreateProductClient.aoiFeatureOverlay.getFeatures().getArray()[0];
+            CreateProductClient.aoiFeatureOverlay.removeFeature(removeFeature);
 
-        var vector = new ol.layer.Vector({
-            source: new ol.source.Vector({
-                features: [features]
-            }),
-            style: CreateProductClient.aoiStyle
-        });
+        }
 
-        AppClient.map.addLayer(vector);
+        CreateProductClient.aoiFeatureOverlay.addFeature(cutFeature);
+        AppClient.map.addOverlay(CreateProductClient.aoiFeatureOverlay);
+        AppClient.map.getView().fitExtent(cutFeatureExtent, AppClient.map.getSize());
+        CreateProductClient.createAoi(wktString);
+        CreateProductClient.$createGp.removeClass("disabled");
     }
 
     // Uploadfile docs:
     // http://blueimp.github.io/jQuery-File-Upload/basic.html
     var url = "/tilestore/layerManager/convertGeometry";
-    $('#fileupload').fileupload({
+    $fileupload.fileupload({
         url: url,
         dataType: 'json',
         done: function (e, data) {
@@ -49,9 +52,7 @@ var CutByFileClient = (function () {
             //$.each(data.result.files, function (index, file) {
             //    $('<p/>').text(file.name).appendTo('#files');
             //});
-            //
 
-            // TODO: Add function that adds wkt to vector layer and adds it to the map....
             addWktToMap(data.result.wkt);
         },
         error: function(data){
@@ -60,6 +61,7 @@ var CutByFileClient = (function () {
         },
         progressall: function (e, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
+            console.log(progress);
             $('#progress .progress-bar').css(
                 'width',
                 progress + '%'
@@ -72,7 +74,17 @@ var CutByFileClient = (function () {
 
         $uploadCutByFileModal.modal('show');
 
-    })
+    });
+
+    $uploadCutByFileModal.on('hidden.bs.modal', function (e) {
+
+        progress = 0;
+        $('#progress .progress-bar').css(
+            'width',
+            0 + '%'
+        );
+
+    });
 
     return {
         initialize: function (initParams) {
