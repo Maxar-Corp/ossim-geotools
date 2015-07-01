@@ -115,7 +115,8 @@ var AppClient = (function () {
 
         },
         map: map,
-        mapView: mapView
+        mapView: mapView,
+        mapEpsg: mapEpsg
     };
 })();
 

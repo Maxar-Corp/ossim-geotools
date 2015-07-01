@@ -71,12 +71,13 @@ var CreateProductClient = (function () {
         //console.log($('#tileLayerSelect').val());
         var gpkgInputTileLayer = $tileLayerSelect.val();
         $.ajax({
-            url: urlLayerActualBounds + "?layer=" + gpkgInputTileLayer + "&aoi=" + wkt,
-            type: 'GET',
+            url: urlLayerActualBounds, // + "?layer=" + gpkgInputTileLayer + "&aoi=" + wkt,
+            type: 'POST',
+            data: {"layer": gpkgInputTileLayer, "aoi": wkt},
             dataType: 'json',
             // TODO: Add $promise function for success
             success: function (data) {
-                //console.log(data);
+                console.log(data);
                 $aoiLod.html(data.minLevel + ' to ' + data.maxLevel);
 
                 var min = data.minLevel;
