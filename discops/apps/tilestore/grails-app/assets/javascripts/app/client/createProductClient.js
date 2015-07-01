@@ -29,7 +29,19 @@ var CreateProductClient = (function () {
     var $submitAoi = $('#submitAoi');
     var $cancelAoi = $('#cancelAoi');
 
-    var product; // holds the definitions/parameters
+    var product = {
+        type:"GeopackageExport",
+        layer:"", // from layer selectlist
+        aoi: "",
+        aoiEpsg:"EPSG:3857", // add to modal
+        minLevel:null, // add to modal as selectlist
+        maxLevel:null, // add to modal as selectlist
+        properties:{
+            "format":"image/gpkg", // add to modal as select (disabled)
+            "filename":"image",
+            "writerMode":"mixed"
+        }
+    }; // holds the definitions/parameters
 
     var jobId;
 
@@ -66,10 +78,15 @@ var CreateProductClient = (function () {
     AppClient.map.addInteraction(dragBoxControl);
 
     function createAoi(wkt){
-        $aoiJobInfo.hide();
 
-        //console.log($('#tileLayerSelect').val());
+        $aoiJobInfo.hide();
         var gpkgInputTileLayer = $tileLayerSelect.val();
+
+        console.log(wkt);
+        console.log(gpkgInputTileLayer);
+        var dataObject = {"layer": gpkgInputTileLayer, "aoi": wkt}
+
+        console.log(dataObject);
         $.ajax({
             url: urlLayerActualBounds, // + "?layer=" + gpkgInputTileLayer + "&aoi=" + wkt,
             type: 'POST',
@@ -125,6 +142,7 @@ var CreateProductClient = (function () {
             }
         });
 
+        product.aoi = wkt;
     }
 
     return {
@@ -140,7 +158,6 @@ var CreateProductClient = (function () {
                 $exportProductModal.modal('show');
 
             });
-
 
             dragBoxControl.on('boxend', function () {
 
@@ -227,23 +244,12 @@ var CreateProductClient = (function () {
 
                 $prodcutProgress.show();
 
-                product = {
-                    type:"GeopackageExport",
-                    layer:"reference", // from layer selectlist
-                    aoi: outputWkt,
-                    aoiEpsg:"EPSG:3857", // add to modal
-                    minLevel:null, // add to modal as selectlist
-                    maxLevel:null, // add to modal as selectlist
-                    properties:{
-                        "format":"image/gpkg", // add to modal as select (disabled)
-                        "filename":"image",
-                        "writerMode":"mixed"
-                    }
-                };
-
+                console.log('---------------------------------');
+                console.log('product.aoi' + product.aoi);
+                console.log('---------------------------------');
                 product.layer = $tileLayerSelect.val();
                 product.properties.filename = $productName.val();
-                product.aoiEpsg = "EPSG:3857";
+                product.aoiEpsg = AppClient.mapEpsg //"EPSG:3857";
                 product.minLevel = null;
                 product.maxLevel = null
 

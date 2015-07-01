@@ -24,6 +24,7 @@ class ProductController
    @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
    def export(ProductExportCommand cmd)
    {
+      println cmd
       def result = productService.export(cmd)
 
       if ( result.status != HttpStatus.OK )

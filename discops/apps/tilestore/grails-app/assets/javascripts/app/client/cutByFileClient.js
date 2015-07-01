@@ -1,18 +1,18 @@
 "use strict";
 var CutByFileClient = (function () {
 
-    $('#cutFormTargetEpsg').val(AppClient.mapEpsg);
-    alert($('#cutFormTargetEpsg').val());
-
     // Cache DOM elements
     var $uploadCutFile = $('#uploadCutFile');  // supports shapefile and kml
     var $uploadCutByFileModal = $('#uploadCutByFileModal');
     var $fileupload = $('#fileupload');
+    var $cutFormTargetEpsg = $('#cutFormTargetEpsg');
 
     var cutFeature, // holds the polygons from the kml/shapefile cut files
         cutFeatureExtent, // holds the geometry extent of the cut feature polygons
         removeFeature, // previously uploaded feature
         progress // file upload progress percentage
+
+    $cutFormTargetEpsg.val(AppClient.mapEpsg);
 
     function addWktToMap(wktString){
 
@@ -39,7 +39,9 @@ var CutByFileClient = (function () {
         CreateProductClient.aoiFeatureOverlay.addFeature(cutFeature);
         AppClient.map.addOverlay(CreateProductClient.aoiFeatureOverlay);
         AppClient.map.getView().fitExtent(cutFeatureExtent, AppClient.map.getSize());
+
         CreateProductClient.createAoi(wktString);
+
         CreateProductClient.$createGp.removeClass("disabled");
     }
 
@@ -53,9 +55,9 @@ var CutByFileClient = (function () {
         done: function (e, data) {
             //alert(JSON.stringify(data.result.wkt));
             //alert(JSON.stringify(data));
-            //$.each(data.result.files, function (index, file) {
-            //    $('<p/>').text(file.name).appendTo('#files');
-            //});
+            $.each(data.files, function (index, file) {
+                $('<p/>').text(file.name).appendTo('#files');
+            });
 
             addWktToMap(data.result.wkt);
         },
