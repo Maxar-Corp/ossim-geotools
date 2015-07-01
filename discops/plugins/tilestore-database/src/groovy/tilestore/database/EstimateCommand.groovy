@@ -52,6 +52,10 @@ class EstimateCommand implements CaseInsensitiveBind
                }
             }
          }
+         else
+         {
+            result = srcGeom
+         }
       }
 
       result

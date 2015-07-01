@@ -14,5 +14,7 @@ class GetActualBoundsCommand implements CaseInsensitiveBind
    String layer
    String aoi
    String aoiEpsg
+   Long minLevel
+   Long maxLevel
 
 }
