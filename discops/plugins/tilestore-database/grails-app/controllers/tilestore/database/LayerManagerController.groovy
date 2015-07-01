@@ -371,4 +371,21 @@ def putTile()
       render contentType: 'application/json', text: result.data as JSON
     }
   }
+
+  @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
+  def estimate(EstimateCommand cmd)
+  {
+    def result = layerManagerService.estimate(cmd)
+
+    response.status = result.status.value
+
+    if ( result.status != HttpStatus.OK )
+    {
+      render contentType: 'application/json', text: [message: result.message] as JSON
+    }
+    else
+    {
+      render contentType: 'application/json', text: result.data as JSON
+    }
+  }
 }
