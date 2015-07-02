@@ -24,7 +24,6 @@ class ProductController
    @Secured( ['ROLE_USER', 'ROLE_ADMIN'] )
    def export(ProductExportCommand cmd)
    {
-      println cmd
       def result = productService.export(cmd)
 
       if ( result.status != HttpStatus.OK )
@@ -36,87 +35,6 @@ class ProductController
       {
          render contentType: "application/json", ( result.data as JSON ).toString()
       }
-
-      /*
-      println params
-      response.setHeader( "Access-Control-Allow-Origin", "*" );
-      response.setHeader( "Access-Control-Allow-Origin", "*" );
-      response.setHeader( "Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE" );
-      // response.setHeader( "Access-Control-Max-Age", "3600" );
-      response.setHeader( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept" );
-
-      def data = productService.export()
-
-      def spec
-      switch ( request.method.toLowerCase() )
-      {
-         case "post":
-            //  def inputString = request.JSON.toString()
-            def message = TileCacheMessage.newMessage()
-            def input = request.JSON
-
-
-            switch ( input )
-            {
-               case JSONArray:
-                  println 'json array'
-                  break
-               case JSONObject:
-
-                  spec = [type:"TileServerProductMessage",
-                          jobName:"Export",
-                          aoi:input.aoi,
-                          aoiEpsg:"EPSG:3857",
-                          layer:"reference",
-                          minLevel:0,
-                          maxLevel:20,
-                          format:[type:"image/gpkg"],
-                          writerProperties:[:]
-                          ]
-                  println 'json object'
-                  println input
-                  break
-               default:
-                  println 'no idea what this is!'
-            }
-
-//      println "type: ${input.class.name}"
-
-//        def inputString = '{"aoi":"POLYGON((-76.34119444915345 36.96805897475397,-76.34119444915345 36.90159168959772,-76.2901080233722 36.90159168959772,-76.2901080233722 36.96805897475397,-76.34119444915345 36.96805897475397))","writerProperties":{"imageFormat":"png","srs":"EPSG:4326"},"layers":["highres_us"],"srs":"EPSG:4326","format":"image/gpkg","type":"TileCacheMessage"}'
-//      println "MESSAGE STRING: ${inputString}"
-
-            try{
-               if(spec)
-               {
-                  rabbitProducer.sendMessage(grailsApplication.config.rabbitmq.product.queue, (spec as JSON).toString())
-               }
-            }
-            catch(e)
-            {
-               println e
-            }
-
-            //   println "INPUT: ${input}"
-
-//      message.fromJsonString( input )
-//      message.newJobId()
-//
-//      def result = ( [jobId: message.jobId] as JSON ).toString()
-         def result = [message: "MESSAGE DONE!!"]
-            render contentType: "application/json",result as JSON ).toString()
-            break
-         default:
-            render contentType: "text/plain", "ERROR:  Only accept posts"//([message:"Heck YEA!! "] as JSON).toString()
-            break;
-      }
-      // if ( params.callback )
-      // {
-      // result = "${params.callback}(${result});";
-      //}
-//    println request.JSON
-      // allow cross domain
-      // println output
-        */
    }
 
 }
