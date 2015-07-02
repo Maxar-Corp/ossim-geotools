@@ -90,6 +90,8 @@
                                         Freehand Polygon</a></li>
                                         <li><a id="uploadCutFile" href="#"><i
                                                 class="fa fa-upload fa-lg"></i>&nbsp;&nbsp;Upload Cut File</a></li>
+                                        <li><a id="pasteGeometry" href="#"><i
+                                                class="fa fa-paste fa-lg"></i>&nbsp;&nbsp;Paste Geometry</a></li>
                                     </ul>
                                 </li>
                                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
@@ -202,8 +204,8 @@
             </div><!-- /.modal-dialog modal-lg -->
         </div><!-- /.modal fade "exportGeopackageModal" -->
 
-    <!-- Upload cut by file form -->
-    <div class="modal fade" id="uploadCutByFileModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+        <!-- Upload cut by file form -->
+        <div class="modal fade" id="uploadCutByFileModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
          Saria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -227,7 +229,7 @@
                                            value="EPSG:3857">
                                     <!-- The fileinput-button span is used to style the file input field as button -->
                                     <span class="btn btn-primary fileinput-button">
-                                        <i class="fa fa-upload"></i>&nbsp;&nbsp;
+                                        <i class="fa fa-folder-open"></i>&nbsp;&nbsp;
                                         <span>Browse</span>
                                         <!-- The file input field used as target for the file upload widget -->
                                         <input id="fileupload" type="file" name="files[]" multiple>
@@ -239,7 +241,8 @@
                                         <div class="progress-bar progress-bar-success progress-bar-striped"></div>
                                     </div>
                                     <!-- The container for the uploaded files -->
-                                    <div id="files" class="files alert alert-success">Successfully uploaded: </div>
+                                    <div id="files" class="files alert alert-success" style="display: none"></div>
+                                    <hr/>
                                     <label for="productName">Paste geometry string (WKT or KML)&nbsp;</label>
                                     <textarea id="wktUploadTextArea" class="form-control" rows="3"></textarea>
 
@@ -252,6 +255,40 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog modal-lg -->
     </div><!-- /.modal fade "exportGeopackageModal" -->
+
+        <!-- Paste cut geometry form -->
+        <div class="modal fade" id="pasteCutGeometryModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+         Saria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title"><i class="fa fa-paste fa-lg"></i>&nbsp;&nbsp;Paste geometry
+                    </h3>
+                </div>
+                <div class="modal-body">
+                    <form id="pasteCutGeometryForm" data-toggle="validator">
+                        <div class="container">
+                            <div class="row col-sm-6 col-md-6">
+
+                                <div id="pasteCutGeometryElements">
+                                    <p>Copy geometry text (KML or WKT) into the text below</p>
+                                    <label for="geometryPasteTextArea">Paste geometry string (WKT or KML)&nbsp;</label>
+                                    <textarea id="geometryPasteTextArea" class="form-control" rows="3"></textarea>
+                                    <br>
+                                    <button id="submitPasteGeometry" type="button" class="btn btn-primary"
+                                            data-style="expand-left"><span class="ladda-label">Submit</span></button>
+                                </div>
+
+                            </div>
+                        </div><!-- /.container -->
+                    </form><!-- /#uploadCutByFileForm -->
+                </div><!-- /.modal-body -->
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog modal-lg -->
+    </div><!-- /.modal fade "uploadCutByFileModal" -->
+
+
     <asset:javascript src="app/client.js"/>
 
     <g:javascript>

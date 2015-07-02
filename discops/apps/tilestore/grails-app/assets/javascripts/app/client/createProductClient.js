@@ -82,11 +82,11 @@ var CreateProductClient = (function () {
         $aoiJobInfo.hide();
         var gpkgInputTileLayer = $tileLayerSelect.val();
 
-        console.log(wkt);
+        //console.log(wkt);
         console.log(gpkgInputTileLayer);
-        var dataObject = {"layer": gpkgInputTileLayer, "aoi": wkt}
+        //var dataObject = {"layer": gpkgInputTileLayer, "aoi": wkt}
+        //console.log(dataObject);
 
-        console.log(dataObject);
         $.ajax({
             url: urlLayerActualBounds, // + "?layer=" + gpkgInputTileLayer + "&aoi=" + wkt,
             type: 'POST',
@@ -244,16 +244,13 @@ var CreateProductClient = (function () {
 
                 $prodcutProgress.show();
 
-                console.log('---------------------------------');
-                console.log('product.aoi' + product.aoi);
-                console.log('---------------------------------');
                 product.layer = $tileLayerSelect.val();
                 product.properties.filename = $productName.val();
                 product.aoiEpsg = AppClient.mapEpsg //"EPSG:3857";
                 product.minLevel = null;
                 product.maxLevel = null
 
-                //console.log(product);
+                console.log(product);
 
                 $.ajax({
                     url: urlProductExport,
