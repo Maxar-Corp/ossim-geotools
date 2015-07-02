@@ -16,6 +16,8 @@ import grails.transaction.Transactional
 import groovy.sql.Sql
 import groovy.xml.StreamingMarkupBuilder
 import joms.geotools.tileapi.TileCachePyramid
+import joms.geotools.tileapi.accumulo.ImageTileKey
+import joms.geotools.tileapi.accumulo.TileCacheImageTile
 import joms.geotools.tileapi.hibernate.TileCacheHibernate
 import joms.geotools.tileapi.hibernate.controller.TileCacheServiceDAO
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
@@ -29,7 +31,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile
 import tilestore.job.CreateJobCommand
 import tilestore.job.JobStatus
 
+import javax.imageio.ImageIO
 import javax.servlet.http.HttpServletRequest
+import java.awt.image.BufferedImage
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.LinkedBlockingQueue
 import groovy.io.FileType
@@ -792,29 +796,80 @@ class LayerManagerService implements InitializingBean
 
             def queryString = "select Count(*) from ${layerInfo?.tileStoreTable} ${daoTileCacheService.createWhereClause( constraints )}".toString()
             Sql sql = hibernate.cacheSql
-
             def queryCount = sql.firstRow(queryString)
             long count = queryCount.count
+            Long numberOfComponents
+            Long pngOutputSize     = 0
+            Long jpegOutputSize    = 0
+            Long rawTileSize       = 0
+            Double jpegCompressionRate = 1.0
+            Double pngCompressionRate = 1.0
+            Long average = 0
+
+            if(count)
+            {
+               constraints.offset = 0
+               constraints.maxRows = 10
+               constraints.orderBy= "Z+D"
+               def tileList = daoTileCacheService.getTilesMetaWithinConstraints(layerInfo, constraints)
+
+               tileList.each{tile->
+                  TileCacheImageTile imageTile = daoTileCacheService.getTileByKey(layerInfo, new ImageTileKey(rowId:tile.hashId))
+                  if(imageTile.data.size())
+                  {
+                     ++average
+                     BufferedImage image = imageTile?.image
+
+                     numberOfComponents = image.colorModel.numComponents?:1
+
+
+                     // calculate average JPEG compressiong rate
+                     ByteArrayOutputStream output = new ByteArrayOutputStream()
+                     ByteArrayOutputStream outputPng = new ByteArrayOutputStream()
+                     ImageIO.write(image, "jpeg", output)
+                     ImageIO.write(image, "png", outputPng)
+                     rawTileSize    += imageTile.data.size()
+                     pngOutputSize  += outputPng.toByteArray().size()
+                     jpegOutputSize += output.toByteArray().size()
+                  }
+
+               }
+               if(tileList)
+               {
+                  if(average)
+                  {
+                     rawTileSize    = Math.round(rawTileSize/tileList.size())
+                     pngOutputSize  = Math.round(pngOutputSize/tileList.size())
+                     jpegOutputSize = Math.round(jpegOutputSize/tileList.size())
+                  }
+                  println pngOutputSize
+                  pngCompressionRate = pngOutputSize/rawTileSize
+                  jpegCompressionRate = jpegOutputSize/rawTileSize
+               }
+
+               GetActualBoundsCommand boundsCmd = new GetActualBoundsCommand([aoi:geom.toString(),
+                                                                              aoiEpsg:layerInfo.epsgCode,
+                                                                              minLevel: cmd.minLevel,
+                                                                              maxLevel: cmd.maxLevel,
+                                                                              layer: cmd.layer])
+
+               result.data?.actualBounds = getActualBounds(boundsCmd)
+               Long maxLevel = result.data?.actualBounds?.maxLevel?:layerInfo.maxLevel
+               TileLayer tileLayer = daoTileCacheService.newGeoscriptTileLayer(layerInfo)
+
+               TileCursor cursor = tileLayer.tiles(new Bounds(result.data.actualBounds.minx, result.data.actualBounds.miny,
+                       result.data.actualBounds.maxx, result.data.actualBounds.maxy),maxLevel)
+
+               result.data.imageWidth = (Long)(cursor.width*tileLayer.pyramid.tileWidth)
+               result.data.imageHeight = (Long)(cursor.height*tileLayer.pyramid.tileHeight)
+
+               result.data.uncompressBytesPerTile = rawTileSize
+               result.data.jpegCompressionRate = jpegCompressionRate
+               result.data.pngCompressionRate = pngCompressionRate
+               result.data.actualBounds = getActualBounds(boundsCmd)
+            }
 
             result.data.numberOfTiles = count
-
-            GetActualBoundsCommand boundsCmd = new GetActualBoundsCommand([aoi:geom.toString(),
-                                                                             aoiEpsg:layerInfo.epsgCode,
-                                                                             minLevel: cmd.minLevel,
-                                                                             maxLevel: cmd.maxLevel,
-                                                                             layer: cmd.layer])
-
-            result.data.actualBounds = getActualBounds(boundsCmd)
-
-            Long maxLevel = result.data.actualBounds.maxLevel?:layerInfo.maxLevel
-            TileLayer tileLayer = daoTileCacheService.newGeoscriptTileLayer(layerInfo)
-
-            TileCursor cursor = tileLayer.tiles(new Bounds(result.data.actualBounds.minx, result.data.actualBounds.miny,
-                                                    result.data.actualBounds.maxx, result.data.actualBounds.maxy),maxLevel)
-
-            result.data.imageWidth = (Long)(cursor.width*tileLayer.pyramid.tileWidth)
-            result.data.imageHeight = (Long)(cursor.height*tileLayer.pyramid.tileHeight)
-
             println  result.data
 
          }
@@ -822,7 +877,7 @@ class LayerManagerService implements InitializingBean
       }
       catch (e)
       {
-        // println e
+         println e
          result.status = HttpStatus.BAD_REQUEST
          result.message = e.toString()
       }
