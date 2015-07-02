@@ -653,6 +653,7 @@ class LayerManagerService implements InitializingBean
 
          if(tempFile.exists())
          {
+
             tempFile.eachFileRecurse(FileType.FILES){File fileTest->
                println fileTest
                String fileTestString = fileTest.toString().toLowerCase()
@@ -675,11 +676,13 @@ class LayerManagerService implements InitializingBean
                           fileTestString.endsWith("json"))
                   {
                      layer = new GeoJSONReader().read([:], fileTest.text)
+                    // cmd.sourceEpsg = "EPSG:4326"
+                    // println layer
                   }
                }
                catch(e)
                {
-
+                   //println e
                }
                if(layer)
                {
@@ -738,6 +741,7 @@ class LayerManagerService implements InitializingBean
                }
                catch (e)
                {
+                  println e
                }
             }
             if(layer)
