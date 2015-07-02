@@ -1,5 +1,5 @@
 "use strict";
-var AppDrawFeaturesAdmin = (function () {
+var AppDrawFeaturesClient = (function () {
 
     var loadParams, outputWkt, formatWkt, drawInteractionFree, drawInteractionRect;
     var $drawRectangle = $('#drawRectangle');

@@ -96,7 +96,9 @@ var CutByFileClient = (function () {
         dataType: 'json',
         //autoUpload: false,
         done: function (e, data) {
-
+            //console.log('---------------------------');
+            //console.log(data);
+            //console.log('---------------------------');
             addWktToMap(data.result.wkt);
             $.each(data.files, function (index, file) {
                 $('#files').text('Successfully uploaded: ' + file.name) ;
@@ -154,7 +156,10 @@ var CutByFileClient = (function () {
 
         //addWktToMap($geometryPasteTextArea.val());
 
-        //POLYGON ((15050395.155250585 4218373.287173398, 15072659.053409241 4245720.660441585, 15050395.1552505854245720.660441585, 15050395.155250585 4218373.287173398))
+        /*
+        POLYGON ((15050395.155250585 4218373.287173398, 15072659.053409241 4245720.660441585, 15050395.155250585
+         4245720.660441585, 15050395.155250585 4218373.287173398))
+         */
 
         var pasteObj = {
             "geometry": $geometryPasteTextArea.val(),
@@ -170,10 +175,16 @@ var CutByFileClient = (function () {
             dataType: 'json',
             // TODO: Add $promise function for success
             success: function (data) {
-                console.log(data);
+                //console.log('---------------------------');
+                //console.log(data);
+                //console.log('---------------------------');
+                addWktToMap(data.wkt);
             },
             error: function(data){
-                alert('Error sending geometry to server...');
+                
+                console.log(data);
+                toastr.error("Error parsing geometry string. Please check the syntax and try again.",'Error');
+
             }
 
         });

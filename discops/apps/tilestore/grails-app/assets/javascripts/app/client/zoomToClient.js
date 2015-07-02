@@ -1,4 +1,5 @@
-ZoomToClient = (function () {
+"use strict";
+var ZoomToClient = (function () {
 
     var zoomLocationSplit, zoomLat, zoomLon;
 

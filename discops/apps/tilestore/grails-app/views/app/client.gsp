@@ -319,6 +319,7 @@
             var initParams = ${raw(initParams.toString())};
             AddLayerClient.initialize(initParams);
             AppClient.initialize(initParams);
+            AppDrawFeaturesClient.initialize(initParams);
             CreateProductClient.initialize(initParams);
             CutByFileClient.initialize(initParams);
             ZoomToClient.initialize(initParams);
