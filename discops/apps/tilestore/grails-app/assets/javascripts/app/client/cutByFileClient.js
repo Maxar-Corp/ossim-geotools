@@ -6,6 +6,7 @@ var CutByFileClient = (function () {
     var $uploadCutByFileModal = $('#uploadCutByFileModal');
     var $fileupload = $('#fileupload');
     var $cutFormTargetEpsg = $('#cutFormTargetEpsg');
+    var $files = $('#files');
 
     var cutFeature, // holds the polygons from the kml/shapefile cut files
         cutFeatureExtent, // holds the geometry extent of the cut feature polygons
@@ -16,16 +17,14 @@ var CutByFileClient = (function () {
 
     function addWktToMap(wktString){
 
-        //console.log('addWktToMap fired');
-        //console.log(wktString);
-
+        console.log(wktString);
         var format = new ol.format.WKT();
         cutFeature = format.readFeature(wktString);
         console.log(cutFeature);
         console.log(cutFeature.getGeometry().getExtent());
         cutFeatureExtent = cutFeature.getGeometry().getExtent();
 
-        console.log(CreateProductClient.aoiFeatureOverlay.getFeatures().getArray().length);
+        //console.log(CreateProductClient.aoiFeatureOverlay.getFeatures().getArray().length);
 
         if (CreateProductClient.aoiFeatureOverlay.getFeatures().getArray().length >= 1 ) {
 
@@ -53,10 +52,8 @@ var CutByFileClient = (function () {
         dataType: 'json',
         //autoUpload: false,
         done: function (e, data) {
-            //alert(JSON.stringify(data.result.wkt));
-            //alert(JSON.stringify(data));
             $.each(data.files, function (index, file) {
-                $('<p/>').text(file.name).appendTo('#files');
+                $('<p/>').text('Successfully uploaded: ' + file.name).appendTo('#files');
             });
 
             addWktToMap(data.result.wkt);
@@ -66,12 +63,17 @@ var CutByFileClient = (function () {
             toastr.error(JSON.stringify(data.responseJSON.message),'Error');
         },
         progressall: function (e, data) {
+            console.log(data.loaded);
             var progress = parseInt(data.loaded / data.total * 100, 10);
             console.log(progress);
             $('#progress .progress-bar').css(
                 'width',
                 progress + '%'
             );
+
+            if (progress === 100){
+                $files.show();
+            }
         }
     }).prop('disabled', !$.support.fileInput)
         .parent().addClass($.support.fileInput ? undefined : 'disabled');
@@ -90,7 +92,20 @@ var CutByFileClient = (function () {
             0 + '%'
         );
 
+
     });
+
+    $('#pasteGeometry').on("click", function(){
+       $('#pasteCutGeometryModal').modal('show');
+    });
+
+    $('#submitPasteGeometry').on("click", function(){
+
+        alert('submitPasteGeometry!');
+        alert($('#geometryPasteTextArea').val());
+        addWktToMap($('#geometryPasteTextArea').val());
+
+});
 
     return {
         initialize: function (initParams) {
