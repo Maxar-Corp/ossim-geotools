@@ -219,16 +219,14 @@
                             <div class="row col-sm-6 col-md-6">
 
                                 <div id="uploadCutByFormElements">
-                                    <p>Select a KML or shapefile, and upload  to the server to perform a cut for the
+                                    <p>Select a shapefile, geojson, or KML file, and upload to the server to perform the
+                                    cut for the
                                     specified
                                     geometries contained in the file.</p>
-                                    <p class="alert alert-info">You can also drag and drop a KML or shapefile into
+                                    <p class="alert alert-info">You can also drag and drop the files into
                                     the map to perform a cut.</p>
                                     <input type="hidden" id="cutFormTargetEpsg" type="text" name="targetEpsg"
                                            value="EPSG:3857">
-
-
-
                                     <input type="hidden" id="cutFormSourceEpsg" class="form-control"
                                            name="sourceEpsg" value="EPSG:3857">
 
@@ -239,12 +237,6 @@
                                     </select>
                                     <br>
                                     <br>
-
-
-
-
-
-
                                     <!-- The fileinput-button span is used to style the file input field as button -->
                                     <span class="btn btn-primary fileinput-button">
                                         <i class="fa fa-folder-open"></i>&nbsp;&nbsp;
@@ -291,6 +283,20 @@
                                     <label for="geometryPasteTextArea">Paste geometry string (WKT)&nbsp;</label>
                                     <textarea id="geometryPasteTextArea" class="form-control" rows="3"></textarea>
                                     <br>
+
+
+                                    <input type="hidden" id="pasteFormSourceEpsg" class="form-control"
+                                           name="sourceEpsg" value="EPSG:3857">
+
+                                    <label for="pasteFormEpsgSourceSelect">Set source projection</label>
+                                    <select id="pasteFormEpsgSourceSelect" class="form-control selectpicker show-tick">
+                                        <option value="EPSG:3857">EPSG: 3857</option>
+                                        <option value="EPSG:4326">EPSG: 4326</option>
+                                    </select>
+                                    <br>
+                                    <br>
+
+
                                     <button id="submitPasteGeometry" type="button" class="btn btn-primary"
                                             data-style="expand-left">Submit</button>
                                     <button id="closePasteCutGeometryModal" type="button" class="btn btn-primary"
