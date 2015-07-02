@@ -10,6 +10,8 @@ import org.pentaho.di.core.exception.KettleException
 import org.pentaho.di.core.exception.KettleValueException
 import org.pentaho.di.core.exception.KettleXMLException
 import org.pentaho.di.core.row.RowMetaInterface
+import org.pentaho.di.core.row.ValueMetaInterface
+import org.pentaho.di.core.row.value.ValueMetaFactory
 import org.pentaho.di.core.variables.VariableSpace
 import org.pentaho.di.core.xml.XMLHandler
 import org.pentaho.di.repository.ObjectId
@@ -78,11 +80,20 @@ class DirWatchMeta extends BaseStepMeta implements StepMetaInterface
       retval.toString()
    }
 
+
    void getFields(RowMetaInterface r, String origin,
                   RowMetaInterface[] info,
                   StepMeta nextStep, VariableSpace space)
    {
-      // add any output field definitions here
+ //     RowMetaInterface rowMeta = inputRowMeta.clone();
+ //     inputRowMeta.clear();
+ //     inputRowMeta.addRowMeta( rowMeta );
+
+      r.clear()
+
+      ValueMetaInterface field = ValueMetaFactory.createValueMeta("filename", ValueMetaInterface.TYPE_STRING);
+      field.setOrigin(origin);
+      r.addValueMeta(field);
    }
 
    Object clone()
