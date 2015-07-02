@@ -3,13 +3,8 @@
 *= require bootstrap.css
 *= require font-awesome.css
 *= require common/jquery.fileupload.css
-*= require client/bootstrap-select.css
-*= require client/sidebars.css
-*= require client/layer_manager.css
-*= require client/datepicker3.css
-*= require client/slider.css
-*= require client/toastr.css
-*= require styles.css
+*= require common/bootstrap-select.css
+*= require common/toastr.css
 *= require client/styles.css
 *= require_self
 */

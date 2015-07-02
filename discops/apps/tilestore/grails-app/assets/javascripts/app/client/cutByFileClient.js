@@ -2,19 +2,23 @@
 var CutByFileClient = (function () {
 
     // Cache DOM elements
-    var $uploadCutFile = $('#uploadCutFile');  // supports shapefile and kml
+
+    // Upload Form DOM elements
+    var $uploadCutFile = $('#uploadCutFile');  // supports shapefile, kml, and geojson
     var $uploadCutByFileModal = $('#uploadCutByFileModal');
-    var $fileupload = $('#fileupload'); // file upload element from
-    // http://blueimp.github.io/jQuery-File-Upload/basic.html
+    var $fileupload = $('#fileupload'); // fileupload from http://blueimp.github.io/jQuery-File-Upload/basic.html
     var $cutFormTargetEpsg = $('#cutFormTargetEpsg');  // hidden form on upload form that stores target EPSG
     var $cutFormSourceEpsg = $('#cutFormSourceEpsg'); // hidden form on upload form that stores source EPSG
     var $sourceEpsgSelect = $('#sourceEpsgSelect');
     var $files = $('#files'); // displays the name of the uploaded file
     var $closeUploadCutByFileModal = $('#closeUploadCutByFileModal');
+    $cutFormTargetEpsg.val(AppClient.mapEpsg);  // grabs the EPSG code from the map element
 
+    // Paste Form DOM elements
     var $pasteGeometry = $('#pasteGeometry');  // <li> element in tools dropdown
     var $pasteCutGeometryModal = $('#pasteCutGeometryModal');
     var $geometryPasteTextArea = $('#geometryPasteTextArea');
+    var $pasteFormEpsgSourceSelect = $('#pasteFormEpsgSourceSelect');
     var $submitPasteGeometry = $('#submitPasteGeometry');
     var $closePasteCutGeometryModal = $('#closePasteCutGeometryModal');
 
@@ -22,8 +26,6 @@ var CutByFileClient = (function () {
         cutFeatureExtent, // holds the geometry extent of the cut feature polygons
         removeFeature, // previously uploaded feature
         progress // file upload progress percentage
-
-    $cutFormTargetEpsg.val(AppClient.mapEpsg);  // grabs the EPSG code from the map element
 
     function addWktToMap(wktString){
 
@@ -73,7 +75,7 @@ var CutByFileClient = (function () {
 
     }
 
-    function setSourceEpsg(){
+    function setSourceEpsgCutForm(){
 
         console.log('select: ' + $sourceEpsgSelect.val());
         $cutFormSourceEpsg.val($sourceEpsgSelect.val());
@@ -83,14 +85,11 @@ var CutByFileClient = (function () {
 
     var urlConvertGeometry = "/tilestore/layerManager/convertGeometry";
 
-    // ------------------------------------------------------------------------------------------
-    // TODO: Create function for geometry pasted that // POST => geometry, sourceEpsg, targetEpsg
-    // ------------------------------------------------------------------------------------------
-
     $sourceEpsgSelect.on("change", function(){
-        setSourceEpsg();
-    });
 
+        setSourceEpsgCutForm();
+
+    });
 
     $fileupload.fileupload({
         url: urlConvertGeometry,
@@ -132,7 +131,6 @@ var CutByFileClient = (function () {
     $closeUploadCutByFileModal.on('click', function(){
 
         $uploadCutByFileModal.modal('hide');
-        resetUploadForm();
 
     });
 
@@ -142,6 +140,10 @@ var CutByFileClient = (function () {
 
     });
 
+    // ------------------------------------------------------------------------------------------
+    // TODO: Create function for geometry pasted that // POST => geometry, sourceEpsg, targetEpsg
+    // ------------------------------------------------------------------------------------------
+
     $pasteGeometry.on("click", function(){
 
         $pasteCutGeometryModal.modal('show');
@@ -150,7 +152,31 @@ var CutByFileClient = (function () {
 
     $submitPasteGeometry.on("click", function(){
 
-        addWktToMap($geometryPasteTextArea.val());
+        //addWktToMap($geometryPasteTextArea.val());
+
+        //POLYGON ((15050395.155250585 4218373.287173398, 15072659.053409241 4245720.660441585, 15050395.1552505854245720.660441585, 15050395.155250585 4218373.287173398))
+
+        var pasteObj = {
+            "geometry": $geometryPasteTextArea.val(),
+            "sourceEpsg": $pasteFormEpsgSourceSelect.val(),
+            "targetEpsg": AppClient.mapEpsg
+        }
+        console.log(pasteObj);
+
+        $.ajax({
+            url: urlConvertGeometry,
+            type: 'POST',
+            data: pasteObj,
+            dataType: 'json',
+            // TODO: Add $promise function for success
+            success: function (data) {
+                console.log(data);
+            },
+            error: function(data){
+                alert('Error sending geometry to server...');
+            }
+
+        });
 
     });
 
