@@ -19,25 +19,22 @@ class DirWatchData extends BaseStepData implements StepDataInterface
       super();
    }
 
-   DirectoryContext newContext(File directory, Boolean memoryContext=false)
+   DirectoryContext newContext(HashMap settings)
    {
-      String connectionName = memoryContext?"":"DIR_WATCH_DB"
+      String connectionName = settings?.memoryContext?"":"DIR_WATCH_DB"
       DirectoryContext result
+      File directory = settings.directory as File
       File fullPath = directory
       DirectoryContext context
 
-      HashMap params = [
-              id:UUID.randomUUID().toString(),
-              tableName:"watch",
-              connectionName:connectionName,
-              //fullPath:fullPath,
-              directory:directory,
-              memoryContext:memoryContext
-      ]
+      HashMap params = settings
 
+      params.id = UUID.randomUUID().toString()
+      params.tableName = "watch"
+      params.connectionName = connectionName
       // generate unique database
       //
-      if(memoryContext)
+      if(params?.memoryContext)
       {
          String databaseName = new String(params.id).replaceAll("-","_")
 
@@ -53,7 +50,6 @@ class DirWatchData extends BaseStepData implements StepDataInterface
       result.init()
 
       managedDirectories."${params.id}" = result
-
     }
 
    void deleteContext(DirectoryContext context)

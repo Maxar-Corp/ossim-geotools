@@ -100,7 +100,7 @@ class DirWatchDialog extends BaseStepDialog implements
                      }
                      label "Recurse subfolders"
                      cCombo(id: "fieldRecurseSubfolders",
-                             items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaBase.TYPE_STRING]),
+                             items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaBase.TYPE_STRING, ValueMetaBase.TYPE_BOOLEAN]),
                              layoutData: "width 100:100:200,span,growx"
                      ) {
                         onEvent(type: 'Modify') { changed = true }

@@ -18,7 +18,10 @@ class DirectoryContext
    String url            = ""
   // File fullPath
    File directory
-   Boolean memoryContext = false
+   String includeRegEx
+   String excludeRegEx
+   Boolean recurseDirectories = true
+   Boolean memoryContext      = false
    Connection conn
 
    private void initTable()
