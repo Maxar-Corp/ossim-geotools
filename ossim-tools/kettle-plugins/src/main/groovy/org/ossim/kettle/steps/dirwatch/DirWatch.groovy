@@ -11,8 +11,6 @@ import org.pentaho.di.trans.step.StepInterface
 import org.pentaho.di.trans.step.StepMeta
 import org.pentaho.di.trans.step.StepMetaInterface
 
-import java.sql.Connection
-import java.sql.DriverManager
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Statement
@@ -22,7 +20,6 @@ class DirWatch extends BaseStep implements StepInterface
 {
    private DirWatchMeta meta = null;
    private DirWatchData data = null;
-   private File directoryToWatch
    private Boolean needsToScan = false
    private Long timeBetweenScans = 10
    private Long timeDeltaForNotification = 30
@@ -56,25 +53,123 @@ class DirWatch extends BaseStep implements StepInterface
 
       result
    }
+   private addContext(String directoryToWatch)
+   {
+      data.newContext(directoryToWatch)
+   }
+   private void scanDirectory(DirectoryContext context)
+   {
+      File directoryToWatch = context.directory as File
+      if(directoryToWatch?.exists())
+      {
+         Statement stat = context.conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+         String INSERT_RECORD = "insert into ${context.tableName}(filename, filesize, last_filesize, last_modified, notified) values(?, ?, ?, ?, ?)";
+         PreparedStatement pstmt = context.conn.prepareStatement(INSERT_RECORD);
+         directoryToWatch.eachFileRecurse(FileType.FILES) {file->
+            Boolean skipFile = false
+            if(context.connectionName&&file?.name?.startsWith(context.connectionName))
+            {
+               skipFile = true
+            }
+            if(!skipFile)
+            {
+               ResultSet rs;
+               rs = stat.executeQuery("select * from ${context.tableName} where filename='${file}'".toString());
+               if(!rs.first())
+               {
+                  Long currentFileLength = file.length()
+                  Boolean notified = false
+                  Long modifiedMillis = file.lastModified()
+                  Double delta = (new Date().time - modifiedMillis)/1000
+                  if(delta >= timeDeltaForNotification)
+                  {
+                     notified = true
+                     putRow(data.outputRowMeta, [file] as Object[]);
+                  }
+                  //String timeStamp = new Date(file.lastModified()).format("yyyy-MM-dd hh:mm:ss.ssss")
+                  //stat.execute("MERGE INTO watch(filename, last_modified, notified) values('Hello','2015-10-10 12:34:45.1234', false)");
+                  pstmt.setString(1,file.toString())
+                  pstmt.setBigDecimal(2,currentFileLength)
+                  pstmt.setBigDecimal(3,currentFileLength)
+                  pstmt.setTimestamp(4, new Timestamp(file.lastModified()))//new Timestamp(new Date().time))
+                  pstmt.setBoolean(5, notified)
+                  pstmt.executeUpdate()//"INSERT INTO watch(filename, filesize, last_modified, notified) values('${file}',${file.length()},'${timeStamp}', false)".toString());
+               }
+               else if(!rs.getBoolean("notified"))
+               {
+                  Long currentFileLength = file.length()
+                  rs.updateTimestamp("last_modified", new Timestamp(file.lastModified()))
+                  rs.updateBigDecimal("filesize",currentFileLength)
+
+                  // last_modified is here till I support change compares.  Right now we are
+                  // looking for timestamp modifications
+                  //
+                  rs.updateBigDecimal("last_filesize",currentFileLength )
+
+                  Long modifiedMillis = file.lastModified()
+
+                  Double delta = (new Date().time - modifiedMillis)/1000
+                  if(delta >= timeDeltaForNotification)
+                  {
+                     rs.updateBoolean("notified", true)
+
+                     putRow(data.outputRowMeta, [file] as Object[]);
+                  }
+                  rs.updateRow()
+               }
+               else
+               {
+               }
+            }
+         }
+
+         stat.close()
+         pstmt?.close()
+      }
+   }
+   private void synchIndexedFiles(DirectoryContext context)
+   {
+      // now purge any invalid files that were indexed
+      //
+      Statement stat = context.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+      ResultSet rs;
+      Long offset=0
+      Long nResults = 0
+      Boolean keepGoing = true
+      while(keepGoing)
+      {
+         nResults = 0
+         rs = stat.executeQuery("select * from ${context.tableName} ORDER BY id LIMIT 50 OFFSET ${offset}");
+
+         while(rs.next())
+         {
+            File f = rs.getString("filename") as File
+            if(!f.exists())
+            {
+               println "FILE NO LONG EXISTS ${f}"
+               rs.deleteRow()
+            }
+            ++nResults
+         }
+
+         if(nResults < 50) keepGoing = false
+         offset += nResults
+      }
+
+      stat?.close()
+   }
    public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws KettleException
    {
       Object[] r = getRow();
 
       if (first)
       {
-         if (r==null)
-         {
-            setOutputDone()
-            return false
-         }
-
-         directoryToWatch = getFieldValueAsString(meta.fieldFilename, r,meta,data) as File
-
-         if(directoryToWatch)
-         {
-            data.initDb(directoryToWatch)
-
-         }
+          if(r == null)
+          {
+             setOutputDone()
+             return false
+          }
 
          first=false
 
@@ -82,107 +177,35 @@ class DirWatch extends BaseStep implements StepInterface
          meta.getFields(data.outputRowMeta, getStepname(), null, null, this)
       }
 
-      // For this template I am just copying the input row to the output row
-      // You can pass your own information to the output
+      // if we get new rows and we are getting our directory information to watch from the
+      // input fields then let's add a new watch context
       //
-      //putRow(data.outputRowMeta, r);
+      if(r)
+      {
+         String directoryToWatch = getFieldValueAsString(meta.fieldFilename, r,meta,data) as File
+         data.newContext(directoryToWatch as File, true)
+      }
 
       // scan for files
-
       Long deltaTime = (System.currentTimeMillis() - lastScanTime) / 1000
       if(deltaTime > timeBetweenScans)
       {
          needsToScan = true
       }
 
-      if(data.conn&&needsToScan)
+      if(needsToScan)
       {
          needsToScan = false
-         if(directoryToWatch?.exists())
-         {
-            Statement stat = data.conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
-            String INSERT_RECORD = "insert into watch(filename, filesize,last_modified, notified) values(?, ?, ?, ?)";
-            PreparedStatement pstmt = data.conn.prepareStatement(INSERT_RECORD);
-            directoryToWatch.eachFileRecurse(FileType.FILES) {file->
-               if(!file?.name?.startsWith(data.databaseName))
-               {
-                  ResultSet rs;
-                  rs = stat.executeQuery("select * from watch where filename='${file}'".toString());
-                  if(!rs.first())
-                  {
-                     Boolean notified = false
-                     Long modifiedMillis = file.lastModified()
-                     Double delta = (new Date().time - modifiedMillis)/1000
-                     if(delta >= timeDeltaForNotification)
-                     {
-                        notified = true
-                        putRow(data.outputRowMeta, [file] as Object[]);
-                     }
-                     //String timeStamp = new Date(file.lastModified()).format("yyyy-MM-dd hh:mm:ss.ssss")
-                     //stat.execute("MERGE INTO watch(filename, last_modified, notified) values('Hello','2015-10-10 12:34:45.1234', false)");
-                     pstmt.setString(1,file.toString())
-                     pstmt.setBigDecimal(2,file.length())
-                     pstmt.setTimestamp(3, new Timestamp(file.lastModified()))//new Timestamp(new Date().time))
-                     pstmt.setBoolean(4, notified)
-                     pstmt.executeUpdate()//"INSERT INTO watch(filename, filesize, last_modified, notified) values('${file}',${file.length()},'${timeStamp}', false)".toString());
-                  }
-                  else if(!rs.getBoolean("notified"))
-                  {
-                     rs.updateTimestamp("last_modified", new Timestamp(file.lastModified()))
-                     rs.updateBigDecimal("filesize",file.length())
-                     Long modifiedMillis = file.lastModified()
-
-                     Double delta = (new Date().time - modifiedMillis)/1000
-                     if(delta >= timeDeltaForNotification)
-                     {
-                        rs.updateBoolean("notified", true)
-
-                        putRow(data.outputRowMeta, [file] as Object[]);
-                     }
-                     rs.updateRow()
-                  }
-                  else
-                  {
-                    // println "FILE HAS BEEN NOTIFIED"
-                  }
-               }
-            }
-
-            stat.close()
-            pstmt?.close()
-         }
-
-         lastScanTime = System.currentTimeMillis()
-
-         // now purge any invalid files that were indexed
-         //
-         Statement stat = data.conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-
-         ResultSet rs;
-         Long offset=0
-         Long nResults = 0
-         Boolean keepGoing = true
-         while(keepGoing)
-         {
-            nResults = 0
-            rs = stat.executeQuery("select * from watch ORDER BY id LIMIT 50 OFFSET ${offset}");
-
-            while(rs.next())
+         data.managedDirectories.each{k,context->
+            if(!context?.conn)
             {
-               File f = rs.getString("filename") as File
-               if(!f.exists())
-               {
-                  println "FILE NO LONG EXISTS ${f}"
-                  rs.deleteRow()
-               }
-               ++nResults
+               context.createConnection()
             }
 
-            if(nResults < 50) keepGoing = false
-            offset += nResults
+            scanDirectory(context)
+            lastScanTime = System.currentTimeMillis()
+            synchIndexedFiles(context)
          }
-
-         stat.close()
       }
 
       true
@@ -198,7 +221,7 @@ class DirWatch extends BaseStep implements StepInterface
 
    public void dispose(StepMetaInterface smi, StepDataInterface sdi)
    {
-      data.conn?.close()
+      data.closeAll()
 
       data = null
       meta = null

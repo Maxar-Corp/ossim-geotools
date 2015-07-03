@@ -11,53 +11,62 @@ import java.sql.Statement
 
 class DirWatchData extends BaseStepData implements StepDataInterface
 {
+   HashMap managedDirectories = [:]
    RowMetaInterface outputRowMeta
-   File databaseLocation
-   String databaseName = "DIR_WATCH_DB"
-   File fullPath
-   String driverClass = "org.h2.Driver"
-   Connection conn
 
    DirWatchData()
    {
       super();
    }
 
-   void initDb(File location)
+   DirectoryContext newContext(File directory, Boolean memoryContext=false)
    {
-      Boolean newDB = false
-      databaseLocation = location
+      String connectionName = memoryContext?"":"DIR_WATCH_DB"
+      DirectoryContext result
+      File fullPath = directory
+      DirectoryContext context
 
-      fullPath = new File(location, databaseName)
-      conn?.close()
-      if(!fullPath.exists())
+      HashMap params = [
+              id:UUID.randomUUID().toString(),
+              tableName:"watch",
+              connectionName:connectionName,
+              //fullPath:fullPath,
+              directory:directory,
+              memoryContext:memoryContext
+      ]
+
+      // generate unique database
+      //
+      if(memoryContext)
       {
-         File testFile = new File(databaseLocation, "${fullPath}.h2.db")
+         String databaseName = new String(params.id).replaceAll("-","_")
 
-
-         if(!testFile.exists())
-         {
-            newDB = true
-         }
-
-         Class.forName(driverClass);
-         conn = DriverManager.getConnection("jdbc:h2:${fullPath}");
-         Statement stat = conn.createStatement();
-
-         if(newDB)
-         {
-            stat.execute("create table IF NOT EXISTS watch(id bigint auto_increment, filename TEXT primary key, filesize BIGINT, last_modified TIMESTAMP, notified BOOLEAN)");
-            stat.execute("CREATE INDEX IF NOT EXISTS idx_last_modified ON watch(last_modified)");
-            stat.execute("CREATE INDEX IF NOT EXISTS idx_filename ON watch(filename)");
-            stat.execute("CREATE INDEX IF NOT EXISTS idx_filesize ON watch(filesize)");
-         }
-         stat?.close()
+         params.url = "jdbc:h2:mem:${databaseName}"
       }
+      else
+      {
+         fullPath = new File(directory, connectionName)
+         params.url = "jdbc:h2:${fullPath}"
+      }
+
+      result = new DirectoryContext(params)
+      result.init()
+
+      managedDirectories."${params.id}" = result
+
+    }
+
+   void deleteContext(DirectoryContext context)
+   {
+      context?.close()
+      managedDirectories.remove(context.id)
    }
 
-   void closeDb()
+   void closeAll()
    {
-      conn?.close()
+      managedDirectories.each{k,v->
+         v?.close()
+      }
    }
 
 }

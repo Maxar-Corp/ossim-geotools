@@ -94,6 +94,7 @@ class DirWatchMeta extends BaseStepMeta implements StepMetaInterface
       ValueMetaInterface field = ValueMetaFactory.createValueMeta("filename", ValueMetaInterface.TYPE_STRING);
       field.setOrigin(origin);
       r.addValueMeta(field);
+
    }
 
    Object clone()
