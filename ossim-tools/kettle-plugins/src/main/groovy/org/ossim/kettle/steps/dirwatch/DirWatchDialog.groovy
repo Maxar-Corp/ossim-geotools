@@ -42,11 +42,12 @@ class DirWatchDialog extends BaseStepDialog implements
             //def tableView = event.source.parent.parent
             //def widgetSource = event.source
       } as ModifyListener
-      ColumnInfo[] colinf = new ColumnInfo[4];
+      ColumnInfo[] colinf = new ColumnInfo[5];
       colinf[0] = new ColumnInfo("Directory", ColumnInfo.COLUMN_TYPE_TEXT, false);
       colinf[1] = new ColumnInfo("Wildcard (RegExp)", ColumnInfo.COLUMN_TYPE_TEXT, false);
       colinf[2] = new ColumnInfo("Exclude Wildcard", ColumnInfo.COLUMN_TYPE_TEXT, false);
       colinf[3] = new ColumnInfo("Include Subfolders", ColumnInfo.COLUMN_TYPE_CCOMBO, ["true", "false"] as String[], true);
+      colinf[4] = new ColumnInfo("Use Memory Database", ColumnInfo.COLUMN_TYPE_CCOMBO, ["true", "false"] as String[], true);
 
 
 
@@ -64,7 +65,7 @@ class DirWatchDialog extends BaseStepDialog implements
             //migLayout(layoutConstraints: "wrap 1", columnConstraints: "[grow]")
             cTabItem(id: "tabInputDefinitions", text: "Input Settings") {
                composite(){
-                  migLayout(layoutConstraints: "insets 2, wrap 1", columnConstraints: "[grow]")
+                  migLayout(layoutConstraints: "insets 1, wrap 1", columnConstraints: "[grow]")
                   group(id:"inputFieldGroupId", text:"Input From Fields", layoutData: "growx"){
                      migLayout(layoutConstraints: "insets 1, wrap 2", columnConstraints: "[][grow]")
                      label "Input from fields?"
@@ -100,6 +101,13 @@ class DirWatchDialog extends BaseStepDialog implements
                      }
                      label "Recurse subfolders"
                      cCombo(id: "fieldRecurseSubfolders",
+                             items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaBase.TYPE_STRING, ValueMetaBase.TYPE_BOOLEAN]),
+                             layoutData: "width 100:100:200,span,growx"
+                     ) {
+                        onEvent(type: 'Modify') { changed = true }
+                     }
+                     label "Use Memory Database"
+                     cCombo(id: "fieldUseMemoryDatabase",
                              items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaBase.TYPE_STRING, ValueMetaBase.TYPE_BOOLEAN]),
                              layoutData: "width 100:100:200,span,growx"
                      ) {
@@ -144,6 +152,15 @@ class DirWatchDialog extends BaseStepDialog implements
                               changed = true
                            }
                         }
+                        label "Use Memory Database"
+                        checkBox(id: "useMemoryDatabase",
+                                text: "",//Messages.getString("RemoveRecordDialog.outputResultCheckbox.Label"),
+                                selection: false,
+                                layoutData: "wrap") {
+                           onEvent(type: "Selection") {
+                              changed = true
+                           }
+                        }
                      }
 
                      tableView(id:"fieldSelection",
@@ -176,9 +193,17 @@ class DirWatchDialog extends BaseStepDialog implements
                   }
                }
             }
-            cTabItem(id: "tabOutputDefinitions", text: "Output settings") {
+            cTabItem(id: "tabOutputDefinitions", text: "General Settings") {
                composite(){
-
+                  migLayout(layoutConstraints: "insets 1, wrap 2", columnConstraints: "[][grow]")
+                  label "Time between scans (seconds)"
+                  text id:"secondsBetweenScans", text:"", layoutData:"spanx, grow"
+                  label "File done compare (seconds)"
+                  text id:"secondsToFileDoneCompare", text:"", layoutData:"spanx, grow"
+                  label "File done compare type"
+                  cCombo(id: "fileDoneCompareType",
+                          items: ["FILE_SIZE", "MODIFIED_TIME"],
+                          layoutData: "spanx,grow")
                }
             }
          }
@@ -208,21 +233,23 @@ class DirWatchDialog extends BaseStepDialog implements
    }
    private fileInputFromFieldCheckboxModified()
    {
-      swt.fieldFilename.enabled = swt.fileInputFromField.selection
-      swt.fieldWildcard.enabled = swt.fileInputFromField.selection
-      swt.fieldWildcardExclude.enabled = swt.fileInputFromField.selection
+      swt.fieldFilename.enabled          = swt.fileInputFromField.selection
+      swt.fieldWildcard.enabled          = swt.fileInputFromField.selection
+      swt.fieldWildcardExclude.enabled   = swt.fileInputFromField.selection
       swt.fieldRecurseSubfolders.enabled = swt.fileInputFromField.selection
+      swt.fieldUseMemoryDatabase.enabled = swt.fileInputFromField.selection
 
-      swt.filename.enabled = !swt.fileInputFromField.selection
-      swt.wildcard.enabled = !swt.fileInputFromField.selection
-      swt.wildcardExclude.enabled = !swt.fileInputFromField.selection
+      swt.filename.enabled          = !swt.fileInputFromField.selection
+      swt.wildcard.enabled          = !swt.fileInputFromField.selection
+      swt.wildcardExclude.enabled   = !swt.fileInputFromField.selection
       swt.recurseSubfolders.enabled = !swt.fileInputFromField.selection
-      swt.fieldSelection.enabled = !swt.fileInputFromField.selection
-      swt.clearFields.enabled = !swt.fileInputFromField.selection
-      swt.addButton.enabled = !swt.fileInputFromField.selection
-      swt.browseButton.enabled = !swt.fileInputFromField.selection
-      swt.deleteRowButton.enabled = !swt.fileInputFromField.selection
-     // swt.editRowButton.enabled = !swt.fileInputFromField.selection
+      swt.useMemoryDatabase.enabled = !swt.fileInputFromField.selection
+      swt.fieldSelection.enabled    = !swt.fileInputFromField.selection
+      swt.clearFields.enabled       = !swt.fileInputFromField.selection
+      swt.addButton.enabled         = !swt.fileInputFromField.selection
+      swt.browseButton.enabled      = !swt.fileInputFromField.selection
+      swt.deleteRowButton.enabled   = !swt.fileInputFromField.selection
+     // swt.editRowButton.enabled   = !swt.fileInputFromField.selection
    }
    private clearFields()
    {
@@ -267,6 +294,7 @@ class DirWatchDialog extends BaseStepDialog implements
                swt.wildcard.text               = item.getText(2)
                swt.wildcardExclude.text        = item.getText(3)
                swt.recurseSubfolders.selection = "${item.getText(4)}".toBoolean()
+               swt.useMemoryDatabase.selection = "${item.getText(5)}".toBoolean()
             }
          }
       }
@@ -284,6 +312,7 @@ class DirWatchDialog extends BaseStepDialog implements
          item?.setText(2, swt.wildcard?.text?:"")
          item?.setText(3, swt.wildcardExclude?.text?:"")
          item?.setText(4, swt.recurseSubfolders?.selection?"true":"false")
+         item?.setText(5, swt.useMemoryDatabase?.selection?"true":"false")
 
          changed = true
       }
@@ -304,6 +333,7 @@ class DirWatchDialog extends BaseStepDialog implements
             item?.setText(2, fieldDefinition.wildcard?:"")
             item?.setText(3, fieldDefinition.wildcardExclude?:"")
             item?.setText(4, fieldDefinition.recurseSubfolders?:"true")
+            item?.setText(5, fieldDefinition.useMemoryDatabase?:"true")
          }
       }
    }
@@ -330,24 +360,35 @@ class DirWatchDialog extends BaseStepDialog implements
          String wildcard          = "${item.getText(2)}"
          String wildcardExclude   = "${item.getText(3)}"
          String recurseSubfolders = "${item.getText(4)}".trim()
+         String useMemoryDatabase = "${item.getText(5)}".trim()
 
          if(filename.trim())
          {
 
-            input.fileDefinitions << [filename:filename,
+            input.fileDefinitions << [
+                    filename:filename,
                     wildcard:wildcard,
                     wildcardExclude: wildcardExclude,
-                    recurseSubfolders: recurseSubfolders]
+                    recurseSubfolders: recurseSubfolders,
+                    useMemoryDatabase:useMemoryDatabase
+            ]
          }
       }
+
+      println input.fileDefinitions
    }
    private getData()
    {
-      swt.fileInputFromField.selection = input.fileInputFromField
-      swt.fieldFilename.text           = input.fieldFilename?:""
-      swt.fieldWildcard.text           = input.fieldWildcard?:""
-      swt.fieldWildcardExclude.text    = input.fieldWildcardExclude?:""
-      swt.fieldRecurseSubfolders.text  = input.fieldRecurseSubfolders?:""
+      swt.fileInputFromField.selection  = input.fileInputFromField
+      swt.fieldFilename.text            = input.fieldFilename?:""
+      swt.fieldWildcard.text            = input.fieldWildcard?:""
+      swt.fieldWildcardExclude.text     = input.fieldWildcardExclude?:""
+      swt.fieldRecurseSubfolders.text   = input.fieldRecurseSubfolders?:""
+      swt.fieldUseMemoryDatabase.text   = input.fieldUseMemoryDatabase?:""
+
+      swt.fileDoneCompareType.text      = input.fileDoneCompareType
+      swt.secondsBetweenScans.text      = input.secondsBetweenScans
+      swt.secondsToFileDoneCompare.text = input.secondsToFileDoneCompare
 
       loadFileinfoTable()
 
@@ -364,13 +405,16 @@ class DirWatchDialog extends BaseStepDialog implements
    {
       if (Const.isEmpty(swt.stepName.text)) return;
 
-      stepname                     = swt.stepName.text
-      input.fileInputFromField     = swt.fileInputFromField.selection
-      input.fieldFilename          = swt.fieldFilename.text
-      input.fieldWildcard          = swt.fieldWildcard.text
-      input.fieldWildcardExclude   = swt.fieldWildcardExclude.text
-      input.fieldRecurseSubfolders = swt.fieldRecurseSubfolders.text
-
+      stepname                       = swt.stepName.text
+      input.fileInputFromField       = swt.fileInputFromField.selection
+      input.fieldFilename            = swt.fieldFilename.text
+      input.fieldWildcard            = swt.fieldWildcard.text
+      input.fieldWildcardExclude     = swt.fieldWildcardExclude.text
+      input.fieldRecurseSubfolders   = swt.fieldRecurseSubfolders.text
+      input.fieldUseMemoryDatabase   = swt.fieldUseMemoryDatabase.text
+      input.fileDoneCompareType      = swt.fileDoneCompareType.text
+      input.secondsBetweenScans      = swt.secondsBetweenScans.text
+      input.secondsToFileDoneCompare = swt.secondsToFileDoneCompare.text
       saveFileinfoTable()
 
       input.setChanged(changed);

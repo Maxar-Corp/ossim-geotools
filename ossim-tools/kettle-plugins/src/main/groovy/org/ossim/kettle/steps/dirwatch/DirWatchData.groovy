@@ -14,6 +14,16 @@ class DirWatchData extends BaseStepData implements StepDataInterface
    HashMap managedDirectories = [:]
    RowMetaInterface outputRowMeta
 
+   enum FileDoneCompareType
+   {
+      FILE_SIZE(0),
+      MODIFIED_TIME(1),
+      private int value
+
+      FileDoneCompareType(int value) { this.value = value }
+
+      static def valuesAsString() { this.values().collect() { it.toString() } }
+   }
    DirWatchData()
    {
       super();
@@ -21,7 +31,7 @@ class DirWatchData extends BaseStepData implements StepDataInterface
 
    DirectoryContext newContext(HashMap settings)
    {
-      String connectionName = settings?.memoryContext?"":"DIR_WATCH_DB"
+      String connectionName = settings?.useMemoryDatabase?"":"DIR_WATCH_DB"
       DirectoryContext result
       File directory = settings.directory as File
       File fullPath = directory
@@ -34,7 +44,7 @@ class DirWatchData extends BaseStepData implements StepDataInterface
       params.connectionName = connectionName
       // generate unique database
       //
-      if(params?.memoryContext)
+      if(params?.useMemoryDatabase)
       {
          String databaseName = new String(params.id).replaceAll("-","_")
 

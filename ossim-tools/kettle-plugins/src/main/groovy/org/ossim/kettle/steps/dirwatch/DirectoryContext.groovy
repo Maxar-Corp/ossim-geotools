@@ -18,21 +18,21 @@ class DirectoryContext
    String url            = ""
   // File fullPath
    File directory
-   String includeRegEx
-   String excludeRegEx
+   String wildcard
+   String wildcardExclude
    Boolean recurseDirectories = true
-   Boolean memoryContext      = false
+   Boolean useMemoryDatabase  = false
    Connection conn
 
    private void initTable()
    {
       Statement stat = conn.createStatement();
 
-      stat.execute("create table IF NOT EXISTS ${tableName}(id bigint auto_increment, filename TEXT primary key, filesize BIGINT, last_filesize BIGINT, last_modified TIMESTAMP, notified BOOLEAN)");
-      stat.execute("CREATE INDEX IF NOT EXISTS idx_last_modified ON ${tableName}(last_modified)");
+      stat.execute("create table IF NOT EXISTS ${tableName}(id bigint auto_increment, filename TEXT primary key, filesize BIGINT, last_filesize BIGINT, last_modified TIMESTAMP, last_checked TIMESTAMP, notified BOOLEAN)");
+     // stat.execute("CREATE INDEX IF NOT EXISTS idx_last_modified ON ${tableName}(last_modified)");
       stat.execute("CREATE INDEX IF NOT EXISTS idx_filename ON ${tableName}(filename)");
-      stat.execute("CREATE INDEX IF NOT EXISTS idx_filesize ON ${tableName}(filesize)");
-      stat.execute("CREATE INDEX IF NOT EXISTS idx_last_filesize ON ${tableName}(last_filesize)");
+      //stat.execute("CREATE INDEX IF NOT EXISTS idx_filesize ON ${tableName}(filesize)");
+      //stat.execute("CREATE INDEX IF NOT EXISTS idx_last_filesize ON ${tableName}(last_filesize)");
 
       stat?.close()
    }

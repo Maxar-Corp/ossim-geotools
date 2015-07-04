@@ -651,11 +651,14 @@ class LayerManagerService implements InitializingBean
             }
          }
 
-         if(tempFile.exists())
+         if(tempFile?.exists())
          {
 
             tempFile.eachFileRecurse(FileType.FILES){File fileTest->
+<<<<<<< HEAD
                //println fileTest
+=======
+>>>>>>> develop
                String fileTestString = fileTest.toString().toLowerCase()
                Layer layer = null
 

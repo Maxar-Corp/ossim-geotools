@@ -168,7 +168,6 @@
                                                 <option value="EPSG:3857">EPSG: 3857</option>
                                                 <option value="EPSG:4326">EPSG: 4326</option>
                                             </select>&nbsp;&nbsp;
-
                                             <br>
                                             <br>
                                             <button type="button" id="submitAoi" class="btn btn-success">Submit</button>
@@ -220,13 +219,24 @@
                             <div class="row col-sm-6 col-md-6">
 
                                 <div id="uploadCutByFormElements">
-                                    <p>Select a KML or shapefile, and upload  to the server to perform a cut for the
+                                    <p>Select a shapefile, geojson, or KML file, and upload to the server to perform the
+                                    cut for the
                                     specified
                                     geometries contained in the file.</p>
-                                    <p class="alert alert-info">You can also drag and drop a KML or shapefile into
+                                    <p class="alert alert-info">You can also drag and drop the files into
                                     the map to perform a cut.</p>
                                     <input type="hidden" id="cutFormTargetEpsg" type="text" name="targetEpsg"
                                            value="EPSG:3857">
+                                    <input type="hidden" id="cutFormSourceEpsg" class="form-control"
+                                           name="sourceEpsg" value="EPSG:3857">
+
+                                    <label for="sourceEpsgSelect">Set source projection</label>
+                                    <select id="sourceEpsgSelect" class="form-control selectpicker show-tick">
+                                        <option value="EPSG:3857">EPSG: 3857</option>
+                                        <option value="EPSG:4326">EPSG: 4326</option>
+                                    </select>
+                                    <br>
+                                    <br>
                                     <!-- The fileinput-button span is used to style the file input field as button -->
                                     <span class="btn btn-primary fileinput-button">
                                         <i class="fa fa-folder-open"></i>&nbsp;&nbsp;
@@ -242,10 +252,8 @@
                                     </div>
                                     <!-- The container for the uploaded files -->
                                     <div id="files" class="files alert alert-success" style="display: none"></div>
-                                    <hr/>
-                                    <label for="productName">Paste geometry string (WKT or KML)&nbsp;</label>
-                                    <textarea id="wktUploadTextArea" class="form-control" rows="3"></textarea>
-
+                                    <button id="closeUploadCutByFileModal" type="button" class="btn btn-primary pull-right"
+                                            data-style="expand-left">Close</button>
                                 </div>
 
                             </div>
@@ -272,21 +280,36 @@
                             <div class="row col-sm-6 col-md-6">
 
                                 <div id="pasteCutGeometryElements">
-                                    <p>Copy geometry text (KML or WKT) into the text below</p>
-                                    <label for="geometryPasteTextArea">Paste geometry string (WKT or KML)&nbsp;</label>
+                                    <label for="geometryPasteTextArea">Paste geometry string (WKT)&nbsp;</label>
                                     <textarea id="geometryPasteTextArea" class="form-control" rows="3"></textarea>
                                     <br>
+
+
+                                    <input type="hidden" id="pasteFormSourceEpsg" class="form-control"
+                                           name="sourceEpsg" value="EPSG:3857">
+
+                                    <label for="pasteFormEpsgSourceSelect">Set source projection</label>
+                                    <select id="pasteFormEpsgSourceSelect" class="form-control selectpicker show-tick">
+                                        <option value="EPSG:3857">EPSG: 3857</option>
+                                        <option value="EPSG:4326">EPSG: 4326</option>
+                                    </select>
+                                    <br>
+                                    <br>
+
+
                                     <button id="submitPasteGeometry" type="button" class="btn btn-primary"
-                                            data-style="expand-left"><span class="ladda-label">Submit</span></button>
+                                            data-style="expand-left">Submit</button>
+                                    <button id="closePasteCutGeometryModal" type="button" class="btn btn-primary"
+                                            data-style="expand-left">Close</button>
                                 </div>
 
                             </div>
                         </div><!-- /.container -->
-                    </form><!-- /#uploadCutByFileForm -->
+                    </form><!-- /#pasteCutGeometryForm -->
                 </div><!-- /.modal-body -->
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog modal-lg -->
-    </div><!-- /.modal fade "uploadCutByFileModal" -->
+    </div><!-- /.modal fade "pasteCutGeometryModal" -->
 
 
     <asset:javascript src="app/client.js"/>
@@ -296,6 +319,7 @@
             var initParams = ${raw(initParams.toString())};
             AddLayerClient.initialize(initParams);
             AppClient.initialize(initParams);
+            AppDrawFeaturesClient.initialize(initParams);
             CreateProductClient.initialize(initParams);
             CutByFileClient.initialize(initParams);
             ZoomToClient.initialize(initParams);

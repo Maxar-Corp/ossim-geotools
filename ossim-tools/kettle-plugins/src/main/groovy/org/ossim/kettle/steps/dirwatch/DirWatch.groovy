@@ -1,6 +1,7 @@
 package org.ossim.kettle.steps.dirwatch
 
 import groovy.io.FileType
+import org.ossim.kettle.steps.dirwatch.DirWatchData.FileDoneCompareType
 import org.pentaho.di.core.exception.KettleException
 import org.pentaho.di.core.row.RowMeta
 import org.pentaho.di.trans.Trans
@@ -18,12 +19,15 @@ import java.sql.Timestamp
 
 class DirWatch extends BaseStep implements StepInterface
 {
-   private DirWatchMeta meta = null;
-   private DirWatchData data = null;
+   private DirWatchMeta meta = null
+   private DirWatchData data = null
+   private Long lastTimeChecked
+   private Integer batchReadSize = 50
    private Boolean needsToScan = false
-   private Long timeBetweenScans = 10
-   private Long timeDeltaForNotification = 10
-   private Long lastScanTime = 0
+   private Double secondsBetweenScan = 10
+   private Double secondsToFileDoneCompare = 10
+   private Double lastScanTime = 0
+   private FileDoneCompareType fileDoneCompareType
    public DirWatch(StepMeta stepMeta, StepDataInterface stepDataInterface,
                          int copyNr, TransMeta transMeta, Trans trans) {
       super(stepMeta, stepDataInterface, copyNr, transMeta, trans);
@@ -57,6 +61,27 @@ class DirWatch extends BaseStep implements StepInterface
    {
       data.newContext(directoryToWatch)
    }
+
+   private Boolean fileDoneTest(File file, BigInteger lastSizeCheck)
+   {
+      Boolean result = false
+
+      switch(fileDoneCompareType)
+      {
+         case FileDoneCompareType.MODIFIED_TIME:
+            Long modifiedMillis = file.lastModified()
+            Double delta = (new Date().time - modifiedMillis)/1000
+            result = delta >= secondsToFileDoneCompare
+            break
+         case FileDoneCompareType.FILE_SIZE:
+            result = file.length() == lastSizeCheck
+            break
+         default:
+            result = true
+      }
+
+      result
+   }
    private void indexOrUpdateFile(DirectoryContext context, File file,
                                   Statement stat, PreparedStatement pstmt)
    {
@@ -67,17 +92,18 @@ class DirWatch extends BaseStep implements StepInterface
       }
       else
       {
-         if(context.includeRegEx)
+         if(context.wildcard)
          {
-            Boolean matches = file.toString() ==~ ~/${context.includeRegEx}/
-            skipFile = !matches
+            Boolean matches = file.toString() ==~ ~/${context.wildcard}/
+            skipFile        = !matches
          }
-         else if(context.excludeRegEx)
+         else if(context.wildcardExclude)
          {
-            Boolean matches = file.toString() ==~ ~/${context.excludeRegEx}/
-            skipFile = matches
+            Boolean matches = file.toString() ==~ ~/${context.wildcardExclude}/
+            skipFile        = matches
          }
       }
+
       if(!skipFile)
       {
          ResultSet rs;
@@ -85,21 +111,12 @@ class DirWatch extends BaseStep implements StepInterface
          if(!rs.first())
          {
             Long currentFileLength = file.length()
-            Boolean notified = false
-            Long modifiedMillis = file.lastModified()
-            Double delta = (new Date().time - modifiedMillis)/1000
-            if(delta >= timeDeltaForNotification)
-            {
-               notified = true
-               putRow(data.outputRowMeta, [file] as Object[]);
-            }
-            //String timeStamp = new Date(file.lastModified()).format("yyyy-MM-dd hh:mm:ss.ssss")
-            //stat.execute("MERGE INTO watch(filename, last_modified, notified) values('Hello','2015-10-10 12:34:45.1234', false)");
             pstmt.setString(1,file.toString())
             pstmt.setBigDecimal(2,currentFileLength)
             pstmt.setBigDecimal(3,currentFileLength)
             pstmt.setTimestamp(4, new Timestamp(file.lastModified()))//new Timestamp(new Date().time))
-            pstmt.setBoolean(5, notified)
+            pstmt.setTimestamp(5, new Timestamp(new Date().time))//new Timestamp(new Date().time))
+            pstmt.setBoolean(6, false)
             pstmt.executeUpdate()//"INSERT INTO watch(filename, filesize, last_modified, notified) values('${file}',${file.length()},'${timeStamp}', false)".toString());
          }
          else if(!rs.getBoolean("notified"))
@@ -108,20 +125,22 @@ class DirWatch extends BaseStep implements StepInterface
             rs.updateTimestamp("last_modified", new Timestamp(file.lastModified()))
             rs.updateBigDecimal("filesize",currentFileLength)
 
+            Double delta = (new Date().time - rs.getTimestamp("last_checked").time)/1000
+            if(delta >= secondsToFileDoneCompare)
+            {
+               if(fileDoneTest(file, rs.getBigDecimal("last_filesize") as BigInteger))
+               {
+                  rs.updateBoolean("notified", true)
+
+                  putRow(data.outputRowMeta, [file] as Object[]);
+               }
+
+               rs.updateTimestamp("last_checked", new Timestamp(new Date().time))
+            }
             // last_modified is here till I support change compares.  Right now we are
             // looking for timestamp modifications
             //
-            rs.updateBigDecimal("last_filesize",currentFileLength )
-
-            Long modifiedMillis = file.lastModified()
-
-            Double delta = (new Date().time - modifiedMillis)/1000
-            if(delta >= timeDeltaForNotification)
-            {
-               rs.updateBoolean("notified", true)
-
-               putRow(data.outputRowMeta, [file] as Object[]);
-            }
+            rs.updateBigDecimal("last_filesize", currentFileLength)
             rs.updateRow()
          }
          else
@@ -135,7 +154,7 @@ class DirWatch extends BaseStep implements StepInterface
       if(directoryToWatch?.exists())
       {
          Statement stat = context.conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
-         String INSERT_RECORD = "insert into ${context.tableName}(filename, filesize, last_filesize, last_modified, notified) values(?, ?, ?, ?, ?)";
+         String INSERT_RECORD    = "insert into ${context.tableName}(filename, filesize, last_filesize, last_modified, last_checked, notified) values(?, ?, ?, ?, ?, ?)";
          PreparedStatement pstmt = context.conn.prepareStatement(INSERT_RECORD);
 
          if(context.recurseDirectories)
@@ -165,26 +184,52 @@ class DirWatch extends BaseStep implements StepInterface
       Long offset=0
       Long nResults = 0
       Boolean keepGoing = true
-      while(keepGoing)
-      {
-         nResults = 0
-         rs = stat.executeQuery("select * from ${context.tableName} ORDER BY id LIMIT 50 OFFSET ${offset}");
-
-         while(rs.next())
+      try{
+         while(keepGoing)
          {
-            File f = rs.getString("filename") as File
-            if(!f.exists())
+            nResults = 0
+            rs = stat.executeQuery("select * from ${context.tableName} ORDER BY id LIMIT ${batchReadSize} OFFSET ${offset}");
+
+            while(rs.next())
             {
-               println "FILE NO LONG EXISTS ${f}"
-               rs.deleteRow()
+               File f = rs.getString("filename") as File
+               if(!f.exists())
+               {
+                  rs.deleteRow()
+                  logDebug("Unindexing ${f}.  File no longer exists.")
+               }
+               else
+               {
+                  // now lets see if we need to skip and unindex
+                  //
+                   Boolean unindexFile = false
+                  if(context.wildcard)
+                  {
+                     Boolean matches = file.toString() ==~ ~/${context.wildcard}/
+                     unindexFile        = !matches
+                  }
+                  else if(context.wildcardExclude)
+                  {
+                     Boolean matches = file.toString() ==~ ~/${context.wildcardExclude}/
+                     unindexFile        = matches
+                  }
+                  if(unindexFile)
+                  {
+                     rs.deleteRow()
+                     logDebug("Unindexing ${f}.  File no longer matches wildcard settings")
+                  }
+               }
+               ++nResults
             }
-            ++nResults
+
+            if(nResults < batchReadSize) keepGoing = false
+            offset += nResults
          }
-
-         if(nResults < 50) keepGoing = false
-         offset += nResults
       }
-
+      catch(e)
+      {
+         logDebug(e)
+      }
       stat?.close()
    }
    public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws KettleException
@@ -193,12 +238,40 @@ class DirWatch extends BaseStep implements StepInterface
 
       if (first)
       {
-          if(r == null)
-          {
-             setOutputDone()
-             return false
-          }
+         String fileDoneCompareTypeString =  environmentSubstitute(meta.fileDoneCompareType)?:FileDoneCompareType.MODIFIED_TIME.toString()
+         fileDoneCompareType = FileDoneCompareType."${fileDoneCompareTypeString}"
+         secondsBetweenScan  = environmentSubstitute(meta.secondsBetweenScans).toDouble()
+         secondsToFileDoneCompare = environmentSubstitute(meta.secondsToFileDoneCompare).toDouble()
+         lastTimeChecked = System.currentTimeMillis()
 
+         if(meta.fileInputFromField)
+         {
+            if(r == null)
+            {
+               setOutputDone()
+               return false
+            }
+         }
+         else
+         {
+             meta.fileDefinitions.each{fileDefinition->
+                String recurceSubfoldersString = environmentSubstitute(fileDefinition.recurseSubfolders?:"")
+                String useMemoryDatabaeString  = environmentSubstitute(fileDefinition.useMemoryDatabase?:"")
+                String directoryToWatch        = environmentSubstitute(fileDefinition.filename?:"") as File
+                String wildcard                = environmentSubstitute(fileDefinition.wildcard?:"")
+                String wildcardExclude         = environmentSubstitute(fileDefinition.wildcardExclude?:"")
+                Boolean recurseDirectories     = recurceSubfoldersString?recurceSubfoldersString.toBoolean():true
+                Boolean useMemoryDatabase      = useMemoryDatabaeString?useMemoryDatabaeString.toBoolean():true
+                def settings = [
+                        directory:directoryToWatch as File,
+                        wildcard:wildcard,
+                        wildcardExclude:wildcardExclude,
+                        recurseDirectories:recurseDirectories,
+                        useMemoryDatabase:useMemoryDatabase
+                ]
+                data.newContext(settings)
+             }
+         }
          first=false
 
          data.outputRowMeta = new RowMeta()
@@ -210,24 +283,27 @@ class DirWatch extends BaseStep implements StepInterface
       //
       if(r)
       {
-         String directoryToWatch = getFieldValueAsString(meta.fieldFilename, r, meta, data) as File
-         String includeRegEx = getFieldValueAsString(meta.fieldWildcard, r, meta, data)
-         String excludeRegEx = getFieldValueAsString(meta.fieldWildcardExclude, r, meta, data)
-         Boolean recurseDirectories = getFieldValueAsString(meta.fieldRecurseSubfolders, r, meta, data) as Boolean
+         if(meta.fileInputFromField)
+         {
+            String  directoryToWatch   = getFieldValueAsString(meta.fieldFilename, r, meta, data) as File
+            String  wildcard           = getFieldValueAsString(meta.fieldWildcard, r, meta, data)
+            String  wildcardExclude    = getFieldValueAsString(meta.fieldWildcardExclude, r, meta, data)
+            Boolean recurseDirectories = getFieldValueAsString(meta.fieldRecurseSubfolders, r, meta, data) as Boolean
 
-         def settings = [
-                 directory:directoryToWatch as File,
-                 includeRegEx:includeRegEx,
-                 excludeRegEx:excludeRegEx,
-                 recurseDirectories:recurseDirectories,
-                 memoryContext:true
-         ]
-         data.newContext(settings)
+            def settings = [
+                    directory:directoryToWatch as File,
+                    wildcard:wildcard,
+                    wildcardExclude:wildcardExclude,
+                    recurseDirectories:recurseDirectories,
+                    useMemoryDatabase:true
+            ]
+            data.newContext(settings)
+         }
       }
 
       // scan for files
-      Long deltaTime = (System.currentTimeMillis() - lastScanTime) / 1000
-      if(deltaTime > timeBetweenScans)
+      Double deltaTime = (System.currentTimeMillis() - lastScanTime) / 1000
+      if(deltaTime > secondsBetweenScan)
       {
          needsToScan = true
       }
@@ -235,7 +311,7 @@ class DirWatch extends BaseStep implements StepInterface
       if(needsToScan)
       {
          needsToScan = false
-         data.managedDirectories.each{k,context->
+         data.managedDirectories.each{String k, DirectoryContext context->
             if(!context?.conn)
             {
                context.createConnection()
