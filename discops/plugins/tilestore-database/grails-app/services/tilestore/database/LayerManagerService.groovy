@@ -655,10 +655,6 @@ class LayerManagerService implements InitializingBean
          {
 
             tempFile.eachFileRecurse(FileType.FILES){File fileTest->
-<<<<<<< HEAD
-               //println fileTest
-=======
->>>>>>> develop
                String fileTestString = fileTest.toString().toLowerCase()
                Layer layer = null
 
