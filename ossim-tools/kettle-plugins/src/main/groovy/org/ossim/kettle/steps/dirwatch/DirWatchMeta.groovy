@@ -1,5 +1,6 @@
 package org.ossim.kettle.steps.dirwatch
 
+import org.ossim.kettle.steps.dirwatch.DirWatchData.FileDoneCompareType
 import org.ossim.kettle.steps.datainfo.Messages
 import org.pentaho.di.core.CheckResult
 import org.pentaho.di.core.CheckResultInterface
@@ -43,7 +44,12 @@ class DirWatchMeta extends BaseStepMeta implements StepMetaInterface
    String  fieldWildcard
    String  fieldWildcardExclude
    String  fieldRecurseSubfolders
+   String  fieldUseMemoryDatabase
 
+   //
+   String fileDoneCompareType
+   String secondsToFileDoneCompare
+   String secondsBetweenScans
    // This variable is used if fileInputFromField is false.
    // This will allow variable substituion or fixed
    //
@@ -65,15 +71,23 @@ class DirWatchMeta extends BaseStepMeta implements StepMetaInterface
       retval.append("        ").append(XMLHandler.addTagValue("fieldWildcard", fieldWildcard));
       retval.append("        ").append(XMLHandler.addTagValue("fieldWildcardExclude", fieldWildcardExclude));
       retval.append("        ").append(XMLHandler.addTagValue("fieldRecurseSubfolders", fieldRecurseSubfolders));
+      retval.append("        ").append(XMLHandler.addTagValue("fileDoneCompareType", fileDoneCompareType));
+      retval.append("        ").append(XMLHandler.addTagValue("secondsBetweenScans", secondsBetweenScans));
+      retval.append("        ").append(XMLHandler.addTagValue("secondsToFileDoneCompare", secondsToFileDoneCompare));
       // Add XML save states here
+
+      retval.append("        ").append(XMLHandler.addTagValue("fieldUseMemoryDatabase", fieldUseMemoryDatabase));
+
+
 
       retval.append("   <fileDefinitions>")
       fileDefinitions.each{fileDefinition->
          retval.append("      <fileDefinition>")
          retval.append("         ").append(XMLHandler.addTagValue("filename", fileDefinition.filename?:""));
          retval.append("         ").append(XMLHandler.addTagValue("wildcard", fileDefinition.wildcard?:""));
-         retval.append("         ").append(XMLHandler.addTagValue("wildcardExclude", fileDefinition.wildcardExclude));
-         retval.append("         ").append(XMLHandler.addTagValue("recurseSubfolders", fileDefinition.recurseSubfolders));
+         retval.append("         ").append(XMLHandler.addTagValue("wildcardExclude", fileDefinition.wildcardExclude?:""));
+         retval.append("         ").append(XMLHandler.addTagValue("recurseSubfolders", fileDefinition.recurseSubfolders?:""));
+         retval.append("         ").append(XMLHandler.addTagValue("useMemoryDatabase", fileDefinition.useMemoryDatabase?:""));
          retval.append("      </fileDefinition>")
       }
       retval.append("   </fileDefinitions>")
@@ -85,10 +99,6 @@ class DirWatchMeta extends BaseStepMeta implements StepMetaInterface
                   RowMetaInterface[] info,
                   StepMeta nextStep, VariableSpace space)
    {
- //     RowMetaInterface rowMeta = inputRowMeta.clone();
- //     inputRowMeta.clear();
- //     inputRowMeta.addRowMeta( rowMeta );
-
       r.clear()
 
       ValueMetaInterface field = ValueMetaFactory.createValueMeta("filename", ValueMetaInterface.TYPE_STRING);
@@ -114,12 +124,17 @@ class DirWatchMeta extends BaseStepMeta implements StepMetaInterface
       try
       {
          String fileInputFromFieldString  = XMLHandler.getTagValue(stepnode, "fileInputFromField");
-         if(fileInputFromFieldString!=null) fileInputFromField = fileInputFromFieldString.toBoolean()
+
+         if(fileInputFromFieldString != null) fileInputFromField = fileInputFromFieldString.toBoolean()
          fieldFilename          = XMLHandler.getTagValue(stepnode, "fieldFilename")?:"";
          fieldWildcard          = XMLHandler.getTagValue(stepnode, "fieldWildcard")?:"";
          fieldWildcardExclude   = XMLHandler.getTagValue(stepnode, "fieldWildcardExclude")?:"";
          fieldRecurseSubfolders = XMLHandler.getTagValue(stepnode, "fieldRecurseSubfolders")?:"";
+         fieldUseMemoryDatabase = XMLHandler.getTagValue(stepnode, "fieldUseMemoryDatabase")?:"";
 
+         fileDoneCompareType  = XMLHandler.getTagValue(stepnode, "fileDoneCompareType")?:FileDoneCompareType.MODIFIED_TIME.toString();
+         secondsToFileDoneCompare  = XMLHandler.getTagValue(stepnode, "secondsToFileDoneCompare")?:secondsToFileDoneCompare;
+         secondsBetweenScans  = XMLHandler.getTagValue(stepnode, "secondsBetweenScans")?:secondsBetweenScans;
 
          def fileDefinitionsNode  = XMLHandler.getSubNode(stepnode, "fileDefinitions")
          def fileDefinitionList   = XMLHandler.getNodes(fileDefinitionsNode,     "fileDefinition")
@@ -129,7 +144,8 @@ class DirWatchMeta extends BaseStepMeta implements StepMetaInterface
                     filename:XMLHandler.getTagValue(fileDefinition, "filename")?:"",
                     wildcard:XMLHandler.getTagValue(fileDefinition, "wildcard")?:"",
                     wildcardExclude:XMLHandler.getTagValue(fileDefinition, "wildcardExclude")?:"",
-                    recurseSubfolders:XMLHandler.getTagValue(fileDefinition, "recurseSubfolders")?:""
+                    recurseSubfolders:XMLHandler.getTagValue(fileDefinition, "recurseSubfolders")?:"",
+                    useMemoryDatabase:XMLHandler.getTagValue(fileDefinition, "useMemoryDatabase")?:""
                     ]
          }
       }
@@ -142,13 +158,16 @@ class DirWatchMeta extends BaseStepMeta implements StepMetaInterface
 
    void setDefault()
    {
-      fileInputFromField     = true
-      fieldFilename          = ""
-      fieldWildcard          = ""
-      fieldWildcardExclude   = ""
-      fieldRecurseSubfolders = ""
-
-      fileDefinitions = []
+      fileInputFromField       = true
+      fieldFilename            = ""
+      fieldWildcard            = ""
+      fieldWildcardExclude     = ""
+      fieldRecurseSubfolders   = ""
+      fieldUseMemoryDatabase   = ""
+      fileDoneCompareType      = FileDoneCompareType.MODIFIED_TIME.toString()
+      secondsBetweenScans      = "10"
+      secondsToFileDoneCompare = "10"
+      fileDefinitions          = []
    }
 
    void readRep(Repository rep, ObjectId id_step, List<DatabaseMeta> databases, Map<String, Counter> counters) throws KettleException
@@ -156,10 +175,11 @@ class DirWatchMeta extends BaseStepMeta implements StepMetaInterface
       this.setDefault();
       try
       {
-         def nFilenames        = rep.countNrStepAttributes(id_step, "filename");
-         def nWildcards        = rep.countNrStepAttributes(id_step, "wildcard");
-         def nWildcardExcludes = rep.countNrStepAttributes(id_step, "wildcardExclude");
-         def nRecurseSubfolders = rep.countNrStepAttributes(id_step, "nRecurseSubfolders");
+         def nFilenames         = rep.countNrStepAttributes(id_step, "filename");
+         def nWildcards         = rep.countNrStepAttributes(id_step, "wildcard");
+         def nWildcardExcludes  = rep.countNrStepAttributes(id_step, "wildcardExclude");
+         def nRecurseSubfolders = rep.countNrStepAttributes(id_step, "recurseSubfolders");
+         def nUseMemoryDatabase = rep.countNrStepAttributes(id_step, "useMemoryDatabase");
 
          if(nFilenames)
          {
@@ -168,7 +188,8 @@ class DirWatchMeta extends BaseStepMeta implements StepMetaInterface
                   filename: rep.getStepAttributeString(id_step, i, "filename") ?: "",
                   wildcard: rep.getStepAttributeString(id_step, i, "wildcard") ?: "",
                   wildcardExclude: rep.getStepAttributeString(id_step, i, "wildcardExclude") ?: "",
-                  recurseSubfolders: rep.getStepAttributeString(id_step, i, "recurseSubfolders") ?: ""
+                  recurseSubfolders: rep.getStepAttributeString(id_step, i, "recurseSubfolders") ?: "",
+                  useMemoryDatabase: rep.getStepAttributeString(id_step, i, "useMemoryDatabase") ?: ""
                ]
             }
          }
@@ -178,6 +199,10 @@ class DirWatchMeta extends BaseStepMeta implements StepMetaInterface
          fieldWildcard          = rep.getStepAttributeString(id_step, "fieldWildcard");
          fieldWildcardExclude   = rep.getStepAttributeString(id_step, "fieldWildcardExclude");
          fieldRecurseSubfolders = rep.getStepAttributeString(id_step, "fieldRecurseSubfolders");
+         fieldUseMemoryDatabase = rep.getStepAttributeString(id_step, "fieldUseMemoryDatabase");
+         fileDoneCompareType    = rep.getStepAttributeString(id_step, "fileDoneCompareType")?:FileDoneCompareType.MODIFIED_TIME.toString()
+         secondsBetweenScans    = rep.getStepAttributeString(id_step, "secondsBetweenScans")?:secondsBetweenScans
+         secondsToFileDoneCompare    = rep.getStepAttributeString(id_step, "secondsBetweenScans")?:secondsToFileDoneCompare
 
       }
       catch (e)
@@ -191,24 +216,37 @@ class DirWatchMeta extends BaseStepMeta implements StepMetaInterface
       {
          rep.saveStepAttribute(id_transformation,
                  id_step, "fileInputFromField",
-                 host?:"")
+                 fileInputFromField?:"")
          rep.saveStepAttribute(id_transformation,
                  id_step, "fieldFilename",
-                 host?:"")
+                 fieldFilename?:"")
          rep.saveStepAttribute(id_transformation,
                  id_step, "fieldWildcard",
-                 host?:"")
+                 fieldWildcard?:"")
          rep.saveStepAttribute(id_transformation,
                  id_step, "fieldWildcardExclude",
-                 host?:"")
+                 fieldWildcardExclude?:"")
          rep.saveStepAttribute(id_transformation,
                  id_step, "fieldRecurseSubfolders",
-                 host?:"")
+                 fieldRecurseSubfolders?:"")
+         rep.saveStepAttribute(id_transformation,
+                 id_step, "fieldUseMemoryDatabase",
+                 fieldUseMemoryDatabase?:"")
+         rep.saveStepAttribute(id_transformation,
+                 id_step, "fileDoneCompareType",
+                 fileDoneCompareType?:"")
+         rep.saveStepAttribute(id_transformation,
+                 id_step, "secondsBetweenScans",
+                 secondsBetweenScans?:"")
+         rep.saveStepAttribute(id_transformation,
+                 id_step, "secondsToFileDoneCompare",
+                 secondsToFileDoneCompare?:"")
          fileDefinitions.eachWithIndex{fileDefinition, i->
             rep.saveStepAttribute(id_transformation, id_step, i, "filename",    fileDefinition.filename?:"");
             rep.saveStepAttribute(id_transformation, id_step, i, "wildcard", fileDefinition.wildcard?:"");
             rep.saveStepAttribute(id_transformation, id_step, i, "wildcardExclude", fileDefinition.wildcardExclude?:"");
-            rep.saveStepAttribute(id_transformation, id_step, i, "fieldRecurseSubfolders", fileDefinition.fieldRecurseSubfolders?:"");
+            rep.saveStepAttribute(id_transformation, id_step, i, "recurseSubfolders", fileDefinition.recurseSubfolders?:"");
+            rep.saveStepAttribute(id_transformation, id_step, i, "useMemoryDatabase", fileDefinition.useMemoryDatabase?:"");
          }
       }
       catch(e)

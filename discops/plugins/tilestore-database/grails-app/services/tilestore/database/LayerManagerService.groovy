@@ -675,13 +675,11 @@ class LayerManagerService implements InitializingBean
                           fileTestString.endsWith("json"))
                   {
                      layer = new GeoJSONReader().read([:], fileTest.text)
-                    // cmd.sourceEpsg = "EPSG:4326"
-                    // println layer
                   }
                }
                catch(e)
                {
-                   //println e
+                  //e.printStackTrace()
                }
                if(layer)
                {
@@ -740,7 +738,7 @@ class LayerManagerService implements InitializingBean
                }
                catch (e)
                {
-                  println e
+                 // println e
                }
             }
             if(layer)
