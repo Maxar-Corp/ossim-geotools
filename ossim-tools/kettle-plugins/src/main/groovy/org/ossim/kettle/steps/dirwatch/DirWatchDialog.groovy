@@ -24,7 +24,7 @@ class DirWatchDialog extends BaseStepDialog implements
 {
    private DirWatchMeta input
    private KettleSwtBuilder swt;
-
+   private Integer currentRowNumberToEdit = -1
    public DirWatchDialog(Shell parent, Object baseStepMeta,
                          TransMeta transMeta, String stepname)
    {
@@ -283,10 +283,10 @@ class DirWatchDialog extends BaseStepDialog implements
 
       if(itemCount>0)
       {
-         def row  = tableView?.getCurrentRownr()
-         if(row>=0)
+         currentRowNumberToEdit  = tableView?.getCurrentRownr()
+         if(currentRowNumberToEdit>=0)
          {
-            TableItem item = tableView.table.getItem(row);
+            TableItem item = tableView.table.getItem(currentRowNumberToEdit);
 
             if(item)
             {
@@ -304,10 +304,19 @@ class DirWatchDialog extends BaseStepDialog implements
       {
          def tableView = swt.fieldSelection
          def itemCount = tableView.table.itemCount
-         tableView.table.setItemCount(itemCount+1)
-         TableItem item = tableView.table.getItem(itemCount);
+         TableItem item
+         if(currentRowNumberToEdit <0)
+         {
+            tableView.table.setItemCount(itemCount+1)
+            item = tableView.table.getItem(itemCount);
+            item?.setText(0, itemCount.toString());
+         }
+         else
+         {
+            item = tableView.table.getItem(currentRowNumberToEdit);
+         }
+         currentRowNumberToEdit = -1
 
-         item?.setText(0, itemCount.toString());
          item?.setText(1, swt.filename.text?:"")
          item?.setText(2, swt.wildcard?.text?:"")
          item?.setText(3, swt.wildcardExclude?.text?:"")
