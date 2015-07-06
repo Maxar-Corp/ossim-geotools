@@ -82,6 +82,7 @@ class DirWatch extends BaseStep implements StepInterface
 
       result
    }
+   /*
    private void indexOrUpdateFile(DirectoryContext context, File file,
                                   Statement stat, PreparedStatement pstmt)
    {
@@ -148,6 +149,75 @@ class DirWatch extends BaseStep implements StepInterface
          }
       }
    }
+   */
+   private void indexOrUpdateFile(DirectoryContext context, File file,
+                                  Statement stat, PreparedStatement pstmt)
+   {
+      Boolean skipFile = false
+      if(context.connectionName&&file?.name?.startsWith(context.connectionName))
+      {
+         skipFile = true
+      }
+      else
+      {
+         if(context.wildcard)
+         {
+            Boolean matches = file.toString() ==~ ~/${context.wildcard}/
+            skipFile        = !matches
+         }
+         else if(context.wildcardExclude)
+         {
+            Boolean matches = file.toString() ==~ ~/${context.wildcardExclude}/
+            skipFile        = matches
+         }
+      }
+
+      if(!skipFile)
+      {
+         ResultSet rs;
+         rs = stat.executeQuery("select * from ${context.tableName} where filename='${file}'".toString());
+         if(!rs.first())
+         {
+            Long currentFileLength = file.length()
+            pstmt.setString(1,file.toString())
+            pstmt.setBigDecimal(2,currentFileLength)
+            pstmt.setBigDecimal(3,currentFileLength)
+            pstmt.setTimestamp(4, new Timestamp(file.lastModified()))//new Timestamp(new Date().time))
+            pstmt.setTimestamp(5, new Timestamp(new Date().time))//new Timestamp(new Date().time))
+            pstmt.setBoolean(6, false)
+            pstmt.executeUpdate()//"INSERT INTO watch(filename, filesize, last_modified, notified) values('${file}',${file.length()},'${timeStamp}', false)".toString());
+         }
+         else if(!rs.getBoolean("notified"))
+         {
+            Long currentFileLength = file.length()
+            rs.updateTimestamp("last_modified", new Timestamp(file.lastModified()))
+            rs.updateBigDecimal("filesize",currentFileLength)
+
+
+            //Double delta = (new Date().time - rs.getTimestamp("last_checked").time)/1000
+            //if(delta >= secondsToFileDoneCompare)
+            //{
+            //   if(fileDoneTest(file, rs.getBigDecimal("last_filesize") as BigInteger))
+            //   {
+            //      rs.updateBoolean("notified", true)
+            //
+            //      putRow(data.outputRowMeta, [file] as Object[]);
+            //   }
+            //
+            //   rs.updateTimestamp("last_checked", new Timestamp(new Date().time))
+            //}
+            // last_modified is here till I support change compares.  Right now we are
+            // looking for timestamp modifications
+            //
+            //rs.updateBigDecimal("last_filesize", currentFileLength)
+            rs.updateRow()
+         }
+         else
+         {
+         }
+      }
+   }
+
    private void scanDirectory(DirectoryContext context)
    {
       File directoryToWatch = context.directory as File
@@ -192,31 +262,54 @@ class DirWatch extends BaseStep implements StepInterface
 
             while(rs.next())
             {
-               File f = rs.getString("filename") as File
-               if(!f.exists())
+               File file = rs.getString("filename") as File
+               if(!file.exists())
                {
                   rs.deleteRow()
-                  logDebug("Unindexing ${f}.  File no longer exists.")
+                  logDebug("Unindexing ${file}.  File no longer exists.")
                }
                else
                {
+                  Boolean notified = rs.getBoolean("notified")
                   // now lets see if we need to skip and unindex
                   //
-                   Boolean unindexFile = false
-                  if(context.wildcard)
+                  if(!notified)
                   {
-                     Boolean matches = file.toString() ==~ ~/${context.wildcard}/
-                     unindexFile        = !matches
-                  }
-                  else if(context.wildcardExclude)
-                  {
-                     Boolean matches = file.toString() ==~ ~/${context.wildcardExclude}/
-                     unindexFile        = matches
-                  }
-                  if(unindexFile)
-                  {
-                     rs.deleteRow()
-                     logDebug("Unindexing ${f}.  File no longer matches wildcard settings")
+
+                     Boolean unindexFile = false
+                     if(context.wildcard)
+                     {
+                        Boolean matches = file.toString() ==~ ~/${context.wildcard}/
+                        unindexFile        = !matches
+                     }
+                     else if(context.wildcardExclude)
+                     {
+                        Boolean matches = file.toString() ==~ ~/${context.wildcardExclude}/
+                        unindexFile        = matches
+                     }
+                     if(unindexFile)
+                     {
+                        rs.deleteRow()
+                        logDebug("Unindexing ${file}.  File no longer matches wildcard settings")
+                     }
+                     else
+                     {
+                        // now check for notification only if it's time to
+                        Double delta = (new Date().time - rs.getTimestamp("last_checked").time)/1000
+                        if(delta >= secondsToFileDoneCompare)
+                        {
+                           if (fileDoneTest(file, rs.getBigDecimal("last_filesize") as BigInteger))
+                           {
+                              rs.updateBoolean("notified", true)
+
+                              putRow(data.outputRowMeta, [file] as Object[]);
+                           }
+                           rs.updateTimestamp("last_checked", new Timestamp(new Date().time))
+                           rs.updateBigDecimal("last_filesize", file.length())
+
+                           rs.updateRow()
+                        }
+                     }
                   }
                }
                ++nResults
@@ -228,7 +321,8 @@ class DirWatch extends BaseStep implements StepInterface
       }
       catch(e)
       {
-         logDebug(e)
+         //println e
+         logDebug("${e}".toString())
       }
       stat?.close()
    }
