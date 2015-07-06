@@ -17,6 +17,8 @@ var CreateProductClient = (function () {
     var $aoiLod = $('#aoiLod');
     var $prodcutEpsg = $('#prodcutEpsg');
 
+    var gpkgInputTileLayer;
+
     var checkForProduct;
 
     var $aoiJobInfo = $('#aoiJobInfo');
@@ -28,6 +30,26 @@ var CreateProductClient = (function () {
     var $aoiJobId = $('#aoiJobId');
     var $submitAoi = $('#submitAoi');
     var $cancelAoi = $('#cancelAoi');
+
+    var $metricsSpinner =  $('.metricsSpinner');
+    var $productFormElement = $('.productFormElement');
+
+    var $prodNumTiles = $('#prodNumTiles');
+    var $prodJpgComp=  $('#prodJpgComp');
+    var $prodPngComp = $('#prodPngComp');
+    var $prodPngOutput =  $('#prodPngOutput');
+    var $prodJpgOutput = $('#prodJpgOutput');
+    var $prodBytesPerTile = $('#prodBytesPerTile');
+    var $prodImageHeight = $('#prodImageHeight');
+    var $prodImageWidth = $('#prodImageWidth');
+
+    var $prodMinLevel = $('#prodMinLevel');
+    var $prodMaxLevel = $('#prodMaxLevel');
+    var $prodMaxX = $('#prodMaxX');
+    var $prodMinX = $('#prodMinX');
+    var $prodMaxY = $('#prodMaxY');
+    var $prodMinY = $('#prodMinY');
+
 
     var product = {
         type:"GeopackageExport",
@@ -80,10 +102,10 @@ var CreateProductClient = (function () {
     function createAoi(wkt){
 
         $aoiJobInfo.hide();
-        var gpkgInputTileLayer = $tileLayerSelect.val();
+        gpkgInputTileLayer = $tileLayerSelect.val();
 
         //console.log(wkt);
-        console.log(gpkgInputTileLayer);
+        //console.log(gpkgInputTileLayer);
         //var dataObject = {"layer": gpkgInputTileLayer, "aoi": wkt}
         //console.log(dataObject);
 
@@ -94,7 +116,7 @@ var CreateProductClient = (function () {
             dataType: 'json',
             // TODO: Add $promise function for success
             success: function (data) {
-                console.log(data);
+                //console.log(data);
                 $aoiLod.html(data.minLevel + ' to ' + data.maxLevel);
 
                 var min = data.minLevel;
@@ -143,7 +165,146 @@ var CreateProductClient = (function () {
         });
 
         product.aoi = wkt;
+
+        getMetrics();
     }
+
+    function addCommas(intNum) {
+
+        return (intNum + '').replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+
+    }
+
+    function myRound(val, precision){
+
+        return Math.round(val * precision) / precision;
+
+    }
+
+    function humanReadableBytes(val){
+
+        var kilobyte = 1024;
+        var megabyte = kilobyte * 1024;
+        var gigabyte = megabyte * 1024;
+        var result = '';
+
+        if (val < 1024){
+
+            result = myRound(val, 1000) + " b";
+
+        }
+        else if (val < megabyte){
+
+            result = myRound(val / kilobyte, 1000) + " Kb"
+        }
+        else if (val < gigabyte){
+
+            result = myRound(val / megabyte, 1000) + " Mb"
+
+        }
+        else {
+
+            result = myRound(val / gigabyte, 1000) + " Gb"
+
+        }
+        return result;
+
+    }
+
+    function getMetrics(){
+
+        // TODO: Get the $ajax and set it to a variable
+
+        $metricsSpinner.show();
+
+        //console.log("aoi: " + product.aoi);
+        //console.log("layer: " + gpkgInputTileLayer);
+
+        var metricObj = {
+            "layer": gpkgInputTileLayer,
+            "aoi": product.aoi,
+            "aoiEpsg": product.aoiEpsg,
+            "minLevel": $productMinLevel.val(),
+            "maxLevel": $productMaxLevel.val()
+        }
+
+        //console.log(metricObj);
+
+        $.ajax({
+            url: "/tilestore/layerManager/estimate",
+            type: 'POST',
+            data: metricObj,
+            dataType: 'json',
+            // TODO: Add $promise function for success
+            success: function (data) {
+
+                console.log('---------------------------');
+                console.log(data);
+                console.log('---------------------------');
+
+                if (data.numberOfTiles >= 1){
+
+                    $prodNumTiles.html(data.numberOfTiles);
+                    $prodJpgComp.html(myRound(data.jpegCompressionRate,1000));
+                    $prodPngComp.html(myRound(data.pngCompressionRate, 1000));
+                    $prodPngOutput.html(humanReadableBytes(data.pngCompressionRate * data.numberOfTiles * data.uncompressBytesPerTile));
+                    $prodJpgOutput.html(humanReadableBytes(data.jpegCompressionRate * data.numberOfTiles * data.uncompressBytesPerTile));
+                    $prodBytesPerTile.html(humanReadableBytes(data.uncompressBytesPerTile));
+                    $prodImageHeight.html(addCommas(data.imageHeight));
+                    $prodImageWidth.html(addCommas(data.imageWidth));
+
+                    $prodMinLevel.html(data.actualBounds.minLevel);
+                    $prodMaxLevel.html(data.actualBounds.maxLevel);
+                    $prodMaxX.html(data.actualBounds.maxx);
+                    $prodMinX.html(data.actualBounds.minx);
+                    $prodMaxY.html(data.actualBounds.maxy);
+                    $prodMinY.html(data.actualBounds.miny);
+
+                    $metricsSpinner.hide();
+
+                }
+                else{
+
+                    toastr.warning('No data available in selected region! Please move to another area and try' +
+                        ' again.', 'Warning');
+                    $createGp.addClass('disabled');
+
+                }
+
+            },
+            // TODO: Add $promise function for error
+            error: function (jqXHR, exception) {
+                if (jqXHR.status === 0) {
+                    alert('Not connected.\n Verify Network.');
+                }
+                else if (jqXHR.status == 404) {
+                    alert('Requested page not found. [404] ' + urlLayerActualBounds);
+                }
+                else if (jqXHR.status == 500) {
+                    alert('Internal Server Error [500].');
+                }
+                else if (exception === 'parsererror') {
+                    alert('Requested JSON parse failed.');
+                }
+                else if (exception === 'timeout') {
+                    alert('Time out error.');
+                }
+                else if (exception === 'abort') {
+                    alert('Ajax request aborted.');
+                }
+                else {
+                    alert('Uncaught Error.\n' + jqXHR.responseText);
+                }
+            }
+        });
+
+    }
+
+    $productFormElement.on("change", function(){
+
+        getMetrics();
+
+    })
 
     return {
         initialize: function (initParams) {

@@ -82,12 +82,12 @@
                                     <ul class="dropdown-menu">
 
                                         <li role="presentation" class="dropdown-header">Cutting</li>
-                                        <li class="disabled"><a id="drawRectangle" href="#"><i
-                                                class="fa fa-square-o fa-lg"></i>&nbsp;&nbsp;by
-                                        Rectangle</a></li>
-                                        <li class="disabled"><a id="drawPolygon" href="#"><i
-                                                class="fa fa-lemon-o fa-lg"></i>&nbsp;&nbsp;by
-                                        Freehand Polygon</a></li>
+                                        %{--<li class="disabled"><a id="drawRectangle" href="#"><i--}%
+                                                %{--class="fa fa-square-o fa-lg"></i>&nbsp;&nbsp;by--}%
+                                        %{--Rectangle</a></li>--}%
+                                        %{--<li class="disabled"><a id="drawPolygon" href="#"><i--}%
+                                                %{--class="fa fa-lemon-o fa-lg"></i>&nbsp;&nbsp;by--}%
+                                        %{--Freehand Polygon</a></li>--}%
                                         <li><a id="uploadCutFile" href="#"><i
                                                 class="fa fa-upload fa-lg"></i>&nbsp;&nbsp;Upload Cut File</a></li>
                                         <li><a id="pasteGeometry" href="#"><i
@@ -128,80 +128,167 @@
                     </div>
                     <div class="modal-body">
                         <form id="productForm" data-toggle="validator">
-                            <div class="container">
-                                <div class="row col-sm-6 col-md-6">
-                                    <div id="productFormElements">
-                                        <div class="form-group" >
-                                            <label for="productName">File Name&nbsp;</label>
-                                            <input id="productName" type="text"
-                                                   pattern="^[A-Za-z](?:_?[A-Za-z0-9]+)*$"
-                                                   maxlength="45"
-                                                   class="form-control" required>
-                                            <span class="help-block"><small><em>Start with alphabetic, up to 45
-                                            letters, numbers and underscores (case insensitive).  No spaces. <br>
-                                                (Do not add file extensions)</em></small></span>
-                                            <span class="help-block with-errors"></span>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="minTileLevel">Product Type</label>
-                                            <select id="minTileLevel" class="form-control selectpicker show-tick"
-                                                    maxOptions="10" data-live-search="true" disabled>
-                                                <option value="gpkg">Geopackage</option>
-                                            </select>
-                                            <br>
-                                            <br>
-                                            <p><strong>Current tile layer levels of detail:</strong>
-                                                &nbsp;<span
-                                                    id="aoiLod"></span></p>
-                                            <label for="productMinTileLevel">Minimum Product Level</label>
-                                            <select id="productMinTileLevel" class="form-control selectpicker show-tick"
-                                                    maxOptions="10" data-live-search="true">
-                                            </select>
-                                            <label for="productMaxTileLevel">Maximum Product Level</label>
-                                            <select id="productMaxTileLevel" class="form-control selectpicker show-tick"
-                                                    maxOptions="10"
-                                                    data-live-search="true">
-                                            </select><br><br>
-                                            <label for="productEpsgCode">Product output projection</label>
-                                            <select id="productEpsgCode" class="form-control selectpicker show-tick"
-                                                    disabled>
-                                                <option value="EPSG:3857">EPSG: 3857</option>
-                                                <option value="EPSG:4326">EPSG: 4326</option>
-                                            </select>&nbsp;&nbsp;
-                                            <br>
-                                            <br>
-                                            <button type="button" id="submitAoi" class="btn btn-success">Submit</button>
-                                            <button type="button" id="cancelAoi" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                                        </div>
-                                        <br>
-                                    </div>
-                                    <div id="aoiJobInfo" class="alert alert-info">
-                                        <h4 id="jobHeader">Submitted Job Information:</h4>
-                                        <p><strong>ID:</strong>&nbsp;<span id="aoiJobId"></span></p>
-                                    </div>
-                                    <div id="prodcutProgress" style="display: none">
-                                        <div class="alert alert-info">Note: You can close this dialog if you do
-                                        not
-                                        wish
-                                        to wait
-                                        for the product to be created.  To obtain the product at a later time
-                                        visit the <a href="${createLink(controller:'job')}" target="_blank">jobs
-                                        page</a>.</div>
-                                        <div id="productStatus"></div>
+                            <div class="container-fluid">
 
+
+                                <div class="row">
+
+                                    <!-- Nav tabs -->
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li role="presentation" class="active"><a href="#productTab"
+                                                                                  aria-controls="productTab" role="tab"
+                                                                                  data-toggle="tab">Product</a></li>
+                                        <li role="presentation"><a href="#metricsTab" aria-controls="metricsTab"
+                                                                   role="tab"
+                                                                   data-toggle="tab">Metrics</a></li>
+                                        <li role="presentation"><a href="#dimensionsTab"
+                                                                   aria-controls="dimensionsTab"
+                                                                   role="tab"
+                                                                   data-toggle="tab">Dimensions</a></li>
+                                    </ul>
+
+                                    <!-- Tab panes -->
+                                    <div class="tab-content">
+                                        <div role="tabpanel" class="tab-pane active" id="productTab">
+
+                                            <div id="productFormElements">
+                                                <div class="form-group" >
+                                                    <br>
+                                                    <label for="productName">File Name&nbsp;</label>
+                                                    <input id="productName" type="text"
+                                                           pattern="^[A-Za-z](?:_?[A-Za-z0-9]+)*$"
+                                                           maxlength="45"
+                                                           class="form-control" required>
+                                                    <span class="help-block"><small><em>Start with alphabetic, up to 45
+                                                    letters, numbers and underscores (case insensitive).  No spaces. <br>
+                                                        (Do not add file extensions)</em></small></span>
+                                                    <span class="help-block with-errors"></span>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="minTileLevel">Product Type</label>
+                                                    <select id="minTileLevel"
+                                                            class="form-control selectpicker show-tick productFormElement"
+                                                            maxOptions="10" data-live-search="true" disabled>
+                                                        <option value="gpkg">Geopackage</option>
+                                                    </select>
+                                                    <br>
+                                                    <br>
+                                                    <p><strong>Current tile layer available levels of detail:</strong>
+                                                        &nbsp;<span
+                                                            id="aoiLod"></span></p>
+                                                    <label for="productMinTileLevel">Minimum Product Level</label>
+                                                    <select id="productMinTileLevel"
+                                                            class="form-control selectpicker show-tick productFormElement"
+                                                            maxOptions="10" data-live-search="true">
+                                                    </select>
+                                                    <label for="productMaxTileLevel">Maximum Product Level</label>
+                                                    <select id="productMaxTileLevel"
+                                                            class="form-control selectpicker show-tick productFormElement"
+                                                            maxOptions="10"
+                                                            data-live-search="true">
+                                                    </select><br><br>
+                                                    <label for="productEpsgCode">Product output projection</label>
+                                                    <select id="productEpsgCode"
+                                                            class="form-control selectpicker show-tick productFormElement"
+                                                            disabled>
+                                                        <option value="EPSG:3857">EPSG: 3857</option>
+                                                        <option value="EPSG:4326">EPSG: 4326</option>
+                                                    </select>&nbsp;&nbsp;
+                                                    <br>
+                                                    <br>
+                                                    <button type="button" id="submitAoi" class="btn btn-success">Submit</button>
+                                                    <button type="button" id="cancelAoi" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                </div>
+                                                <br>
+                                            </div>
+                                            <br>
+                                            <div id="aoiJobInfo" class="alert alert-info">
+                                                <h4 id="jobHeader">Submitted Job Information:</h4>
+                                                <p><strong>ID:</strong>&nbsp;<span id="aoiJobId"></span></p>
+                                            </div>
+                                            <div id="prodcutProgress" style="display: none">
+                                                <div class="alert alert-info">Note: You can close this dialog if you do
+                                                not
+                                                wish
+                                                to wait
+                                                for the product to be created.  To obtain the product at a later time
+                                                visit the <a href="${createLink(controller:'job')}" target="_blank">jobs
+                                                page</a>.</div>
+                                                <div id="productStatus"></div>
+                                            </div>
+                                            <p id="downloadProduct" style="display: none"><i
+                                                    class="fa fa-check fa-2x"></i>&nbsp;&nbsp;Ready for
+                                            download:&nbsp;&nbsp;
+                                                <button id="downloadProductButton" type="button" href="javascript:void(0)"
+                                                        class="btn btn-primary fileDownload">Download</button></p>
+                                        </div>
+                                        <div role="tabpanel" class="tab-pane" id="metricsTab">
+                                            <br>
+                                            <div class="panel panel-primary">
+                                                <div class="panel-heading"><span class="fa-stack fa-lg">
+                                                    <i class="fa fa-square-o fa-stack-2x"></i>
+                                                    <i class="fa fa-bar-chart fa-stack-1x"></i>
+                                                </span>&nbsp;&nbsp;Product Metrics
+                                                    <span style="display: none"
+                                                        class="metricsSpinner"><i
+                                                            class="fa fa-cog fa-spin fa-2x pull-right"></i></span></div>
+                                                    <ul class="list-group">
+                                                    <li class="list-group-item">Number of tiles<span
+                                                            id="prodNumTiles" class="pull-right"></span></li>
+                                                    <li class="list-group-item list-group-item-info">JPG
+                                                    compresion rate<span
+                                                            id="prodJpgComp" class="pull-right"></span></li>
+                                                        <li class="list-group-item">Estimated JPG Output<span
+                                                                id="prodJpgOutput" class="pull-right"></span></li>
+                                                    <li class="list-group-item list-group-item-info">PNG compresion rate<span
+                                                            id="prodPngComp" class="pull-right"></span></li>
+                                                    <li class="list-group-item">Estimated PNG Output<span
+                                                                id="prodPngOutput" class="pull-right"></span></li>
+                                                    <li class="list-group-item list-group-item-info">Uncompressed bytes per tile <span
+                                                            id="prodBytesPerTile" class="pull-right"></span></li>
+                                                    <li class="list-group-item">Image height in pixels<span
+                                                            id="prodImageHeight" class="pull-right"></span></li>
+                                                    <li class="list-group-item list-group-item-info">Image width
+                                                    in pixels<span
+                                                            id="prodImageWidth" class="pull-right"></span></li>
+                                                    </ul>
+                                            </div>
+                                        </div>
+                                        <div role="tabpanel" class="tab-pane" id="dimensionsTab">
+                                            <br>
+                                            <div class="panel panel-primary">
+                                                <div class="panel-heading"><span class="fa-stack fa-lg">
+                                                    <i class="fa fa-square-o fa-stack-2x"></i>
+                                                    <i class="fa fa-arrows-alt fa-stack-1x"></i>
+                                                </span>&nbsp;&nbsp;Product
+                                                Dimensions<span style="display: none"
+                                                        class="metricsSpinner"><i
+                                                            class="fa fa-cog fa-2x fa-spin pull-right"></i></span></div>
+                                                <ul class="list-group">
+                                                    <li class="list-group-item">Minimum Display Level<span
+                                                            id="prodMinLevel" class="pull-right"></span></li>
+                                                    <li class="list-group-item list-group-item-info">Maximum
+                                                    Display Level<span
+                                                            id="prodMaxLevel" class="pull-right"></span></li>
+                                                    <li class="list-group-item">Maximum X<span
+                                                            id="prodMaxX" class="pull-right"></span></li>
+                                                    <li class="list-group-item list-group-item-info">Minimum X<span
+                                                            id="prodMinX" class="pull-right"></span></li>
+                                                    <li class="list-group-item">Maximum Y<span
+                                                            id="prodMaxY" class="pull-right"></span></li>
+                                                    <li class="list-group-item list-group-item-info">Minimum Y<span
+                                                            id="prodMinY" class="pull-right"></span></li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <p id="downloadProduct" style="display: none"><i
-                                            class="fa fa-check fa-2x"></i>&nbsp;&nbsp;Ready for
-                                    download:&nbsp;&nbsp;
-                                        <button id="downloadProductButton" type="button" href="javascript:void(0)"
-                                                class="btn btn-primary fileDownload">Download</button></p>
                                 </div>
                             </div><!-- /.container -->
                         </form><!-- /#productForm -->
                     </div><!-- /.modal-body -->
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog modal-lg -->
-        </div><!-- /.modal fade "exportGeopackageModal" -->
+        </div><!-- /.modal fade "exportProductModal" -->
 
         <!-- Upload cut by file form -->
         <div class="modal fade" id="uploadCutByFileModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
