@@ -290,12 +290,17 @@ class RasterEntryXmlReader
             break;
           case "mission":
           case "missionid":
+             if ( value && !rasterEntry.missionId )
+             {
+                rasterEntry.missionId = value
+             }
+             break;
           case "isorce":
-            if ( value && !rasterEntry.missionId )
-            {
-              rasterEntry.missionId = value
-            }
-            break;
+                if ( value && !rasterEntry.missionId )
+                {
+                   rasterEntry.isorce = value
+                }
+                break;
           case "imagecategory":
           case "icat":
             if ( value && !rasterEntry.imageCategory )
