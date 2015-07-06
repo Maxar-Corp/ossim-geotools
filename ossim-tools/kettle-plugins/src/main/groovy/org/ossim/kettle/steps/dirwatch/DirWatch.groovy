@@ -193,6 +193,23 @@ class DirWatch extends BaseStep implements StepInterface
             rs.updateTimestamp("last_modified", new Timestamp(file.lastModified()))
             rs.updateBigDecimal("filesize",currentFileLength)
 
+
+            //Double delta = (new Date().time - rs.getTimestamp("last_checked").time)/1000
+            //if(delta >= secondsToFileDoneCompare)
+            //{
+            //   if(fileDoneTest(file, rs.getBigDecimal("last_filesize") as BigInteger))
+            //   {
+            //      rs.updateBoolean("notified", true)
+            //
+            //      putRow(data.outputRowMeta, [file] as Object[]);
+            //   }
+            //
+            //   rs.updateTimestamp("last_checked", new Timestamp(new Date().time))
+            //}
+            // last_modified is here till I support change compares.  Right now we are
+            // looking for timestamp modifications
+            //
+            //rs.updateBigDecimal("last_filesize", currentFileLength)
             rs.updateRow()
          }
          else
