@@ -142,10 +142,6 @@ var CutByFileClient = (function () {
 
     });
 
-    // ------------------------------------------------------------------------------------------
-    // TODO: Create function for geometry pasted that // POST => geometry, sourceEpsg, targetEpsg
-    // ------------------------------------------------------------------------------------------
-
     $pasteGeometry.on("click", function(){
 
         $pasteCutGeometryModal.modal('show');
@@ -153,13 +149,6 @@ var CutByFileClient = (function () {
     });
 
     $submitPasteGeometry.on("click", function(){
-
-        //addWktToMap($geometryPasteTextArea.val());
-
-        /*
-        POLYGON ((15050395.155250585 4218373.287173398, 15072659.053409241 4245720.660441585, 15050395.155250585
-         4245720.660441585, 15050395.155250585 4218373.287173398))
-         */
 
         var pasteObj = {
             "geometry": $geometryPasteTextArea.val(),
