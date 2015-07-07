@@ -31,7 +31,7 @@
         <div class="row">
             <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left"
                                                                                style="width: 75px; height: 75px; margin-right: 20px;"
-                                                                               src="/logo.png" alt="Tilestore Logo"/></g:link>
+                                                                               src="logo.png" alt="Tilestore Logo"/></g:link>
             <h1>Tilestore</h1>
 
         </div>
