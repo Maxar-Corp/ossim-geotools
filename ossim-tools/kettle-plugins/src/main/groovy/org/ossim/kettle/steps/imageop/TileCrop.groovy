@@ -121,13 +121,11 @@ class TileCrop extends BaseStep implements StepInterface
             {
                BufferedImage bufferedImage = image.asBufferedImage
                Envelope env = tileGeometry.envelopeInternal
-               Geometry intersectGeometry = tileGeometry.intersection(aoiGeometry)
+               //Geometry intersectGeometry = tileGeometry.intersection(aoiGeometry)
 
                if(aoiGeometry instanceof GeometryCollection)
-               //   if(intersectGeometry instanceof GeometryCollection)
                {
-                  GeometryCollection geomCollection = intersectGeometry as GeometryCollection
-                 // GeometryCollection geomCollection = aoiGeometry as GeometryCollection
+                  GeometryCollection geomCollection = aoiGeometry as GeometryCollection
                   Integer i = 0
 
                   def imageResult = bufferedImage
