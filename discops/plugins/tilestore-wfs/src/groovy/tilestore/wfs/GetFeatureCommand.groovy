@@ -12,9 +12,9 @@ import groovy.transform.ToString
 class GetFeatureCommand extends WfsCommand
 {
   String typeName
-  String maxFeatures
-  String outputFormat = "json"
+  String outputFormat
   String resultType
+  String filter
 
   /**
    * A list of properties may be specified for each feature type that is being queried
@@ -35,12 +35,48 @@ class GetFeatureCommand extends WfsCommand
    */
   String sortBy
 
+  Integer maxFeatures = 10
+  Integer startIndex = 0
+
   static constraints = {
     typeName( nullable: false )
     maxFeatures( nullable: true )
+    startIndex( nullable: true )
     outputFormat( nullable: true )
     resultType( nullable: true )
-    propertyName(nullable: true)
-    bbox(nullable: true)
+    propertyName( nullable: true )
+    bbox( nullable: true )
+    filter( nullable: true )
+  }
+  def convertSortByToArray()
+  {
+    def result = [];
+
+
+    if ( !sortBy )
+    {
+      return null
+    };
+    def arrayOfValues = sortBy.split( "," )
+    def idx = 0;
+    arrayOfValues.each { element ->
+      def splitParam = element.split( /\+|:/ );
+      if ( splitParam.length == 1 )
+      {
+        result << [splitParam]
+      }
+      else
+      {
+        if ( splitParam[1].toLowerCase() == "a" )
+        {
+          result << [splitParam[0], "ASC"]
+        }
+        else
+        {
+          result << [splitParam[0], "DESC"]
+        }
+      }
+    }
+    result;
   }
 }

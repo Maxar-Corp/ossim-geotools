@@ -38,7 +38,7 @@ import org.w3c.dom.Node
  * Created by gpotts on 3/19/15.
  */
 @Step(
-        id="TileStoreWriter",
+        id="OSSIMTileStoreWriter",
         name="name",
         description="description",
         categoryDescription="categoryDescription",
@@ -190,44 +190,44 @@ class TileStoreWriterMeta extends BaseStepMeta implements StepMetaInterface
    {
       try
       {
-         if ( !Const.isEmpty( layerName ) ) {
+         if ( layerName ) {
             rep.saveStepAttribute( id_transformation, id_step, 0, "layerName", layerName );
          }
-         if ( !Const.isEmpty( layerFieldName ) ) {
+         if ( layerFieldName ) {
             rep.saveStepAttribute( id_transformation, id_step, 0, "layerFieldName", layerFieldName );
          }
 
-         if ( !Const.isEmpty( tileLevelFieldName ) ) {
+         if ( tileLevelFieldName ) {
             rep.saveStepAttribute( id_transformation, id_step, 0, "tileLevelFieldName", tileLevelFieldName );
          }
-         if ( !Const.isEmpty( tileRowFieldName ) ) {
+         if ( tileRowFieldName ) {
             rep.saveStepAttribute( id_transformation, id_step, 0, "tileRowFieldName", tileRowFieldName );
          }
-         if ( !Const.isEmpty( tileColFieldName ) ) {
+         if ( tileColFieldName ) {
             rep.saveStepAttribute( id_transformation, id_step, 0, "tileColFieldName", tileColFieldName );
          }
-         if ( !Const.isEmpty( tileMinXFieldName ) ) {
+         if ( tileMinXFieldName ) {
             rep.saveStepAttribute( id_transformation, id_step, 0, "tileMinXFieldName", tileMinXFieldName );
          }
-         if ( !Const.isEmpty( tileMinYFieldName ) ) {
+         if ( tileMinYFieldName ) {
             rep.saveStepAttribute( id_transformation, id_step, 0, "tileMinYFieldName", tileMinYFieldName );
          }
-         if ( !Const.isEmpty( tileMaxXFieldName ) ) {
+         if ( tileMaxXFieldName ) {
             rep.saveStepAttribute( id_transformation, id_step, 0, "tileMaxXFieldName", tileMaxXFieldName );
          }
-         if ( !Const.isEmpty( tileMaxYFieldName ) ) {
+         if ( tileMaxYFieldName ) {
             rep.saveStepAttribute( id_transformation, id_step, 0, "tileMaxYFieldName", tileMaxYFieldName );
          }
-         if ( !Const.isEmpty( epsgCodeFieldName ) ) {
+         if ( epsgCodeFieldName  ) {
             rep.saveStepAttribute( id_transformation, id_step, 0, "epsgCodeFieldName", epsgCodeFieldName );
          }
-         if ( !Const.isEmpty( imageFieldName ) ) {
+         if ( imageFieldName ) {
             rep.saveStepAttribute( id_transformation, id_step, 0, "imageFieldName", imageFieldName );
          }
-         if ( !Const.isEmpty( imageStatusFieldName ) ) {
-            rep.saveStepAttribute( id_transformation, id_step, 0, "imageFieldName", imageStatusFieldName );
+         if ( imageStatusFieldName ) {
+            rep.saveStepAttribute( id_transformation, id_step, 0, "imageStatusFieldName", imageStatusFieldName );
          }
-
+         tileStoreCommon.saveRep(rep,id_transformation, id_step)
       }
       catch(e)
       {
@@ -250,7 +250,7 @@ class TileStoreWriterMeta extends BaseStepMeta implements StepMetaInterface
 
    StepDataInterface getStepData()
    {
-      return new TileStoreWriterData();
+      return new TileStoreCommonData();
    }
 
 }

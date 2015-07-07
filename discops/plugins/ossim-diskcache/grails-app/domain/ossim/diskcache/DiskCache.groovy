@@ -25,7 +25,7 @@ class DiskCache {
   String  expirePeriod
 
   static mapping = {
-    directory     index:"disk_cache_directory_idx"
+    directory     index:"disk_cache_directory_idx", type:"text"
     directoryType index:"disk_cache_directory_type_idx"
   }
 

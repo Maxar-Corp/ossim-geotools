@@ -17,7 +17,7 @@ body {
   font-weight:bold
 }
 
-.navbar-offset { margin-top: 52px; }
+.navbar-offset { margin-top: 56px; }
 
 .shadow {
     -webkit-box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
@@ -25,158 +25,273 @@ body {
     box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
 }
 
-#titlesRow {
-  margin-right: 15px;
+#toolBarRow {
+    margin-right: 0px;
+    /*margin-left: -10px;*/
 }
 
-#mapsRow {
-  /*margin-right: 15px;*/
+#toolBarRow .navbar {
+    margin-bottom: 4px;
 }
 
-#toc {
-  height: 642px;
-  bottom: 0px; 
+#omarFeed {
+    overflow-x: hidden;
+}
+
+#omarFeedToolbar {
+    padding-left: 6px;
+    padding-right: 0px;
+}
+
+#omarFeedToolbar p {
+    margin: 0 0 0px;
+    padding-left: 0px;
+    /*background-color: #565656;*/
+    /*color: transparent;*/
+    /*text-shadow: 0px 2px 3px rgba(255,255,255,0.5);*/
+    /*-webkit-background-clip: text;*/
+    /*-moz-background-clip: text;*/
+    /*background-clip: text;*/
 }
 
 .ol-viewport{
-    border: solid 1px;
+    border: solid 2px #e7e7e7;
+    /*border-color: #e7e7e7*/
     height: 100% !important;
-
-  /*-webkit-border-radius: 10px;*/
-  /*-moz-border-radius: 10px;*/
-  /*border-radius: 10px;*/
-  /*-webkit-box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);*/
-  /*-moz-box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);*/
-  /*box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);*/
-
+    border-radius: 4px;
 }
 
 #mapOmar {
+    /*position: absolute;*/
+    top: 0px;
+    z-index: 35;
+    padding-left: 13px;
+    /*bottom: 29px;*/
+    /*left: 270px;*/
+}
+
+.mapInfoElement {
+    z-index: 1;
+    color: #fff;
+    background-color: rgba(0,60,136,0.5);
+    padding: 2px 10px;
+    border-radius: 5px;
+}
+
+/*.mapInfoElement:hover{*/
+    /*background-color: rgba(0,60,136,0.7);*/
+/*}*/
+
+.mapSpinner {
+    display: none;
     position: absolute;
-    top: 79px;
-    bottom: 29px;
-    left: 270px;
+    top: 45%;
+    left: 45%;
+}
+
+.mapInfoBox {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 31px;
+}
+
+.mapZoomLevel {
+    position: absolute;
+    top: 15px;
+    left: 24px;
+}
+
+#mapOmarToolbar {
+    padding-right: 7px;
 }
 
 #mapTile {
+    top: 0px;
+    z-index: 35;
+    padding-left: 6px;
+}
+
+#mapTileToolbar {
+    padding-right: 0px
+}
+
+.ol-mouse-position {
+    top: auto;
+    bottom: 2.5em;
+    right: 8px;
+    color: #fff;
+    background-color: rgba(0,60,136,0.4);
+    padding: 2px 10px;
+    border-radius: 5px;
+}
+
+.ol-scale-line {
+  bottom: 2.5em;
+    background-color: rgba(0,60,136,0.5);
+}
+
+.ol-scale-line:hover {
+    background-color: rgba(0,60,136,0.7);
+}
+
+/* Move the zoomslider to the top right and style it up a bit */
+.ol-zoomslider {
+  top: 15px;
+  left: auto;
+  right: 13px;
+  background-color: rgba(0,60,136,0.5);
+  width: 200px;
+  height: 15px;
+  padding: 0;
+  border-radius: 20px;
+}
+
+.ol-zoomslider:hover {
+  background-color: rgba(0,60,136,0.7);
+}
+
+.ol-zoomslider-thumb {
+  height: 15px;
+  width: 15px;
+  margin: 0;
+  filter: none;
+  background-color: #fff;
+  border-radius: 20px;
+}
+
+a.ol-zoomslider-handle:hover {
+  background-color: rgba(0,60,136,0.7);
+}
+
+.ol-zoom {
+  top: 50px;
+  font-size: 1.2em; 
+}
+
+/* BEGIN OMAR WFS Feed */
+
+.label-as-badge {
+    border-radius: 1em;
+}
+
+.imageFilter {
+    color: grey;
+}
+
+#omarImageList .row {
+    /*border: 1px solid #337ab7;*/
+    /*border: 1px solid #e7e7e7;*/
+    margin-left: -10px;
+    margin-right: -10px;
+}
+
+.image-card {
+    margin-top: 0px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    background-color: #e9e9ea;
+}
+
+.image-card:hover {
+    /*background-color: #A6DB98;*/
+    /*-webkit-transform: scale(1.025);*/
+    /*-moz-transform: scale(1.025);*/
+    /*-o-transform: scale(1.025);*/
+    /*-webkit-transition: background-color .8s ease;*/
+    /*-moz-transition: background-color .8s ease;*/
+    /*-ms-transition: background-color .8s ease;*/
+    /*-o-transition: background-color .8s ease;*/
+    /*transition: background-color .8s ease;*/
+    /*-webkit-box-shadow: -3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
+    /*-moz-box-shadow:    -3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
+    /*box-shadow:         -3px 3px 3px 0px rgba(50, 50, 50, 0.75);*/
+}
+
+.image-card-highlight {
+    background-color: #A6DB98;
+    -webkit-transition: background-color 1.5s ease;
+    -moz-transition: background-color 1.5s ease;
+    -ms-transition: background-color 1.5s ease;
+    -o-transition: background-color 1.5s ease;
+    transition: background-color 1.5s ease;
+}
+
+.image-card-thumb {
+    margin-left: -8px;
+    cursor: pointer;
+}
+
+.omar-thumb {
+    width: 65px;
+    height: 80px;
+    margin-top: 12px;
+}
+
+.image-card-info {
+    margin-left: 42px;
+    padding-top: 8px;
+    padding-right: 0px;
+    font-size: 9px;
+    color: black;
+}
+
+.image-card-info hr {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.image-card-info .fa {
+    color: #337ab7;
+    cursor: pointer;
+}
+
+.fuelux .checkbox-custom.checkbox-inline.highlight.checked {
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+    border-radius: 4px;
+}
+
+div[role='tooltip'] {
+    z-index:9999;
+}
+/* END OMAR WFS Feed */
+
+.corner-ribbon{
+    width: 175px;
     position: absolute;
-    top: 79px;
-    bottom: 29px;
-    right: -10px;
+    top: 25px;
+    left: -50px;
+    text-align: center;
+    line-height: 40px;
+    letter-spacing: 1px;
+    font-weight: bolder;
+    color: #3B5957;
+    background-color: #f8901b;
+    text-shadow: 0px 1px 0px rgba(245, 251, 247, 0.5);
+    font-size: 24px;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
 }
 
-#mapOmar { z-index: 35; }
-
-#mapOmar { z-index: 35; }
-
-/* Move the attribution above footer */
-#mapOmar .ol-attribution{
-  bottom: 2.5em;
+.corner-ribbon.sticky{
+    position: fixed;
 }
 
-/* Move the attribution above footer */
-#mapTile .ol-attribution{
-  bottom: 2.5em;
+.corner-ribbon.shadow{
+    /*box-shadow: 0 0 3px rgba(0,0,0,.3);*/
 }
 
-/* Move the scale bar above footer */
-#mapOmar .ol-scale-line {
-  bottom: 2.5em;
+.corner-ribbon.top-left{
+    top: 20px;
+    left: -80px;
+    margin-left: 32px;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    z-index: 99999;
 }
 
-/* Move the scale bar above footer */
-#mapTile .ol-scale-line {
-  bottom: 2.5em;
-}
-
-/* Move the fullscreen toggle to the top right */
-#mapOmar .ol-full-screen {
-  top: 65px;
-  left: auto;
-  right: 6px;
- }
-
- /* Move the fullscreen toggle to the top right */
-#mapTile .ol-full-screen {
-  top: 65px;
-  left: auto;
-  right: 6px;
- }
-
- #mapOmar .ol-rotate {
-   top: 2.25em;
- }
-
- #mapTile .ol-rotate {
-   top: 2.25em;
- }
-
-/* Move the zoomslider to the top right and style it up a bit */
-#mapOmar .ol-zoomslider {
-  top: 34px;
-  left: auto;
-  right: 50px;
-  background-color: rgba(0,60,136,0.2);
-  width: 200px;
-  height: 15px;
-  padding: 0;
-  box-shadow: 0 0 5px rgb(0,60,136);
-  border-radius: 20px;
-}
-
-/* Move the zoomslider to the top right and style it up a bit */
-#mapTile .ol-zoomslider {
-  top: 34px;
-  left: auto;
-  right: 50px;
-  background-color: rgba(0,60,136,0.2);
-  width: 200px;
-  height: 15px;
-  padding: 0;
-  box-shadow: 0 0 5px rgb(0,60,136);
-  border-radius: 20px;
-}
-
-#mapOmar .ol-zoomslider:hover {
-  background-color: rgba(0,60,136,0.3);
-}
-
-#mapTile .ol-zoomslider:hover {
-  background-color: rgba(0,60,136,0.3);
-}
-
-#mapOmar .ol-zoomslider-thumb {
-  height: 15px;
-  width: 15px;
-  margin: 0;
-  filter: none;
-  background-color: rgba(0,60,136,0.6);
-  border-radius: 20px;
-}
-
-#mapTile .ol-zoomslider-thumb {
-  height: 15px;
-  width: 15px;
-  margin: 0;
-  filter: none;
-  background-color: rgba(0,60,136,0.6);
-  border-radius: 20px;
-}
-
-#mapOmar a.ol-zoomslider-handle:hover {
-  background-color: rgba(0,60,136,0.7);
-}
-
-#mapTile a.ol-zoomslider-handle:hover {
-  background-color: rgba(0,60,136,0.7);
-}
-
-#mapOmar .ol-zoom { 
-  top: 30px;
-  font-size: 1.2em; 
-}
-
-#mapTile .ol-zoom { 
-  top: 30px;
-  font-size: 1.2em; 
-}
+#easyPaginate {width:300px;}
+#easyPaginate img {display:block;margin-bottom:10px;}
+.easyPaginateNav a {padding:5px;}
+.easyPaginateNav a.current {font-weight:bold;text-decoration:underline;}

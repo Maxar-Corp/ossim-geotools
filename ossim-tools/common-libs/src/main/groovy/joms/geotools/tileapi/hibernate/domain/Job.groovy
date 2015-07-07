@@ -1,5 +1,4 @@
 package joms.geotools.tileapi.hibernate.domain
-
 import org.hibernate.annotations.Index
 import org.hibernate.annotations.Type
 
@@ -11,12 +10,12 @@ import javax.persistence.Id
 import javax.persistence.SequenceGenerator
 import javax.persistence.Table
 import javax.persistence.Version
-
 /**
  * Created by gpotts on 2/24/15.
  */
+
 @Entity
-@Table(name = "job")//,
+@Table(name = "job")
 class Job
 {
   static constraints = {
@@ -37,11 +36,11 @@ class Job
   @Id
   @SequenceGenerator(name="job_id_seq",sequenceName="job_id_seq")
   @GeneratedValue(strategy=GenerationType.AUTO,generator="job_id_seq")
-  @Column(name="id", unique=true, nullable=false)
+  @Column(name="id", unique=true, nullable=false, columnDefinition = "serial")
   Long id;
 
   @Version
-  @Column (name = "version")
+  @Column(name="version", nullable=false)
   Long version=0
 
   @Column(name="job_id", nullable = false, unique = true)
@@ -72,21 +71,25 @@ class Job
   String    statusMessage
 
   @Index(name = "job_jobid_idx")
+  @Type(type="text")
   String    message
 
   @Column(name="job_callback", nullable = true)
   String    jobCallback
 
 
-  @Column(name="percent_coimplete", nullable = true)
+  @Column(name="percent_complete", nullable = true)
   Double    percentComplete
 
+  @Column(name="submit_date", nullable = true)
   @Index(name = "job_submit_date_idx")
   Date      submitDate
 
+  @Column(name="start_date", nullable = true)
   @Index(name = "job_start_date_idx")
   Date      startDate
 
+  @Column(name="end_date", nullable = true)
   @Index(name = "job_end_date_idx")
   Date      endDate
 

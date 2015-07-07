@@ -7,6 +7,11 @@ import groovy.xml.StreamingMarkupBuilder
 
 import org.springframework.beans.factory.InitializingBean
 
+import java.awt.Graphics2D
+import java.awt.Color
+import java.awt.image.BufferedImage
+import javax.imageio.ImageIO
+
 class WebMappingService implements InitializingBean
 {
   static transactional = false
@@ -17,6 +22,12 @@ class WebMappingService implements InitializingBean
 
   def grailsLinkGenerator
   def layerManagerService
+
+  def grailsApplication
+
+  enum RenderType {
+    BLANK, GEOSCRIPT
+  }
 
   private static final def getMapFormats = [
       'image/png',
@@ -79,60 +90,91 @@ class WebMappingService implements InitializingBean
 
   def getMap(GetMapCommand cmd)
   {
-    def startTime = System.currentTimeMillis()
-    GeoScriptMap map
+
+    def renderType = ( grailsApplication.config.tilestore.disableAccumulo ) ? RenderType.BLANK : RenderType.GEOSCRIPT
     def contentType = cmd.format
     def result = new ByteArrayOutputStream()
-    def element
-    //println "_______________________________"
-    //println cmd
-    //println "_______________________________"
-    try
+    def outputFormat = cmd.format.split( '/' )[-1]
+    switch ( renderType )
     {
-      def layers = layerManagerService.createTileLayers( cmd.layers?.split( ',' ) )
-      //def img = ImageIO.read("/Volumes/DataDrive/data/earth2.tif" as File)
-      // BufferedImage dest = img.getSubimage(0, 0, cmd.width, cmd.height);
-
-      // ImageIO.write(dest, cmd.format.split('/')[-1],response.outputStream)
-      //img = null
-
-      element = layerManagerService.createSession()
-
-      map = new GeoScriptMap(
-          width: cmd.width,
-          height: cmd.height,
-          proj: cmd.srs,
-          type: cmd.format.split( '/' )[-1],
-          bounds: cmd.bbox.split( "," ).collect() { it.toDouble() } as Bounds, // [-180, -90, 180, 90] as Bounds,
-          // backgroundColor:cmd.bgcolor,
-          layers: layers
-      )
-
-      // def gzipped = new GZIPOutputStream(result)
-      //  OutputStreamWriter writer=new OutputStreamWriter(gzipped);
-      map?.render( result )
-      //gzipped.finish();
-      //writer.close();
-
-    }
-    catch ( def e )
-    {
-      // really need to write exception to stream
-
-      e.printStackTrace()
-    }
-    finally
-    {
-      if ( element != null )
+    case RenderType.GEOSCRIPT:
+      def startTime = System.currentTimeMillis()
+      GeoScriptMap map
+      def element
+      //println "_______________________________"
+      //println cmd
+      //println "_______________________________"
+      try
       {
-        layerManagerService.deleteSession( element )
-      }
+        def layers = layerManagerService.createTileLayers( cmd.layers?.split( ',' ) )
+        //def img = ImageIO.read("/Volumes/DataDrive/data/earth2.tif" as File)
+        // BufferedImage dest = img.getSubimage(0, 0, cmd.width, cmd.height);
 
-      // map?.layers.each{it.dispose()}
-      map?.close()
+        // ImageIO.write(dest, cmd.format.split('/')[-1],response.outputStream)
+        //img = null
+        element = layerManagerService.createSession()
+
+        map = new GeoScriptMap(
+            width: cmd.width,
+            height: cmd.height,
+            proj: cmd.srs,
+            type: outputFormat,
+            bounds: cmd.bbox.split( "," ).collect() { it.toDouble() } as Bounds, // [-180, -90, 180, 90] as Bounds,
+            // backgroundColor:cmd.bgcolor,
+            layers: layers
+        )
+
+        // def gzipped = new GZIPOutputStream(result)
+        //  OutputStreamWriter writer=new OutputStreamWriter(gzipped);
+        map?.render( result )
+        //def img = map?.renderToImage()
+        //if(img) ImageIO.write(img,outputFormat,result)
+        //gzipped.finish();
+        //writer.close();
+
+      }
+      catch ( def e )
+      {
+        //println e
+        // probably need to do an OGC exception here
+        //  need to determine exception type and then return that type
+
+
+        // really need to write exception to stream
+       // def image = new BufferedImage( cmd.width, cmd.height, BufferedImage.TYPE_INT_ARGB )
+
+       // ImageIO.write( image, outputFormat, result )
+
+        //  e.printStackTrace()
+        BufferedImage img = new BufferedImage(cmd.width, cmd.height, BufferedImage.TYPE_4BYTE_ABGR)
+       // Graphics2D g = img.graphics
+
+        //g.setColor(new Color(255,0,0))
+        //g.drawRect(0,0,cmd.width,cmd.width)
+        //g.drawString("No Data", 0, cmd.height/2)
+        //g.dispose()
+        ImageIO.write(img,outputFormat,result)
+        img = null
+      }
+      finally
+      {
+        if ( element != null )
+        {
+           layerManagerService.deleteSession( element )
+        }
+
+        // map?.layers.each{it.dispose()}
+        map?.close()
+      }
+      // println "Time: ${(System.currentTimeMillis()-startTime)/1000} seconds"
+      //println result.toByteArray().size()
+      break
+    case RenderType.BLANK:
+      def image = new BufferedImage( cmd.width, cmd.height, BufferedImage.TYPE_INT_ARGB )
+
+      ImageIO.write( image, outputFormat, result )
+      break
     }
-    // println "Time: ${(System.currentTimeMillis()-startTime)/1000} seconds"
-    //println result.toByteArray().size()
 
     [contentType: contentType, buffer: result.toByteArray()]
     // println "Done GetMap ${tempId}"

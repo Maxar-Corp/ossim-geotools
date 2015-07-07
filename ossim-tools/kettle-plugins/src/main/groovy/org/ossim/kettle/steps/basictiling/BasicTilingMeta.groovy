@@ -3,6 +3,7 @@ package org.ossim.kettle.steps.basictiling
 import geoscript.geom.Bounds
 import geoscript.layer.Pyramid
 import joms.geotools.tileapi.BoundsUtil
+import org.ossim.kettle.types.OssimValueMetaBase
 
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ import org.ossim.core.SynchOssimInit
 import geoscript.proj.Projection
 
 @Step(
-		id="BasicTiling",
+		id="OSSIMBasicTiling",
 		name="name",
 		description="description",
 		categoryDescription="categoryDescription", 
@@ -49,23 +50,22 @@ import geoscript.proj.Projection
 ) 
 public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 {
-	def outputSummaryOnly   = false
+	def outputSummaryOnly     = false
 
-	String projectionType   = "EPSG:4326"// epsg code representing the tiling plane
-	double projectionMinx   = -180.0
-	double projectionMiny   = -90.0
-	double projectionMaxx   = 180.0
-	double projectionMaxy   = 90.0
-	Integer targetTileWidth	= 256
-	Integer targetTileHeight= 256
+	String projectionType     = "EPSG:4326"// epsg code representing the tiling plane
+	//double e   = -180.0
+	//double projectionMiny   = -90.0
+	//double projectionMaxx   = 180.0
+	//double projectionMaxy   = 90.0
+	String targetTileWidth	  = "256"
+	String targetTileHeight   = "256"
 
-	String clampWktField        = ""
-	String clampWktEpsgField    = ""
-	String clampMinLevel   = ""
-	String clampMaxLevel   = ""
+	String crop	              = ""
+	String cropEpsg           = ""
+	String clampMinLevel      = ""
+	String clampMaxLevel      = ""
 	String inputFilenameField = ""
 	String inputEntryField    = ""
-	Boolean mosaicInput       = false
 
 
 	/**
@@ -85,7 +85,7 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 	*/
 
 	String tileIdNameMask     = "%l%/%r%/%c%"
-	def origin                = "LOWER_LEFT"
+	String origin                = "BOTTOM_LEFT"
 	def tileGenerationOrder   = "LOWEST_TO_HIGHEST"
 	
 	def outputFieldNames = [
@@ -95,7 +95,10 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 									tile_level:"tile_level",
 									tile_row:"tile_row",
 									tile_col:"tile_col",
-									tile_mask_aoi:"tile_mask_aoi",
+									tile_aoi:"tile_aoi",
+									tile_aoi_epsg:"tile_aoi_epsg",
+									tile_crop_aoi:"tile_crop_aoi",
+									tile_crop_aoi_epsg:"tile_crop_aoi_epsg",
 									//tile_global_row:"tile_global_row",
 									//tile_global_col:"tile_global_col",
 									tile_epsg:"tile_epsg",
@@ -136,11 +139,12 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 											tile_filenames:[type:ValueMetaInterface.TYPE_STRING],
 											tile_file_entries:[type:ValueMetaInterface.TYPE_STRING],
 											tile_level:[type:ValueMetaInterface.TYPE_INTEGER],
-									//		tile_global_row:[type:ValueMetaInterface.TYPE_INTEGER],
-									//		tile_global_col:[type:ValueMetaInterface.TYPE_INTEGER],
 											tile_row:[type:ValueMetaInterface.TYPE_INTEGER],
 											tile_col:[type:ValueMetaInterface.TYPE_INTEGER],
-											tile_mask_aoi:[type:ValueMetaInterface.TYPE_STRING],
+											tile_aoi:[type:OssimValueMetaBase.TYPE_GEOMETRY_2D],
+											tile_aoi_epsg:[type:OssimValueMetaBase.TYPE_STRING],
+											tile_crop_aoi:[type:OssimValueMetaBase.TYPE_GEOMETRY_2D],
+											tile_crop_aoi_epsg:[type:OssimValueMetaBase.TYPE_STRING],
 											tile_epsg:[type:ValueMetaInterface.TYPE_STRING],
 											tile_minx:[type:ValueMetaInterface.TYPE_NUMBER , len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
 											tile_miny:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
@@ -155,14 +159,6 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 											summary_epsg_miny:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
 											summary_epsg_maxx:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
 											summary_epsg_maxy:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
-//											summary_clip_minx:[type:ValueMetaInterface.TYPE_NUMBER, len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
-//											summary_clip_miny:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
-//											summary_clip_maxx:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
-//											summary_clip_maxy:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
-//											summary_orig_minx:[type:ValueMetaInterface.TYPE_NUMBER, len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
-//											summary_orig_miny:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
-//											summary_orig_maxx:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
-//											summary_orig_maxy:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
 											summary_epsg:[type:ValueMetaInterface.TYPE_STRING],
 											summary_min_level:[type:ValueMetaInterface.TYPE_INTEGER],
 											summary_max_level:[type:ValueMetaInterface.TYPE_INTEGER],
@@ -174,50 +170,21 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 											summary_tile_width:[type:ValueMetaInterface.TYPE_INTEGER],
 											summary_tile_height:[type:ValueMetaInterface.TYPE_INTEGER]
 										]
-	def setProjectionType(type)
+	Bounds getProjectionBounds(def type)
 	{
-//		println "SETTING PROJECTION TYPE ${type}"
-		this.projectionType = type
 		Bounds b = BoundsUtil.getDefaultBounds(new Projection(type.toUpperCase()))
 
-		projectionMinx = b.minX
-		projectionMiny = b.minY
-		projectionMaxx = b.maxX
-		projectionMaxy = b.maxY
-
-
-		/*
-		switch(type.toUpperCase())
-		{
-			case "EPSG:3857":
-				projectionMinx = -20037508.34278924
-				projectionMiny = -20037508.34278924
-				projectionMaxx = 20037508.34278924
-				projectionMaxy = 20037508.34278924
-			break
-			default:
-				def proj       = new Projection(this.projectionType)
-				def bounds     = proj.bounds
-				projectionMinx = bounds.minX
-				projectionMiny = bounds.minY
-				projectionMaxx = bounds.maxX
-				projectionMaxy = bounds.maxY
-			break
-		}
-		*/
+		b
 	}
-	def getOriginAsInteger(){
-    def result =  Pyramid.Origin.TOP_LEFT
-    if(origin.toUpperCase().contains("LOWER"))
-    {
-    		result = Pyramid.Origin.BOTTOM_LEFT
-    }
-		//def result = MultiResolutionTileGenerator.TILE_ORIGIN_UPPER_LEFT
+	def getOriginAsEnum(String value){
+		def result =  Pyramid.Origin.TOP_LEFT
+      String upperCaseValue = value.toUpperCase()
 
-		//if(origin.toUpperCase().contains("LOWER"))
-		//{
-	//		result = MultiResolutionTileGenerator.TILE_ORIGIN_LOWER_LEFT
-	//	}
+		if(upperCaseValue.contains("BOTTOM_LEFT")||
+         upperCaseValue.contains("LOWER_LEFT"))
+		{
+			result = Pyramid.Origin.BOTTOM_LEFT
+		}
 
 		result
 	}
@@ -270,15 +237,10 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 			retval.append("    ").append(XMLHandler.addTagValue("clampMinLevel", clampMinLevel))
 		}
 		if(clampMaxLevel!=null) retval.append("    ").append(XMLHandler.addTagValue("clampMaxLevel", clampMaxLevel))
-		if(clampWktField) retval.append("    ").append(XMLHandler.addTagValue("clampWktField", clampWktField))
-		if(clampWktEpsgField) retval.append("    ").append(XMLHandler.addTagValue("clampWktEpsgField", clampWktEpsgField))
+		if(crop) retval.append("    ").append(XMLHandler.addTagValue("crop", crop.toString()))
+		if(cropEpsg) retval.append("    ").append(XMLHandler.addTagValue("cropEpsg", cropEpsg))
 
-		if(mosaicInput != null)    retval.append("    ").append(XMLHandler.addTagValue("mosaicInput", mosaicInput))
 		if(projectionType != null) retval.append("    ").append(XMLHandler.addTagValue("projectionType", projectionType))
-		if(projectionMinx != null) retval.append("    ").append(XMLHandler.addTagValue("projectionMinx", projectionMinx))
-		if(projectionMiny != null) retval.append("    ").append(XMLHandler.addTagValue("projectionMiny", projectionMiny))
-		if(projectionMaxx != null) retval.append("    ").append(XMLHandler.addTagValue("projectionMaxx", projectionMaxx))
-		if(projectionMaxy != null) retval.append("    ").append(XMLHandler.addTagValue("projectionMaxy", projectionMaxy))
 		if(targetTileWidth != null) retval.append("    ").append(XMLHandler.addTagValue("targetTileWidth", targetTileWidth))
 		if(targetTileHeight != null) retval.append("    ").append(XMLHandler.addTagValue("targetTileHeight", targetTileHeight))
 		if(tileIdNameMask != null) retval.append("    ").append(XMLHandler.addTagValue("tileIdNameMask",tileIdNameMask))
@@ -311,14 +273,6 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 			r.addValueMeta(field);
 		}
 	}
-	double getProjectionDeltaX()
-	{
-		return projectionMaxx - projectionMinx
-	}
-	double getProjectionDeltaY()
-	{
-		return projectionMaxy - projectionMiny
-	}
 
 	Object clone()
 	{
@@ -340,63 +294,31 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 
 		def values       = stepnode
 		origin           = XMLHandler.getTagValue(values, "origin");
-		def mosaicInputValue     = XMLHandler.getTagValue( values, "mosaicInput");
-		if (mosaicInputValue!=null)
-		{
-			mosaicInput = mosaicInputValue.toBoolean()
-		}
 		clampMinLevel = XMLHandler.getTagValue(values, "clampMinLevel");
 		clampMaxLevel = XMLHandler.getTagValue(values, "clampMaxLevel");
-		clampWktField      = XMLHandler.getTagValue(values, "clampWktField");
-		clampWktEpsgField  = XMLHandler.getTagValue(values, "clampWktEpsgField");
+		crop      = XMLHandler.getTagValue(values, "crop");
+		cropEpsg  = XMLHandler.getTagValue(values, "cropEpsg");
 
 		projectionType             = XMLHandler.getTagValue(values, "projectionType");
 		def tileIdNameMaskString   = XMLHandler.getTagValue(values, "tileIdNameMask");
-		def projectionMinxString   = XMLHandler.getTagValue(values, "projectionMinx");
-		def projectionMinyString   = XMLHandler.getTagValue(values, "projectionMiny");
-		def projectionMaxxString   = XMLHandler.getTagValue(values, "projectionMaxx");
-		def projectionMaxyString   = XMLHandler.getTagValue(values, "projectionMaxy");
 		inputEntryField            = XMLHandler.getTagValue(values, "inputEntryField");
 		inputFilenameField         = XMLHandler.getTagValue(values, "inputFilenameField");
 		def testSelectedFieldNames = XMLHandler.getTagValue(values, "selectedFieldNames")
-		def targetTileWidthString  = XMLHandler.getTagValue(values, "targetTileWidth")
-		def targetTileHeightString = XMLHandler.getTagValue(values, "targetTileHeight")
+		targetTileWidth            = XMLHandler.getTagValue(values, "targetTileWidth")
+		targetTileHeight           = XMLHandler.getTagValue(values, "targetTileHeight")
       def outputFieldNamesNode   = XMLHandler.getSubNode( values, "outputFieldNames" );
       tileGenerationOrder        = XMLHandler.getTagValue( values, "tileGenerationOrder");
 
-
-
-      targetTileWidth = targetTileWidthString?targetTileWidthString.toInteger():512
-      targetTileHeight = targetTileHeightString?targetTileHeightString.toInteger():256
+      if(!targetTileWidth) targetTileWidth = "256"
+      if(!targetTileHeight) targetTileHeight = "256"
 
       if(tileIdNameMaskString!=null) tileIdNameMask = tileIdNameMaskString
       if(!projectionType)
       {
       	projectionType = "EPSG:4326"
-			projectionMinx   = -180.0
-			projectionMiny   = -90.0
-			projectionMaxx   = 180.0
-			projectionMaxy   = 90.0
       }
       else
       {
-      	if(projectionMinxString)
-      	{
-      		projectionMinx = projectionMinxString.toDouble()
-      	}
-      	if(projectionMinyString)
-      	{
-      		projectionMiny = projectionMinyString.toDouble()
-      	}
-      	if(projectionMaxxString)
-      	{
-      		projectionMaxx = projectionMaxxString.toDouble()
-      	}
-      	if(projectionMaxyString)
-      	{
-      		projectionMaxy = projectionMaxyString.toDouble()
-      	}
-
       }
       if(!origin) origin = "LOWER_LEFT"
       if(!tileGenerationOrder) tileGenerationOrder = "LOWEST_TO_HIGHEST"
@@ -419,79 +341,64 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 	{
 		clampMinLevel = ""
 		clampMaxLevel = ""
-		clampWktField      = ""
-		clampWktEpsgField  = ""
-		targetTileWidth  = 256
-		targetTileHeight = 256
-		mosaicInput      = false
+		crop      = ""
+		cropEpsg  = ""
+		targetTileWidth  = "256"
+		targetTileHeight = "256"
 		tileGenerationOrder = "LOWEST_TO_HIGHEST"
 		projectionType   = "EPSG:4326"// epsg code representing the tiling plane
-		projectionMinx   = -180.0
-		projectionMiny   = -90.0
-		projectionMaxx   = 180.0
-		projectionMaxy   = 90.0
 
-		mosaicInput      = false
 		tileIdNameMask     = "%l%/%r%/%c%"
 		origin                = "LOWER_LEFT"
 		tileGenerationOrder   = "LOWEST_TO_HIGHEST"		
-		SynchOssimInit.initialize()
 	}
 	void readRep(Repository rep, ObjectId id_step, List<DatabaseMeta> databases, Map<String, Counter> counters) throws KettleException 
 	{
 		this.setDefault();
 
-		try{
-			mosaicInput      = rep.getStepAttributeBoolean(id_step, "mosaicInput");
-		}
-		catch(def e)
-		{
-
-		}
 		clampMinLevel       = rep.getStepAttributeString(id_step, "clampMinLevel");
 		clampMaxLevel       = rep.getStepAttributeString(id_step, "clampMaxLevel");
-		clampWktField            = rep.getStepAttributeString(id_step, "clampWktField");
-		clampWktEpsgField        = rep.getStepAttributeString(id_step, "clampWktEpsgField");
+		crop                = rep.getStepAttributeString(id_step, "crop");
+		cropEpsg            = rep.getStepAttributeString(id_step, "cropEpsg");
+      targetTileWidth     = rep.getStepAttributeString(id_step, "targetTileWidth");
+      targetTileHeight    = rep.getStepAttributeString(id_step, "targetTileHeight");
+
 		def projectionTypeString      = rep.getStepAttributeString(id_step, "projectionType");
-		def projectionMinxString      = rep.getStepAttributeString(id_step, "projectionMinx");
-		def projectionMinyString      = rep.getStepAttributeString(id_step, "projectionMiny");
-		def projectionMaxxString      = rep.getStepAttributeString(id_step, "projectionMaxx");
-		def projectionMaxyString      = rep.getStepAttributeString(id_step, "projectionMaxy");
-		def targetTileWidthString     = rep.getStepAttributeString(id_step, "targetTileWidth");
-		def targetTileHeightString    = rep.getStepAttributeString(id_step, "targetTileHeight");
 		def tileIdNameMaskString      = rep.getStepAttributeString(id_step, "tileIdNameMask");
 		def originString              = rep.getStepAttributeString(id_step, "origin");
 		def tileGenerationOrderString = rep.getStepAttributeString(id_step, "tileGenerationOrder");
 		def inputFilenameFieldString  = rep.getStepAttributeString(id_step, "inputFilenameField");
 		def inputEntryFieldString     = rep.getStepAttributeString(id_step, "inputEntryField");
 		def selectedFieldNamesString  = rep.getStepAttributeString(id_step, "selectedFieldNames");
-		
-		if(projectionTypeString)
+
+      if(!targetTileWidth) targetTileWidth   = "256"
+      if(!targetTileHeight) targetTileHeight = "256"
+
+      if(projectionTypeString)
 		{
 			projectionType = projectionTypeString
 //			println "PROJECTION TYPE:        ${projectionType}"
 //			println "${projectionMinxString}, ${projectionMinyString}, ${projectionMaxxString}, ${projectionMaxyString}"
-			if(projectionMinxString&&projectionMinyString&&projectionMaxxString&&projectionMaxyString)
-			{
-				projectionMinx = projectionMinxString.toDouble()
-				projectionMiny = projectionMinyString.toDouble()
-				projectionMaxx = projectionMaxxString.toDouble()
-				projectionMaxy = projectionMaxyString.toDouble()
-//				println "${projectionMinx},${projectionMiny},${projectionMaxx},${projectionMaxy}"
-			}
 		}
-		if(tileIdNameMaskString!=null) tileIdNameMask = tileIdNameMaskString    
-		if(targetTileWidthString) targetTileWidth   = targetTileWidthString.toInteger()
-		if(targetTileHeightString) targetTileHeight = targetTileHeightString.toInteger()
-		if(originString) origin                     = originString
+		if(tileIdNameMaskString!=null) tileIdNameMask     = tileIdNameMaskString
+		if(originString) origin                           = originString
 		if(tileGenerationOrderString) tileGenerationOrder = tileGenerationOrderString
-		if(inputFilenameFieldString) inputFilenameField = inputFilenameFieldString
-		if(inputEntryFieldString) inputEntryField = inputEntryFieldString
+		if(inputFilenameFieldString) inputFilenameField   = inputFilenameFieldString
+		if(inputEntryFieldString) inputEntryField         = inputEntryFieldString
 		if(selectedFieldNamesString)
 		{
 			selectedFieldNames = [] as Set 
 			def names = selectedFieldNamesString.split(",")
 			names.each{name->selectedFieldNames<<name}
+		}
+		def keyList = outputFieldNames.collect {it.key}
+
+		keyList.each {k->
+			def kValue  = rep.getStepAttributeString(id_step, k)
+			if(kValue)
+			{
+				outputFieldNames."${k}" = kValue
+			}
 		}
 	}
 	void saveRep(Repository rep, ObjectId id_transformation, ObjectId id_step) throws KettleException 
@@ -511,41 +418,26 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 									id_step, "clampMaxLevel",
 									"${clampMaxLevel}".toString()) //$NON-NLS-1$
 		 	}
-			 if(clampWktField != null)
+			 if(crop != null)
 			 {
 				 rep.saveStepAttribute(id_transformation,
-							id_step, "clampWktField",
-							clampWktField.toString()) //$NON-NLS-1$
+							id_step, "crop",
+							crop.toString()) //$NON-NLS-1$
 			 }
-			 if(clampWktEpsgField != null)
+			 if(cropEpsg != null)
 			 {
 				 rep.saveStepAttribute(id_transformation,
-							id_step, "clampWktEpsgField",
-							clampWktEpsgField.toString()) //$NON-NLS-1$
+							id_step, "cropEpsg",
+							cropEpsg.toString()) //$NON-NLS-1$
 			 }
 
-			rep.saveStepAttribute(id_transformation, 
-								id_step, "mosaicInput", 
-								mosaicInput) //$NON-NLS-1$
-			rep.saveStepAttribute(id_transformation, 
+			rep.saveStepAttribute(id_transformation,
 								id_step, "tileIdNameMask", 
 								tileIdNameMask) //$NON-NLS-1$
 			rep.saveStepAttribute(id_transformation, 
 								id_step, "projectionType", 
 								projectionType) //$NON-NLS-1$
-			rep.saveStepAttribute(id_transformation, 
-								id_step, "projectionMinx", 
-								"${projectionMinx}".toString()) //$NON-NLS-1$
-			rep.saveStepAttribute(id_transformation, 
-								id_step, "projectionMiny", 
-								"${projectionMiny}".toString()) //$NON-NLS-1$
-			rep.saveStepAttribute(id_transformation, 
-								id_step, "projectionMaxx", 
-								"${projectionMaxx}".toString()) //$NON-NLS-1$
-			rep.saveStepAttribute(id_transformation, 
-								id_step, "projectionMaxy", 
-								"${projectionMaxy}".toString()) //$NON-NLS-1$
-			rep.saveStepAttribute(id_transformation, 
+			rep.saveStepAttribute(id_transformation,
 								id_step, "targetTileWidth", 
 								targetTileWidth) //$NON-NLS-1$
 			rep.saveStepAttribute(id_transformation, 

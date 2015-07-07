@@ -124,13 +124,19 @@ class TileCachePyramid extends Pyramid
               tileCacheSupport.getHeight(entry));
       //println "LARGEST SIZE === ${largestSize}"
       int maxDecimationLevels = 0;
-      if (largestSize > tileSize) {
-        int testSize = largestSize;
-        while ((testSize > tileSize) && (testSize > 0)) {
+     // Integer testTileSize = tileSize*0.25// we will go no more than 2 more decimations
+      int testSize = largestSize;
+//      if (largestSize > testTileSize) {
+//        int testSize = largestSize;
+//        while ((testSize > testTileSize) && (testSize > 0)) {
+//          ++maxDecimationLevels;
+//          testSize = testSize >> 1;
+//        }
+        while ((testSize > 0)) {
           ++maxDecimationLevels;
           testSize = testSize >> 1;
         }
-      }
+//      }
 
       // once we find the number of decimations then we will find the estimate for the
       // resolution at that decimation
@@ -208,6 +214,43 @@ class TileCachePyramid extends Pyramid
     result
   }
 
+  /**
+   *
+   * @param fullResolution  Resolution in the units of the projector
+   * @param numberOfResolutions Number of decimation factors or resolutions
+   * @return A hashmap of the form [minLevel: , maxLevel: ]
+   */
+  HashMap clampLevels(double fullResolution, Integer numberOfResolutions)
+  {
+    double[] resolutions = grids*.yResolution as double[]
+    int[] levels = grids*.z as double[]
+
+    Integer minLevel = 99999
+    Integer maxLevel = -1
+    Integer i = 0
+    double coarsestResolution = fullResolution*(1<<(numberOfResolutions-1))
+    double highestResolution  = fullResolution
+
+    for(i = 0; i < resolutions.length;++i)
+    {
+      if (highestResolution > resolutions[i]) {
+        maxLevel = i;
+        if (i > 0) maxLevel--;
+        break
+      }
+    }
+    for(i = resolutions.length-1; i >= 0;--i)
+    {
+      if (coarsestResolution < resolutions[i]) {
+        minLevel = i;
+        break
+      }
+    }
+    Integer resultMinLevel = minLevel + levels[0]
+    Integer resultMaxLevel = maxLevel + levels[0]
+
+    [minLevel:resultMinLevel, maxLevel:resultMaxLevel]
+  }
   def getMinMaxLevel()
   {
     Long minLevel = 9999
@@ -219,6 +262,23 @@ class TileCachePyramid extends Pyramid
     }
 
     [minLevel:minLevel, maxLevel:maxLevel]
+  }
+  HashMap intersectLevels(Integer minLevel, Integer maxLevel)
+  {
+    HashMap result = [:]
+    HashMap minMaxLevels = this.minMaxLevel
+
+    if(minMaxLevels.minLevel<= minMaxLevels.maxLevel)
+    {
+      result.maxLevel = Math.min(minMaxLevels.maxLevel, maxLevel)
+      result.minLevel = Math.max(minMaxLevels.minLevel, minLevel)
+      if(result.minLevel>result.maxLevel)
+      {
+        result = [:]
+      }
+    }
+
+    result
   }
   TileCacheHints getHints()
   {

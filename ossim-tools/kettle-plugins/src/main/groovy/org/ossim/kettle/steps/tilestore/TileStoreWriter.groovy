@@ -1,7 +1,9 @@
 package org.ossim.kettle.steps.tilestore
 
 import geoscript.geom.Bounds
+import geoscript.layer.ImageTile
 import geoscript.proj.Projection
+import joms.geotools.tileapi.accumulo.AccumuloTileLayer
 import joms.geotools.tileapi.accumulo.TileCacheImageTile
 import org.hibernate.Query
 import org.ossim.core.SynchOssimInit
@@ -17,6 +19,8 @@ import org.pentaho.di.trans.step.StepMeta
 import org.pentaho.di.trans.step.StepMetaInterface
 
 import javax.imageio.ImageIO
+import java.awt.Graphics
+import java.awt.image.BufferedImage
 import java.awt.image.RenderedImage
 
 /**
@@ -24,14 +28,46 @@ import java.awt.image.RenderedImage
  */
 class TileStoreWriter extends BaseStep implements StepInterface
 {
-   private TileStoreWriterData data;
+   private TileStoreCommonData data;
    private TileStoreWriterMeta meta;
+   AccumuloTileLayer tileLayer
    private def layerInfo
    private def count = 0
    private proj
    public TileStoreWriter(StepMeta stepMeta, StepDataInterface stepDataInterface,
-                  int copyNr, TransMeta transMeta, Trans trans) {
+                          int copyNr, TransMeta transMeta, Trans trans) {
       super(stepMeta, stepDataInterface, copyNr, transMeta, trans);
+   }
+   private ImageTile checkAndMergeTile(ImageTile src, ImageTile dest)
+   {
+      ImageTile result = src
+      if(dest?.data)
+      {
+         // check if already exists.
+         // if already exists then we will merge the two tiles together
+         BufferedImage destinationData = ImageIO.read(new ByteArrayInputStream(dest.data))
+         BufferedImage srcData = ImageIO.read(new ByteArrayInputStream(src.data))
+         if(destinationData&&srcData)
+         {
+            Graphics g = destinationData.graphics
+
+            g.drawImage(srcData, 0, 0, null)
+            g.dispose()
+         }
+         ByteArrayOutputStream output = new ByteArrayOutputStream()
+         ImageIO.write(destinationData, "tiff", output)
+         dest.data = output.toByteArray()
+
+         result = dest
+         //imageTile.modify()
+         // tileCacheService.writeTile(layerInfo, imageTile)
+         // println "PUTTING TILE ${imageTile}"
+         // new File("/tmp/foo${count}.tif").bytes = t.data
+         // ++count
+      }
+
+      result
+      // println "PUTTING TILE ================= ${t} with tile cahe service ${tileCacheService}"
    }
    public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws KettleException
    {
@@ -42,8 +78,8 @@ class TileStoreWriter extends BaseStep implements StepInterface
       if(r == null)
       {
          setOutputDone();
-       //  println "TOTAL COUNT == ${rowN}"
-       //  println "TOTAL WRITTEN == ${count}"
+         //  println "TOTAL COUNT == ${rowN}"
+         //  println "TOTAL WRITTEN == ${count}"
          return false;
       }
 
@@ -122,7 +158,7 @@ class TileStoreWriter extends BaseStep implements StepInterface
 
       if(imageStatusIdx>=0)
       {
-        def imageStatus = this.inputRowMeta.getString(r, imageStatusIdx)
+         def imageStatus = this.inputRowMeta.getString(r, imageStatusIdx)
          //println imageStatus
          switch(imageStatus?.toLowerCase())
          {
@@ -139,19 +175,32 @@ class TileStoreWriter extends BaseStep implements StepInterface
       }
       else
       {
-         ByteArrayOutputStream out = new ByteArrayOutputStream()
-         ImageIO.write(image, "tiff", out)
-         tileData = out.toByteArray()
+         if(image)
+         {
+            ByteArrayOutputStream out = new ByteArrayOutputStream()
+            ImageIO.write(image, "tiff", out)
+            tileData = out.toByteArray()
+         }
+         else
+         {
+            tileData = null
+         }
       }
+
       if(tileData)
       {
-         def bounds =  new Bounds(tileMinx.toDouble(), tileMiny.toDouble(), tileMaxx.toDouble(), tileMaxy.toDouble(),proj)
-         imageTile = new TileCacheImageTile(
-                 bounds,
-                 tileLevel.toInteger(), tileCol.toLong(), tileRow.toLong(),
-                 tileData)
-         data?.tileCacheService.writeTile(layerInfo,imageTile)
-         ++count
+            def bounds =  new Bounds(tileMinx.toDouble(), tileMiny.toDouble(), tileMaxx.toDouble(), tileMaxy.toDouble(),proj)
+            imageTile = new TileCacheImageTile(
+                    bounds,
+                    tileLevel.toInteger(), tileCol.toLong(), tileRow.toLong(),
+                    tileData)
+            ImageTile destinationTile = data?.tileCacheService.getTileByKey(layerInfo, imageTile.key)
+
+            def mergedTile = checkAndMergeTile(imageTile, destinationTile)
+
+            data?.tileCacheService.writeTile(layerInfo,mergedTile)
+
+            ++count
       }
       else {
       }
@@ -162,10 +211,10 @@ class TileStoreWriter extends BaseStep implements StepInterface
    public boolean init(StepMetaInterface smi, StepDataInterface sdi)
    {
       meta = (TileStoreWriterMeta)smi;
-      data = (TileStoreWriterData)sdi;
+      data = (TileStoreCommonData)sdi;
       SynchOssimInit.initialize()
 
-      data?.initialize(meta)
+      data?.initialize(meta?.tileStoreCommon)
       def layerName
       if(meta.layerName)
       {
@@ -190,7 +239,7 @@ class TileStoreWriter extends BaseStep implements StepInterface
       try
       {
          meta = (TileStoreWriterMeta)smi;
-         data = (TileStoreWriterData)sdi;
+         data = (TileStoreCommonData)sdi;
          data?.shutdown()
       }
       catch(def e)

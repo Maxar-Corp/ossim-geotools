@@ -33,15 +33,19 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://repository.codehaus.org"
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
+        mavenRepo 'http://repo.boundlessgeo.com/main/'
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
         // runtime 'mysql:mysql-connector-java:5.1.27'
+        compile( 'org.ossim:ossim-common-libs:1.0-SNAPSHOT' ) {
+            excludes 'slf4j-log4j12', 'ehcache', 'javassist'
+        }
     }
 
     plugins {
-        build(":release:3.1.0",
-              ":rest-client-builder:2.1.0") {
+        build(":release:3.1.1",
+              ":rest-client-builder:2.1.1") {
             export = false
         }
     }

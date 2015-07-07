@@ -1,12 +1,73 @@
-AddLayerClient = (function ()
-{
+"use strict";
+var AddLayerClient = (function () {
+    var loadParams; // parameters passed in from AppController
     var wfsURL;
     var layersArray = [];
+    var initLayer;  // first layer loaded into the map
+    var currentTileLayer; // the actively visible/displayed tile map layer
+
+    // Cache DOM elements
+    var $tileLayerSelect = $('#tileLayerSelect');
+
+    function getTileLayers(params, elem) {
+        var dfd = $.Deferred();
+        $.each(params, function (index, tileCacheLayer) {
+            var deffered = $.Deferred();
+            $(elem).append($('<option>', {
+                value: tileCacheLayer.name,
+                text: tileCacheLayer.name
+            }));
+            $(elem).selectpicker('refresh');
+        });
+        return dfd.promise();
+    }
+
+    function getCurrentTileLayer(){
+        currentTileLayer = $tileLayerSelect.val();
+    }
+
+    function switchCurrentLayer(removeOldLayer, addNewLayer){
+
+        AppClient.map.removeLayer(removeOldLayer);
+
+        console.log('Now loading: ' + addNewLayer);
+
+        //console.message()
+        //    .span({
+        //        color: '#337ab7', fontSize: 14
+        //    })
+        //    .text('(appAdmin.js 144): ')
+        //    .spanEnd()
+        //    .text('Now loading: ' + addNewLayer, {
+        //        color: 'green', fontSize: 14
+        //    })
+        //    .print();
+
+        addNewLayer = new ol.layer.Tile( {
+            opacity: 1.0,
+            source: new ol.source.TileWMS( {
+                url: loadParams.tilestoreWmsURL,
+                params: {'LAYERS': addNewLayer, 'TILED': true, 'VERSION': '1.1.1'}
+            } ),
+            name: addNewLayer
+        } );
+        AppClient.map.addLayer(addNewLayer);
+        initLayer = addNewLayer;
+
+    }
+
+    $tileLayerSelect.on('change', function() {
+         console.log('select on change:' + $tileLayerSelect.val())
+
+        switchCurrentLayer(initLayer, $tileLayerSelect.val());
+    });
 
     return {
-        initialize: function ( addLayersClientParams )
-        {
-            wfsURL = addLayersClientParams.wfsURL;
+        initialize: function (initParams) {
+
+            loadParams = initParams;
+
+            wfsURL = initParams.wfsURL;
 
             //var tileBoundsVectorSource = new ol.source.GeoJSON( {
             //    url: wfsURL,
@@ -66,7 +127,7 @@ AddLayerClient = (function ()
                 2.388657133911758,
                 1.194328566955879,
                 0.5971642834779395,
-                0.29858214173896974                
+                0.29858214173896974
             ];
 
             var matrixIds = [
@@ -89,18 +150,18 @@ AddLayerClient = (function ()
                 16,
                 17,
                 18,
-                19                
+                19
             ];
 
-            var tileGrid = new ol.layer.Tile({
-                source: new ol.source.TileDebug({
-                    projection: 'EPSG:3857',
-                    tileGrid: new ol.tilegrid.TileGrid({
-                        resolutions: resolutions,
-                        origin: [-20037508.342789244, 20037508.342789244] })
-                }),
-                name: 'Tile Grid'
-            });
+            //var tileGrid = new ol.layer.Tile({
+            //    source: new ol.source.TileDebug({
+            //        projection: 'EPSG:3857',
+            //        tileGrid: new ol.tilegrid.TileGrid({
+            //            resolutions: resolutions,
+            //            origin: [-20037508.342789244, 20037508.342789244] })
+            //    }),
+            //    name: 'Tile Grid'
+            //});
             //layersArray.push(tileGrid);
             //console.log(tileGrid);
 
@@ -108,81 +169,99 @@ AddLayerClient = (function ()
             var projectionExtent = projection.getExtent();
 
             var tileParamGrid = new ol.layer.Tile({
-              extent: projectionExtent,
-              source: new ol.source.WMTS({
+                extent: projectionExtent,
+                source: new ol.source.WMTS({
 //                url: '/tilestore/wmts',
-                layer: 'highres_3857',
-                url: '/tilestore/wmts/tileParamGrid',
+                    layer: 'highres_3857',
+                    url: '/tilestore/wmts/tileParamGrid',
 //                layer: '0',
-                matrixSet: 'EPSG:3857',
-                format: 'image/png',
-                projection: projection,
-                tileGrid: new ol.tilegrid.WMTS({
-                  origin: ol.extent.getTopLeft(projectionExtent),
-                  resolutions: resolutions,
-                  matrixIds: matrixIds
+                    matrixSet: 'EPSG:3857',
+                    format: 'image/png',
+                    projection: projection,
+                    tileGrid: new ol.tilegrid.WMTS({
+                        origin: ol.extent.getTopLeft(projectionExtent),
+                        resolutions: resolutions,
+                        matrixIds: matrixIds
+                    }),
+                    style: 'default'
                 }),
-                style: 'default'
-              }),
-              name: 'tileParamGrid'
+                name: 'tileParamGrid'
             });
 
-            $.each( addLayersClientParams.referenceLayers, function ( idx, referenceLayer )
-            {
-                var osmGroup = new ol.layer.Tile( {
+            $.each(initParams.referenceLayers, function (idx, referenceLayer) {
+                var osmGroup = new ol.layer.Tile({
                     opacity: 1.0,
-                    source: new ol.source.TileWMS( {
+                    source: new ol.source.TileWMS({
                         url: referenceLayer.url,
                         params: {'LAYERS': referenceLayer.name, 'TILED': true}
-                    } ),
+                    }),
                     name: referenceLayer.title
-                } );
+                });
 
-                layersArray.push( osmGroup );
+                layersArray.push(osmGroup);
 
-            } );
+            });
 
-            //console.log(addLayersClientParams);
+            //$.each( initParams.tilestoreLayers, function ( idx, tilestoreLayer )
+            //{
+            //    //console.log(tilestoreLayer.name);
+            //    var tileLayer = new ol.layer.Tile( {
+            //        opacity: 1.0,
+            //        source: new ol.source.TileWMS( {
+            //            url: initParams.tilestoreWmsURL,
+            //            params: {'LAYERS': tilestoreLayer.name, 'TILED': true, 'VERSION': '1.1.1'}
+            //        } ),
+            //        name: tilestoreLayer.name
+            //    } );
+            //
+            //    //console.log(tilestoreLayer.name);
+            //    $('#tileLayerSelect').append($('<option>', {
+            //        value: tilestoreLayer.name,
+            //        text : tilestoreLayer.name
+            //    }));
+            //
+            //    layersArray.push( tileLayer ); //highres_us
+            //} );
 
-            $.each( addLayersClientParams.tilestoreLayers, function ( idx, tilestoreLayer )
-            {
-                var tileLayer = new ol.layer.Tile( {
+            if (initParams.wmtsTileGrid) {
+                layersArray.push(tileParamGrid);
+            }
+
+            // Uses .done via a $.Deffered() to grab the value of the $tileLayerSelect
+            // This is needed, because the select options are populated after the DOM is loaded.
+            getTileLayers(loadParams.tilestoreLayers, $tileLayerSelect)
+                .done(
+                getCurrentTileLayer()
+            );
+            var source = new ol.source.TileWMS( {
+                url: loadParams.tilestoreWmsURL,
+                params: {'LAYERS': currentTileLayer, 'TILED': true, 'VERSION': '1.1.1'}
+            });
+
+            function addInitialLayer(){
+
+                initLayer = new ol.layer.Tile( {
                     opacity: 1.0,
-                    source: new ol.source.TileWMS( {
-                        url: addLayersClientParams.tilestoreWmsURL,
-                        params: {'LAYERS': tilestoreLayer.name, 'TILED': true, 'VERSION': '1.1.1'}
-                    } ),
-                    name: tilestoreLayer.name
+                    source: source,
+                    name: currentTileLayer,
                 } );
+                //source.on('tileloadstart', function(event) {
+                //    //progress.addLoaded();
+                //    //console.log('tile load started...');
+                //    //$('#mapTileSpinner').show();
+                //});
+                //source.on('tileloadend', function(event) {
+                //    //progress.addLoaded();
+                //    //console.log('all tiles loaded...');
+                //    //$('#mapTileSpinner').hide();
+                //});
+                AppClient.map.addLayer(initLayer);
 
-                //console.log(tilestoreLayer.name);
-                $('#tileLayerSelect').append($('<option>', {
-                    value: tilestoreLayer.name,
-                    text : tilestoreLayer.name
-                }));
-
-                layersArray.push( tileLayer ); //highres_us
-            } );
-
-            $.each( addLayersClientParams.overlayLayers, function ( idx, overlayLayer )
-            {
-                var osmOverlay = new ol.layer.Tile( {
-                    opacity: 1.0,
-                    //visible: false,
-                    source: new ol.source.TileWMS( {
-                        url: overlayLayer.url,
-                        params: {'LAYERS': overlayLayer.name, 'TILED': true}
-                    } ),
-                    name: overlayLayer.title
-                } );
-                layersArray.push( osmOverlay );
-
-            } );
-
-            if ( addLayersClientParams.wmtsTileGrid )
-            {                
-                layersArray.push( tileParamGrid );
-            }    
+            }
+            $.each(layersArray, function (i, obj) {
+                AppClient.map.addLayer(obj);
+            });
+            addInitialLayer();
 
         },
         layersArray: layersArray

@@ -17,7 +17,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Shell
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text
 import org.ossim.kettle.types.OssimValueMetaBase;
 import org.pentaho.di.core.Const;
@@ -34,31 +35,12 @@ import org.ossim.kettle.groovyswt.KettleSwtBuilder
 import org.eclipse.swt.widgets.TableItem
 import org.eclipse.swt.custom.CCombo
 
+
 public class BasicTilingDialog extends BaseStepDialog implements
         StepDialogInterface {
 
    private BasicTilingMeta input;
    private def swt;
-   String originField
-   String tileNameMaskField
-   String projectionTypeField
-   String tileWidthField
-   String tileHeightField
-   String clampMinLevelField
-   String clampMaxLevelField
-   String clampGeometryField
-   String filenameField
-   String fileEntryField
-   private def fields = ["origin":"originField",
-                         "tile_mask":"tileNameMaskField",
-                         "projection":"projectionTypeField",
-                         "tile_width":"tileWidthField",
-                         "tile_height":"tileHeightField",
-                         "min_level":"clampMinLevelField",
-                         "max_level":"clampMaxLevelField",
-                         "clamp_geometry":"clampGeometryField",
-                         "filename":"filenameField",
-                         "entry":"fileEntryField"]
 
    public BasicTilingDialog(Shell parent, Object baseStepMeta,
                             TransMeta transMeta, String stepname) {
@@ -71,23 +53,38 @@ public class BasicTilingDialog extends BaseStepDialog implements
       Display display = parent.getDisplay();
       swt = new KettleSwtBuilder()
       def lsMod = {
-         event -> input.setChanged()
+         event ->
+            def tableView = event.source.parent.parent
+           // println "${item.getText(0)}, ${item.getText(1)}, ${item.getText(2)}"
+            //println "1: ${event.source.parent.parent.class.name}"
+            //println "2: ${event.source.parent.class.name}"
+            def widgetSource = event.source
 
-            def ccombo = event.source
-            if(ccombo instanceof CCombo)
+            if (widgetSource instanceof Text)
             {
-               def tableView = event.source.parent.parent
-               def row  = tableView?.getCurrentRownr()
-               def item = event?.source?.parent?.getItem(row)
-               //def indexOfValue = ccombo.indexOf(ccombo.text)
-               def key = "${ccombo.text}"
-               def renameValue          = input.outputFieldNames."${key}"
+              // String newValue = "${event.widget.text}".toString()
+              // String key = item.getText(1)
 
+              // outputFieldNames."${key}" = newValue
+            }
+            else if(widgetSource instanceof CCombo)
+            {
+               def row = tableView?.getCurrentRownr()
+               Table table = event.source.parent as Table
+               TableItem item = table.getItem(row)
+               def key = "${widgetSource.text}"
+               def renameValue = input.outputFieldNames."${key}"
                item.setText(1, key)
                item.setText(2, renameValue)
-            }
-      } as ModifyListener
+               //def indexOfValue = ccombo.indexOf(ccombo.text)
+               //  def renameValue = outputFieldNames."${key}"
 
+               //  println "RENAME VALUE ==== ${renameValue}"
+               //  item.setText(1, key)
+               //  item.setText(2, renameValue)
+            }
+
+      } as ModifyListener
       ColumnInfo[] colinf = new ColumnInfo[2];
       colinf[0] =
               new ColumnInfo( Messages.getString("BasicTilingDialog.ColumnInfo.Fieldname" ),
@@ -96,99 +93,137 @@ public class BasicTilingDialog extends BaseStepDialog implements
       colinf[1] =
               new ColumnInfo( Messages.getString("BasicTilingDialog.ColumnInfo.RenameTo" ),
                       ColumnInfo.COLUMN_TYPE_TEXT, false );
-      shell = swt.shell(parent){
-         migLayout(layoutConstraints:"insets 2, wrap 1", columnConstraints: "[grow]")
+
+      shell = swt.shell(parent) {
+         migLayout(layoutConstraints: "insets 2, wrap 1", columnConstraints: "[grow]")
          // migLayout(layoutConstraints:"wrap 2", columnConstraints: "[] [grow,:200:]")
          //gridLayout(numColumns: 2)
 
-         composite(layoutData:"growx, spanx, wrap"){
+         composite(layoutData: "growx, spanx, wrap") {
             label Messages.getString("BasicTilingDialog.Stepname.Label")
-            migLayout(layoutConstraints:"insets 2, wrap 2", columnConstraints: "[] [grow,:200:]")
+            migLayout(layoutConstraints: "insets 2, wrap 2", columnConstraints: "[] [grow,:200:]")
 
             //text(id:"stepName", text: stepname ,layoutData:"span, growx"){
-            text(id:"stepName", layoutData:"span,growx", text: stepname){
-               onEvent(type:'Modify') { input.setChanged() }
+            text(id: "stepName", layoutData: "span,growx", text: stepname) {
+               onEvent(type: 'Modify') { input.setChanged() }
             }
             label Messages.getString("BasicTilingDialog.TileNameMask.Label")
 
             //text(id:"stepName", text: stepname ,layoutData:"span, growx"){
-            text(id:"tileNameMask", layoutData:"span,growx", text:input.tileIdNameMask){
-               onEvent(type:'Modify') { input.setChanged() }
+            text(id: "tileNameMask", layoutData: "span,growx") {
+               onEvent(type: 'Modify') { input.setChanged() }
             }
-            label (id:"clampWktFieldLabel", text:"Clamp Wkt")
-            cCombo(id:"clampWktField",
-                    items:SwtUtilities.previousStepFields(transMeta, stepname, [OssimValueMetaBase.TYPE_GEOMETRY_2D,
-                                                                                ValueMetaInterface.TYPE_STRING]),
-                    layoutData:"span,growx")
-                    {
-                       onEvent(type:'Modify') { input.setChanged(); }
-                    }
-            label (id:"clampWktEpsgFieldLabel", text:"Clamp Wkt EPSG")
-            cCombo(id:"clampWktEpsgField",
-                    items:SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING]),
-                    layoutData:"span,growx")
-                    {
-                       onEvent(type:'Modify') { input.setChanged(); }
-                    }
             label Messages.getString("BasicTilingDialog.MinLevel.Label")
-            text(id:"clampMinLevel"){
-               onEvent(type:'Modify') { input.setChanged() }
-            }
-            label Messages.getString("BasicTilingDialog.MaxLevel.Label")
-            text(id:"clampMaxLevel"){
-               onEvent(type:'Modify') { input.setChanged() }
-            }
-            label Messages.getString("BasicTilingDialog.TilingProjectionType.Label")
-            cCombo(id:"projectionType",
-                    items:["EPSG:4326","EPSG:3857"],
-                    text:"EPSG:4326",
-                    //style:"READ_ONLY",
-                    layoutData:"span,growx")
+            cCombo(id: "clampMinLevel",
+                    items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_INTEGER,
+                                                                                 ValueMetaInterface.TYPE_STRING]),
+                    layoutData: "span,growx")
                     {
-                       onEvent(type:'Modify') { input.setChanged(); }
+                       onEvent(type: 'Modify') { input.setChanged(); }
+                    }
+            //text(id:"clampMinLevel"){
+            //   onEvent(type:'Modify') { input.setChanged() }
+            //}
+            label Messages.getString("BasicTilingDialog.MaxLevel.Label")
+            cCombo(id: "clampMaxLevel",
+                    items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_INTEGER,
+                                                                                 ValueMetaInterface.TYPE_STRING]),
+                    layoutData: "span,growx")
+                    {
+                       onEvent(type: 'Modify') { input.setChanged(); }
+                    }
+            label Messages.getString("BasicTilingDialog.TilingProjectionType.Label")
+            cCombo(id: "projectionType",
+                    //       items:["EPSG:4326","EPSG:3857"],
+                    items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING]),
+
+//                    text:"EPSG:4326",
+                    //style:"READ_ONLY",
+                    layoutData: "span,growx")
+                    {
+                       onEvent(type: 'Modify') { input.setChanged(); }
                     }
             label Messages.getString("BasicTilingDialog.Origin.Label")
-            cCombo(id:"origin",
-                    items:["LOWER_LEFT", "UPPER_LEFT"],
-                    text:"LOWER_LEFT",
-                    style:"READ_ONLY",
-                    layoutData:"span,growx")
+            cCombo(id: "origin",
+                    items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING]),
+                    // style:"READ_ONLY",
+                    layoutData: "span,growx")
                     {
-                       onEvent(type:'Modify') { input.setChanged(); }
+                       onEvent(type: 'Modify') { input.setChanged(); }
                     }
-            label(Messages.getString("BasicTilingDialog.TileWidth.Label"), layoutData:"split 2")
-            text(id:"tileWidth", text:"512"){
-               onEvent("Modify"){
-                  if(swt.tileWidth.text)
-                  {
-                     def w = swt.tileWidth.text.toInteger()
-                     swt.tileHeight.text = "${w}".toString()//"${w/2}".toString()
-                  }
-                  input.setChanged()
-               }
-            }
-            label(Messages.getString("BasicTilingDialog.TileHeight.Label"), layoutData:"split 2")
-            text(id:"tileHeight", text:"256")
+
+            label(Messages.getString("BasicTilingDialog.TileWidth.Label"))//, layoutData: "split 2")
+            cCombo(id: "tileWidth",
+                    items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING]),
+                    // style:"READ_ONLY",
+                    layoutData: "span,growx")
+                    {
+                       onEvent(type: 'Modify') {
+                          if ("${swt.tileHeight}".isNumber())
+                          {
+                             swt.tileHeight.text = swt.tileWidth.text
+                          }
+                          input.setChanged();
+                       }
+                    }
+            label(Messages.getString("BasicTilingDialog.TileHeight.Label"))//, layoutData: "split 2")
+            cCombo(id: "tileHeight",
+                    items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING]),
+                    layoutData: "span,growx")
+                    {
+                       onEvent(type: 'Modify') {
+                          input.setChanged();
+                       }
+                    }
+            label(id: "cropLabel", text: "Crop")
+            cCombo(id: "crop",
+                    items: SwtUtilities.previousStepFields(transMeta, stepname, [OssimValueMetaBase.TYPE_GEOMETRY_2D]),
+                    layoutData: "span,growx")
+                    {
+                       onEvent(type: 'Modify') { input.setChanged(); }
+                    }
+            label(id: "cropEpsgLabel", text: "Crop EPSG")
+            cCombo(id: "cropEpsg",
+                    items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING]),
+                    layoutData: "span,growx")
+                    {
+                       onEvent(type: 'Modify') { input.setChanged(); }
+                    }
+            label(id: "inputFileNameFieldLabel", text: "Filename Field")
+            cCombo(id: "inputFilenameField",
+                    items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING]),
+                    layoutData: "span,growx")
+                    {
+                       onEvent(type: 'Modify') { input.setChanged(); }
+                    }
+            label(text: "Entry Field")
+            cCombo(id: "inputEntryField",
+                    items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING, ValueMetaInterface.TYPE_INTEGER]),
+                    layoutData: "span,growx")
+                    {
+                       onEvent(type: 'Modify') { input.setChanged(); }
+                    }
          }
-         group("Geometry", layoutData:"grow, spanx, wrap", style:"SHADOW_NONE,NO_BACKGROUND"){
+         /*
+         group("AOI From", layoutData:"grow, spanx, wrap", style:"SHADOW_NONE,NO_BACKGROUND"){
             migLayout(layoutConstraints:"insets 2, wrap 1", columnConstraints: "[grow]")
-            radioButton (text:"From File Fields", layoutData:"split 2", selection:true){
+            radioButton (id:"inputFileNameRadioButton", text:"File", layoutData:"split 2", selection:true){
                onEvent(type:"Selection"){
                   swt.stackLayout.topControl = swt.inputFilenameGroup
                   swt.inputFilenameGroup.visible = true
-                  swt.inputBoundsWktGroup.visible = false
+                  swt.inputGeometryGroup.visible = false
                }
             }
-            radioButton (text:"Wkt ", layoutData:"wrap", enabled:false){
+            radioButton (id:"geometryRadioButton", text:"Geometry ", layoutData:"wrap", enabled:true){
                onEvent(type:"Selection"){
-                  swt.stackLayout.topControl = swt.inputBoundsWktGroup
+                  swt.stackLayout.topControl = swt.inputGeometryGroup
                   swt.inputFilenameGroup.visible = false
-                  swt.inputBoundsWktGroup.visible = true
+                  swt.inputGeometryGroup.visible = true
                }
             }
-
             composite(style:"none", layoutData:"span,growx"){
-               stackLayout(id:"stackLayout");
+              // stackLayout(id:"stackLayout");
+
                composite(id:"inputFilenameGroup", style:"none", layoutData:"insets 0, span,growx"){
                   migLayout(layoutConstraints:"insets 0, wrap 2", columnConstraints: "[][grow]")
                   label (id:"inputFileNameFieldLabel", text:"Filename Field")
@@ -205,36 +240,34 @@ public class BasicTilingDialog extends BaseStepDialog implements
                           {
                              onEvent(type:'Modify') { input.setChanged(); }
                           }
-                  checkBox(id:"mosaicInputCheckbox", text:"Mosaic Input", layoutData:"span,growx")
                }
-               /*
-               composite(id:"inputBoundsWktGroup", style:"none", layoutData:"span,growx"){
-                 migLayout(layoutConstraints:"insets 0, wrap 2", columnConstraints: "[][grow]")
-                  label (id:"inputWktFieldLabel", text:"Input wkt")
-                  cCombo(id:"inputWktField",
-                          items:SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING]),
+               composite(id:"inputGeometryGroup", style:"none", layoutData:"span,growx"){
+                  migLayout(layoutConstraints:"insets 0, wrap 2", columnConstraints: "[][grow]")
+                  label (id:"geometryLabel", text:"Geometry")
+                  cCombo(id:"geometry",
+                          items:SwtUtilities.previousStepFields(transMeta, stepname, [OssimValueMetaBase.TYPE_GEOMETRY_2D]),
                           layoutData:"span,growx")
                           {
                              onEvent(type:'Modify') { input.setChanged(); }
                           }
-                  label (id:"inputEpsgFieldLabel", text:"epsg")
-                  cCombo(id:"inputEpsgField",
+                  label (id:"geometryEpsgLabel", text:"epsg")
+                  cCombo(id:"geometryEpsg",
                           items:SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING]),
                           layoutData:"span,growx")
                           {
                              onEvent(type:'Modify') { input.setChanged(); }
                           }
 
-                 //canvas(id:"boxSelectionCanvas", layoutData:"span, grow"){
-                 //	onEvent("MouseMove"){ event->
-                 //		println "MOUSE MOVED!!!!"
-                 //	}
-                 //}
-                 //label (id:"testLabel2", text:"Not implemented yet",layoutData:"span,growx")
+                  //canvas(id:"boxSelectionCanvas", layoutData:"span, grow"){
+                  //	onEvent("MouseMove"){ event->
+                  //		println "MOUSE MOVED!!!!"
+                  //	}
+                  //}
+                  //label (id:"testLabel2", text:"Not implemented yet",layoutData:"span,growx")
                }
-               */
             }
-         }
+        }
+             */
          group(text:"Output Fields", layoutData:"grow, spanx"){
             migLayout(layoutConstraints:"insets 2", columnConstraints: "[grow]")
             tableView(id:"fieldSelection",
@@ -277,7 +310,7 @@ public class BasicTilingDialog extends BaseStepDialog implements
          }
       }
       changed = input.hasChanged();
-      swt.stackLayout.topControl = swt.inputFilenameGroup
+      //swt.stackLayout.topControl = swt.inputFilenameGroup
       shell.text = Messages.getString("BasicTilingDialog.Shell.Title")
       getData(); // initialize data fields
       setSize(); // shrink and fit dialog to fit inputs
@@ -291,34 +324,37 @@ public class BasicTilingDialog extends BaseStepDialog implements
    public void getData()
    {
       swt.stepName.selectAll();
-      swt.tileNameMask.text  = input.tileIdNameMask as String
-      swt.tileWidth.text     = "${input.targetTileWidth}".toString()
-      swt.tileHeight.text    = "${input.targetTileHeight}".toString()
-      swt.inputFilenameField.text       = input.inputFilenameField?:""
-      swt.inputEntryField.text          = input.inputEntryField?:""
-      swt.projectionType.text           = input.projectionType.toString()
-      swt.mosaicInputCheckbox.selection = input.mosaicInput
-      swt.clampMinLevel.text = input.clampMinLevel!=null?input.clampMinLevel.toString():""
-      swt.clampMaxLevel.text = input.clampMaxLevel!=null?input.clampMaxLevel.toString():""
-      swt.clampWktField.text = input.clampWktField!=null?input.clampWktField.toString():""
-      swt.clampWktEpsgField.text = input.clampWktEpsgField!=null?input.clampWktEpsgField.toString():""
+      swt.tileNameMask.text        = input.tileIdNameMask as String
+      swt.tileWidth.text           = input.targetTileWidth?:""
+      swt.tileHeight.text          = input.targetTileHeight?:""
+      swt.inputFilenameField.text  = input.inputFilenameField?:""
+      swt.inputEntryField.text     = input.inputEntryField?:""
+      swt.crop.text                = input.crop?:""
+      swt.cropEpsg.text            = input.cropEpsg?:""
+      swt.projectionType.text      = input.projectionType.toString()
+      swt.clampMinLevel.text       = input.clampMinLevel!=null?input.clampMinLevel.toString():""
+      swt.clampMaxLevel.text       = input.clampMaxLevel!=null?input.clampMaxLevel.toString():""
+//      swt.clampWkt.text = input.clampWkt!=null?input.clampWkt.toString():""
+//      swt.clampWktEpsg.text = input.clampWktEpsg!=null?input.clampWktEpsg.toString():""
 
-      //swt.fileFieldName.text = Const.NVL((String)input.fileFieldName, "")
-      //swt.infoFieldName.text = Const.NVL((String)input.omsInfoFieldName, "")
       loadSelectedFields();
 
-      switch(input.getOriginAsInteger())
+      swt.origin.text = input.origin
+/*
+      if(input.inputFilenameField)
       {
-         case Pyramid.Origin.TOP_LEFT:
-            swt.origin.text = "UPPER_LEFT"
-            break
-         case Pyramid.Origin.BOTTOM_LEFT:
-            swt.origin.text = "LOWER_LEFT"
-            break
-         default:
-            swt.origin.text = "LOWER_LEFT"
-            break
+         swt.inputFileNameRadioButton.selection = true
+         swt.geometryRadioButton.selection = false
+         swt.stackLayout.topControl = swt.inputFilenameGroup
+
       }
+      else if(input.geometry)
+      {
+         swt.inputFileNameRadioButton.selection = false
+         swt.geometryRadioButton.selection = true
+         swt.stackLayout.topControl = swt.inputGeometryGroup
+      }
+*/
 
 
    }
@@ -408,30 +444,50 @@ public class BasicTilingDialog extends BaseStepDialog implements
       }
       if(swt.clampMinLevel.text)
       {
-         input.clampMinLevel = swt.clampMinLevel.text.toInteger()
+         input.clampMinLevel = swt.clampMinLevel.text
       }
       else
       {
          input.clampMinLevel = null
       }
 
-      input.clampWktField     = swt.clampWktField.text
-      input.clampWktEpsgField = swt.clampWktEpsgField.text
+//      input.clampWkt     = swt.clampWkt.text
+//      input.clampWktEpsg = swt.clampWktEpsg.text
 
       if(swt.clampMaxLevel.text)
       {
-         input.clampMaxLevel = swt.clampMaxLevel.text.toInteger()
+         input.clampMaxLevel = swt.clampMaxLevel.text
       }
       else
       {
          input.clampMaxLevel = null
       }
-      input.mosaicInput         = swt.mosaicInputCheckbox.selection
-      input.origin              = swt.origin.text
-      if(swt.tileWidth.text) input.targetTileWidth   = swt.tileWidth.text.toInteger()
-      if(swt.tileHeight.text) input.targetTileHeight = swt.tileHeight.text.toInteger()
+      input.origin            = swt.origin.text
+      if(swt.tileWidth.text)  input.targetTileWidth  = swt.tileWidth.text
+      if(swt.tileHeight.text) input.targetTileHeight = swt.tileHeight.text
+
+      /*
+      if(swt.inputFileNameRadioButton.selection)
+      {
+         input.inputFilenameField = swt.inputFilenameField.text
+         input.inputEntryField    = swt.inputEntryField.text
+         input.crop = ""
+         input.cropEpsg = ""
+      }
+      else if(swt.geometryRadioButton.selection)
+      {
+         input.inputFilenameField = ""
+         input.inputEntryField    = ""
+         input.crop = swt.crop.text
+         input.cropEpsg = swt.cropEpsg.text
+
+      }
+      */
       input.inputFilenameField = swt.inputFilenameField.text
       input.inputEntryField    = swt.inputEntryField.text
+      input.crop               = swt.crop.text
+      input.cropEpsg           = swt.cropEpsg.text
+
       input.setProjectionType(swt.projectionType.text)
       dispose();
    }

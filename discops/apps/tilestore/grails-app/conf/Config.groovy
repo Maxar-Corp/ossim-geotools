@@ -35,7 +35,8 @@ grails.config.locations = [
 // "classpath:${appName}-config.properties",
 // "classpath:${appName}-config.groovy",
 // "file:${userHome}/.grails/${appName}-config.properties",
-// "file:${userHome}/.grails/${appName}-config.groovy"
+ "file:${userHome}/.grails/${appName}-config.groovy",
+  TileStoreSecurityConfig
 ]
 
 if ( new File( "${userHome}/.grails/${appName}-config.groovy" ).exists() )
@@ -160,24 +161,32 @@ accumulo {
   password = "root"
   zooServers = "sandbox.accumulo.radiantblue.local"
 //  zooServers="accumulo-site.radiantblue.local"
-  zooServers = "sandbox.accumulo.radiantblue.local"
+//  zooServers = "sandbox.accumulo.radiantblue.local"
   instance = "accumulo"
   // tileAccessClass = "joms.geotools.tileapi.AccumuloTileAccess"
 }
 
+omar{
+   url = "http://localhost:9999/omar"
+   //url = "http://10.0.10.180:9999/omar"
+   wfs = "${omar.url}/wfs"
+   wms = "${omar.url}/ogc/wms"
+}
+
 tilestore {
+  disableAccumulo = false
   maxTileConnections = 50
   wmtsTileGrid = false
   referenceLayers = [
 //      [url: "http://localhost:8080/geoserver/wms", name: 'trident-spectre:trident-spectre', title: 'Reference Layer']
       [url: 'http://52.0.52.104/geoserver/ged/wms', name: 'osm-group', title: 'Reference Layer']
   ]
-  overlayLayers = [
-//      [url: "http://localhost:8080/geoserver/wms", name: 'topp:states', title: 'States'],
-//      [url: "http://localhost:8080/geoserver/wms", name: 'trident-spectre:ne_10m_populated_places', title: 'Place Names']
-      [url: "http://52.0.52.104/geoserver/ged/wms", name: 'planet_osm_line', title: 'Streets'],
-      [url: "http://52.0.52.104/geoserver/ged/wms", name: 'ne_10m_populated_places_all', title: 'Place Names']
-  ]
+//  overlayLayers = [
+////      [url: "http://localhost:8080/geoserver/wms", name: 'topp:states', title: 'States'],
+////      [url: "http://localhost:8080/geoserver/wms", name: 'trident-spectre:ne_10m_populated_places', title: 'Place Names']
+//      [url: "http://52.0.52.104/geoserver/ged/wms", name: 'planet_osm_line', title: 'Streets'],
+//      [url: "http://52.0.52.104/geoserver/ged/wms", name: 'ne_10m_populated_places_all', title: 'Place Names']
+//  ]
 }
 
 security {
@@ -190,18 +199,20 @@ security {
   sessionTimeout = 60
 }
 
-rabbitmq{
-   enabled=true
-   product{
-      queue = "omar.tilestore.product"
-   }
-   ingest{
-      queue = "omar.tilestore.ingest"
-   }
+rabbitmq {
+  enabled = true
+  product {
+    queue = "omar.tilestore.product"
+  }
+  ingest {
+    queue = "omar.tilestore.ingest"
+  }
 
-   connection{
-      host = "localhost"
-      username = "omar"
-      password = "Encrypted 2be98afc86aa7f285a91aff228dd38f99"
-   }
+  connection {
+    host = "localhost"
+    username = "omar"
+    password = "Encrypted 2be98afc86aa7f285a91aff228dd38f99"
+  }
 }
+
+grails.assets.excludes  = ['**/*-debug.js']

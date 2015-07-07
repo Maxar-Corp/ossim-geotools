@@ -35,10 +35,6 @@ class CreateLayerCommand implements CaseInsensitiveBind
    Integer tileWidth = 256
    Integer tileHeight = 256
 
-   String getTilesTableName()
-   {
-      "tilestore_${name.toLowerCase()}_tiles".toString()
-   }
    void initFromJson(def jsonObj)
    {
       name       = jsonObj.name?:this.name

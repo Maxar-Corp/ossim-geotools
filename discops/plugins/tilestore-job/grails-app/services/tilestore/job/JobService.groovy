@@ -3,7 +3,11 @@ package tilestore.job
 import grails.converters.JSON
 import grails.transaction.Transactional
 import joms.geotools.web.HttpStatus
+import org.apache.commons.collections.map.CaseInsensitiveMap
+import org.apache.commons.io.FilenameUtils
 import org.ossim.common.FetchDataCommand
+import org.ossim.common.Utility
+import org.springframework.beans.factory.InitializingBean
 
 @Transactional
 class JobService
@@ -13,6 +17,85 @@ class JobService
    def columnNames = [
            'id', 'jobId', 'jobDir', 'type', 'name', 'username', 'status', 'statusMessage', 'percentComplete', 'submitDate', 'startDate', 'endDate'
    ]
+
+
+   def createTableModel()
+   {
+      def clazz = Job.class
+      def domain = grailsApplication.getDomainClass( clazz.name )
+
+      def tempColumnNames = columnNames.clone()
+      tempColumnNames.remove("jobDir")
+      def columns = tempColumnNames?.collect {column->
+         def property = ( column == 'id' ) ? domain?.identifier : domain?.getPersistentProperty( column )
+         def sortable = !(property?.name in ["type"])
+         [field: property?.name, type: property?.type, title: property?.naturalName, sortable: sortable]
+      }
+      columns.remove("jobDir")
+      def tableModel = [
+              columns: [columns]
+      ]
+      //  println tableModel
+      return tableModel
+   }
+
+   def cancel(GetJobCommand cmd)
+   {
+      def result = [status:HttpStatus.OK, message:""]
+
+      if(cmd.jobId)
+      {
+         def jobId = cmd.jobId
+         def jobCallback
+         def jobStatus
+         Job.withTransaction{
+            def job     = Job.findByJobId(jobId)
+
+            if(!job)
+            {
+               result.httpStatus = HttpStatus.NOT_FOUND
+               result.message = "Job ${cmd.jobId} not found.  Unable to cancel job."
+
+               return result
+            }
+            jobCallback = job?.jobCallback
+            jobStatus   = job?.status
+         }
+         if(jobCallback)
+         {
+            if(jobStatus==JobStatus.RUNNING||jobStatus==JobStatus.CANCELED)
+            {
+               try{
+            //      def messageBuilder = new RabbitMessageBuilder()
+            //      messageBuilder.send(jobCallback, new AbortMessage(jobId:jobId).toJsonString())
+               }
+               catch(e)
+               {
+            //      println "CAUGHT EXCEPTION ---------------- ${e}"
+            //      result.httpStatus = HttpStatus.BAD_REQUEST
+            //      result.message=e.toString()
+               }
+            }
+            else
+            {
+               result.httpStatus = HttpStatus.BAD_REQUEST
+               result.message="Job ${jobId} not running.  Can only cancel 'running' or 'ready' jobs."
+            }
+         }
+         else
+         {
+            result.httpStatus = HttpStatus.BAD_REQUEST
+            result.message="Job ${jobId} currently has no callback to allow for canceling"
+         }
+      }
+      else
+      {
+         result.httpStatus = HttpStatus.BAD_REQUEST
+         result.message="Can't cancel. No job id given."
+      }
+
+      result
+   }
 
    def listJobs(FetchDataCommand cmd)
    {
@@ -55,7 +138,7 @@ class JobService
          result.status = HttpStatus.BAD_REQUEST
          result.message = "Exception: ${e.toString}"
       }
-      result.data = [total: total, rows: rows]
+      result.data = [total: total?:0, rows: rows?:[:]]
 
       result
    }
@@ -70,10 +153,13 @@ class JobService
       def row
 
       try{
-         Job.withTransaction {
+         def session = grailsApplication.mainContext.sessionFactory.currentSession
 
-            if(cmd?.id != null) row = Job.findById(cmd.id?.toInteger());
+         Job.withTransaction {
+            if(cmd?.id != null) row = Job.findById(cmd.id);
             else if(cmd?.jobId) row = Job.findByJobId(cmd.jobId);
+
+          //  println row
             if(row)
             {
                jobArchive = row.getArchive()
@@ -89,7 +175,7 @@ class JobService
       catch(e)
       {
          result.status = HttpStatus.BAD_REQUEST;
-         result.message = "Exception: ${e.toString}"
+         result.message = "Exception: ${e.toString()}"
       }
       if(result.status == HttpStatus.OK)
       {
@@ -112,12 +198,10 @@ class JobService
          }
          catch(e)
          {
-            //println "ERROR!!!!!!!!!!!!!!!! ${e}"
             result.status = HttpStatus.BAD_REQUEST;
-            result.message = "Exception: ${e.toString}"
+            result.message = "Exception: ${e.toString()}"
          }
       }
-
       result
    }
    def updateJob(CreateJobCommand cmd)
@@ -178,7 +262,7 @@ class JobService
    {
       def result = [status : HttpStatus.OK,
                     message: "",
-                    data   : []
+                    data   : [:]
       ]
       if(!cmd.submitDate)
       {
@@ -205,10 +289,20 @@ class JobService
             {
                if (job.save())
                {
-                  if (grailsApplication.config.rabbitmq.enabled)
+                  if(grailsApplication.config.rabbitmq.enabled)
                   {
-                     rabbitProducer.sendIngestMessage(job.message)
+                     def type = cmd.type?.toLowerCase()
+                     if(type.contains("export"))
+                     {
+                        rabbitProducer.sendProductMessage(job.message)
+                     }
+                     else
+                     {
+                        rabbitProducer.sendIngestMessage(job.message)
+                     }
                   }
+
+                  result.data = job.toMap()
                }
                else
                {
@@ -223,47 +317,15 @@ class JobService
       {
          //println "ERROR!!!!!!!!!!!!!!!! ${e}"
          result.status = HttpStatus.BAD_REQUEST;
-         result.message = "Exception: ${e.toString}"
+         result.message = "Exception: ${e.toString()}"
       }
 
       result
 
    }
 
-   def ingest(IngestCommand cmd)
-   {
-      def result = [status : HttpStatus.OK,
-                    message: "",
-                    data   : []
-      ]
-      String jobId = UUID.randomUUID().toString()
-      HashMap ingestCommand = cmd.toMap();
-      ingestCommand.jobName = ingestCommand.jobName?:"Ingest"
-      ingestCommand.jobId = jobId
-      ingestCommand.type = "TileServerIngestMessage"
-      CreateJobCommand jobCommand = new CreateJobCommand(
-              jobId: jobId,
-              type: "TileServerIngestMessage",
-              jobDir: "",
-              name: cmd.jobName,
-              username: "anonymous",
-              status: JobStatus.READY.toString(),
-              statusMessage: "",
-              message: (ingestCommand as JSON).toString(),
-              jobCallback: null,
-              percentComplete: 0.0,
-      )
 
-      result = create(jobCommand)
-      // create rabbit message and post
-      // we can make this configurable and allow for quartz as well
-      // so if rabbit is not supported then add Quartz job.  Will think about it
-      //
-
-      result
-   }
-
-   def getJob(GetJobCommand cmd)
+   def show(GetJobCommand cmd)
    {
       def result = [status : HttpStatus.OK,
                     message: "",
@@ -277,7 +339,7 @@ class JobService
             sqlRestriction "(id in (${ids.collect{"${it}" }.join(',')}))"
          }
          rows = tempRows.collect { row ->
-            columnNames.inject( [:] ) { a, b -> a[b] = row[b]; a }
+            columnNames.inject( [:] ) { a, b -> a[b] = row[b].toString(); a }
          }
 
       }
@@ -288,7 +350,7 @@ class JobService
             sqlRestriction "(job_id in (${jobIds.collect{"'${it}'" }.join(',')}))"
          }
          rows = tempRows.collect { row ->
-            columnNames.inject( [:] ) { a, b -> a[b] = row[b]; a }
+            columnNames.inject( [:] ) { a, b -> a[b] = row[b].toString(); a }
          }
       }
       else if(cmd.ids != null)
@@ -299,7 +361,7 @@ class JobService
             sqlRestriction "(id in (${ids.collect{"${it}" }.join(',')}))"
          }
          rows = tempRows.collect { row ->
-            columnNames.inject( [:] ) { a, b -> a[b] = row[b]; a }
+            columnNames.inject( [:] ) { a, b -> a[b] = row[b].toString(); a }
          }
 
       }
@@ -311,13 +373,119 @@ class JobService
             sqlRestriction "(job_id in (${jobIds.collect{"'${it}'" }.join(',')}))"
          }
          rows = tempRows.collect { row ->
-            columnNames.inject( [:] ) { a, b -> a[b] = row[b]; a }
+            columnNames.inject( [:] ) { a, b -> a[b] = row[b].toString(); a }
          }
       }
-
-      result.data = [total: rows?.size(), rows: rows]
+      result.data = [total: rows?.size()?:0, rows: rows?:[:]]
 
 
       result
    }
+
+   def download(DowloadJobCommand cmd, def response)
+   {
+      //println params
+      def httpStatus = HttpStatus.OK
+      def errorMessage = ""
+      def archive
+      def jobStatus
+      def jobFound
+      def contentType = "text/plain"
+      if(cmd.jobId)
+      {
+         def job
+         Job.withTransaction {
+            job = Job.findByJobId(cmd.jobId)
+            archive = job?.getArchive()
+            jobStatus = job?.status
+            jobFound = job != null
+         }
+         if(jobFound) {
+            if (jobStatus == JobStatus.FINISHED) {
+               archive = job?.getArchive()
+               // println "ARCHIVE ====== ${archive}"
+               if (archive)
+               {
+                  def ext = FilenameUtils.getExtension(archive.toString()).toLowerCase()
+
+                  // println "EXT === ${ext}"
+                  switch (ext) {
+                     case "zip":
+                        contentType = "application/octet-stream"
+                        break
+                     case "tgz":
+                        contentType = "application/x-compressed"
+                        break
+                  }
+               }
+               else
+               {
+                  File jobDir = job.jobDir as File
+                  if(jobDir.exists())
+                  {
+                     archive = jobDir
+                  }
+                  else
+                  {
+                     httpStatus = HttpStatus.NOT_FOUND
+                     errorMessage = "ERROR: Archive for Job ${cmd.jobId} is no longer present"
+                  }
+               }
+            }
+            else
+            {
+               httpStatus = HttpStatus.NOT_FOUND
+               errorMessage = "ERROR: Can only download finished jobs.  The current status is ${job?.status.toString()}"
+            }
+         }
+         else
+         {
+            httpStatus = HttpStatus.NOT_FOUND
+            errorMessage = "ERROR: Job ${cmd.jobId} not found"
+         }
+
+
+         if(errorMessage)
+         {
+            response.status = httpStatus.value
+            response.contentType = contentType
+            response.sendError(response.status, errorMessage)
+            //response.outputStream.write(errorMessage.bytes)
+         }
+         else
+         {
+            try
+            {
+               response.status = httpStatus.value
+
+               if(archive.isFile())
+               {
+                  response.setHeader("Accept-Ranges", "bytes");
+                  def tempFile = archive as File
+                  response.contentType = contentType
+                  response.setContentLength((int)tempFile.length());
+                  response.setHeader( "Content-disposition", "attachment; filename=${archive.name}" )
+                  Utility.writeFileToOutputStream(archive, response.outputStream)
+               }
+               else if(archive.isDirectory())
+               {
+                  response.contentType = "application/octet-stream"
+                  response.setHeader( "Content-disposition", "attachment; filename=${archive.name}.zip" )
+                  Utility.zipDirToStream(archive.toString(), response.outputStream, cmd.jobId)
+               }
+            }
+            catch(e)
+            {
+
+               println "ERROR ============ ${e}"
+               response.status = HttpStatus.BAD_REQUEST.value
+               errorMessage = "ERROR: ${e}"
+               response.contentType = "text/plain"
+               response.outputStream.write(errorMessage.bytes)
+            }
+         }
+
+      }
+   }
+
 }

@@ -4,6 +4,7 @@ enum AccumuloTarget {
 
 def accumuloTarget
 
+def kettleVersion="5.3.0.0-213"
 println configurations
 switch(System.properties?.hadoopDist?.toLowerCase())
 {
@@ -29,11 +30,31 @@ switch(System.properties?.hadoopDist?.toLowerCase())
 
 }
 
+if(System.properties?.kettleVersion)
+{
+   kettleVersion = System.proeprties?.kettleVersion
+}
+
 def kettleDependencies = [
-        'pentaho-kettle:kettle-core:5.3.0.0-213',
-        'pentaho-kettle:kettle-engine:5.3.0.0-213',
-        'pentaho-kettle:kettle-ui-swt:5.3.0.0-213',
-        'pentaho:pentaho-hadoop-shims-api:5.3.0.0-213'
+/*        'pentaho-kettle:kettle-core:TRUNK-SNAPSHOT',
+        'pentaho-kettle:kettle-engine:TRUNK-SNAPSHOT',
+        'pentaho-kettle:kettle-ui-swt:TRUNK-SNAPSHOT',
+        'pentaho:pentaho-hadoop-shims-api:TRUNK-SNAPSHOT'
+*/
+/*
+         'pentaho-kettle:kettle-core:5.3.0.4-350',
+         'pentaho-kettle:kettle-engine:5.3.0.4-350',
+         'pentaho-kettle:kettle-ui-swt:5.3.0.4-350',
+         'pentaho:pentaho-hadoop-shims-api:5.3.0.4-350'
+*/
+
+
+        "pentaho-kettle:kettle-core:${kettleVersion}",
+        "pentaho-kettle:kettle-engine:${kettleVersion}",
+        "pentaho-kettle:kettle-ui-swt:${kettleVersion}",
+        "pentaho:pentaho-hadoop-shims-api:${kettleVersion}"
+
+
 /*        'pentaho-kettle:kettle-core:5.2.1.1-210',
         'pentaho-kettle:kettle-engine:5.2.1.1-210',
         'pentaho-kettle:kettle-ui-swt:5.2.1.1-210',
@@ -107,6 +128,9 @@ allprojects {
       }
       maven {
          url 'https://artifacts.unidata.ucar.edu/content/repositories/unidata/'
+      }
+      maven {
+         url 'https://github.com/ElectronicChartCentre/ecc-mvn-repo/raw/master/releases'
       }
       maven {
          url 'http://www.hibernatespatial.org/repository'
@@ -264,14 +288,16 @@ project( ':kettle-libs' ) {
       compile 'org.springframework:spring-beans:4.1.4.RELEASE'
       compile 'javax.validation:validation-api:1.1.0.Final'
       compile 'org.hibernate:hibernate-validator:4.3.2.Final'
-      compile "org.ossim:joms:${JOMS_VERSION}"
       compile group: 'groovy-swt', name:'groovy-swt', version: '0.8', classifier: "without-swt"
 
       switch ( accumuloTarget )
       {
          case AccumuloTarget.CDH4:
             compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.1'
-            compile 'org.apache.accumulo:accumulo-core:1.6.1'
+            compile 'org.apache.zookeeper:zookeeper:3.4.5-cdh4.7.1'
+            compile ('org.apache.accumulo:accumulo-core:1.6.1') {
+               exclude module: 'zookeeper'
+            }
             //  compile 'pentaho:pentaho-hadoop-shims-cdh42-mapred:5.0.1-stable'
             break
          case AccumuloTarget.CDH5:
@@ -416,7 +442,9 @@ project( ':common-libs' ) {
          case AccumuloTarget.CDH4:
             compile 'org.apache.zookeeper:zookeeper:3.4.5-cdh4.7.1'
             compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.1'
-            compile 'org.apache.accumulo:accumulo-core:1.6.1'
+            compile ('org.apache.accumulo:accumulo-core:1.6.1') {
+               exclude module: 'zookeeper'
+            }
             break
          case AccumuloTarget.CDH5:
             compile 'org.apache.hadoop:hadoop-client:2.5.0-cdh5.2.4'

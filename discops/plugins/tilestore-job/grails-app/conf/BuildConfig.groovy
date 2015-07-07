@@ -40,11 +40,13 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        build(":release:3.1.0",
-              ":rest-client-builder:2.1.0") {
+        build(":release:3.1.1",
+              ":rest-client-builder:2.1.1") {
             export = false
         }
+        compile ":asset-pipeline:2.2.3"
     }
 }
 grails.plugin.location.ossimCommon    = "../../plugins/ossim-common"
 grails.plugin.location.ossimDiskcache = "../../plugins/ossim-diskcache"
+grails.plugin.location.tilestoreSecurity = "../../plugins/tilestore-security"

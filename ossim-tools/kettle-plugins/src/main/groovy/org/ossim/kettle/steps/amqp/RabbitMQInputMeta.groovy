@@ -36,7 +36,7 @@ import org.ossim.core.SynchOssimInit
 import geoscript.proj.Projection
 import org.ossim.core.RabbitType
 @Step(
-        id="RabbitMQInput",
+        id="OSSIMRabbitMQInput",
         name="RabbitMQInput.name",
         description="RabbitMQInput.description",
         categoryDescription="RabbitMQInput.categoryDescription",
@@ -55,6 +55,7 @@ public class RabbitMQInputMeta extends BaseStepMeta implements StepMetaInterface
   def messageHandlerSteps = [] // list of steps
   def stopAfterNMessages = -1
   def stopIfNoMoreMessages = false
+  def delayStopAfterNoMoreMessages = 0
 
   String getXML() throws KettleValueException
   {
@@ -69,6 +70,7 @@ public class RabbitMQInputMeta extends BaseStepMeta implements StepMetaInterface
     retval.append("   ").append(XMLHandler.addTagValue("messageFieldName", messageFieldName));
     retval.append("   ").append(XMLHandler.addTagValue("stopAfterNMessages", stopAfterNMessages.toString()));
     retval.append("   ").append(XMLHandler.addTagValue("stopIfNoMoreMessages", stopIfNoMoreMessages.toString()));
+    retval.append("   ").append(XMLHandler.addTagValue("delayStopAfterNoMoreMessages", delayStopAfterNoMoreMessages.toString()));
 
     retval.append("   <queues>")
     queueProperties.each{q->
@@ -170,11 +172,14 @@ public class RabbitMQInputMeta extends BaseStepMeta implements StepMetaInterface
       password = encr.decryptPasswordOptionallyEncrypted(password)
 
       def stopIfNoMoreMessagesTemp = XMLHandler.getTagValue(stepnode, "stopIfNoMoreMessages");
+      def delayStopAfterNoMoreMessagesTemp = XMLHandler.getTagValue(stepnode, "delayStopAfterNoMoreMessages");
       def stopAfterNMessagesTemp = XMLHandler.getTagValue(stepnode, "stopAfterNMessages");
       if(!stopIfNoMoreMessagesTemp) stopIfNoMoreMessagesTemp = "false"
+      if(!delayStopAfterNoMoreMessagesTemp) delayStopAfterNoMoreMessagesTemp = "0"
       if(!stopAfterNMessagesTemp) stopAfterNMessagesTemp = "-1"
       stopIfNoMoreMessages = stopIfNoMoreMessagesTemp.toBoolean()
       stopAfterNMessages = stopAfterNMessagesTemp.toInteger()
+      delayStopAfterNoMoreMessages = delayStopAfterNoMoreMessagesTemp.toInteger()
     }
     catch(def e)
     {
@@ -199,6 +204,7 @@ public class RabbitMQInputMeta extends BaseStepMeta implements StepMetaInterface
     ]
     messageFieldName = "message"
     stopIfNoMoreMessages = false
+    delayStopAfterNoMoreMessages = 0
     stopAfterNMessages = -1
   }
   void readRep(Repository rep, ObjectId id_step, List<DatabaseMeta> databases, Map<String, Counter> counters) throws KettleException
@@ -255,11 +261,14 @@ public class RabbitMQInputMeta extends BaseStepMeta implements StepMetaInterface
     password         = rep.getStepAttributeString(id_step, "password");
     messageFieldName = rep.getStepAttributeString(id_step, "messageFieldName");
     def stopIfNoMoreMessagesTemp = rep.getStepAttributeString(id_step, "stopIfNoMoreMessages")
+    def delayStopAfterNoMoreMessagesTemp = rep.getStepAttributeString(id_step, "delayStopAfterNoMoreMessages")
     def stopAfterNMessagesTemp = rep.getStepAttributeString(id_step, "stopAfterNMessages")
     if(!stopIfNoMoreMessagesTemp) stopIfNoMoreMessagesTemp = "false"
+    if(!delayStopAfterNoMoreMessagesTemp) delayStopAfterNoMoreMessagesTemp = "0"
     if(!stopAfterNMessagesTemp) stopAfterNMessagesTemp = "-1"
     stopIfNoMoreMessages = stopIfNoMoreMessagesTemp.toBoolean()
-    stopAfterNMessages = stopAfterNMessages.toInteger()
+    stopAfterNMessages = stopAfterNMessagesTemp.toInteger()
+    delayStopAfterNoMoreMessages = delayStopAfterNoMoreMessagesTemp.toInteger()
 
     password = encr.decryptPasswordOptionallyEncrypted(password)
   }
@@ -289,6 +298,10 @@ public class RabbitMQInputMeta extends BaseStepMeta implements StepMetaInterface
       rep.saveStepAttribute(id_transformation,
               id_step, "stopIfNoMoreMessages",
               stopIfNoMoreMessages.toString())
+      rep.saveStepAttribute(id_transformation,
+              id_step, "delayStopAfterNoMoreMessages",
+              delayStopAfterNoMoreMessages.toString())
+
 
       messageHandlerSteps.eachWithIndex{messageHandlerStep,i->
         rep.saveStepAttribute(id_transformation, id_step, i, "messageHandlerStep", messageHandlerStep);

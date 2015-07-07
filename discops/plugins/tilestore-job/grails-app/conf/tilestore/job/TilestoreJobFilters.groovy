@@ -3,23 +3,17 @@ package tilestore.job
 class TilestoreJobFilters {
 
    def filters = {
-      ingest(controller:"job", action:"ingest"){
-         before = {
-            new IngestCommand().fixParamNames( params )
-         }
-         after = { Map model ->
-
-         }
-         afterView = { Exception e ->
-
-         }
-      }
       removeJob(controller:"job", action:"remove"){
          before = {
             new RemoveJobCommand().fixParamNames( params )
          }
       }
-      getJob(controller:"job", action:"getJob"){
+      show(controller:"job", action:"show"){
+         before = {
+            new GetJobCommand().fixParamNames( params )
+         }
+      }
+      cancel(controller:"job", action:"cancel"){
          before = {
             new GetJobCommand().fixParamNames( params )
          }
@@ -29,23 +23,28 @@ class TilestoreJobFilters {
             new CreateJobCommand().fixParamNames( params )
          }
       }
-      create(controller:"job", action:"update"){
+      update(controller:"job", action:"update"){
          before = {
             new CreateJobCommand().fixParamNames( params )
          }
       }
-
-/*      all(controller:'*', action:'*') {
+      update(controller:"job", action:"download"){
          before = {
+            new DowloadJobCommand().fixParamNames( params )
+         }
+      }
 
+      all(controller: 'job', action: '*') {
+         before = {
+            response.setHeader( "Access-Control-Allow-Origin", "*" );
+            response.setHeader( "Access-Control-Allow-Methods", "POST, GET")
+            response.setHeader( "Access-Control-Allow-Headers", "x-requested-with" );
          }
          after = { Map model ->
-
          }
          afterView = { Exception e ->
 
          }
       }
-*/
    }
 }

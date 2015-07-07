@@ -35,7 +35,7 @@ import org.ossim.kettle.types.OssimValueMetaBase;
 import org.ossim.core.SynchOssimInit
 
 @Step(
-		id="ImageInfo",
+		id="OSSIMImageInfo",
 		name="name",
 		description="description",
 		categoryDescription="categoryDescription", 
@@ -45,6 +45,7 @@ import org.ossim.core.SynchOssimInit
 public class ImageInfoMeta extends BaseStepMeta implements StepMetaInterface
 {
 	String inputFilenameField			 = "filename"
+	String inputEntryField            = "entry"
 	def fieldNames = [
 							entry:"entry",
 							width:"width",
@@ -79,7 +80,8 @@ public class ImageInfoMeta extends BaseStepMeta implements StepMetaInterface
 							sun_elevation:"sun_elevation",
 							sun_azimuth:"sun_azimuth",
 							cloud_cover:"cloud_cover",
-							ground_geom:"ground_geom",
+                     ground_geom:"ground_geom",
+                     ground_geom_epsg:"ground_geom_epsg",
 							acquisition_date:"acquisition_date",
 							valid_model:"valid_model",
 							file_type:"file_type",
@@ -128,7 +130,8 @@ public class ImageInfoMeta extends BaseStepMeta implements StepMetaInterface
 							"sun_elevation",
 							"sun_azimuth",
 							"cloud_cover",
-							"ground_geom",
+                     "ground_geom",
+                     "ground_geom_epsg",
 							"acquisition_date",
 							"valid_model",
 							"file_type",
@@ -177,6 +180,7 @@ public class ImageInfoMeta extends BaseStepMeta implements StepMetaInterface
 											sun_azimuth:[type:ValueMetaInterface.TYPE_NUMBER, rasterEntryName:"sunAzimuth"],
 											cloud_cover:[type:ValueMetaInterface.TYPE_NUMBER, rasterEntryName:"cloudCover"],
 											ground_geom:[type:OssimValueMetaBase.TYPE_GEOMETRY_2D, rasterEntryName:"groundGeom"],
+                                 ground_geom_epsg:[type:ValueMetaInterface.TYPE_STRING, rasterEntryName:""],
 											acquisition_date:[type:ValueMetaInterface.TYPE_DATE, rasterEntryName:"acquisitionDate"],
 											valid_model:[type:ValueMetaInterface.TYPE_INTEGER, rasterEntryName:"validModel"],
 											file_type:[type:ValueMetaInterface.TYPE_STRING, rasterEntryName:"fileType"],

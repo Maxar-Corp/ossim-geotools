@@ -58,6 +58,8 @@ class RabbitMQInput extends BaseStep implements StepInterface
 	private RabbitMQInputData data = null
 	private ArrayBlockingQueue freeQueue
 	private monitoringEnabled = false
+	private Long timeStamp = System.currentTimeMillis()
+
 /*
 	private def cf    = null
 	private def admin = null
@@ -75,15 +77,16 @@ class RabbitMQInput extends BaseStep implements StepInterface
 
 		public void rowReadEvent(RowMetaInterface rowMeta, Object[] row)
 		{
-		} 
+
+		}
 		public void rowWrittenEvent(RowMetaInterface rowMeta, Object[] row)
 		{
 			// set a valid marker back on the queue.
 			// we will get the index of the copy running
 			//
 			freeQueue.put("${stepInterface}")
-		} 
-		public void errorRowWrittenEvent(RowMetaInterface rowMeta, Object[] row) 
+		}
+		public void errorRowWrittenEvent(RowMetaInterface rowMeta, Object[] row)
 		{
 			// set a valid marker back on the queue.
 			// we will get the index of the copy running
@@ -95,7 +98,7 @@ class RabbitMQInput extends BaseStep implements StepInterface
 			freeQueue.put("${stepInterface}")
 		}
 
-		void	stepActive(Trans trans, StepMeta stepMeta, StepInterface step) 
+		void	stepActive(Trans trans, StepMeta stepMeta, StepInterface step)
 		{
 
 		}
@@ -105,18 +108,18 @@ class RabbitMQInput extends BaseStep implements StepInterface
 			// the step is stopping
 			freeQueue.put("")
 		}
-		void	stepIdle(Trans trans, StepMeta stepMeta, StepInterface step) 
+		void	stepIdle(Trans trans, StepMeta stepMeta, StepInterface step)
 		{
 		}
 	}
 
 	public RabbitMQInput(StepMeta stepMeta, StepDataInterface stepDataInterface,
-			int copyNr, TransMeta transMeta, Trans trans) {
+								int copyNr, TransMeta transMeta, Trans trans) {
 		super(stepMeta, stepDataInterface, copyNr, transMeta, trans);
 	}
 	private void initializeStepInterfacesToWatch()
 	{
-   	freeQueue?.clear()
+		freeQueue?.clear()
 		String[] stepnames= meta.messageHandlerSteps
 		int stepnrs=1;
 
@@ -132,7 +135,7 @@ class RabbitMQInput extends BaseStep implements StepInterface
 			def baseSteps = getDispatcher().findBaseSteps(stepName)
 			baseSteps.each{baseStep->
 				if(baseStep==null) throw new KettleException("Error finding step ["+stepName+"] nr copy="+CopyNr+"!");
-				
+
 				tempStepInterfaces << baseStep
 			}
 		}
@@ -159,7 +162,7 @@ class RabbitMQInput extends BaseStep implements StepInterface
 		{
 			first = false;
 			data.outputRowMeta = new RowMeta()
-			meta.getFields(data.outputRowMeta, getStepname(), null, null, this); 
+			meta.getFields(data.outputRowMeta, getStepname(), null, null, this);
 
 			initializeStepInterfacesToWatch()
 
@@ -176,43 +179,62 @@ class RabbitMQInput extends BaseStep implements StepInterface
 		}
 		if(value)
 		{
- 			def delivery = rabbitmq?.consumer?.nextDelivery(1000)
- 			if(delivery&&!isStopped()&&(this.status != StepExecutionStatus.STATUS_HALTING))
- 			{
-
+			def delivery = rabbitmq?.consumer?.nextDelivery(1000)
+			if(delivery&&(!isStopped())&&(this.status != StepExecutionStatus.STATUS_HALTING))
+			{
+				timeStamp = System.currentTimeMillis()
 				++linesRead
-    			def message = new String(delivery.body, "UTF-8")
+				def message = new String(delivery.body, "UTF-8")
 				//println message
-				Object[] outputRow = RowDataUtil.addValueData([] as Object[], 
-																			data.outputRowMeta.size()-1, 
-																			message);
+				Object[] outputRow = RowDataUtil.addValueData([] as Object[],
+						  data.outputRowMeta.size()-1,
+						  message);
 
 
 				def foundIdle = false
 
 				putRow(data.outputRowMeta, outputRow);     // copy row to possible alternate rowset(s).
-		   	
-		   	if ((linesRead%Const.ROWS_UPDATE)==0) logBasic("Linenr "+linesRead);  // Some basic logging every 5000 rows.				
 
-			   rabbitmq?.channel?.basicAck delivery.envelope.deliveryTag, false
- 			}
- 			else
- 			{
- 				//  put the handler back onto the queue for we had no message for him to handle
- 				if(monitoringEnabled) freeQueue.put(value)
- 				//println "NO MESSAGE!!!!"
- 			}
-      def blockSizeMet = false
+				if ((linesRead%Const.ROWS_UPDATE)==0) logBasic("Linenr "+linesRead);  // Some basic logging every 5000 rows.
 
-      if(meta.stopAfterNMessages > 0) blockSizeMet = ((linesRead%meta.stopAfterNMessages)==0)
-
-      if((this.status != StepExecutionStatus.STATUS_HALTING)&&(!blockSizeMet) )
+				rabbitmq?.channel?.basicAck delivery.envelope.deliveryTag, false
+			}
+			else
 			{
-        // only keep going if the stop flag is not specified
-        if(delivery||(!delivery&&!meta.stopIfNoMoreMessages))
-        {
-          return true
-        }
+				//  put the handler back onto the queue for we had no message for him to handle
+				if(monitoringEnabled) freeQueue.put(value)
+				//println "NO MESSAGE!!!!"
+			}
+			def blockSizeMet = false
+
+			if(linesRead > 0)
+			{
+				if(meta.stopAfterNMessages > 0) blockSizeMet = ((linesRead%meta.stopAfterNMessages)==0)
+			}
+
+			if((!isStopped())&&(this.status != StepExecutionStatus.STATUS_HALTING)&&
+					  (!blockSizeMet) )
+			{
+				if(delivery)
+				{
+					return true
+				}
+				else if(!meta.stopIfNoMoreMessages)
+				{
+					return true
+				}
+				else
+				{
+					Long delta = System.currentTimeMillis() - timeStamp
+
+  					if(meta.delayStopAfterNoMoreMessages)
+					{
+					  if(delta < meta.delayStopAfterNoMoreMessages)
+					  {
+						  return true
+					  }
+					}
+				}
 			}
 		}
 		setOutputDone();
@@ -244,7 +266,7 @@ class RabbitMQInput extends BaseStep implements StepInterface
 			def durable    = (q.durable    != null)?q.durable.toBoolean():true
 			def exclusive  = (q.exclusive  != null)?q.exclusive.toBoolean():false
 			def autoDelete = (q.autoDelete != null)?q.autoDelete.toBoolean():false
-			
+
 			switch(q.exchangeType)
 			{
 				case RabbitType.ExchangeType.DIRECT:
@@ -280,7 +302,7 @@ class RabbitMQInput extends BaseStep implements StepInterface
 					break
 			}
 		}
-		
+
 		return super.init(smi, sdi)
 	}
 
@@ -292,7 +314,7 @@ class RabbitMQInput extends BaseStep implements StepInterface
 		}
 		catch(e)
 		{
-			
+
 		}
 		data = null
 		meta = null
@@ -302,5 +324,5 @@ class RabbitMQInput extends BaseStep implements StepInterface
 
 		super.dispose(smi, sdi)
 	}
-	
+
 }

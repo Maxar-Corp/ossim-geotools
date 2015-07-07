@@ -61,7 +61,7 @@ import org.w3c.dom.Node;
  */
 
 @Step(
-        id="SystemDataMetaExtended",
+        id="OSSIMSystemDataMetaExtended",
         name="name",
         description="description",
         categoryDescription="categoryDescription", 

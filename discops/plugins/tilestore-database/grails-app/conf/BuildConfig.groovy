@@ -87,19 +87,18 @@ grails.project.dependency.resolution = {
         // runtime 'mysql:mysql-connector-java:5.1.27'
         runtime 'org.postgresql:postgresql:9.3-1103-jdbc41'
         test "org.grails:grails-datastore-test-support:1.0.2-grails-2.4"
-        compile( 'org.ossim:ossim-common-libs:1.0-SNAPSHOT' ) {
-            excludes 'slf4j-log4j12', 'ehcache', 'javassist'
-        }
         runtime 'org.geotools:gt-imagemosaic-jdbc:13.0'
     }
 
     plugins {
 
-        build(":release:3.1.0",
-              ":rest-client-builder:2.1.0") {
+        build(":release:3.1.1",
+              ":rest-client-builder:2.1.1") {
             export = false
         }
     }
 }
 grails.plugin.location.ossimCommon = "../../plugins/ossim-common"
+grails.plugin.location.tilestoreJob = "../../plugins/tilestore-job"
+grails.plugin.location.tilestoreSecurity = "../../plugins/tilestore-security"
 
