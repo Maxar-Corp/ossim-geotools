@@ -51,6 +51,7 @@ class GetMapService implements InitializingBean, DisposableBean, ApplicationCont
          if (!l)
          {
             l = tileCacheServiceDAO.newGeoscriptTileLayer(layer)
+            l.useNullReturn = true
             layerCache.put(layer, l)
          }
          if (l)
@@ -60,32 +61,43 @@ class GetMapService implements InitializingBean, DisposableBean, ApplicationCont
       }
       layers
    }
+   private GeoScriptMap prepareMap(GetMapParams params, def layersOverride)
+   {
+      def layers = layersOverride?:createTileLayers( params.layers?.split( ',' ) )
+      GeoScriptMap map = new GeoScriptMap(
+              width: params.width,
+              height: params.height,
+              proj: params.srs,
+              type: params.extractFormat()?:"",
+              bounds: params.bboxAsBounds,
+              layers: layers
+      )
+      map
 
+   }
+   ByteArrayOutputStream renderToOutputStream(GetMapParams params, def layersOverride)
+   {
+      ByteArrayOutputStream result = new ByteArrayOutputStream()
+      GeoScriptMap map = prepareMap(params, layersOverride)
+      try{
+         map.render(result)
+      }
+      finally{
+         map.close()
+      }
+      result
+   }
    BufferedImage renderToImage(GetMapParams params, def layersOverride)
    {
       BufferedImage result
-
+      GeoScriptMap map = prepareMap(params, layersOverride)
       try
       {
-         //def startTime    = System.currentTimeMillis()
-         //def endTime
-         def layers = layersOverride?:createTileLayers( params.layers?.split( ',' ) )
-         GeoScriptMap map = new GeoScriptMap(
-                 width: params.width,
-                 height: params.height,
-                 proj: params.srs,
-                 type: params.extractFormat(),
-                 bounds: params.bboxAsBounds,
-                 layers: layers
-         )
-
          result = map.renderToImage()
-
-         //endTime = System.currentTimeMillis()
       }
-      catch(e)
+      finally
       {
-         result = null
+         map.close()
       }
 
       result
