@@ -1,11 +1,15 @@
 package org.ossim.kettle.steps.tilestore
 
+import org.eclipse.swt.events.ModifyListener
 import org.eclipse.swt.widgets.Display
 import org.eclipse.swt.widgets.Shell
+import org.eclipse.swt.widgets.TableItem
+import org.ossim.kettle.utilities.SwtUtilities
 import org.pentaho.di.core.database.DatabaseMeta
 import org.pentaho.di.core.namedcluster.model.NamedCluster
 import org.pentaho.di.trans.TransMeta
 import org.pentaho.di.trans.step.BaseStepMeta
+import org.pentaho.di.ui.core.widget.ColumnInfo
 
 /**
  * Created by gpotts on 7/6/15.
@@ -14,6 +18,16 @@ class ReprojectDialog extends TileStoreCommonDialog
 {
    ReprojectMeta input
    private DatabaseMeta databaseMeta
+   private def fields = ["layers":"inputLayersField",
+                         "minx":"inputTileMinXField",
+                         "miny":"inputTileMinYField",
+                         "maxx":"inputTileMaxXField",
+                         "maxy":"inputTileMaxYField",
+                         "epsg":"inputEpsgCodeField",
+                         "width":"inputTileWidthField",
+                         "height":"inputTileHeightField",
+   ]
+
    public ReprojectDialog(Shell parent, Object baseStepMeta,
                                   TransMeta transMeta, String stepname) {
       super(parent, (BaseStepMeta)baseStepMeta, transMeta, stepname);
@@ -24,6 +38,18 @@ class ReprojectDialog extends TileStoreCommonDialog
       Shell parent = getParent();
       Display display = parent.getDisplay();
       kettleSwtBuilder()
+      def lsMod = {
+         event -> changed = true
+      } as ModifyListener
+      ColumnInfo[] colinf = new ColumnInfo[2];
+      colinf[0] =
+              new ColumnInfo( Messages.getString("TileStoreReprojectDialog.ColumnInfo.Parameter" ),
+                      ColumnInfo.COLUMN_TYPE_TEXT, false,
+                      true );
+      colinf[1] =
+              new ColumnInfo( Messages.getString("TileStoreReprojectDialog.ColumnInfo.InputField" ),
+                      ColumnInfo.COLUMN_TYPE_CCOMBO, SwtUtilities.previousStepFields(transMeta, stepname),
+                      true );
       shell = swt.shell(parent) {
          migLayout(layoutConstraints: "insets 2, wrap 1", columnConstraints: "[grow]")
          composite(layoutData: "growx, spanx, wrap") {
@@ -35,6 +61,18 @@ class ReprojectDialog extends TileStoreCommonDialog
             accumuloConnectionClosure()
          }
 
+         group(layoutData:"span,growx"){
+            migLayout(layoutConstraints:"insets 2, wrap 1", columnConstraints: "[grow]")
+            tableView(id:"fieldMappings",
+                    transMeta:transMeta,
+                    nrRows:5,
+                    columnInfo:colinf,
+                    style:"BORDER,FULL_SELECTION,MULTI,V_SCROLL,H_SCROLL",
+                    propsUi:props,
+                    //layoutData:"height 100:100:200, w 200:200:200, span,wrap",
+                    layoutData:"span, growx",
+                    modifyListener:lsMod)
+         }
          okCancelClosure()
 
       }
@@ -67,6 +105,18 @@ class ReprojectDialog extends TileStoreCommonDialog
       {
          swt.namedClusterWidgetId.setSelectedNamedCluster(input.tileStoreCommon.clusterName)
       }
+
+      def tableView = swt.fieldMappings
+      tableView.table.clearAll()
+      tableView.table.setItemCount(fields.size())
+      def idx = 0
+      fields.each{k,v->
+         TableItem item = tableView.table.getItem(idx);
+         item.setText(1, k);
+         item.setText(2, input."${v}");
+
+         ++idx
+      }
    }
 
    private void cancel()
@@ -91,6 +141,14 @@ class ReprojectDialog extends TileStoreCommonDialog
       input.tileStoreCommon.accumuloInstance = swt.accumuloInstance.text
       input.tileStoreCommon.accumuloUsername = swt.accumuloUsername.text
       input.tileStoreCommon.accumuloPassword = swt.accumuloPassword.text
+
+      def tableView = swt.fieldMappings
+
+      tableView.table.items.each{item->
+         def key = fields."${item.getText(1)}"
+         def value = item.getText(2)
+         input."${key}" = value
+      }
 
       dispose();
 
