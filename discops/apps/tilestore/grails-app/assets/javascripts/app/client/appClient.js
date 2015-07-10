@@ -23,7 +23,9 @@ var AppClient = (function () {
         center: [0,0]
     });
 
+    var interactions = ol.interaction.defaults({altShiftDragRotate:false});
     var map = new ol.Map({
+        interactions: interactions,
         controls: ol.control.defaults({
             attributionOptions: ({
                 controlollapsible: false
