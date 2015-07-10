@@ -29,26 +29,32 @@ var CutByFileClient = (function () {
 
     function addWktToMap(wktString){
 
-        console.log(wktString);
+        //console.log(wktString);
         var format = new ol.format.WKT();
         cutFeature = format.readFeature(wktString);
         //console.log(cutFeature);
         //console.log(cutFeature.getGeometry().getExtent());
         cutFeatureExtent = cutFeature.getGeometry().getExtent();
+        //console.log(cutFeatureExtent);
 
         //console.log(CreateProductClient.aoiFeatureOverlay.getFeatures().getArray().length);
+        //if (CreateProductClient.aoiFeatureOverlay.getFeatures().getArray().length >= 1 ) {
+        //
+        //    console.log('aoiFeatureOverlay.getFeatures().getArray().length >= 1');
+        //    console.log(CreateProductClient.aoiFeatureOverlay.getFeatures().getArray()[0]);
+        //    removeFeature = CreateProductClient.aoiFeatureOverlay.getFeatures().getArray()[0];
+        //    CreateProductClient.aoiFeatureOverlay.removeFeature(removeFeature);
+        //
+        //}
 
-        if (CreateProductClient.aoiFeatureOverlay.getFeatures().getArray().length >= 1 ) {
-
-            console.log('aoiFeatureOverlay.getFeatures().getArray().length >= 1');
-            console.log(CreateProductClient.aoiFeatureOverlay.getFeatures().getArray()[0]);
-            removeFeature = CreateProductClient.aoiFeatureOverlay.getFeatures().getArray()[0];
-            CreateProductClient.aoiFeatureOverlay.removeFeature(removeFeature);
-
+        if (AddLayerClient.aoiVector.getSource().getFeatures().length >= 1) {
+            AddLayerClient.aoiVector.getSource().clear();
+            //console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
         }
 
-        CreateProductClient.aoiFeatureOverlay.addFeature(cutFeature);
-        AppClient.map.addOverlay(CreateProductClient.aoiFeatureOverlay);
+        //CreateProductClient.aoiFeatureOverlay.addFeature(cutFeature);
+        AddLayerClient.aoiVector.getSource().addFeature(cutFeature);
+        //AppClient.map.addOverlay(CreateProductClient.aoiFeatureOverlay);
         AppClient.map.getView().fitExtent(cutFeatureExtent, AppClient.map.getSize());
 
         CreateProductClient.createAoi(wktString);
@@ -65,7 +71,7 @@ var CutByFileClient = (function () {
         );
         $files.hide();
         $files.html('');
-        console.log('resetUploadForm called');
+        //console.log('resetUploadForm called');
 
     }
 
@@ -96,9 +102,9 @@ var CutByFileClient = (function () {
         dataType: 'json',
         //autoUpload: false,
         done: function (e, data) {
-            //console.log('---------------------------');
-            //console.log(data);
-            //console.log('---------------------------');
+            console.log('---fileupload (data)------');
+            console.log(data);
+            console.log('---------------------------');
             addWktToMap(data.result.wkt);
             $.each(data.files, function (index, file) {
                 $('#files').text('Successfully uploaded: ' + file.name) ;
@@ -155,7 +161,9 @@ var CutByFileClient = (function () {
             "sourceEpsg": $pasteFormEpsgSourceSelect.val(),
             "targetEpsg": AppClient.mapEpsg
         }
+        console.log('---------pasteObj----------');
         console.log(pasteObj);
+        console.log('---------------------------');
 
         $.ajax({
             url: urlConvertGeometry,

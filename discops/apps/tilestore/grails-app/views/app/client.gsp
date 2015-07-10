@@ -51,7 +51,8 @@
                                             <option data-icon="glyphicon-th-large" value="mgrs">MGRS</option>
                                         </select>
                                     </div>
-                                    <input class="form-control" id="coordInput" type="text" placeholder="Search by coordinates">
+                                    <input class="form-control" id="coordInput" type="text"
+                                           placeholder="Search by coordinates" value="39.57,-85.61">
                                     <div class="input-group-btn">
                                         <button id="zoomButton" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i></button>
                                     </div>
@@ -71,23 +72,37 @@
                             </div>
                         </form>
                     </div>
-                    <div class="nav navbar-nav navbar-right">
 
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse"
+                                data-target="#mapToolsNavbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+
+                    %{--<div class="nav navbar-nav navbar-right">--}%
                         <div class="collapse navbar-collapse" id="mapToolsNavbar">
                             <ul class="nav navbar-nav navbar-right">
                                 <li id="mapToolsDropdown" class="dropdown">
                                     <a id="MapToolsDropdownItem" class="dropdown-toggle"
                                        data-toggle="dropdown" href="#"><i
-                                            class="fa fa-cog"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
+                                            class="fa fa-wrench"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
                                     <ul class="dropdown-menu">
 
-                                        <li role="presentation" class="dropdown-header">Cutting</li>
-                                        %{--<li class="disabled"><a id="drawRectangle" href="#"><i--}%
-                                                %{--class="fa fa-square-o fa-lg"></i>&nbsp;&nbsp;by--}%
-                                        %{--Rectangle</a></li>--}%
-                                        %{--<li class="disabled"><a id="drawPolygon" href="#"><i--}%
-                                                %{--class="fa fa-lemon-o fa-lg"></i>&nbsp;&nbsp;by--}%
-                                        %{--Freehand Polygon</a></li>--}%
+                                        <li role="presentation" class="dropdown-header">Manual cut</li>
+                                        <li><a id="drawRectangle" href="#"><i
+                                                class="fa fa-square-o fa-lg"></i>&nbsp;&nbsp;
+                                        Rectangle</a></li>
+                                        <li><a id="drawPolygon" href="#"><i
+                                                class="fa fa-hand-o-up fa-lg"></i>&nbsp;&nbsp;
+                                        Freehand Polygon</a></li>
+                                        <li class="disabled"><a id="endCuts" href="#"><i
+                                                class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Manual Cutting Off</a></li>
+                                        <li class="divider"></li>
+                                        <li role="presentation" class="dropdown-header">Pre-generated cut</li>
                                         <li><a id="uploadCutFile" href="#"><i
                                                 class="fa fa-upload fa-lg"></i>&nbsp;&nbsp;Upload Cut File</a></li>
                                         <li><a id="pasteGeometry" href="#"><i
@@ -104,17 +119,17 @@
                                 </li>
                             </ul>
                         </div>
-
-                    </div>
+                    %{--</div>--}%
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>
 
         <div class="navbar-offset"></div>
 
-        <div id='currentZoomLevel2'></div>
-
-        <div id="map" class="map"></div>
+        <div class="container-fluid">
+            <div id='currentZoomLevel2'></div>
+            <div id="map" class="map"></div>
+        </div>
 
         <tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
 
@@ -189,8 +204,7 @@
                                                     </select><br><br>
                                                     <label for="productEpsgCode">Product output projection</label>
                                                     <select id="productEpsgCode"
-                                                            class="form-control selectpicker show-tick productFormElement"
-                                                            disabled>
+                                                            class="form-control selectpicker show-tick productFormElement">
                                                         <option value="EPSG:3857">EPSG: 3857</option>
                                                         <option value="EPSG:4326">EPSG: 4326</option>
                                                     </select>&nbsp;&nbsp;
@@ -367,14 +381,12 @@
                             <div class="row col-sm-6 col-md-6">
 
                                 <div id="pasteCutGeometryElements">
-                                    <label for="geometryPasteTextArea">Paste geometry string (WKT)&nbsp;</label>
-                                    <textarea id="geometryPasteTextArea" class="form-control" rows="3"></textarea>
+                                    <label for="geometryPasteTextArea">Paste geometry string (WKT, KML or GeoJSON)
+                                    &nbsp;</label>
+                                    <textarea id="geometryPasteTextArea" class="form-control" rows="6"></textarea>
                                     <br>
-
-
                                     <input type="hidden" id="pasteFormSourceEpsg" class="form-control"
                                            name="sourceEpsg" value="EPSG:3857">
-
                                     <label for="pasteFormEpsgSourceSelect">Set source projection</label>
                                     <select id="pasteFormEpsgSourceSelect" class="form-control selectpicker show-tick">
                                         <option value="EPSG:3857">EPSG: 3857</option>
@@ -382,8 +394,6 @@
                                     </select>
                                     <br>
                                     <br>
-
-
                                     <button id="submitPasteGeometry" type="button" class="btn btn-primary"
                                             data-style="expand-left">Submit</button>
                                     <button id="closePasteCutGeometryModal" type="button" class="btn btn-primary"
