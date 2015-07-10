@@ -42,9 +42,9 @@ import geoscript.proj.Projection
 
 @Step(
 		id="OSSIMBasicTiling",
-		name="name",
-		description="description",
-		categoryDescription="categoryDescription", 
+		name="BasicTiling.name",
+		description="BasicTiling.description",
+		categoryDescription="BasicTiling.categoryDescription",
 		image="org/ossim/kettle/steps/basictiling/icon.png",
 		i18nPackageName="org.ossim.steps.kettle.basictiling"
 ) 

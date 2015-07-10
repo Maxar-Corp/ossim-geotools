@@ -22,9 +22,9 @@ import org.w3c.dom.Node
 @Step(
         // Change your ID here.  I will prefix it so not to clobber any other ID by accident
         id="OSSIMTilingReproject",
-        name="tilingreproject.name",
-        description="tilingreproject.description",
-        categoryDescription="tilingreproject.categoryDescription",
+        name="TilingReproject.name",
+        description="TilingReproject.description",
+        categoryDescription="TilingReproject.categoryDescription",
         image="org/ossim/kettle/steps/plugintemplate/icon.png",
         i18nPackageName="org.ossim.steps.kettle.dirwatch"
 )
@@ -33,7 +33,11 @@ class TilingReprojectMeta extends BaseStepMeta implements StepMetaInterface
 {
   // Add attributes here for your step.  Here is an example string attribute
 
-   String exampleTemplateFieldName
+   String sourceEpsgField
+   String sourceAoiField
+   String sourceMinLevelField
+   String sourceMaxLevelField
+   String targetEpsgField
 
    TilingReprojectMeta()
    {
@@ -45,7 +49,11 @@ class TilingReprojectMeta extends BaseStepMeta implements StepMetaInterface
    {
       StringBuffer retval = new StringBuffer(400);
 
-      retval.append("        ").append(XMLHandler.addTagValue("exampleTemplateFieldName", exampleTemplateFieldName)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      retval.append("        ").append(XMLHandler.addTagValue("sourceEpsgField", sourceEpsgField?:"")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      retval.append("        ").append(XMLHandler.addTagValue("sourceAoiField", sourceAoiField?:"")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      retval.append("        ").append(XMLHandler.addTagValue("sourceMinLevelField", sourceMinLevelField?:"")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      retval.append("        ").append(XMLHandler.addTagValue("sourceMaxLevelField", sourceMaxLevelField?:"")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      retval.append("        ").append(XMLHandler.addTagValue("targetEpsgField", targetEpsgField?:"")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
       // Add XML save states here
 
       retval.toString()
@@ -76,11 +84,15 @@ class TilingReprojectMeta extends BaseStepMeta implements StepMetaInterface
       //  load any XMl configuration for this step
       try
       {
-         exampleTemplateFieldName  = XMLHandler.getTagValue(stepnode, "exampleTemplateFieldName");
+         sourceEpsgField     = XMLHandler.getTagValue(stepnode, "sourceEpsgField")?:sourceEpsgField
+         sourceAoiField      = XMLHandler.getTagValue(stepnode, "sourceAoiField")?:sourceAoiField
+         sourceMinLevelField = XMLHandler.getTagValue(stepnode, "sourceMinLevelField")?:sourceMinLevelField
+         sourceMaxLevelField = XMLHandler.getTagValue(stepnode, "sourceMaxLevelField")?:sourceMaxLevelField
+         targetEpsgField          = XMLHandler.getTagValue(stepnode, "targetEpsgField")?:targetEpsgField
       }
       catch (e)
       {
-         throw new KettleXMLException(Messages.getString("PluginTemplateMeta.Exception.UnableToReadStepInfo"), e);
+         throw new KettleXMLException(Messages.getString("Common.Exception.UnableToReadStepInfo"), e);
          //$NON-NLS-1$
 
       }
@@ -88,7 +100,11 @@ class TilingReprojectMeta extends BaseStepMeta implements StepMetaInterface
 
    void setDefault()
    {
-      exampleTemplateFieldName = ""
+      sourceEpsgField     = ""
+      sourceAoiField      = ""
+      sourceMinLevelField = ""
+      sourceMaxLevelField = ""
+      targetEpsgField     = ""
    }
 
    void readRep(Repository rep, ObjectId id_step, List<DatabaseMeta> databases, Map<String, Counter> counters) throws KettleException
@@ -101,7 +117,11 @@ class TilingReprojectMeta extends BaseStepMeta implements StepMetaInterface
          // do checks here on any fields and format them the way you want. Please see interface for the Repository
          // to read other things like Imntegers, ... etc  rep.getStepAttributeInteger, rep.getStepAttributeBoolean
          //
-         exampleTemplateFieldName = rep.getStepAttributeString(id_step, "exampleTemplateFieldName");
+         sourceEpsgField = rep.getStepAttributeString(id_step, "sourceEpsgField")?:sourceEpsgField
+         sourceAoiField = rep.getStepAttributeString(id_step, "sourceAoiField")?:sourceAoiField
+         sourceMinLevelField = rep.getStepAttributeString(id_step, "sourceMinLevelField")?:sourceMinLevelField
+         sourceMaxLevelField = rep.getStepAttributeString(id_step, "sourceMaxLevelField")?:sourceMaxLevelField
+         targetEpsgField = rep.getStepAttributeString(id_step, "targetEpsgField")?:targetEpsgField
 
       }
       catch (e)
@@ -117,8 +137,20 @@ class TilingReprojectMeta extends BaseStepMeta implements StepMetaInterface
          Example for saving an attribute
           */
          rep.saveStepAttribute(id_transformation,
-                 id_step, "exampleTemplateFieldName",
-                 exampleTemplateFieldName)
+                 id_step, "sourceEpsgField",
+                 sourceEpsgField?:"")
+         rep.saveStepAttribute(id_transformation,
+                 id_step, "sourceAoiField",
+                 sourceAoiField?:"")
+         rep.saveStepAttribute(id_transformation,
+                 id_step, "sourceMinLevelField",
+                 sourceMinLevelField?:"")
+         rep.saveStepAttribute(id_transformation,
+                 id_step, "sourceMaxLevelField",
+                 sourceMaxLevelField?:"")
+         rep.saveStepAttribute(id_transformation,
+                 id_step, "targetEpsgField",
+                 targetEpsgField?:"")
 
       }
       catch(e)
@@ -157,13 +189,10 @@ class TilingReprojectMeta extends BaseStepMeta implements StepMetaInterface
       */
    }
 
-   // If your GUI to edit your step's meta is outside the same package path or has a difference name than
-   // PluginTemplateDialog you must sepcify here.
-
    /*
    @Override
    String getDialogClassName() {
-      return CreateOvrHstDialog.class.name;
+      return TilingReprojectDialog.class.name;
    }
    */
 
