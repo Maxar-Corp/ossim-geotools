@@ -78,6 +78,9 @@ class ProductService {
                                   aoi:cmd.aoi,
                                   aoiEpsg:cmd.aoiEpsg?:layerInfo.epsgCode, // default to the layers EPSG code if none given
                                   properties:cmd.properties,
+                                  outputEpsg:cmd.outputEpsg?:layerInfo.epsgCode,
+                                  minLevel:(cmd.minLevel!=null)?cmd.minLevel:layerInfo.minLevel,
+                                  maxLevel:(cmd.maxLevel!=null)?cmd.maxLevel:layerInfo.maxLevel,
                                   archive:[
                                           type:"zip",
                                           inputFile:jobDir,
