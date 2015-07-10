@@ -5,6 +5,7 @@ import org.eclipse.swt.widgets.Shell
 import org.ossim.kettle.groovyswt.KettleSwtBuilder
 import org.ossim.kettle.types.OssimValueMetaBase
 import org.ossim.kettle.utilities.SwtUtilities
+import org.pentaho.di.core.Const
 import org.pentaho.di.core.row.value.ValueMetaBase
 import org.pentaho.di.trans.TransMeta
 import org.pentaho.di.trans.step.BaseStepMeta
@@ -52,7 +53,7 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
                     layoutData: "span,growx")
                     {
                        onEvent(type: 'Modify') {
-                          input.setChanged()
+                          changed=true
                        }
                     }
             label "Tile Row"
@@ -61,7 +62,7 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
                     layoutData: "span,growx")
                     {
                        onEvent(type: 'Modify') {
-                          input.setChanged()
+                          changed=true
                        }
                     }
             label "Tile Col"
@@ -70,7 +71,7 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
                     layoutData: "span,growx")
                     {
                        onEvent(type: 'Modify') {
-                          input.setChanged()
+                          changed=true
                        }
                     }
             label "Tile Image"
@@ -79,7 +80,7 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
                     layoutData: "span,growx")
                     {
                        onEvent(type: 'Modify') {
-                          input.setChanged()
+                          changed=true
                        }
                     }
          }
@@ -91,7 +92,7 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
                     layoutData:"span,growx")
                     {
                        onEvent(type:'Modify') {
-                          input.setChanged()
+                          changed=true
                        }
                     }
 
@@ -102,7 +103,7 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
                     layoutData:"span,growx")
                     {
                        onEvent(type:'Modify') {
-                          input.setChanged()
+                          changed=true
                        }
                     }
             label "Layer Name"
@@ -120,7 +121,7 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
                     layoutData:"span,growx")
                     {
                        onEvent(type:'Modify') {
-                          input.setChanged()
+                          changed=true
                        }
                     }
             label "Min Level"
@@ -129,7 +130,7 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
                     layoutData:"span,growx")
                     {
                        onEvent(type:'Modify') {
-                          input.setChanged()
+                          changed=true
                        }
                     }
             label "Max Level"
@@ -139,7 +140,7 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
                     layoutData:"span,growx")
                     {
                        onEvent(type:'Modify') {
-                          input.setChanged()
+                          changed=true
                        }
                     }
             label "Writer Mode"
@@ -148,7 +149,7 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
                     layoutData:"span,growx")
                     {
                        onEvent(type:'Modify') {
-                          input.setChanged()
+                          changed=true
                        }
                     }
          }
@@ -202,7 +203,11 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
 
    private void ok()
    {
+      if (Const.isEmpty(swt.stepName.text)) return;
 
+      input.setChanged(changed)
+
+      stepname                  = swt.stepName.text
       input.tileLevelField = swt.tileLevelField.text
       input.tileRowField   = swt.tileRowField.text
       input.tileColField   = swt.tileColField.text
