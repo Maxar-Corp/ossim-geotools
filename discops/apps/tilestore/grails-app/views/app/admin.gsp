@@ -145,17 +145,17 @@
                             <li id="omarMapToolsDropdown" class="dropdown disabled">
                                 <a id="omarMapToolsDropdownItem" class="dropdown-toggle disabled"
                                    data-toggle="dropdown" href="#"><i
-                                        class="fa fa-cog"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
+                                        class="fa fa-wrench"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li role="presentation" class="dropdown-header">Cutting</li>
+                                    <li role="presentation" class="dropdown-header">Manual cut</li>
                                     <li><a id="drawRectangle" href="#"><i class="fa fa-square-o fa-lg"></i>&nbsp;&nbsp;by
                                     Rectangle</a></li>
-                                    <li><a id="drawPolygon" href="#"><i class="fa fa-lemon-o fa-lg"></i>&nbsp;&nbsp;by
+                                    <li><a id="drawPolygon" href="#"><i class="fa fa-hand-o-up fa-lg"></i>&nbsp;&nbsp;by
                                     Freehand Polygon</a></li>
                                     %{--<li><a id="drawCircle" href="#"><i class="fa fa-circle-thin"></i>&nbsp;&nbsp;by Circle</a></li>--}%
                                     <li class="divider"></li>
                                     <li class="disabled"><a id="endCuts" href="#"><i
-                                            class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Cutting Off</a></li>
+                                            class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Manual Cutting Off</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -180,7 +180,8 @@
                             %{--<li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>--}%
                             %{--<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>--}%
                             <li class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-cog"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i
+                                        class="fa fa-wrench"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li role="presentation" class="dropdown-header">Manage tile layers</li>
                                     <li><a id="navCreateLayer" href="#"><span

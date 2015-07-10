@@ -9,6 +9,23 @@ var AddLayerClient = (function () {
     // Cache DOM elements
     var $tileLayerSelect = $('#tileLayerSelect');
 
+    var aoiStyle = new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: 'cyan',
+            width: 5
+        }),
+        fill: new ol.style.Fill({
+            color: 'rgba(0, 255, 255, 0.3)'
+        })
+    });
+
+    var aoiSource = new ol.source.Vector({wrapX: false});
+
+    var aoiVector = new ol.layer.Vector({
+        source: aoiSource,
+        style: aoiStyle
+    });
+
     function getTileLayers(params, elem) {
         var dfd = $.Deferred();
         $.each(params, function (index, tileCacheLayer) {
@@ -32,17 +49,6 @@ var AddLayerClient = (function () {
 
         console.log('Now loading: ' + addNewLayer);
 
-        //console.message()
-        //    .span({
-        //        color: '#337ab7', fontSize: 14
-        //    })
-        //    .text('(appAdmin.js 144): ')
-        //    .spanEnd()
-        //    .text('Now loading: ' + addNewLayer, {
-        //        color: 'green', fontSize: 14
-        //    })
-        //    .print();
-
         addNewLayer = new ol.layer.Tile( {
             opacity: 1.0,
             source: new ol.source.TileWMS( {
@@ -57,9 +63,10 @@ var AddLayerClient = (function () {
     }
 
     $tileLayerSelect.on('change', function() {
-         console.log('select on change:' + $tileLayerSelect.val())
 
+        console.log('select on change:' + $tileLayerSelect.val())
         switchCurrentLayer(initLayer, $tileLayerSelect.val());
+
     });
 
     return {
@@ -68,44 +75,6 @@ var AddLayerClient = (function () {
             loadParams = initParams;
 
             wfsURL = initParams.wfsURL;
-
-            //var tileBoundsVectorSource = new ol.source.GeoJSON( {
-            //    url: wfsURL,
-            //    crossOrigin: 'anonymous',
-            //    projection: 'EPSG:3857'
-            //} );
-
-            // Tile sets extents layer
-            //var tileBoundsVectorLayer = new ol.layer.Vector( {
-            //    source: tileBoundsVectorSource,
-            //    style: (function ()
-            //    {
-            //        var stroke = new ol.style.Stroke( {
-            //            color: 'red',
-            //            width: 5
-            //        } );
-            //        var textStroke = new ol.style.Stroke( {
-            //            color: '#fff',
-            //            width: 3
-            //        } );
-            //        var textFill = new ol.style.Fill( {
-            //            color: 'red'
-            //        } );
-            //        return function ( feature, resolution )
-            //        {
-            //            return [new ol.style.Style( {
-            //                stroke: stroke,
-            //                text: new ol.style.Text( {
-            //                    font: '36px Calibri,sans-serif',
-            //                    text: 'Name: ' + feature.get( 'name' ) + ' Min: ' + feature.get( 'min_level' ) + ' Max: ' + feature.get( 'max_level' ),
-            //                    fill: textFill,
-            //                    stroke: textStroke
-            //                } )
-            //            } )];
-            //        };
-            //    })(),
-            //    name: 'Tile Set Boundaries'
-            //} );
 
             var resolutions = [
                 156543.03392804097,
@@ -153,18 +122,6 @@ var AddLayerClient = (function () {
                 19
             ];
 
-            //var tileGrid = new ol.layer.Tile({
-            //    source: new ol.source.TileDebug({
-            //        projection: 'EPSG:3857',
-            //        tileGrid: new ol.tilegrid.TileGrid({
-            //            resolutions: resolutions,
-            //            origin: [-20037508.342789244, 20037508.342789244] })
-            //    }),
-            //    name: 'Tile Grid'
-            //});
-            //layersArray.push(tileGrid);
-            //console.log(tileGrid);
-
             var projection = ol.proj.get('EPSG:3857');
             var projectionExtent = projection.getExtent();
 
@@ -201,27 +158,6 @@ var AddLayerClient = (function () {
                 layersArray.push(osmGroup);
 
             });
-
-            //$.each( initParams.tilestoreLayers, function ( idx, tilestoreLayer )
-            //{
-            //    //console.log(tilestoreLayer.name);
-            //    var tileLayer = new ol.layer.Tile( {
-            //        opacity: 1.0,
-            //        source: new ol.source.TileWMS( {
-            //            url: initParams.tilestoreWmsURL,
-            //            params: {'LAYERS': tilestoreLayer.name, 'TILED': true, 'VERSION': '1.1.1'}
-            //        } ),
-            //        name: tilestoreLayer.name
-            //    } );
-            //
-            //    //console.log(tilestoreLayer.name);
-            //    $('#tileLayerSelect').append($('<option>', {
-            //        value: tilestoreLayer.name,
-            //        text : tilestoreLayer.name
-            //    }));
-            //
-            //    layersArray.push( tileLayer ); //highres_us
-            //} );
 
             if (initParams.wmtsTileGrid) {
                 layersArray.push(tileParamGrid);
@@ -263,8 +199,15 @@ var AddLayerClient = (function () {
             });
             addInitialLayer();
 
+            AppClient.map.addLayer(aoiVector);
+
+            //console.log(aoiVector.getSource().getFeatures().length);
+
         },
-        layersArray: layersArray
+        layersArray: layersArray,
+        aoiSource: aoiSource,
+        aoiStyle: aoiStyle,
+        aoiVector: aoiVector
     };
 })();
 
