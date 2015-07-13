@@ -51,7 +51,7 @@ class GetMapService implements InitializingBean, DisposableBean, ApplicationCont
          if (!l)
          {
             l = tileCacheServiceDAO.newGeoscriptTileLayer(layer)
-            l.useNullReturn = true
+            //l.useNullReturn = true
             layerCache.put(layer, l)
          }
          if (l)
