@@ -2,6 +2,7 @@ package tilestore.database
 
 import geoscript.geom.Geometry
 import geoscript.geom.io.WktReader
+import geoscript.proj.Projection
 import grails.validation.Validateable
 import groovy.transform.ToString
 import org.ossim.common.CaseInsensitiveBind
@@ -33,6 +34,31 @@ class GetActualBoundsCommand implements CaseInsensitiveBind
       catch(e)
       {
          result = null
+      }
+
+      result
+   }
+   Geometry aoiAsGeometry(String targetEpsg)
+   {
+      Geometry result = aoiAsGeometry()
+
+      Projection proj = aoiEpsgAsProjection()
+      Projection targetProj = new Projection(targetEpsg)
+
+      if(proj&&(proj.epsg!= targetProj.epsg))
+      {
+         proj.transform(result,targetProj)
+      }
+
+      result
+   }
+   Projection aoiEpsgAsProjection()
+   {
+      Projection result
+
+      if(aoiEpsg)
+      {
+         result = new Projection(aoiEpsg)
       }
 
       result
