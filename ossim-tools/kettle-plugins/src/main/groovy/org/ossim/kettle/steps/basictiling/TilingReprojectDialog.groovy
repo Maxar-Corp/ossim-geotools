@@ -39,43 +39,60 @@ class TilingReprojectDialog extends BaseStepDialog implements
             label Messages.getString("BasicTilingDialog.Stepname.Label")
 
             text(id: "stepName", layoutData: "span,growx", text: stepname) {
-               onEvent(type: 'Modify') { input.setChanged() }
+               onEvent(type: 'Modify') { changed=true }
             }
             label Messages.getString("TilingReprojectDialog.SourceEpsg.Label")
             cCombo(id: "sourceEpsgField",
                     items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING]),
                     layoutData: "span,growx")
                     {
-                       onEvent(type: 'Modify') { input.setChanged(); }
+                       onEvent(type: 'Modify') { changed=(input.sourceEpsgField!=swt.sourceEpsgField) }
                     }
             label Messages.getString("TilingReprojectDialog.SourceAoi.Label")
             cCombo(id: "sourceAoiField",
                     items: SwtUtilities.previousStepFields(transMeta, stepname, [OssimValueMetaBase.TYPE_GEOMETRY_2D]),
                     layoutData: "span,growx")
                     {
-                       onEvent(type: 'Modify') { input.setChanged(); }
+                       onEvent(type: 'Modify') { changed=(input.sourceAoiField!=swt.sourceAoiField) }
                     }
             label Messages.getString("TilingReprojectDialog.SourceMinLevel.Label")
             cCombo(id: "sourceMinLevelField",
                     items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_INTEGER]),
                     layoutData: "span,growx")
                     {
-                       onEvent(type: 'Modify') { input.setChanged(); }
+                       onEvent(type: 'Modify') { changed=(input.sourceMinLevelField!=swt.sourceMinLevelField) }
                     }
             label Messages.getString("TilingReprojectDialog.SourceMaxLevel.Label")
             cCombo(id: "sourceMaxLevelField",
                     items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_INTEGER]),
                     layoutData: "span,growx")
                     {
-                       onEvent(type: 'Modify') { input.setChanged(); }
+                       onEvent(type: 'Modify') { changed=(input.sourceMaxLevelField!=swt.sourceMaxLevelField) }
                     }
             label Messages.getString("TilingReprojectDialog.TargetEpsg.Label")
             cCombo(id: "targetEpsgField",
                     items: SwtUtilities.previousStepFields(transMeta, stepname, [ValueMetaInterface.TYPE_STRING]),
                     layoutData: "span,growx")
                     {
-                       onEvent(type: 'Modify') { input.setChanged(); }
+                       onEvent(type: 'Modify') { changed=(input.targetEpsgField!=swt.targetEpsgField) }
                     }
+
+            label Messages.getString("TilingReprojectDialog.OutputEpsgField.Label")
+            text(id: "outputEpsgField", layoutData: "span,growx") {
+               onEvent(type: 'Modify') { changed=(input.outputEpsgField!=swt.outputEpsgField) }
+            }
+            label Messages.getString("TilingReprojectDialog.OutputAoiField.Label")
+            text(id: "outputAoiField", layoutData: "span,growx") {
+               onEvent(type: 'Modify') { changed=(input.outputAoiField!=swt.outputAoiField) }
+            }
+            label Messages.getString("TilingReprojectDialog.OutputMinLevelField.Label")
+            text(id: "outputMinLevelField", layoutData: "span,growx") {
+               onEvent(type: 'Modify') { changed=(input.outputMinLevelField!=swt.outputMinLevelField) }
+            }
+            label Messages.getString("TilingReprojectDialog.OutputMaxLevelField.Label")
+            text(id: "outputMaxLevelField", layoutData: "span,growx") {
+               onEvent(type: 'Modify') { changed=(input.outputMaxLevelField!=swt.outputMaxLevelField) }
+            }
 
             group(layoutData: "grow, span, wrap") {
                migLayout(layoutConstraints: "insets 2", columnConstraints: "[grow]")
@@ -108,6 +125,12 @@ class TilingReprojectDialog extends BaseStepDialog implements
       swt.sourceMinLevelField.text = input.sourceMinLevelField?:""
       swt.sourceMaxLevelField.text = input.sourceMaxLevelField?:""
       swt.targetEpsgField.text     = input.targetEpsgField?:""
+
+      swt.outputEpsgField.text     = input.outputEpsgField?:""
+      swt.outputAoiField.text      = input.outputAoiField?:""
+      swt.outputMinLevelField.text = input.outputMinLevelField?:""
+      swt.outputMaxLevelField.text = input.outputMaxLevelField?:""
+
    }
    private void cancel()
    {
@@ -127,7 +150,12 @@ class TilingReprojectDialog extends BaseStepDialog implements
       input.sourceMinLevelField = swt.sourceMinLevelField.text
       input.sourceMaxLevelField = swt.sourceMaxLevelField.text
       input.targetEpsgField     = swt.targetEpsgField.text
+      input.outputEpsgField     = swt.outputEpsgField.text
+      input.outputAoiField      = swt.outputAoiField.text
+      input.outputMinLevelField = swt.outputMinLevelField.text
+      input.outputMaxLevelField = swt.outputMaxLevelField.text
 
+      input.setChanged(changed)
       dispose();
    }
 }

@@ -1,6 +1,7 @@
 package org.ossim.kettle.steps.basictiling
 
 import org.ossim.kettle.steps.datainfo.Messages
+import org.ossim.kettle.types.OssimValueMetaBase
 import org.pentaho.di.core.CheckResult
 import org.pentaho.di.core.CheckResultInterface
 import org.pentaho.di.core.Counter
@@ -10,6 +11,8 @@ import org.pentaho.di.core.exception.KettleException
 import org.pentaho.di.core.exception.KettleValueException
 import org.pentaho.di.core.exception.KettleXMLException
 import org.pentaho.di.core.row.RowMetaInterface
+import org.pentaho.di.core.row.ValueMetaInterface
+import org.pentaho.di.core.row.value.ValueMetaFactory
 import org.pentaho.di.core.variables.VariableSpace
 import org.pentaho.di.core.xml.XMLHandler
 import org.pentaho.di.repository.ObjectId
@@ -39,6 +42,13 @@ class TilingReprojectMeta extends BaseStepMeta implements StepMetaInterface
    String sourceMaxLevelField
    String targetEpsgField
 
+   String outputEpsgField     = "output_epsg"
+   String outputAoiField      = "output_aoi"
+   String outputMinLevelField = "output_min_level"
+   String outputMaxLevelField = "output_max_level"
+
+   //Boolean replaceInputFields
+
    TilingReprojectMeta()
    {
       super()
@@ -54,6 +64,10 @@ class TilingReprojectMeta extends BaseStepMeta implements StepMetaInterface
       retval.append("        ").append(XMLHandler.addTagValue("sourceMinLevelField", sourceMinLevelField?:"")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
       retval.append("        ").append(XMLHandler.addTagValue("sourceMaxLevelField", sourceMaxLevelField?:"")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
       retval.append("        ").append(XMLHandler.addTagValue("targetEpsgField", targetEpsgField?:"")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      retval.append("        ").append(XMLHandler.addTagValue("outputEpsgField", outputEpsgField?:"")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      retval.append("        ").append(XMLHandler.addTagValue("outputAoiField", outputAoiField?:"")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      retval.append("        ").append(XMLHandler.addTagValue("outputMinLevelField", outputMinLevelField?:"")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+      retval.append("        ").append(XMLHandler.addTagValue("outputMaxLevelField", outputMaxLevelField?:"")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
       // Add XML save states here
 
       retval.toString()
@@ -64,6 +78,34 @@ class TilingReprojectMeta extends BaseStepMeta implements StepMetaInterface
                   StepMeta nextStep, VariableSpace space)
    {
       // add any output field definitions here
+      ValueMetaInterface field
+      if(outputEpsgField)
+      {
+         field = ValueMetaFactory.createValueMeta(outputEpsgField, OssimValueMetaBase.TYPE_STRING);
+         field.setOrigin(origin);
+         r.addValueMeta(field);
+      }
+
+      if(outputAoiField)
+      {
+         field = ValueMetaFactory.createValueMeta(outputAoiField, OssimValueMetaBase.TYPE_GEOMETRY_2D);
+         field.setOrigin(origin);
+         r.addValueMeta(field);
+      }
+
+      if(outputMinLevelField)
+      {
+         field = ValueMetaFactory.createValueMeta(outputMinLevelField, OssimValueMetaBase.TYPE_INTEGER);
+         field.setOrigin(origin);
+         r.addValueMeta(field);
+      }
+
+      if(outputMaxLevelField)
+      {
+         field = ValueMetaFactory.createValueMeta(outputMaxLevelField, OssimValueMetaBase.TYPE_INTEGER);
+         field.setOrigin(origin);
+         r.addValueMeta(field);
+      }
    }
 
    Object clone()
@@ -88,7 +130,11 @@ class TilingReprojectMeta extends BaseStepMeta implements StepMetaInterface
          sourceAoiField      = XMLHandler.getTagValue(stepnode, "sourceAoiField")?:sourceAoiField
          sourceMinLevelField = XMLHandler.getTagValue(stepnode, "sourceMinLevelField")?:sourceMinLevelField
          sourceMaxLevelField = XMLHandler.getTagValue(stepnode, "sourceMaxLevelField")?:sourceMaxLevelField
-         targetEpsgField          = XMLHandler.getTagValue(stepnode, "targetEpsgField")?:targetEpsgField
+         targetEpsgField     = XMLHandler.getTagValue(stepnode, "targetEpsgField")?:targetEpsgField
+         outputAoiField      = XMLHandler.getTagValue(stepnode, "outputAoiField")?:""
+         outputEpsgField     = XMLHandler.getTagValue(stepnode, "outputEpsgField")?:""
+         outputMinLevelField = XMLHandler.getTagValue(stepnode, "outputMinLevelField")?:""
+         outputMaxLevelField = XMLHandler.getTagValue(stepnode, "outputMaxLevelField")?:""
       }
       catch (e)
       {
@@ -105,6 +151,10 @@ class TilingReprojectMeta extends BaseStepMeta implements StepMetaInterface
       sourceMinLevelField = ""
       sourceMaxLevelField = ""
       targetEpsgField     = ""
+      outputEpsgField     = "output_epsg"
+      outputAoiField      = "output_aoi"
+      outputMinLevelField = "output_min_level"
+      outputMaxLevelField = "output_max_level"
    }
 
    void readRep(Repository rep, ObjectId id_step, List<DatabaseMeta> databases, Map<String, Counter> counters) throws KettleException
@@ -117,11 +167,15 @@ class TilingReprojectMeta extends BaseStepMeta implements StepMetaInterface
          // do checks here on any fields and format them the way you want. Please see interface for the Repository
          // to read other things like Imntegers, ... etc  rep.getStepAttributeInteger, rep.getStepAttributeBoolean
          //
-         sourceEpsgField = rep.getStepAttributeString(id_step, "sourceEpsgField")?:sourceEpsgField
-         sourceAoiField = rep.getStepAttributeString(id_step, "sourceAoiField")?:sourceAoiField
+         sourceEpsgField     = rep.getStepAttributeString(id_step, "sourceEpsgField")?:sourceEpsgField
+         sourceAoiField      = rep.getStepAttributeString(id_step, "sourceAoiField")?:sourceAoiField
          sourceMinLevelField = rep.getStepAttributeString(id_step, "sourceMinLevelField")?:sourceMinLevelField
          sourceMaxLevelField = rep.getStepAttributeString(id_step, "sourceMaxLevelField")?:sourceMaxLevelField
-         targetEpsgField = rep.getStepAttributeString(id_step, "targetEpsgField")?:targetEpsgField
+         targetEpsgField     = rep.getStepAttributeString(id_step, "targetEpsgField")?:targetEpsgField
+         outputEpsgField     = rep.getStepAttributeString(id_step, "outputEpsgField")?:""
+         outputAoiField      = rep.getStepAttributeString(id_step, "outputAoiField")?:""
+         outputMinLevelField = rep.getStepAttributeString(id_step, "outputMinLevelField")?:""
+         outputMaxLevelField = rep.getStepAttributeString(id_step, "outputMaxLevelField")?:""
 
       }
       catch (e)
@@ -151,6 +205,18 @@ class TilingReprojectMeta extends BaseStepMeta implements StepMetaInterface
          rep.saveStepAttribute(id_transformation,
                  id_step, "targetEpsgField",
                  targetEpsgField?:"")
+         rep.saveStepAttribute(id_transformation,
+                 id_step, "outputEpsgField",
+                 outputEpsgField?:"")
+         rep.saveStepAttribute(id_transformation,
+                 id_step, "outputAoiField",
+                 outputAoiField?:"")
+         rep.saveStepAttribute(id_transformation,
+                 id_step, "outputMinLevelField",
+                 outputMinLevelField?:"")
+         rep.saveStepAttribute(id_transformation,
+                 id_step, "outputMaxLevelField",
+                 outputMaxLevelField?:"")
 
       }
       catch(e)

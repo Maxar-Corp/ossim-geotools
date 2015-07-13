@@ -22,7 +22,9 @@ import java.awt.Polygon
 import java.awt.Shape
 import java.awt.image.BufferedImage
 import java.awt.image.ColorModel
+import java.awt.image.DataBufferInt
 import java.awt.image.WritableRaster
+
 
 /**
  * Created by gpotts on 6/3/15.
@@ -110,8 +112,6 @@ class TileCrop extends BaseStep implements StepInterface
       def image = imageConverter.getImage(r[tileFieldIdx])
       def tileGeometry = r[tileAoiFieldIdx] as Geometry
       def aoiGeometry  = r[aoiFieldIdx] as Geometry
-
-      // if we have the support to crop the image
       if(image&&tileGeometry&&aoiGeometry)
       {
          if(tileGeometry.intersects(aoiGeometry))

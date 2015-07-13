@@ -203,7 +203,7 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
 
    private void ok()
    {
-      if (Const.isEmpty(swt.stepName.text)) return;
+      if (!swt.stepName.text) return;
 
       input.setChanged(changed)
 

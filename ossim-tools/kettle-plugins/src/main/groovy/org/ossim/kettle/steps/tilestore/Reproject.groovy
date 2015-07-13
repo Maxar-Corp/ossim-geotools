@@ -15,6 +15,10 @@ import org.pentaho.di.trans.step.StepMetaInterface
 
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
+import java.awt.image.ColorModel
+import java.awt.image.DataBuffer
+import java.awt.image.DataBufferByte
+import java.awt.image.DataBufferInt
 
 /**
  * Created by gpotts on 7/6/15.
@@ -107,29 +111,73 @@ class Reproject  extends BaseStep implements StepInterface
                   h:getMapParams.height,
                   srs:getMapParams.srs
               ]
-      ByteArrayOutputStream out
 
+      OutputStream out
+      BufferedImage img
+      Boolean transparent = true
       try{
          out = getMapService.renderToOutputStream(getMapParams, null)
+         if(out)
+         {
+            img = ImageIO.read(new ByteArrayInputStream(out.toByteArray()))
+            ColorModel cm =  img.colorModel
+            if(cm.hasAlpha())
+            {
+               DataBuffer dataBuffer = img.getRaster().getDataBuffer()
+               if(dataBuffer instanceof DataBufferInt)
+               {
+                  int[] pixels = ((DataBufferInt)img.getRaster().getDataBuffer()).getData();
+                  for (int pixel : pixels) {
+                     //if ((pixel & 0xFF000000) != 0 || (pixel & 0xFFFFFF) != 0xFFFFFF){ transparent = false; break}
+                     if ((pixel & 0xFF000000) != 0 ){ transparent = false; break}
+                  }
+               }
+               else if(dataBuffer instanceof DataBufferByte)
+               {
+                  if(dataBuffer.numBanks == 1)
+                  {
+                     DataBufferByte byteBuffer = dataBuffer as DataBufferByte
+                     byte[] pixels = byteBuffer.getData()
+                     int count = pixels.size()
+                     int offset = 0
+                     for(offset = 0;offset<count;offset+=4)
+                     {
+                        if ((pixels[offset]& 0xFF) != 0 ){ transparent = false; break}
+                     }
+                  }
+               }
+               else
+               {
+                  logError("Reproject: Unandled type for databuffer transparency")
+                  transparent = false
+               }
+            }
+            else
+            {
+               // need to have null pixel check before passing
+               // for now we will just say transparent is false
+               transparent = false
+            }
+         }
       }
       catch(e)
       {
          //println e
-         //e.printStackTrace()
-         out = null
+         e.printStackTrace()
+         img = null
       }
-
+      if(transparent) img = null
 
      // println image
-      if(out)
+      if(img)
       {
          def outputRow = []
          (0..<inputRowMeta.size()).each { Integer i ->
             outputRow << r[i]
          }
-         outputRow<<out.toByteArray()
+         outputRow<<img
          putRow(myOutputRowMeta, outputRow as Object[]);
-         out = null
+         img = null
       }
 
       return true
