@@ -886,8 +886,8 @@ class LayerManagerService implements InitializingBean
                      pngOutputSize  = Math.round(pngOutputSize/tileList.size())
                      jpegOutputSize = Math.round(jpegOutputSize/tileList.size())
                   }
-                  println pngOutputSize
-                  pngCompressionRate = pngOutputSize/rawTileSize
+                  //println pngOutputSize
+                  pngCompressionRate  = pngOutputSize/rawTileSize
                   jpegCompressionRate = jpegOutputSize/rawTileSize
                }
 
@@ -897,12 +897,31 @@ class LayerManagerService implements InitializingBean
                                                                               maxLevel: cmd.maxLevel,
                                                                               layer: cmd.layer])
 
+
                result.data?.actualBounds = getActualBounds(boundsCmd)
+             //   Bounds bounds = new Bounds(result.data.actualBounds.minx,
+             //           result.data.actualBounds.miny,
+             //           result.data.actualBounds.maxx,
+             //           result.data.actualBounds.maxy)
+             //  if(boundsCmd.aoi)
+             //  {
+             //     Geometry tempGeom = boundsCmd.aoiAsGeometry()
+             //
+             //     bounds = tempGeom.bounds.intersection(bounds)
+             //  }
+
                Long maxLevel = result.data?.actualBounds?.maxLevel?:layerInfo.maxLevel
                TileLayer tileLayer = daoTileCacheService.newGeoscriptTileLayer(layerInfo)
 
-               TileCursor cursor = tileLayer.tiles(new Bounds(result.data.actualBounds.minx, result.data.actualBounds.miny,
-                       result.data.actualBounds.maxx, result.data.actualBounds.maxy),maxLevel)
+               // grab tile aligned bounds
+               //
+               def tempBounds = new Bounds(
+                       result.data?.actualBounds.minx,
+                       result.data?.actualBounds.miny,
+                       result.data?.actualBounds.maxx,
+                       result.data?.actualBounds.maxy
+               )
+               TileCursor cursor = tileLayer.tiles(tempBounds,maxLevel)
 
                result.data.imageWidth = (Long)(cursor.width*tileLayer.pyramid.tileWidth)
                result.data.imageHeight = (Long)(cursor.height*tileLayer.pyramid.tileHeight)
@@ -910,18 +929,19 @@ class LayerManagerService implements InitializingBean
                result.data.uncompressBytesPerTile = rawTileSize
                result.data.jpegCompressionRate = jpegCompressionRate
                result.data.pngCompressionRate = pngCompressionRate
-               result.data.actualBounds = getActualBounds(boundsCmd)
+
+
             }
 
             result.data.numberOfTiles = count
-            println  result.data
+            //println  result.data
 
          }
 
       }
       catch (e)
       {
-         println e
+         //println e
          result.status = HttpStatus.BAD_REQUEST
          result.message = e.toString()
       }

@@ -1,5 +1,7 @@
 package tilestore.database
 
+import geoscript.geom.Geometry
+import geoscript.geom.io.WktReader
 import grails.validation.Validateable
 import groovy.transform.ToString
 import org.ossim.common.CaseInsensitiveBind
@@ -16,5 +18,24 @@ class GetActualBoundsCommand implements CaseInsensitiveBind
    String aoiEpsg
    Long minLevel
    Long maxLevel
+
+
+   Geometry aoiAsGeometry()
+   {
+      Geometry result
+
+      try{
+         if(aoi)
+         {
+            result = new WktReader().read(aoi)
+         }
+      }
+      catch(e)
+      {
+         result = null
+      }
+
+      result
+   }
 
 }
