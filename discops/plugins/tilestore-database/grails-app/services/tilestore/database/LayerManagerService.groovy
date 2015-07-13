@@ -374,17 +374,16 @@ class LayerManagerService implements InitializingBean
       if (cmd.aoi && cmd.layer)
       {
          layerInfo = daoTileCacheService.getLayerInfoByName(cmd.layer)
-         constraints.intersects = "${cmd.aoi}"
-         if (!cmd.aoiEpsg)
+
+         if(layerInfo)
          {
+            Geometry geom = cmd.aoiAsGeometry(layerInfo.epsgCode)
+
+            constraints.intersects = "${geom}"
             constraints.intersectsSrid = "${layerInfo.epsgCode.split(":")[-1]}".toString()
+            if(cmd.minLevel!=null) constraints.minLevel = cmd.minLevel
+            if(cmd.maxLevel!= null) constraints.maxLevel = cmd.maxLevel
          }
-         else
-         {
-            constraints.intersectsSrid = "${cmd.aoiEpsg.split(":")[-1]}".toString()
-         }
-         if(cmd.minLevel!=null) constraints.minLevel = cmd.minLevel
-         if(cmd.maxLevel!= null) constraints.maxLevel = cmd.maxLevel
       }
 
       if (layerInfo) result = daoTileCacheService.getActualLayerBounds(layerInfo, constraints)
@@ -825,10 +824,9 @@ class LayerManagerService implements InitializingBean
       try{
          TileCacheLayerInfo layerInfo = daoTileCacheService.getLayerInfoByName(cmd.layer)
 
-
          if(layerInfo)
          {
-            Geometry geom = cmd.transformGeometry(layerInfo.epsgCode)
+            Geometry geom = cmd.aoiAsGeometry(layerInfo.epsgCode)
             def constraints = [:]
             if(geom)
             {
@@ -891,6 +889,8 @@ class LayerManagerService implements InitializingBean
                   jpegCompressionRate = jpegOutputSize/rawTileSize
                }
 
+
+
                GetActualBoundsCommand boundsCmd = new GetActualBoundsCommand([aoi:geom.toString(),
                                                                               aoiEpsg:layerInfo.epsgCode,
                                                                               minLevel: cmd.minLevel,
@@ -941,6 +941,7 @@ class LayerManagerService implements InitializingBean
       }
       catch (e)
       {
+         e.printStackTrace()
          //println e
          result.status = HttpStatus.BAD_REQUEST
          result.message = e.toString()
