@@ -11,7 +11,7 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 
 import java.awt.image.BufferedImage
-import java.util.concurrent.ConcurrentHashMap
+//import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Created by gpotts on 7/6/15.
@@ -21,7 +21,7 @@ class GetMapService implements InitializingBean, DisposableBean, ApplicationCont
 
    //TileCacheHibernate hibernate
    TileCacheServiceDAO tileCacheServiceDAO
-   ConcurrentHashMap   layerCache = new ConcurrentHashMap()
+  // ConcurrentHashMap   layerCache = new ConcurrentHashMap()
    ApplicationContext  applicationContext
 
    void setApplicationContext(ApplicationContext applicationContext) throws BeansException
@@ -47,12 +47,13 @@ class GetMapService implements InitializingBean, DisposableBean, ApplicationCont
          //   def gridReader = gridFormat.getReader( new URL( "${tileAccessUrl}?layer=${layer}" ) )
          //   def mosaic = new GridReaderLayer( gridReader, new RasterSymbolizer().gtStyle )
 
-         def l = layerCache.get(layer)
-         if (!l)
-         {
-            l = tileCacheServiceDAO.newGeoscriptTileLayer(layer)
-            layerCache.put(layer, l)
-         }
+      //   def l = layerCache.get(layer)
+    //     if (!l)
+    //     {
+            def l = tileCacheServiceDAO.newGeoscriptTileLayer(layer)
+            //l.useNullReturn = true
+     //       layerCache.put(layer, l)
+    //     }
          if (l)
          {
             layers << l
@@ -60,32 +61,43 @@ class GetMapService implements InitializingBean, DisposableBean, ApplicationCont
       }
       layers
    }
+   private GeoScriptMap prepareMap(GetMapParams params, def layersOverride)
+   {
+      def layers = layersOverride?:createTileLayers( params.layers?.split( ',' ) )
+      GeoScriptMap map = new GeoScriptMap(
+              width: params.width,
+              height: params.height,
+              proj: params.srs,
+              type: params.extractFormat()?:"",
+              bounds: params.bboxAsBounds,
+              layers: layers
+      )
+      map
 
+   }
+   ByteArrayOutputStream renderToOutputStream(GetMapParams params, def layersOverride)
+   {
+      ByteArrayOutputStream result = new ByteArrayOutputStream()
+      GeoScriptMap map = prepareMap(params, layersOverride)
+      try{
+         map.render(result)
+      }
+      finally{
+         map.close()
+      }
+      result
+   }
    BufferedImage renderToImage(GetMapParams params, def layersOverride)
    {
       BufferedImage result
-
+      GeoScriptMap map = prepareMap(params, layersOverride)
       try
       {
-         //def startTime    = System.currentTimeMillis()
-         //def endTime
-         def layers = layersOverride?:createTileLayers( params.layers?.split( ',' ) )
-         GeoScriptMap map = new GeoScriptMap(
-                 width: params.width,
-                 height: params.height,
-                 proj: params.srs,
-                 type: params.extractFormat(),
-                 bounds: params.bboxAsBounds,
-                 layers: layers
-         )
-
          result = map.renderToImage()
-
-         //endTime = System.currentTimeMillis()
       }
-      catch(e)
+      finally
       {
-         result = null
+         map.close()
       }
 
       result

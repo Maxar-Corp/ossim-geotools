@@ -27,34 +27,19 @@ class EstimateCommand implements CaseInsensitiveBind
       result
    }
 
-   Geometry transformGeometry(String targetEpsg)
+   Geometry aoiAsGeometry(String targetEpsg)
    {
-      Geometry result
-
-      Geometry srcGeom = aoiAsGeometry()
-
-      if(srcGeom)
+      Geometry result = aoiAsGeometry()
+      Projection targetProj = new Projection(targetEpsg)
+      if(result)
       {
          if(aoiEpsg&&targetEpsg)
          {
-            Projection aoiProj = new Projection(aoiEpsg)
-            if(targetEpsg == aoiEpsg)
+            Projection proj = new Projection(aoiEpsg)
+            if(targetProj.epsg != proj.epsg)
             {
-               result = srcGeom
+               result = proj.transform(result, targetProj)
             }
-            else
-            {
-               Projection targetProj = new Projection(targetEpsg)
-
-               if(targetProj)
-               {
-                  result = aoiProj.transform(srcGeom, targetProj)
-               }
-            }
-         }
-         else
-         {
-            result = srcGeom
          }
       }
 
