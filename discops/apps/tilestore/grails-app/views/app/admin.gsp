@@ -136,10 +136,14 @@
                     </div>
                     <div class="collapse navbar-collapse" id="previewMapNavbar">
                         <form class="navbar-form navbar-left" role="search">
-                            <button type="button" id="ingestModalButton" class="btn btn-primary disabled"
+                            <button type="button" id="ingestModalButton" class="btn btn-primary"
                                     data-toggle="tooltip" data-placement="bottom"
                                     title="Ingest the definied AOI"><i
                                     class="fa fa-sign-in fa-rotate-90"></i>&nbsp;&nbsp;Ingest</button>
+                            <button type="button" id="clearAoiButton" class="btn btn-primary"
+                                    data-toggle="tooltip" data-placement="bottom"
+                                    title="Clear the defined AOI"><i
+                                    class="fa fa-trash-o"></i>&nbsp;&nbsp;Clear</button>
                         </form>
                         <ul class="nav navbar-nav navbar-right">
                             <li id="omarMapToolsDropdown" class="dropdown disabled">
