@@ -47,7 +47,7 @@ class GetActualBoundsCommand implements CaseInsensitiveBind
 
       if(proj&&(proj.epsg!= targetProj.epsg))
       {
-         proj.transform(result,targetProj)
+         result = proj.transform(result,targetProj)
       }
 
       result
