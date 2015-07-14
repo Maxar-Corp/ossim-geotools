@@ -39,7 +39,7 @@ import org.w3c.dom.Node
 )
 class TileStoreIteratorMeta extends BaseStepMeta implements StepMetaInterface
 {
-   TileStoreCommon tileStoreCommon
+   TileStoreCommon tileStoreCommon = new TileStoreCommon()
 
    String layerName
    String aoi

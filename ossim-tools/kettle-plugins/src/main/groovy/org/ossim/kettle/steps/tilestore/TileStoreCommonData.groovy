@@ -43,6 +43,7 @@ class TileStoreCommonData extends BaseStepData implements StepDataInterface
    }
    void initialize(TileCacheConfig config)
    {
+      // shutdown any current hibernate sessions
       hibernate?.shutdown()
       hibernate = new TileCacheHibernate()
       hibernate.initialize(config.connectionParams())
@@ -52,5 +53,6 @@ class TileStoreCommonData extends BaseStepData implements StepDataInterface
    void shutdown()
    {
       hibernate?.shutdown()
+      hibernate = null
    }
 }

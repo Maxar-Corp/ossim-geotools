@@ -142,6 +142,7 @@ http://www.springframework.org/schema/context/spring-context.xsd">
     <bean name="tileCacheLayerInfoDAO" class="joms.geotools.tileapi.hibernate.controller.TileCacheLayerInfoDAO" />
     <bean name="tileCacheServiceDAO" class="joms.geotools.tileapi.hibernate.controller.TileCacheServiceDAO" />
     <bean name="accumuloTileLayer" class="joms.geotools.tileapi.accumulo.AccumuloTileLayer" />
+    <bean name="getMapService" class="joms.geotools.tileapi.GetMapService" />
 </beans>
 """
    }
