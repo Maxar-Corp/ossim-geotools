@@ -1,6 +1,6 @@
 "use strict";
 var AppClient = (function () {
-    var mapEpsg = 'EPSG:4326';
+    var mapEpsg = 'EPSG:3857';
     var loadParams;
     var currentTilelayer;
     var $zoomFirstValidTile = $('#zoomFirstValidTile');
