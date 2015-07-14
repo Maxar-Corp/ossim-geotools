@@ -13,6 +13,8 @@ var AppOmarWfsAdmin = (function () {
     var filter;
     var filterDateType;
 
+    var previewBool = false;
+
     var previewFeatureVectorLayer, previewFeatureVectorSource, omarPreviewLayerId, omarPreviewLayer;
     var previewFeatureArray = [];
     var $omarMapToolsDropdown = $("#omarMapToolsDropdown");
@@ -468,10 +470,8 @@ var AppOmarWfsAdmin = (function () {
     // Adds the OMAR WMS image to the map for previewing.
     function previewLayer(obj){
 
-        //$('#ingestImageFromCard').show();
-
-        //TODO: Need to reset the AOI if the user clicks on another preview image
-        AppManageLayersAdmin.aoiVector.getSource().clear();
+        AppIngestTileAdmin.setIngestBool(true);
+        console.log('previewBool in previewLayer: ' + AppIngestTileAdmin.getIngestBool());
 
         // Enable the tools menu for cutting out AOI's
         $omarMapToolsDropdown.removeClass("disabled");
@@ -482,6 +482,7 @@ var AppOmarWfsAdmin = (function () {
         });
 
         omarPreviewLayerId = obj.properties.id;
+        console.log(omarPreviewLayerId);
         if(omarPreviewLayer){
             console.log('omarPreviewLayer true');
             omarPreviewLayer.getSource().updateParams({'LAYERS': omarPreviewLayerId});
@@ -602,7 +603,6 @@ var AppOmarWfsAdmin = (function () {
 
         }
 
-
         // This sets the ingest clamping obj from the image
         objImageClamp.layerName = AppAdmin.$tilelayerSelect.val();
         objImageClamp.resLevels = obj.properties.number_of_res_levels;
@@ -669,7 +669,7 @@ var AppOmarWfsAdmin = (function () {
         },
         previewLayer: previewLayer,
         objImageClamp: objImageClamp
-    };
+    }
 })();
 
 //var wfsUrl = "http://omar.ossim.org/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=20&outputFormat=geojson&filter=file_type='tiff'";
