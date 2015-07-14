@@ -36,7 +36,7 @@ import tilestore.job.JobStatus
 import javax.imageio.ImageIO
 import javax.servlet.http.HttpServletRequest
 import java.awt.image.BufferedImage
-import java.util.concurrent.ConcurrentHashMap
+//import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.LinkedBlockingQueue
 import groovy.io.FileType
 
@@ -52,7 +52,7 @@ class LayerManagerService implements InitializingBean
    TileCacheServiceDAO daoTileCacheService
    def dataSourceProps
    LinkedBlockingQueue getMapBlockingQueue
-   ConcurrentHashMap layerCache = new ConcurrentHashMap()
+  // ConcurrentHashMap layerCache = new ConcurrentHashMap()
 
    def layerReaderCache = [:]
    static def id = 0
@@ -381,8 +381,8 @@ class LayerManagerService implements InitializingBean
 
             constraints.intersects = "${geom}"
             constraints.intersectsSrid = "${layerInfo.epsgCode.split(":")[-1]}".toString()
-            if(cmd.minLevel!=null) constraints.minLevel = cmd.minLevel
-            if(cmd.maxLevel!= null) constraints.maxLevel = cmd.maxLevel
+            if((cmd.minLevel!=null)&&(cmd.minLevel>=0)) constraints.minLevel = cmd.minLevel
+            if((cmd.maxLevel!= null)&&(cmd.maxLevel>=0)) constraints.maxLevel = cmd.maxLevel
          }
       }
 
@@ -399,13 +399,13 @@ class LayerManagerService implements InitializingBean
       layerNames.each { layer ->
          //   def gridReader = gridFormat.getReader( new URL( "${tileAccessUrl}?layer=${layer}" ) )
          //   def mosaic = new GridReaderLayer( gridReader, new RasterSymbolizer().gtStyle )
-
-         def l = layerCache.get(layer)
-         if (!l)
-         {
+         def l
+       //  def l = layerCache.get(layer)
+       //  if (!l)
+       //  {
             l = daoTileCacheService.newGeoscriptTileLayer(layer)
-            layerCache.put(layer, l)
-         }
+       //     layerCache.put(layer, l)
+       //  }
          // println l
          if (l)
          {
@@ -427,47 +427,58 @@ class LayerManagerService implements InitializingBean
 
    def getFirstTileMeta(GetFirstTileCommand cmd)
    {
+      println "_________________________${cmd}"
       def result = [status : HttpStatus.OK,
                     message: "",
                     data   : []]
 
-      if (cmd.layer)
-      {
-         def layerInfo = daoTileCacheService.getLayerInfoByName(cmd.layer)
-         if (layerInfo)
+      try{
+         if (cmd.layer)
          {
-            def tileList = daoTileCacheService.getTilesMetaWithinConstraints(layerInfo, [offset: 0, maxRows: 1, orderBy: "Z+D"])
-            HashMap tempResult = tileList[0]
-            if (tempResult.bounds)
+            println "LAYER ============ ${cmd}"
+            def layerInfo = daoTileCacheService.getLayerInfoByName(cmd.layer)
+            if (layerInfo)
             {
-               Geometry g = GeoScript.wrap(tempResult.bounds)
-
-               Bounds b = g.bounds
-
-               // println g.toString()
-               // println tempResult.bounds.toString()
-
-               if (cmd.targetEpsg)
+               println "GOT LAYER INFO!!!!!"
+               def tileList = daoTileCacheService.getTilesMetaWithinConstraints(layerInfo, [offset: 0, maxRows: 1, orderBy: "Z+D"])
+               println "TILE LIST ====== ${tileList}"
+               HashMap tempResult = tileList[0]
+               if (tempResult.bounds)
                {
-                  b.proj = new Projection(layerInfo.epsgCode)
-                  g = b.proj.transform(g, new Projection(cmd.targetEpsg))
-                  b = g.bounds
+                  Geometry g = GeoScript.wrap(tempResult.bounds)
+
+                  Bounds b = g.bounds
+
+                  // println g.toString()
+                  // println tempResult.bounds.toString()
+
+                  if (cmd.targetEpsg)
+                  {
+                     b.proj = new Projection(layerInfo.epsgCode)
+                     g = b.proj.transform(g, new Projection(cmd.targetEpsg))
+                     b = g.bounds
+                     tempResult.bounds = g.toString()
+                  }
+
                   tempResult.bounds = g.toString()
+                  tempResult.centerX = (b.minX + b.maxX) * 0.5
+                  tempResult.centerY = (b.minY + b.maxY) * 0.5
+                  tempResult.minx = b.minX
+                  tempResult.miny = b.minY
+                  tempResult.maxx = b.maxX
+                  tempResult.maxy = b.maxY
+                  tempResult.epsg = layerInfo.epsgCode
                }
 
-               tempResult.bounds = g.toString()
-               tempResult.centerX = (b.minX + b.maxX) * 0.5
-               tempResult.centerY = (b.minY + b.maxY) * 0.5
-               tempResult.minx = b.minX
-               tempResult.miny = b.minY
-               tempResult.maxx = b.maxX
-               tempResult.maxy = b.maxY
-               tempResult.epsg = layerInfo.epsgCode
+               result.data = tempResult
             }
-
-            result.data = tempResult
          }
       }
+      catch(e)
+      {
+         e.printStackTrace()
+      }
+
 
       result
    }
@@ -833,8 +844,9 @@ class LayerManagerService implements InitializingBean
                constraints.intersects     = "${geom}"
                constraints.intersectsSrid = "${layerInfo.epsgCode.split(":")[-1]}".toString()
             }
-            constraints.minLevel = cmd.minLevel
-            constraints.maxLevel = cmd.maxLevel
+            if(cmd.minLevel&&cmd.minLevel>=0) constraints.minLevel = cmd.minLevel
+            if(cmd.maxLevel&&cmd.maxLevel>=0) constraints.maxLevel = cmd.maxLevel
+            //constraints.maxLevel = cmd.maxLevel
 
             def queryString = "select Count(*) from ${layerInfo?.tileStoreTable} ${daoTileCacheService.createWhereClause( constraints )}".toString()
             Sql sql = hibernate.cacheSql
@@ -862,17 +874,20 @@ class LayerManagerService implements InitializingBean
                      ++average
                      BufferedImage image = imageTile?.image
 
-                     numberOfComponents = image.colorModel.numComponents?:1
+                     if(image)
+                     {
+                        numberOfComponents = image.colorModel.numComponents?:1
 
 
-                     // calculate average JPEG compressiong rate
-                     ByteArrayOutputStream output = new ByteArrayOutputStream()
-                     ByteArrayOutputStream outputPng = new ByteArrayOutputStream()
-                     ImageIO.write(image, "jpeg", output)
-                     ImageIO.write(image, "png", outputPng)
-                     rawTileSize    += imageTile.data.size()
-                     pngOutputSize  += outputPng.toByteArray().size()
-                     jpegOutputSize += output.toByteArray().size()
+                        // calculate average JPEG compressiong rate
+                        ByteArrayOutputStream output = new ByteArrayOutputStream()
+                        ByteArrayOutputStream outputPng = new ByteArrayOutputStream()
+                        ImageIO.write(image, "jpeg", output)
+                        ImageIO.write(image, "png", outputPng)
+                        rawTileSize    += imageTile.data.size()
+                        pngOutputSize  += outputPng.toByteArray().size()
+                        jpegOutputSize += output.toByteArray().size()
+                     }
                   }
 
                }
@@ -899,6 +914,7 @@ class LayerManagerService implements InitializingBean
 
 
                result.data?.actualBounds = getActualBounds(boundsCmd)
+               println "ACTUAL BOUNDS ============== ${result.data?.actualBounds}"
              //   Bounds bounds = new Bounds(result.data.actualBounds.minx,
              //           result.data.actualBounds.miny,
              //           result.data.actualBounds.maxx,
