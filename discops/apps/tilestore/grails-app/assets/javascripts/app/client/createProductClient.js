@@ -107,18 +107,24 @@ var CreateProductClient = (function () {
         gpkgInputTileLayer = $tileLayerSelect.val();
 
         //console.log(wkt);
+        //console.log('----gpkgInputTileLayer------');
         //console.log(gpkgInputTileLayer);
-        //var dataObject = {"layer": gpkgInputTileLayer, "aoi": wkt}
-        //console.log(dataObject);
+        //console.log('---------------------------');
+        //
+        //console.log("url " + urlLayerActualBounds);
 
         $.ajax({
             url: urlLayerActualBounds,
             type: 'POST',
-            data: {"layer": gpkgInputTileLayer, "aoi": wkt},
+            data: {"layer": gpkgInputTileLayer, "aoi": wkt, "aoiEpsg":  AppClient.mapEpsg},
             dataType: 'json',
             // TODO: Add $promise function for success
             success: function (data) {
-                //console.log(data);
+
+
+                console.log('----getActualBounds (data)------');
+                console.log(data);
+                console.log('---------------------------');
                 $aoiLod.html(data.minLevel + ' to ' + data.maxLevel);
 
                 var min = data.minLevel;
@@ -127,7 +133,7 @@ var CreateProductClient = (function () {
                 $productMinLevel.empty();
                 $productMaxLevel.empty();
 
-                //console.log('min: ' + min);
+                console.log('min: ' + min);
 
                 for (min; min <= max; min++) {
                     //console.log('min: ' + min);
@@ -363,9 +369,9 @@ var CreateProductClient = (function () {
                 product.maxLevel = $productMaxLevel.val();
                 product.outputEpsg = $productEpsgCode.val();
 
-                console.log('---------------product-------------');
-                console.log(product);
-                console.log('-----------------------------------');
+                //console.log('---------------product-------------');
+                //console.log(product);
+                //console.log('-----------------------------------');
 
                 $.ajax({
                     url: urlProductExport,
