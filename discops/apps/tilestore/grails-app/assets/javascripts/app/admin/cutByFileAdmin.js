@@ -1,7 +1,9 @@
 "use strict";
-var CutByFileClient = (function () {
+var CutByFileAdmin = (function () {
 
     // Cache DOM elements
+
+    var $ingestModalButton = $('#ingestModalButton');
 
     // Upload Form DOM elements
     var $uploadCutFile = $('#uploadCutFile');  // supports shapefile, kml, and geojson
@@ -12,7 +14,6 @@ var CutByFileClient = (function () {
     var $sourceEpsgSelect = $('#sourceEpsgSelect');
     var $files = $('#files'); // displays the name of the uploaded file
     var $closeUploadCutByFileModal = $('#closeUploadCutByFileModal');
-    $cutFormTargetEpsg.val(AppClient.mapEpsg);  // grabs the EPSG code from the map element
 
     // Paste Form DOM elements
     var $pasteGeometry = $('#pasteGeometry');  // <li> element in tools dropdown
@@ -27,6 +28,8 @@ var CutByFileClient = (function () {
         removeFeature, // previously uploaded feature
         progress // file upload progress percentage
 
+    $cutFormTargetEpsg.val(AppAdmin.mapEpsg);  // grabs the EPSG code from the map element // #
+
     function addWktToMap(wktString){
 
         //console.log(wktString);
@@ -37,29 +40,27 @@ var CutByFileClient = (function () {
         cutFeatureExtent = cutFeature.getGeometry().getExtent();
         console.log(cutFeatureExtent);
 
-        //console.log(CreateProductClient.aoiFeatureOverlay.getFeatures().getArray().length);
-        //if (CreateProductClient.aoiFeatureOverlay.getFeatures().getArray().length >= 1 ) {
-        //
-        //    console.log('aoiFeatureOverlay.getFeatures().getArray().length >= 1');
-        //    console.log(CreateProductClient.aoiFeatureOverlay.getFeatures().getArray()[0]);
-        //    removeFeature = CreateProductClient.aoiFeatureOverlay.getFeatures().getArray()[0];
-        //    CreateProductClient.aoiFeatureOverlay.removeFeature(removeFeature);
-        //
-        //}
-
-        if (AddLayerClient.aoiVector.getSource().getFeatures().length >= 1) {
-            AddLayerClient.aoiVector.getSource().clear();
+        if (AppManageLayersAdmin.aoiVector.getSource().getFeatures().length >= 1) {
+            AppManageLayersAdmin.aoiVector.getSource().clear();
             //console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
         }
 
-        //CreateProductClient.aoiFeatureOverlay.addFeature(cutFeature);
-        AddLayerClient.aoiVector.getSource().addFeature(cutFeature);
-        //AppClient.map.addOverlay(CreateProductClient.aoiFeatureOverlay);
-        AppClient.map.getView().fitExtent(cutFeatureExtent, AppClient.map.getSize());
+        AppManageLayersAdmin.aoiVector.getSource().addFeature(cutFeature);
 
-        CreateProductClient.createAoi(wktString);
+        AppAdmin.mapOmar.getView().fitExtent(cutFeatureExtent, AppAdmin.mapOmar.getSize());
 
-        CreateProductClient.$createGp.removeClass("disabled");
+        //CreateProductClient.createAoi(wktString);
+
+        //CreateProductClient.$createGp.removeClass("disabled");
+
+        AppIngestTileAdmin.objIngestImage.aoi = wktString;
+
+        //console.log(AppIngestTileAdmin.getIngestImageObj());
+
+        AppIngestTileAdmin.setIngestLevels();
+
+        $ingestModalButton.removeClass('disabled');
+
     }
 
     function resetUploadForm(){
@@ -105,8 +106,8 @@ var CutByFileClient = (function () {
             console.log('---fileupload (data)------');
             console.log(data);
             console.log('---------------------------');
-            addWktToMap(data.result.wkt);
             console.log(data.result.wkt);
+            addWktToMap(data.result.wkt);
             $.each(data.files, function (index, file) {
                 $('#files').text('Successfully uploaded: ' + file.name) ;
             });
@@ -160,7 +161,7 @@ var CutByFileClient = (function () {
         var pasteObj = {
             "geometry": $geometryPasteTextArea.val(),
             "sourceEpsg": $pasteFormEpsgSourceSelect.val(),
-            "targetEpsg": AppClient.mapEpsg
+            "targetEpsg":  AppAdmin.mapOmar.mapEpsg
         }
         console.log('---------pasteObj----------');
         console.log(pasteObj);

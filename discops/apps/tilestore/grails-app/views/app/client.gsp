@@ -363,7 +363,7 @@
                 </div><!-- /.modal-body -->
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog modal-lg -->
-    </div><!-- /.modal fade "exportGeopackageModal" -->
+    </div><!-- /.modal fade "uploadCutByFileModal" -->
 
         <!-- Paste cut geometry form -->
         <div class="modal fade" id="pasteCutGeometryModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
@@ -412,7 +412,7 @@
     <asset:javascript src="app/client.js"/>
 
     <g:javascript>
-
+            "use strict";
             var initParams = ${raw(initParams.toString())};
             AddLayerClient.initialize(initParams);
             AppClient.initialize(initParams);
