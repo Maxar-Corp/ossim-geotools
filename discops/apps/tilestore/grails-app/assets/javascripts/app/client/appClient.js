@@ -100,7 +100,8 @@ var AppClient = (function () {
                 "timeOut": "10000"
 
             }
-            toastr.info('Use the < ALT > and < SHIFT > keys together to define an Area of Interest, and then click "Create Geopackage" to generate a .gpkg file.', 'Define Geopackage AOI');
+            toastr.info('Use the options under the "Tools" menu to define an Area of Interest, and then click "Create' +
+                ' Product" to generate an output file.', 'Define Product AOI');
 
             // Add Zoom Slider
             var zoomslider = new ol.control.ZoomSlider();

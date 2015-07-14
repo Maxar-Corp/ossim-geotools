@@ -2,7 +2,7 @@
 *= require ../ol3/ol.css
 *= require bootstrap.css
 *= require font-awesome.css
-
+*= require common/jquery.fileupload.css
 *= require common/bootstrap-select.css
 *= require common/toastr.css
 *= require common/ladda-themeless.min.css

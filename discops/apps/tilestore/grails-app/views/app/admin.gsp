@@ -152,10 +152,14 @@
                                     Rectangle</a></li>
                                     <li><a id="drawPolygon" href="#"><i class="fa fa-hand-o-up fa-lg"></i>&nbsp;&nbsp;by
                                     Freehand Polygon</a></li>
-                                    %{--<li><a id="drawCircle" href="#"><i class="fa fa-circle-thin"></i>&nbsp;&nbsp;by Circle</a></li>--}%
-                                    <li class="divider"></li>
                                     <li class="disabled"><a id="endCuts" href="#"><i
                                             class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Manual Cutting Off</a></li>
+                                    <li class="divider"></li>
+                                    <li role="presentation" class="dropdown-header">Pre-generated cut</li>
+                                    <li><a id="uploadCutFile" href="#"><i
+                                            class="fa fa-upload fa-lg"></i>&nbsp;&nbsp;Upload Cut File</a></li>
+                                    <li><a id="pasteGeometry" href="#"><i
+                                            class="fa fa-paste fa-lg"></i>&nbsp;&nbsp;Paste Geometry</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -708,6 +712,69 @@
     </div><!-- /.modal-dialog modal-lg -->
 </div><!-- /.modal fade "deleteTileLayerModal" -->
 
+<!-- Upload cut by file form -->
+<div class="modal fade" id="uploadCutByFileModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     Saria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title"><i class="fa fa-scissors fa-lg"></i>&nbsp;&nbsp;Upload cut from file
+                </h3>
+            </div>
+            <div class="modal-body">
+                <form id="uploadCutByFileForm" data-toggle="validator">
+                    <div class="container">
+                        <div class="row col-sm-6 col-md-6">
+
+                            <div id="uploadCutByFormElements">
+                                <p>Select a shapefile, geojson, or KML file, and upload to the server to perform the
+                                cut for the
+                                specified
+                                geometries contained in the file.</p>
+                                <p class="alert alert-info">You can also drag and drop the files into
+                                the map to perform a cut.</p>
+
+                                <input type="hidden" id="cutFormTargetEpsg" class="form-control"
+                                       name="targetEpsg" value="EPSG:3857">
+
+                                <input type="hidden" id="cutFormSourceEpsg" class="form-control"
+                                       name="sourceEpsg" value="EPSG:3857">
+
+                                <label for="sourceEpsgSelect">Set source projection</label>
+                                <select id="sourceEpsgSelect" class="form-control selectpicker show-tick">
+                                    <option value="EPSG:3857">EPSG: 3857</option>
+                                    <option value="EPSG:4326">EPSG: 4326</option>
+                                </select>
+                                <br>
+                                <br>
+                                <!-- The fileinput-button span is used to style the file input field as button -->
+                                <span class="btn btn-primary fileinput-button">
+                                    <i class="fa fa-folder-open"></i>&nbsp;&nbsp;
+                                    <span>Browse</span>
+                                    <!-- The file input field used as target for the file upload widget -->
+                                    <input id="fileupload" type="file" name="files[]" multiple>
+                                </span>
+                                <br>
+                                <br>
+                                <!-- The global progress bar -->
+                                <div id="progress" class="progress">
+                                    <div class="progress-bar progress-bar-success progress-bar-striped"></div>
+                                </div>
+                                <!-- The container for the uploaded files -->
+                                <div id="files" class="files alert alert-success" style="display: none"></div>
+                                <button id="closeUploadCutByFileModal" type="button" class="btn btn-primary pull-right"
+                                        data-style="expand-left">Close</button>
+                            </div>
+
+                        </div>
+                    </div><!-- /.container -->
+                </form><!-- /#uploadCutByFileForm -->
+            </div><!-- /.modal-body -->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog modal-lg -->
+</div><!-- /.modal fade "uploadCutByFileModal" -->
+
 <!-- Ingest image modal -->
 <div class="modal fade" id="ingestImageModal" tabindex="-1" role="dialog"
      aria-labelledby="ingestImageModal" Saria-hidden="true">
@@ -809,6 +876,7 @@
 <g:javascript>
     $( document ).ready( function ()
     {
+        "use strict";
         var initParams = ${raw( initParams.toString() )};
         //console.log('The params are:');
         //console.log(initParams);
@@ -818,6 +886,7 @@
         AppOmarWfsAdmin.initialize(initParams);
         AppIngestTileAdmin.initialize(initParams);
         AppDrawFeaturesAdmin.initialize(initParams);
+        CutByFileAdmin.initialize(initParams);
 
         //Use polyfill to utilize HTML5 form validation in IE9
         H5F.setup(document.getElementById("createTileLayerForm"));

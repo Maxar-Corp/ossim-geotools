@@ -1,5 +1,7 @@
 "use strict";
 var AppAdmin = (function () {
+    var mapEpsg = 'EPSG:3857';
+
     // TODO: Cache jquery selectors.  Possibly use this solution:
     //      http://ttmm.io/tech/selector-caching-jquery/
 
@@ -41,10 +43,6 @@ var AppAdmin = (function () {
     var initLayer;
 
     // Begin map stuff ##############################################################
-    // 4326
-    var melbourneFlorida4326 = [-80.6552775, 28.1174805];
-    // 3857
-    var melbourneFlorida3857 = ol.proj.transform([-80.6552775, 28.1174805], 'EPSG:4326', 'EPSG:3857');
 
     var coordTemplate = 'Lat: {y}, Lon: {x}';
     var mousePositionControlOmar = new ol.control.MousePosition({
@@ -68,7 +66,8 @@ var AppAdmin = (function () {
         //]),
         layers: AppManageLayersAdmin.layers,
         view: new ol.View({
-            zoom: 2,
+            zoom: 3,
+            projection: mapEpsg,
             center: ol.proj.transform([-21,33], 'EPSG:4326', 'EPSG:3857')
         }),
         target: 'mapOmar'
@@ -122,17 +121,6 @@ var AppAdmin = (function () {
         mapTile.removeLayer(removeOldLayer);
 
         //console.log('Now loading: ' + addNewLayer);
-
-        //console.message()
-        //    .span({
-        //        color: '#337ab7', fontSize: 14
-        //    })
-        //    .text('(appAdmin.js 144): ')
-        //    .spanEnd()
-        //    .text('Now loading: ' + addNewLayer, {
-        //        color: 'green', fontSize: 14
-        //    })
-        //    .print();
 
         addNewLayer = new ol.layer.Tile( {
             opacity: 1.0,
@@ -217,18 +205,7 @@ var AppAdmin = (function () {
     var objLayer = {}
 
     $tileLayerSelect.on('change', function() {
-        // console.log('select on change:' + $tileLayerSelect.val())
-
-        console.message()
-            .span({
-                color: '#337ab7', fontSize: 14
-            })
-                .text('(appAdmin.js 241): ')
-            .spanEnd()
-            .text('$tileLayerSelect.on.change value: ' + $tileLayerSelect.val(), {
-                color: 'green', fontSize: 14
-            })
-            .print();
+        console.log('select on change:' + $tileLayerSelect.val())
 
         switchCurrentLayer(initLayer, $tileLayerSelect.val());
     });
@@ -624,6 +601,7 @@ var AppAdmin = (function () {
         },
         mapOmar: mapOmar,
         mapTile: mapTile,
+        mapEpsg: mapEpsg,
         $tilelayerSelect: $tileLayerSelect
     };
 })();

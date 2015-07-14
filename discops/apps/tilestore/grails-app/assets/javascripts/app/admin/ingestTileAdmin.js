@@ -136,11 +136,6 @@ var AppIngestTileAdmin = (function () {
 
         console.log(objIngestImage);
 
-        console.message()
-            .text('Hey take a look at the this object ')
-            .object(objIngestImage)
-            .print();
-
         //TODO: Refactor using promises...
         $.ajax({
             url: "/tilestore/layerManager/ingest",
