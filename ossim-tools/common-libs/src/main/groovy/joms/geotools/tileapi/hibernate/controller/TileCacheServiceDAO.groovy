@@ -4,6 +4,7 @@ import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.io.WKTReader
 import geoscript.geom.Bounds
 import geoscript.geom.io.KmlReader
+import geoscript.geom.io.WktReader
 import geoscript.layer.Pyramid
 import geoscript.proj.Projection
 import groovy.sql.Sql
@@ -638,6 +639,22 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
           result.minLevel = row.min_level
           result.maxLevel = row.max_level
         }
+      }
+
+      // if we have an intersection invoved in the selection then we must crop the bounds
+      //
+      if(constraints?.intersects)
+      {
+        Bounds bounds = new WktReader().read(constraints?.intersects)?.bounds
+        Bounds fullBounds = new Bounds(result.minx, result.miny, result.maxx, result.maxy)
+
+        Bounds resultBounds = bounds.intersection(fullBounds)
+
+        result.minx = resultBounds.minX
+        result.miny = resultBounds.minY
+        result.maxx = resultBounds.maxX
+        result.maxy = resultBounds.maxY
+
       }
     }
 

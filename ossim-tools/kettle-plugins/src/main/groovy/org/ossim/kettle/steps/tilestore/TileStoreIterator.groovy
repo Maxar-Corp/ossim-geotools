@@ -9,6 +9,7 @@ import joms.geotools.tileapi.accumulo.ImageTileKey
 import joms.geotools.tileapi.accumulo.TileCacheImageTile
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
 import org.ossim.core.SynchOssimInit
+import org.ossim.kettle.common.StepUtil
 import org.pentaho.di.core.Const
 import org.pentaho.di.core.exception.KettleException
 import org.pentaho.di.core.row.RowDataUtil
@@ -59,74 +60,6 @@ class TileStoreIterator  extends BaseStep implements StepInterface
    TileStoreIterator(StepMeta stepMeta, StepDataInterface stepDataInterface,
                      int copyNr, TransMeta transMeta, Trans trans) {
       super(stepMeta, stepDataInterface, copyNr, transMeta, trans);
-   }
-   private String getFieldValueAsString(String fieldValue, def r,
-                                        TileStoreIteratorMeta meta,
-                                        TileStoreCommonData data)
-   {
-      String result = fieldValue
-
-      if(fieldValue && r)
-      {
-         if(fieldValue.startsWith("\${"))
-         {
-            result = environmentSubstitute(fieldValue?:"")
-         }
-         else
-         {
-            Integer fieldIndex   =  getInputRowMeta().indexOfValue(fieldValue)
-            if(fieldIndex >= 0)
-            {
-               result = getInputRowMeta().getString(r,fieldIndex)
-            }
-         }
-      }
-
-      result
-   }
-   private Geometry getGeometryField(String fieldValue, def r, TileStoreIteratorMeta meta,
-                                     TileStoreCommonData data)
-   {
-      Geometry result
-
-      if(fieldValue && r)
-      {
-         try{
-            if(fieldValue.startsWith("\${"))
-            {
-               String v = environmentSubstitute(fieldValue?:"")
-
-               if(v) result = new WktReader().read(v)
-
-            }
-            else
-            {
-               Integer fieldIndex   =  getInputRowMeta().indexOfValue(fieldValue)
-               if(fieldIndex >= 0)
-               {
-                  if(r[fieldIndex] instanceof com.vividsolutions.jts.geom.Geometry)
-                  {
-                     result = Geometry.wrap(r[fieldIndex])
-                  }
-                  else
-                  {
-                     String v = getInputRowMeta().getString(r,fieldIndex)
-                     result = new WktReader().read(v)
-                  }
-               }
-            }
-            if(!result)
-            {
-               result = new WktReader().read(fieldValue)
-            }
-         }
-         catch(e)
-         {
-            println "Error in BasicTiling: ${e}"
-            result = null
-         }
-      }
-      result
    }
 
    public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws KettleException
@@ -179,7 +112,7 @@ class TileStoreIterator  extends BaseStep implements StepInterface
          // setup query for paging data from the database
          if(nextRowFlag)
          {
-            String layerName = getFieldValueAsString(meta?.layerName,currentInputRow,meta,data)
+            String layerName = StepUtil.getFieldValueAsString(meta?.layerName,currentInputRow,this)
             Geometry geom
             String aoiEpsg
             String whereClause = ""
@@ -200,8 +133,8 @@ class TileStoreIterator  extends BaseStep implements StepInterface
                logError("Layername '${layerName}' not found in database")
                return true
             }
-            geom = getGeometryField(meta?.aoi, currentInputRow, meta, data)
-            aoiEpsg = getFieldValueAsString(meta?.aoiEpsg,currentInputRow,meta,data)
+            geom    = StepUtil.getGeometryField(meta?.aoi, currentInputRow, this)
+            aoiEpsg = StepUtil.getFieldValueAsString(meta?.aoiEpsg,currentInputRow,this)
             if(geom&&aoiEpsg&&(aoiEpsg.toUpperCase()!=layerInfo.epsgCode.toUpperCase()))
             {
                Projection layerProjection = new Projection(layerInfo.epsgCode)

@@ -14,6 +14,9 @@ class ProductExportCommand implements CaseInsensitiveBind{
    String layer// = [] as String[]
    String aoi
    String aoiEpsg
+   Integer minLevel
+   Integer maxLevel
+   String outputEpsg
    String type
    HashMap properties = [:]
 }

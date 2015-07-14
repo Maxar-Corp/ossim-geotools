@@ -8,6 +8,7 @@ import geoscript.layer.Pyramid
 import geoscript.proj.Projection
 import groovy.json.JsonBuilder
 import joms.oms.TileCacheSupport
+import joms.oms.ossimGpt
 
 /**
  * Created by gpotts on 1/25/15.

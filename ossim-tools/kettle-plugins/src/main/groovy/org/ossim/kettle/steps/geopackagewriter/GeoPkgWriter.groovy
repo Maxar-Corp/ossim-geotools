@@ -37,6 +37,7 @@ import java.awt.image.DataBufferByte
 import java.awt.image.PixelInterleavedSampleModel
 import java.awt.image.Raster
 import java.awt.image.SampleModel
+import java.awt.image.SinglePixelPackedSampleModel
 import java.awt.image.renderable.ParameterBlock
 
 /**
@@ -123,7 +124,6 @@ class GeoPkgWriter extends BaseStep implements StepInterface
          options.append = "false"
       }
 
-      println "OPTIONS ========= ${options}"
       openedFile = gpkgWriter?.openFile(options)
       if(!openedFile)
       {
@@ -160,6 +160,7 @@ class GeoPkgWriter extends BaseStep implements StepInterface
          rowIdx           =  getInputRowMeta().indexOfValue(meta.tileRowField)
          colIdx           =  getInputRowMeta().indexOfValue(meta.tileColField)
          groupIdIdx       =  getInputRowMeta().indexOfValue(meta.groupField)
+
          filenameIdx      =  getInputRowMeta().indexOfValue(meta.filenameField)
          layerNameIdx     =  getInputRowMeta().indexOfValue(meta.layerNameField)
          epsgIdx          =  getInputRowMeta().indexOfValue(meta.epsgCodeField)
@@ -214,10 +215,9 @@ class GeoPkgWriter extends BaseStep implements StepInterface
       {
          RenderedOp image = imageConverter.getImage(r[imageIdx]) //row[imageidx] as RenderedImage
 
-
          if(image.numBands > 0)
          {
-            if((image.width != 256)|| (image.height != 256) )
+            if ((image.width != 256) || (image.height != 256))
             {
                throw KettleException("Geopackage only supports images with width and height of 256x256")
             }
@@ -228,50 +228,76 @@ class GeoPkgWriter extends BaseStep implements StepInterface
             //   modifedImage = JAI.create("BandSelect", image, [0,1,2] as int[])
             //}
             // else if(image.numBands < 3)
-            if(image.numBands < 3)
+            if (image.numBands < 3)
             {
-               modifedImage = JAI.create("BandSelect", image, [0,0,0] as int[])
-            }
-            else if(image.numBands > 4)
+               modifedImage = JAI.create("BandSelect", image, [0, 0, 0] as int[])
+            } else if (image.numBands > 4)
             {
                throw KettleException("Geopackage writer step only supports images with 1, 3 or 4 bands")
-            }
-            else
+            } else
             {
                // nothing to do
             }
             SampleModel sampleModel = modifedImage.sampleModel
-            if(sampleModel instanceof PixelInterleavedSampleModel)
+            if (sampleModel instanceof PixelInterleavedSampleModel)
             {
                PixelInterleavedSampleModel pilSampleModel = sampleModel as PixelInterleavedSampleModel
                // println "${pilSampleModel.numBands}, ${pilSampleModel.pixelStride}, ${pilSampleModel.scanlineStride}, ${pilSampleModel.bandOffsets}, ${pilSampleModel.bankIndices}"
                Raster raster = modifedImage?.data
                DataBuffer dataBuffer = raster?.dataBuffer
 
-               if(dataBuffer instanceof DataBufferByte)
+               if (dataBuffer instanceof DataBufferByte)
                {
                   oIData.makeBlank()
-                  if(pilSampleModel.pixelStride == 4)
+                  if (pilSampleModel.pixelStride == 4)
                   {
                      oIData.loadTile8WithAlpha(dataBuffer.data, ossimInterleaveType.OSSIM_BIP)
-                  }
-                  else
+                  } else
                   {
                      oIData.loadTile8(dataBuffer.data, ossimInterleaveType.OSSIM_BIP)
                   }
                   oIData.validate()
                   //println "STATUS: ${oIData.getDataObjectStatus()}"
-                //  println  "Writer Level, col, row: ${level}, ${colValue},${rowValue}"
-                  if(!gpkgWriter.writeTile(imageData, level, rowValue, colValue))
+                  //  println  "Writer Level, col, row: ${level}, ${colValue},${rowValue}"
+                  if (!gpkgWriter.writeTile(imageData, level, rowValue, colValue))
                   {
                      // println "UNABLE TO WRITE TILE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
                   }
-               }
-               else
+               } else
                {
                   logError("Unsupported buffer type ${dataBuffer.class.name}".toString())
                }
             }
+               /*
+            else if(sampleModel instanceof SinglePixelPackedSampleModel)
+            {
+               SinglePixelPackedSampleModel sppSampleModel = sampleModel as SinglePixelPackedSampleModel
+               Raster raster = modifedImage.data
+               DataBuffer dataBuffer = raster?.dataBuffer
+
+               if(dataBuffer instanceof DataBufferByte)
+               {
+                  oIData.makeBlank()
+                  if (sppSampleModel.scanlineStride == 4)
+                  {
+                     println "NEED TO LOAD PACKED ALPHA"
+                     //oIData.loadTile8WithAlpha(dataBuffer.data, ossimInterleaveType.OSSIM_BIP)
+                  }
+                  else
+                  {
+                     println "NEED TO LOAD PACKED NO ALPHA"
+                     //oIData.loadTile8(dataBuffer.data, ossimInterleaveType.OSSIM_BIP)
+                  }
+                  oIData.validate()
+
+//                  if (!gpkgWriter.writeTile(imageData, level, rowValue, colValue))
+//                  {
+                     // println "UNABLE TO WRITE TILE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+//                  }
+
+               }
+            }
+            */
             else
             {
                logError("Unsupported interleave type ${sampleModel.class.name}".toString())

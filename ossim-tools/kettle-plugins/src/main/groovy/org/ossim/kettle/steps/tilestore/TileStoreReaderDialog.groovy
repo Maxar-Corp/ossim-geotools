@@ -89,6 +89,9 @@ class TileStoreReaderDialog extends TileStoreCommonDialog
    private void ok()
    {
 
+      if (!swt.stepName.text) return;
+
+      stepname = swt.stepName.text
       input.layerName = swt.layerName.text
       input.hashId     = swt.hashId.text
 

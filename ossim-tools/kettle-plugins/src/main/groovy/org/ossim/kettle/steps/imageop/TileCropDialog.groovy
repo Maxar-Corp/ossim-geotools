@@ -5,6 +5,7 @@ import org.eclipse.swt.widgets.Shell
 import org.ossim.kettle.groovyswt.KettleSwtBuilder
 import org.ossim.kettle.types.OssimValueMetaBase
 import org.ossim.kettle.utilities.SwtUtilities
+import org.pentaho.di.core.Const
 import org.pentaho.di.core.row.value.ValueMetaBase
 import org.pentaho.di.trans.TransMeta
 import org.pentaho.di.trans.step.BaseStepMeta
@@ -114,6 +115,10 @@ class TileCropDialog extends BaseStepDialog implements
 
    private void ok()
    {
+      if (!swt.stepName.text) return;
+
+      stepname = swt.stepName.text
+
       input.aoiField     = swt.aoiField.text
       input.tileAoiField = swt.tileAoiField.text
       input.tileField    = swt.tileField.text

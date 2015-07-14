@@ -279,6 +279,10 @@ class TileStoreIteratorDialog  extends TileStoreCommonDialog
 
    private void ok()
    {
+      if (!swt.stepName.text) return;
+
+      stepname = swt.stepName.text
+
       input.selectedFieldNames = [] as Set
       def tableView = swt.fieldSelection
       def itemCount = tableView.table.itemCount
