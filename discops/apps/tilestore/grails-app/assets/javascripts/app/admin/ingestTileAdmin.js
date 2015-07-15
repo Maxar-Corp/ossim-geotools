@@ -9,9 +9,6 @@ var AppIngestTileAdmin = (function () {
     var $minIngestLevel = $('#minIngestLevel');
     var $maxIngestLevel = $('#maxIngestLevel');
 
-    //var $minIngestLevelSpin = $('#minIngestLevelSpin');
-    //var $maxIngestLevelSpin = $('#maxIngestLevelSpin');
-
     var min, max;
 
     var objIngestImage = {
@@ -32,6 +29,20 @@ var AppIngestTileAdmin = (function () {
         minLevel: '',
         maxLevel: ''
     };
+
+    var ingestBool = false;
+
+    function setIngestBool(parm){
+
+        ingestBool = parm;
+
+    }
+
+    function getIngestBool(){
+
+        return ingestBool;
+
+    }
 
     function setIngestLevels(){
 
@@ -65,9 +76,9 @@ var AppIngestTileAdmin = (function () {
                 $minIngestLevel.empty();
                 $maxIngestLevel.empty();
 
-                console.log('min: ' + min);
+                //console.log('min: ' + min);
                 for (min; min <= max; min++) {
-                    console.log('min: ' + min);
+                    //console.log('min: ' + min);
                     $minIngestLevel.append('<option value="' + min + '">' + min + '</option>');
                     $maxIngestLevel.append('<option value="' + min + '">' + min + '</option>');
                     //$minIngestLevel.selectpicker('refresh');
@@ -133,7 +144,6 @@ var AppIngestTileAdmin = (function () {
         objIngestImage.minLevel = $minIngestLevel.val(); //$minIngestLevelSpin.spinbox('value');
         objIngestImage.maxLevel =  $maxIngestLevel.val(); //$maxIngestLevelSpin.spinbox('value');
 
-
         console.log(objIngestImage);
 
         //TODO: Refactor using promises...
@@ -155,24 +165,35 @@ var AppIngestTileAdmin = (function () {
         });
 
         $('#ingestImageModal').modal('hide');
-        //$minIngestLevelSpin.spinbox('value', 0);
-        //$maxIngestLevelSpin.spinbox('value', 0);
-        //$minIngestLevelSpin.spinbox('destroy');
-        //$maxIngestLevelSpin.spinbox('destroy');
+
     }
 
-    function ingestModalShow(){
-        setIngestLevels();
-        $ingestImageModal.modal('show');
+    function ingestModalShow() {
+
+        console.log(ingestBool);
+        if (ingestBool) {
+            //alert('previewLayer present!');
+            setIngestLevels();
+            $ingestImageModal.modal('show');
+        }
+        else {
+            toastr.warning('Please select a preview image before attempting to ingest to Tilestore', ' Warning: No' +
+                ' preview image');
+        }
+
     }
 
     $ingestModalButton.on('click', function(){
+
         ingestModalShow();
+
     });
 
     $submitIngestImage.on('click', function(){
+
         console.log('ingesting selected image...');
         ingestImage();
+
     });
 
     return{
@@ -182,7 +203,11 @@ var AppIngestTileAdmin = (function () {
         setIngestLevels: setIngestLevels,
         objIngestImage: objIngestImage,
         $ingestModalButton: $ingestModalButton,
-        ingestModalShow: ingestModalShow
+        ingestModalShow: ingestModalShow,
+        //ingestBool: ingestBool
+        setIngestBool: setIngestBool,
+        getIngestBool: getIngestBool
+
     }
 
 })();

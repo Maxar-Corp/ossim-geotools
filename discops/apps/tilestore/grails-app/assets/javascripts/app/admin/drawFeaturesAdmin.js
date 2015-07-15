@@ -49,10 +49,10 @@ var AppDrawFeaturesAdmin = (function () {
             AppAdmin.mapOmar.addInteraction(drawInteractionFree);
             $mapOmarInfo.html('Cutting by: Freehand Polygon');
             $mapOmarInfo.show();
-            AppIngestTileAdmin.$ingestModalButton.removeClass('disabled');
+            //AppIngestTileAdmin.$ingestModalButton.removeClass('disabled');
 
             drawInteractionFree.on('drawend', function (evt) {
-                $('#showIngestModal').removeClass('disabled');
+                //('#showIngestModal').removeClass('disabled');
                 aoiFeature = evt.feature;
                 console.log(aoiFeature.getGeometry());
                 addAoiFeaturePolygon(aoiFeature.getGeometry());
@@ -70,14 +70,14 @@ var AppDrawFeaturesAdmin = (function () {
             }
 
             drawInteractionRect.on('boxend', function () {
-                $('#showIngestModal').removeClass('disabled');
+                //$('#showIngestModal').removeClass('disabled');
                 addAoiFeatureRectangle();
             });
 
             AppAdmin.mapOmar.addInteraction(drawInteractionRect);
             $mapOmarInfo.html('Cutting by: Rectangle');
             $mapOmarInfo.show();
-            AppIngestTileAdmin.$ingestModalButton.removeClass('disabled');
+            //AppIngestTileAdmin.$ingestModalButton.removeClass('disabled');
 
         }
         // TODO: Circle back to this, as converting from a circle geom to WKT is not posssilbe
@@ -99,10 +99,12 @@ var AppDrawFeaturesAdmin = (function () {
         // Check to see if there are any features in the source,
         // and if so we need to remove them before adding a new AOI.
         //console.log(aoiVector.getSource().getFeatures().length);
-        if (AppManageLayersAdmin.aoiVector.getSource().getFeatures().length >= 1) {
-            AppManageLayersAdmin.aoiVector.getSource().clear();
-            console.log(AppManageLayersAdmin.aoiVector.getSource().getFeatures().length);
-        }
+        //if (AppManageLayersAdmin.aoiVector.getSource().getFeatures().length >= 1) {
+        //    AppManageLayersAdmin.aoiVector.getSource().clear();
+        //    console.log(AppManageLayersAdmin.aoiVector.getSource().getFeatures().length);
+        //}
+
+        clearAoi();
 
         formatWkt = new ol.format.WKT();
         outputWkt = formatWkt.writeGeometry(geom);
@@ -121,10 +123,12 @@ var AppDrawFeaturesAdmin = (function () {
     function addAoiFeatureRectangle(){
         console.log(AppManageLayersAdmin.aoiVector.getSource().getFeatures().length);
 
-        if (AppManageLayersAdmin.aoiVector.getSource().getFeatures().length >= 1) {
-            AppManageLayersAdmin.aoiVector.getSource().clear();
-            console.log(AppManageLayersAdmin.aoiVector.getSource().getFeatures().length);
-        }
+        //if (AppManageLayersAdmin.aoiVector.getSource().getFeatures().length >= 1) {
+        //    AppManageLayersAdmin.aoiVector.getSource().clear();
+        //    console.log(AppManageLayersAdmin.aoiVector.getSource().getFeatures().length);
+        //}
+
+        clearAoi();
 
         // Pass the 'output' as a WKT polygon
         var output = drawInteractionRect.getGeometry();
@@ -148,7 +152,7 @@ var AppDrawFeaturesAdmin = (function () {
 
     // Remove the AOI feature if the user closes the ingest image modal window
     $ingestImageModal.on('hidden.bs.modal', function (e) {
-        AppManageLayersAdmin.aoiVector.getSource().clear();
+        //AppManageLayersAdmin.aoiVector.getSource().clear();
     });
 
     $endCuts.on('click', function(){
@@ -156,20 +160,36 @@ var AppDrawFeaturesAdmin = (function () {
         //console.log('endCuts fired...')
         AppAdmin.mapOmar.removeInteraction(drawInteractionFree);
         AppAdmin.mapOmar.removeInteraction(drawInteractionRect);
-        AppManageLayersAdmin.aoiVector.getSource().clear();
+        //AppManageLayersAdmin.aoiVector.getSource().clear();
         $endCuts.html('<i class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Cutting Off')
             .closest('li')
             .addClass('disabled');
-        $ingestModalButton.addClass('disabled');
+        //$ingestModalButton.addClass('disabled');
         $mapOmarInfo.html('');
         $mapOmarInfo.hide();
-    })
+    });
+
+    function clearAoi(){
+
+        if (AppManageLayersAdmin.aoiVector.getSource().getFeatures().length >= 1) {
+            AppManageLayersAdmin.aoiVector.getSource().clear();
+            console.log(AppManageLayersAdmin.aoiVector.getSource().getFeatures().length);
+        }
+
+    }
+
+    $('#clearAoiButton').on('click', function(){
+
+        clearAoi();
+
+    });
 
     return {
         initialize: function (initParams) {
             //console.log(initParams);
             loadParams = initParams;
-        }
+        },
+        clearAoi: clearAoi
     };
 
 })();
