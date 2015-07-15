@@ -16,12 +16,12 @@
 
 <body class="fuelux">
 
-<tilestore:securityClassificationBanner class="row text-center security-level-top"/>
+    <tilestore:securityClassificationBanner class="row text-center security-level-top"/>
 
-<div class="corner-ribbon top-left sticky red shadow">Alpha</div>
+    <div class="corner-ribbon top-left sticky red shadow">Alpha</div>
 
-<!-- Main navBar -->
-<div class="container">
+    <!-- Main navBar -->
+    <div class="container">
     <nav style="top:28px" class="navbar navbar-fixed-top navbar-default" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -93,10 +93,10 @@
     </nav>
 </div><!-- /.container" -->
 
-<div class="navbar-offset"></div>
+    <div class="navbar-offset"></div>
 
-<!-- toolBarRow -->
-<div class="container-fluid">
+    <!-- toolBarRow -->
+    <div class="container-fluid">
     <div id="toolBarRow" class="row">
         <div id="omarFeedToolbar" class="col-md-2 text-center">
             <nav class="navbar navbar-default">
@@ -216,8 +216,8 @@
     </div>
 </div>
 
-<!-- mapsRow -->
-<div class="container-fluid">
+    <!-- mapsRow -->
+    <div class="container-fluid">
     <div id="mapsRow" class="row">
         
         <div id="omarFeed" class="col-md-2">
@@ -284,8 +284,8 @@
 
 </div>
 
-<!-- Create tile layer modal -->
-<div class="modal fade" id="createTileLayerModal" tabindex="-1" role="dialog" aria-labelledby="createTileLayerModalLabel" Saria-hidden="true">
+    <!-- Create tile layer modal -->
+    <div class="modal fade" id="createTileLayerModal" tabindex="-1" role="dialog" aria-labelledby="createTileLayerModalLabel" Saria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -340,8 +340,8 @@
     </div><!-- /.modal-dialog modal-lg -->
 </div><!-- /.modal fade "createTileLayerModal" -->
 
-<!-- Rename tile layer modal -->
-<div class="modal fade" id="renameTileLayerModal" tabindex="-1" role="dialog" aria-labelledby="renameTileLayerModalLabel"
+    <!-- Rename tile layer modal -->
+    <div class="modal fade" id="renameTileLayerModal" tabindex="-1" role="dialog" aria-labelledby="renameTileLayerModalLabel"
      Saria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -389,8 +389,8 @@
     </div><!-- /.modal-dialog modal-lg -->
 </div><!-- /.modal fade "renameTileLayerModal" -->
 
-<!-- Delete tile layer modal -->
-<div class="modal fade" id="deleteTileLayerModal" tabindex="-1" role="dialog"
+    <!-- Delete tile layer modal -->
+    <div class="modal fade" id="deleteTileLayerModal" tabindex="-1" role="dialog"
      aria-labelledby="deleteTileLayerModalLabel" Saria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -427,8 +427,8 @@
     </div><!-- /.modal-dialog modal-lg -->
 </div><!-- /.modal fade "deleteTileLayerModal" -->
 
-<!-- Filter wfs modal -->
-<div class="modal fade" id="filterWfsModal" tabindex="-1" role="dialog"
+    <!-- Filter wfs modal -->
+    <div class="modal fade" id="filterWfsModal" tabindex="-1" role="dialog"
      aria-labelledby="filterwfsModalLabel" Saria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -716,8 +716,8 @@
     </div><!-- /.modal-dialog modal-lg -->
 </div><!-- /.modal fade "deleteTileLayerModal" -->
 
-<!-- Upload cut by file form -->
-<div class="modal fade" id="uploadCutByFileModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+    <!-- Upload cut by file form -->
+    <div class="modal fade" id="uploadCutByFileModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
      Saria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -779,8 +779,51 @@
     </div><!-- /.modal-dialog modal-lg -->
 </div><!-- /.modal fade "uploadCutByFileModal" -->
 
-<!-- Ingest image modal -->
-<div class="modal fade" id="ingestImageModal" tabindex="-1" role="dialog"
+    <!-- Paste cut geometry form -->
+    <div class="modal fade" id="pasteCutGeometryModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     Saria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title"><i class="fa fa-paste fa-lg"></i>&nbsp;&nbsp;Paste geometry
+                </h3>
+            </div>
+            <div class="modal-body">
+                <form id="pasteCutGeometryForm" data-toggle="validator">
+                    <div class="container">
+                        <div class="row col-sm-6 col-md-6">
+
+                            <div id="pasteCutGeometryElements">
+                                <label for="geometryPasteTextArea">Paste geometry string (WKT, KML or GeoJSON)
+                                &nbsp;</label>
+                                <textarea id="geometryPasteTextArea" class="form-control" rows="6"></textarea>
+                                <br>
+                                <input type="hidden" id="pasteFormSourceEpsg" class="form-control"
+                                       name="sourceEpsg" value="EPSG:3857">
+                                <label for="pasteFormEpsgSourceSelect">Set source projection</label>
+                                <select id="pasteFormEpsgSourceSelect" class="form-control selectpicker show-tick">
+                                    <option value="EPSG:3857">EPSG: 3857</option>
+                                    <option value="EPSG:4326">EPSG: 4326</option>
+                                </select>
+                                <br>
+                                <br>
+                                <button id="submitPasteGeometry" type="button" class="btn btn-primary"
+                                        data-style="expand-left">Submit</button>
+                                <button id="closePasteCutGeometryModal" type="button" class="btn btn-primary"
+                                        data-style="expand-left">Close</button>
+                            </div>
+
+                        </div>
+                    </div><!-- /.container -->
+                </form><!-- /#pasteCutGeometryForm -->
+            </div><!-- /.modal-body -->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog modal-lg -->
+</div><!-- /.modal fade "pasteCutGeometryModal" -->
+
+    <!-- Ingest image modal -->
+    <div class="modal fade" id="ingestImageModal" tabindex="-1" role="dialog"
      aria-labelledby="ingestImageModal" Saria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -832,8 +875,8 @@
     </div><!-- /.modal-dialog modal-lg -->
 </div><!-- /.modal fade "ingestImageModal" -->
 
-<!-- OMAR WFS Feed Handlebars template -->
-<script id="image-template"  type="text/x-handlebars-template">
+    <!-- OMAR WFS Feed Handlebars template -->
+    <script id="image-template"  type="text/x-handlebars-template">
     {{#features}}
     <div id="card-{{properties.id}}" class="row image-card">
         <div>
@@ -874,7 +917,7 @@
     {{/features}}
 </script>
 
-<tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
+    <tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
 
 <asset:javascript src="app/admin.js"/>
 <g:javascript>
