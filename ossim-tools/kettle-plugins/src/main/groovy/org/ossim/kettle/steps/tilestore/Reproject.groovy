@@ -4,6 +4,7 @@ import joms.geotools.tileapi.GetMapParams
 import joms.geotools.tileapi.GetMapService
 import joms.geotools.tileapi.hibernate.controller.TileCacheServiceDAO
 import org.ossim.core.SynchOssimInit
+import org.ossim.kettle.common.ImageUtil
 import org.pentaho.di.core.exception.KettleException
 import org.pentaho.di.trans.Trans
 import org.pentaho.di.trans.TransMeta
@@ -14,11 +15,17 @@ import org.pentaho.di.trans.step.StepMeta
 import org.pentaho.di.trans.step.StepMetaInterface
 
 import javax.imageio.ImageIO
+import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 import java.awt.image.ColorModel
 import java.awt.image.DataBuffer
 import java.awt.image.DataBufferByte
 import java.awt.image.DataBufferInt
+import java.awt.image.DataBufferShort
+import java.awt.image.DataBufferUShort
+import java.nio.ByteBuffer
+import java.nio.IntBuffer
+import java.nio.ShortBuffer
 
 /**
  * Created by gpotts on 7/6/15.
@@ -100,56 +107,39 @@ class Reproject  extends BaseStep implements StepInterface
               width:r[tileWidthIdx],
               height:r[tileHeightIdx]]
       GetMapParams getMapParams = new GetMapParams(params)
-      def temp = [layers:getMapParams.layers,
-                  minx:getMapParams.minx,
-                  miny:getMapParams.miny,
-                  maxx:getMapParams.maxx,
-                  maxy:getMapParams.maxy,
-                  bbox : getMapParams.bbox,
-                  format:getMapParams.format,
-                  w:getMapParams.width,
-                  h:getMapParams.height,
-                  srs:getMapParams.srs
-              ]
+//      def temp = [layers:getMapParams.layers,
+//                  minx:getMapParams.minx,
+//                  miny:getMapParams.miny,
+//                  maxx:getMapParams.maxx,
+//                  maxy:getMapParams.maxy,
+//                  bbox : getMapParams.bbox,
+//                  format:getMapParams.format,
+//                  w:getMapParams.width,
+//                  h:getMapParams.height,
+//                  srs:getMapParams.srs
+//              ]
 
-      OutputStream out
+   //   OutputStream out
       BufferedImage img
       Boolean transparent = true
       try{
-         out = getMapService.renderToOutputStream(getMapParams, null)
-         if(out)
+        // out = getMapService.renderToOutputStream(getMapParams, null)
+         img = getMapService.renderToImage(getMapParams, null)
+         if(img)
          {
-            img = ImageIO.read(new ByteArrayInputStream(out.toByteArray()))
+         //   img = ImageIO.read(new ByteArrayInputStream(out.toByteArray()))
             ColorModel cm =  img.colorModel
             if(cm.hasAlpha())
             {
-               DataBuffer dataBuffer = img.getRaster().getDataBuffer()
-               if(dataBuffer instanceof DataBufferInt)
-               {
-                  int[] pixels = ((DataBufferInt)img.getRaster().getDataBuffer()).getData();
-                  for (int pixel : pixels) {
-                     //if ((pixel & 0xFF000000) != 0 || (pixel & 0xFFFFFF) != 0xFFFFFF){ transparent = false; break}
-                     if ((pixel & 0xFF000000) != 0 ){ transparent = false; break}
-                  }
+               try{
+                  transparent = ImageUtil.isTransparent(img)
+
+                  if(!transparent) img = ImageUtil.convertToType(img, BufferedImage.TYPE_4BYTE_ABGR)
                }
-               else if(dataBuffer instanceof DataBufferByte)
+               catch(e)
                {
-                  if(dataBuffer.numBanks == 1)
-                  {
-                     DataBufferByte byteBuffer = dataBuffer as DataBufferByte
-                     byte[] pixels = byteBuffer.getData()
-                     int count = pixels.size()
-                     int offset = 0
-                     for(offset = 0;offset<count;offset+=4)
-                     {
-                        if ((pixels[offset]& 0xFF) != 0 ){ transparent = false; break}
-                     }
-                  }
-               }
-               else
-               {
-                  logError("Reproject: Unandled type for databuffer transparency")
-                  transparent = false
+                  transparent = true
+                  logError(e.toString())
                }
             }
             else
