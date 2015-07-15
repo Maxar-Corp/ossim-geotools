@@ -5,6 +5,8 @@ import com.vividsolutions.jts.geom.Envelope
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.GeometryCollection
 import org.geotools.geometry.jts.GeometryClipper
+import org.ossim.kettle.common.ImageUtil
+import org.ossim.kettle.common.StepUtil
 import org.ossim.kettle.types.OssimValueMetaBase
 import org.pentaho.di.core.exception.KettleException
 import org.pentaho.di.trans.Trans
@@ -112,6 +114,7 @@ class TileCrop extends BaseStep implements StepInterface
       def image = imageConverter.getImage(r[tileFieldIdx])
       def tileGeometry = r[tileAoiFieldIdx] as Geometry
       def aoiGeometry  = r[aoiFieldIdx] as Geometry
+
       if(image&&tileGeometry&&aoiGeometry)
       {
          if(tileGeometry.intersects(aoiGeometry))
@@ -155,7 +158,7 @@ class TileCrop extends BaseStep implements StepInterface
          }
       }
       // only output valid data for now
-      if(image)
+      if(image)//&&(!ImageUtil.isTransparent(image)))
       {
          r[tileFieldIdx] = image
 

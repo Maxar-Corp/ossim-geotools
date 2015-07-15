@@ -9,6 +9,7 @@ import joms.oms.ossimImageData
 import joms.oms.ossimInterleaveType
 import joms.oms.ossimScalarType
 import org.ossim.core.SynchOssimInit
+import org.ossim.kettle.common.ImageUtil
 import org.ossim.kettle.types.OssimValueMetaBase
 import org.pentaho.di.core.exception.KettleException
 import org.pentaho.di.trans.Trans
@@ -19,6 +20,7 @@ import org.pentaho.di.trans.step.StepInterface
 import org.pentaho.di.trans.step.StepMeta
 import org.pentaho.di.trans.step.StepMetaInterface
 
+import javax.imageio.ImageIO
 import javax.media.jai.ImageLayout
 import javax.media.jai.Interpolation
 import javax.media.jai.JAI
@@ -207,9 +209,9 @@ class GeoPkgWriter extends BaseStep implements StepInterface
             groupId = currentGroupId
          }
       }
-      int level      = r[levelIdx]
-      int rowValue   = r[rowIdx]
-      int colValue   = r[colIdx]
+      int  level      = r[levelIdx]
+      long rowValue   = r[rowIdx]
+      long colValue   = r[colIdx]
 
       if(r[imageIdx])
       {
@@ -231,14 +233,52 @@ class GeoPkgWriter extends BaseStep implements StepInterface
             if (image.numBands < 3)
             {
                modifedImage = JAI.create("BandSelect", image, [0, 0, 0] as int[])
-            } else if (image.numBands > 4)
+            }
+            else if (image.numBands > 4)
             {
                throw KettleException("Geopackage writer step only supports images with 1, 3 or 4 bands")
-            } else
-            {
-               // nothing to do
             }
+
+/*
+
+            ByteArrayOutputStream outStream
+            HashMap status = ImageUtil.computeStatus(modifedImage)
+
+            println status
+            if(status.opaqueCount)
+            {
+               outStream = new ByteArrayOutputStream()
+               if(status.transparentCount>0)
+               {
+                  println "DOING PNG"
+                  ImageIO.write(modifedImage,"png",outStream)
+               }
+               else
+               {
+                  ImageIO.write(modifedImage,"jpeg",outStream)
+                  println "DOING JPEG"
+               }
+            }
+            else
+            {
+               // all transparent nothing to do
+            }
+
+            if(outStream)
+            {
+               def tileCodec = outStream.toByteArray()
+               if (!gpkgWriter.writeCodecTile(tileCodec, tileCodec.size(), level, rowValue, colValue))
+               {
+
+               }
+               outStream = null
+            }
+  */
+
+
+
             SampleModel sampleModel = modifedImage.sampleModel
+            ColorModel cm = modifedImage.colorModel
             if (sampleModel instanceof PixelInterleavedSampleModel)
             {
                PixelInterleavedSampleModel pilSampleModel = sampleModel as PixelInterleavedSampleModel
@@ -248,26 +288,25 @@ class GeoPkgWriter extends BaseStep implements StepInterface
 
                if (dataBuffer instanceof DataBufferByte)
                {
-                  oIData.makeBlank()
-                  if (pilSampleModel.pixelStride == 4)
-                  {
-                     oIData.loadTile8WithAlpha(dataBuffer.data, ossimInterleaveType.OSSIM_BIP)
-                  } else
-                  {
-                     oIData.loadTile8(dataBuffer.data, ossimInterleaveType.OSSIM_BIP)
-                  }
+                  DataBufferByte byteDataBuffer = (DataBufferByte)dataBuffer
+                  imageData.makeBlank()
+                  imageData.copyJava4ByteAlphaToOssimImageDataBuffer(byteDataBuffer.data, sampleModel.bandOffsets)
                   oIData.validate()
-                  //println "STATUS: ${oIData.getDataObjectStatus()}"
-                  //  println  "Writer Level, col, row: ${level}, ${colValue},${rowValue}"
                   if (!gpkgWriter.writeTile(imageData, level, rowValue, colValue))
                   {
                      // println "UNABLE TO WRITE TILE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
                   }
-               } else
+               }
+               else
                {
                   logError("Unsupported buffer type ${dataBuffer.class.name}".toString())
                }
             }
+            else
+            {
+               logError("Unsupported sample model type ${sampleModel.class.name}".toString())
+            }
+
                /*
             else if(sampleModel instanceof SinglePixelPackedSampleModel)
             {
@@ -298,10 +337,6 @@ class GeoPkgWriter extends BaseStep implements StepInterface
                }
             }
             */
-            else
-            {
-               logError("Unsupported interleave type ${sampleModel.class.name}".toString())
-            }
          }
       }
       return true
