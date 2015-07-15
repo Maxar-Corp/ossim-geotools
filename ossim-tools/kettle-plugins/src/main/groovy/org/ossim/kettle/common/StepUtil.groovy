@@ -4,6 +4,8 @@ import geoscript.geom.Geometry
 import geoscript.geom.io.WktReader
 import org.pentaho.di.trans.step.BaseStep
 
+import java.awt.image.BufferedImage
+
 /**
  * Created by gpotts on 7/8/15.
  */
