@@ -365,8 +365,8 @@
         </div><!-- /.modal-dialog modal-lg -->
     </div><!-- /.modal fade "uploadCutByFileModal" -->
 
-        <!-- Paste cut geometry form -->
-        <div class="modal fade" id="pasteCutGeometryModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+    <!-- Paste cut geometry form -->
+    <div class="modal fade" id="pasteCutGeometryModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
          Saria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">

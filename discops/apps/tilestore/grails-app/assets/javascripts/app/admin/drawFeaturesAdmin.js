@@ -188,7 +188,8 @@ var AppDrawFeaturesAdmin = (function () {
         initialize: function (initParams) {
             //console.log(initParams);
             loadParams = initParams;
-        }
+        },
+        clearAoi: clearAoi
     };
 
 })();

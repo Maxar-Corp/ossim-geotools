@@ -76,9 +76,9 @@ var AppIngestTileAdmin = (function () {
                 $minIngestLevel.empty();
                 $maxIngestLevel.empty();
 
-                console.log('min: ' + min);
+                //console.log('min: ' + min);
                 for (min; min <= max; min++) {
-                    console.log('min: ' + min);
+                    //console.log('min: ' + min);
                     $minIngestLevel.append('<option value="' + min + '">' + min + '</option>');
                     $maxIngestLevel.append('<option value="' + min + '">' + min + '</option>');
                     //$minIngestLevel.selectpicker('refresh');

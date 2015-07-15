@@ -40,10 +40,14 @@ var CutByFileAdmin = (function () {
         cutFeatureExtent = cutFeature.getGeometry().getExtent();
         console.log(cutFeatureExtent);
 
-        if (AppManageLayersAdmin.aoiVector.getSource().getFeatures().length >= 1) {
-            AppManageLayersAdmin.aoiVector.getSource().clear();
-            //console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
-        }
+
+        // TODO: Use clearAOI() from drawFeatures.js
+        //if (AppManageLayersAdmin.aoiVector.getSource().getFeatures().length >= 1) {
+        //    AppManageLayersAdmin.aoiVector.getSource().clear();
+        //    //console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
+        //}
+
+        AppDrawFeaturesAdmin.clearAoi();
 
         AppManageLayersAdmin.aoiVector.getSource().addFeature(cutFeature);
 
@@ -161,7 +165,7 @@ var CutByFileAdmin = (function () {
         var pasteObj = {
             "geometry": $geometryPasteTextArea.val(),
             "sourceEpsg": $pasteFormEpsgSourceSelect.val(),
-            "targetEpsg":  AppAdmin.mapOmar.mapEpsg
+            "targetEpsg":  AppAdmin.mapEpsg
         }
         console.log('---------pasteObj----------');
         console.log(pasteObj);
