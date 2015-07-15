@@ -133,8 +133,6 @@ var CreateProductClient = (function () {
                 $productMinLevel.empty();
                 $productMaxLevel.empty();
 
-                console.log('min: ' + min);
-
                 for (min; min <= max; min++) {
                     //console.log('min: ' + min);
                     $productMinLevel.append('<option value="' + min + '">' + min + '</option>');
@@ -149,25 +147,25 @@ var CreateProductClient = (function () {
             // TODO: Add $promise function for error
             error: function (jqXHR, exception) {
                 if (jqXHR.status === 0) {
-                    alert('Not connected.\n Verify Network.');
+                    console.log('Not connected.\n Verify Network.');
                 }
                 else if (jqXHR.status == 404) {
-                    alert('Requested page not found. [404] ' + urlLayerActualBounds);
+                    console.log('Requested page not found. [404] ' + urlLayerActualBounds);
                 }
                 else if (jqXHR.status == 500) {
-                    alert('Internal Server Error [500].');
+                    console.log('Internal Server Error [500].');
                 }
                 else if (exception === 'parsererror') {
-                    alert('Requested JSON parse failed.');
+                    console.log('Requested JSON parse failed.');
                 }
                 else if (exception === 'timeout') {
-                    alert('Time out error.');
+                    console.log('Time out error.');
                 }
                 else if (exception === 'abort') {
-                    alert('Ajax request aborted.');
+                    console.log('Ajax request aborted.');
                 }
                 else {
-                    alert('Uncaught Error.\n' + jqXHR.responseText);
+                    console.log('Uncaught Error.\n' + jqXHR.responseText);
                 }
             }
         });
@@ -289,25 +287,25 @@ var CreateProductClient = (function () {
             // TODO: Add $promise function for error
             error: function (jqXHR, exception) {
                 if (jqXHR.status === 0) {
-                    alert('Not connected.\n Verify Network.');
+                    console.log('Not connected.\n Verify Network.');
                 }
                 else if (jqXHR.status == 404) {
-                    alert('Requested page not found. [404] ' + urlLayerActualBounds);
+                    console.log('Requested page not found. [404] ' + urlLayerActualBounds);
                 }
                 else if (jqXHR.status == 500) {
-                    alert('Internal Server Error [500].');
+                    console.log('Internal Server Error [500].');
                 }
                 else if (exception === 'parsererror') {
-                    alert('Requested JSON parse failed.');
+                    console.log('Requested JSON parse failed.');
                 }
                 else if (exception === 'timeout') {
-                    alert('Time out error.');
+                    console.log('Time out error.');
                 }
                 else if (exception === 'abort') {
-                    alert('Ajax request aborted.');
+                    console.log('Ajax request aborted.');
                 }
                 else {
-                    alert('Uncaught Error.\n' + jqXHR.responseText);
+                    console.log('Uncaught Error.\n' + jqXHR.responseText);
                 }
             }
         });
@@ -465,25 +463,25 @@ var CreateProductClient = (function () {
                     },
                     error: function (jqXHR, exception) {
                         if (jqXHR.status === 0) {
-                            alert('Not connect.\n Verify Network.');
+                            console.log('Not connect.\n Verify Network.');
                         }
                         else if (jqXHR.status == 404) {
-                            alert('Requested page not found. [404]');
+                            console.log('Requested page not found. [404]');
                         }
                         else if (jqXHR.status == 500) {
-                            alert('Internal Server Error [500].');
+                            console.log('Internal Server Error [500].');
                         }
                         else if (exception === 'parsererror') {
-                            alert('Requested JSON parse failed.');
+                            console.log('Requested JSON parse failed.');
                         }
                         else if (exception === 'timeout') {
-                            alert('Time out error.');
+                            console.log('Time out error.');
                         }
                         else if (exception === 'abort') {
-                            alert('Ajax request aborted.');
+                            console.log('Ajax request aborted.');
                         }
                         else {
-                            alert('Uncaught Error.\n' + jqXHR.responseText);
+                            console.log('Uncaught Error.\n' + jqXHR.responseText);
                         }
                     }
                 });
@@ -496,7 +494,7 @@ var CreateProductClient = (function () {
 
                 console.log('filedownload jobNumber: ' + downloadNumber);
                 $.fileDownload("/tilestore/job/download?jobId=" + downloadNumber)
-                    .done(function() {alert('success!');})
+                    .done(function() {console.log('success!');})
                     .fail(function(){
                         toastr.error('Product failed to' +
                             ' download', 'Product download Error');
@@ -515,7 +513,7 @@ var CreateProductClient = (function () {
 
             $cancelAoi.on("click", function () {
 
-                aoiFeatureOverlay.removeFeature(aoiFeature);
+                //aoiFeatureOverlay.removeFeature(aoiFeature);
                 $createGp.removeClass("disabled");
                 resetProductForm();
 

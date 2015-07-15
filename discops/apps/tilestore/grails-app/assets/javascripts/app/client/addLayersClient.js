@@ -1,7 +1,7 @@
 "use strict";
 var AddLayerClient = (function () {
     var loadParams; // parameters passed in from AppController
-    var wfsURL;
+    //var wfsURL;
     var layersArray = [];
     var initLayer;  // first layer loaded into the map
     var currentTileLayer; // the actively visible/displayed tile map layer
@@ -74,7 +74,7 @@ var AddLayerClient = (function () {
 
             loadParams = initParams;
 
-            wfsURL = initParams.wfsURL;
+            //wfsURL = initParams.wfsURL;
 
             var resolutions = [
                 156543.03392804097,
@@ -129,7 +129,7 @@ var AddLayerClient = (function () {
                 extent: projectionExtent,
                 source: new ol.source.WMTS({
 //                url: '/tilestore/wmts',
-                    layer: 'highres_3857',
+                    layer: 'reference',
                     url: '/tilestore/wmts/tileParamGrid',
 //                layer: '0',
                     matrixSet: 'EPSG:3857',
@@ -160,6 +160,7 @@ var AddLayerClient = (function () {
             });
 
             if (initParams.wmtsTileGrid) {
+                console.log('Adding tile grid!');
                 layersArray.push(tileParamGrid);
             }
 

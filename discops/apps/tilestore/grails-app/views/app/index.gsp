@@ -48,7 +48,8 @@
                 <div class="col-md-3 well">
                     <div class="fa fa-th fa-2x"></div>
                     <h3>Build Tiles</h3>
-                    <p>Administer the tile server, and update an existing tile reference layers from OMAR.</p>
+                    <p>Use the Administrator to create or update existing tile reference layers from imagery in OMAR
+                    .</p>
                     <g:link action="admin" class="btn btn-primary" role="button">View</g:link>
                 </div>
             </sec:ifAllGranted>
@@ -81,7 +82,8 @@
             <div class="col-md-3 well">
                 <div class="fa fa-cube fa-2x"></div>
                 <h3 href="client/client.html">Export Tiles</h3>
-                <p>Export tile server data to a geopackages for offline use in external applications.</p>
+                <p>Use the Viewer to export tile server data to a geopackages for offline use in external applications
+                .</p>
                 <g:link action="client" class="btn btn-primary" role="button">View</g:link>
             </div>
             <div class="col-md-1"></div>
