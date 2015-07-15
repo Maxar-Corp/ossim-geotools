@@ -427,7 +427,6 @@ class LayerManagerService implements InitializingBean
 
    def getFirstTileMeta(GetFirstTileCommand cmd)
    {
-      println "_________________________${cmd}"
       def result = [status : HttpStatus.OK,
                     message: "",
                     data   : []]
@@ -435,13 +434,10 @@ class LayerManagerService implements InitializingBean
       try{
          if (cmd.layer)
          {
-            println "LAYER ============ ${cmd}"
             def layerInfo = daoTileCacheService.getLayerInfoByName(cmd.layer)
             if (layerInfo)
             {
-               println "GOT LAYER INFO!!!!!"
                def tileList = daoTileCacheService.getTilesMetaWithinConstraints(layerInfo, [offset: 0, maxRows: 1, orderBy: "Z+D"])
-               println "TILE LIST ====== ${tileList}"
                HashMap tempResult = tileList[0]
                if (tempResult.bounds)
                {
@@ -914,7 +910,6 @@ class LayerManagerService implements InitializingBean
 
 
                result.data?.actualBounds = getActualBounds(boundsCmd)
-               println "ACTUAL BOUNDS ============== ${result.data?.actualBounds}"
              //   Bounds bounds = new Bounds(result.data.actualBounds.minx,
              //           result.data.actualBounds.miny,
              //           result.data.actualBounds.maxx,
@@ -957,8 +952,8 @@ class LayerManagerService implements InitializingBean
       }
       catch (e)
       {
-         e.printStackTrace()
-         //println e
+         //e.printStackTrace()
+         println e
          result.status = HttpStatus.BAD_REQUEST
          result.message = e.toString()
       }
