@@ -126,8 +126,9 @@
 
         <div class="navbar-offset"></div>
 
+
         <div class="container-fluid">
-            <div id='currentZoomLevel2'></div>
+            <div id="currentZoomLevel2"></div>
             <div id="map" class="map"></div>
         </div>
 
