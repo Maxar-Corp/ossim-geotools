@@ -26,6 +26,7 @@ class UpdateCommand implements CaseInsensitiveBind
    Integer maxSize
    Integer currentSize
 
+   Boolean autoCreateDirectory = false
    /**
     * This is an ISO8601 Period format for defining lengths of time
     * any job can be cached.  If you want jobs to stay around for

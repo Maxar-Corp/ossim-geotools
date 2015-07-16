@@ -9,6 +9,7 @@ import joms.oms.ossimImageData
 import joms.oms.ossimInterleaveType
 import joms.oms.ossimScalarType
 import org.ossim.core.SynchOssimInit
+import org.ossim.kettle.common.ImageUtil
 import org.ossim.kettle.types.OssimValueMetaBase
 import org.pentaho.di.core.exception.KettleException
 import org.pentaho.di.trans.Trans
@@ -19,6 +20,7 @@ import org.pentaho.di.trans.step.StepInterface
 import org.pentaho.di.trans.step.StepMeta
 import org.pentaho.di.trans.step.StepMetaInterface
 
+import javax.imageio.ImageIO
 import javax.media.jai.ImageLayout
 import javax.media.jai.Interpolation
 import javax.media.jai.JAI
@@ -37,6 +39,7 @@ import java.awt.image.DataBufferByte
 import java.awt.image.PixelInterleavedSampleModel
 import java.awt.image.Raster
 import java.awt.image.SampleModel
+import java.awt.image.SinglePixelPackedSampleModel
 import java.awt.image.renderable.ParameterBlock
 
 /**
@@ -123,7 +126,6 @@ class GeoPkgWriter extends BaseStep implements StepInterface
          options.append = "false"
       }
 
-      println "OPTIONS ========= ${options}"
       openedFile = gpkgWriter?.openFile(options)
       if(!openedFile)
       {
@@ -160,6 +162,7 @@ class GeoPkgWriter extends BaseStep implements StepInterface
          rowIdx           =  getInputRowMeta().indexOfValue(meta.tileRowField)
          colIdx           =  getInputRowMeta().indexOfValue(meta.tileColField)
          groupIdIdx       =  getInputRowMeta().indexOfValue(meta.groupField)
+
          filenameIdx      =  getInputRowMeta().indexOfValue(meta.filenameField)
          layerNameIdx     =  getInputRowMeta().indexOfValue(meta.layerNameField)
          epsgIdx          =  getInputRowMeta().indexOfValue(meta.epsgCodeField)
@@ -206,18 +209,17 @@ class GeoPkgWriter extends BaseStep implements StepInterface
             groupId = currentGroupId
          }
       }
-      int level      = r[levelIdx]
-      int rowValue   = r[rowIdx]
-      int colValue   = r[colIdx]
+      int  level      = r[levelIdx]
+      long rowValue   = r[rowIdx]
+      long colValue   = r[colIdx]
 
       if(r[imageIdx])
       {
          RenderedOp image = imageConverter.getImage(r[imageIdx]) //row[imageidx] as RenderedImage
 
-
          if(image.numBands > 0)
          {
-            if((image.width != 256)|| (image.height != 256) )
+            if ((image.width != 256) || (image.height != 256))
             {
                throw KettleException("Geopackage only supports images with width and height of 256x256")
             }
@@ -228,41 +230,69 @@ class GeoPkgWriter extends BaseStep implements StepInterface
             //   modifedImage = JAI.create("BandSelect", image, [0,1,2] as int[])
             //}
             // else if(image.numBands < 3)
-            if(image.numBands < 3)
+            if (image.numBands < 3)
             {
-               modifedImage = JAI.create("BandSelect", image, [0,0,0] as int[])
+               modifedImage = JAI.create("BandSelect", image, [0, 0, 0] as int[])
             }
-            else if(image.numBands > 4)
+            else if (image.numBands > 4)
             {
                throw KettleException("Geopackage writer step only supports images with 1, 3 or 4 bands")
             }
+
+/*
+
+            ByteArrayOutputStream outStream
+            HashMap status = ImageUtil.computeStatus(modifedImage)
+
+            println status
+            if(status.opaqueCount)
+            {
+               outStream = new ByteArrayOutputStream()
+               if(status.transparentCount>0)
+               {
+                  println "DOING PNG"
+                  ImageIO.write(modifedImage,"png",outStream)
+               }
+               else
+               {
+                  ImageIO.write(modifedImage,"jpeg",outStream)
+                  println "DOING JPEG"
+               }
+            }
             else
             {
-               // nothing to do
+               // all transparent nothing to do
             }
+
+            if(outStream)
+            {
+               def tileCodec = outStream.toByteArray()
+               if (!gpkgWriter.writeCodecTile(tileCodec, tileCodec.size(), level, rowValue, colValue))
+               {
+
+               }
+               outStream = null
+            }
+  */
+
+
+
             SampleModel sampleModel = modifedImage.sampleModel
-            if(sampleModel instanceof PixelInterleavedSampleModel)
+            ColorModel cm = modifedImage.colorModel
+            if (sampleModel instanceof PixelInterleavedSampleModel)
             {
                PixelInterleavedSampleModel pilSampleModel = sampleModel as PixelInterleavedSampleModel
                // println "${pilSampleModel.numBands}, ${pilSampleModel.pixelStride}, ${pilSampleModel.scanlineStride}, ${pilSampleModel.bandOffsets}, ${pilSampleModel.bankIndices}"
                Raster raster = modifedImage?.data
                DataBuffer dataBuffer = raster?.dataBuffer
 
-               if(dataBuffer instanceof DataBufferByte)
+               if (dataBuffer instanceof DataBufferByte)
                {
-                  oIData.makeBlank()
-                  if(pilSampleModel.pixelStride == 4)
-                  {
-                     oIData.loadTile8WithAlpha(dataBuffer.data, ossimInterleaveType.OSSIM_BIP)
-                  }
-                  else
-                  {
-                     oIData.loadTile8(dataBuffer.data, ossimInterleaveType.OSSIM_BIP)
-                  }
+                  DataBufferByte byteDataBuffer = (DataBufferByte)dataBuffer
+                  imageData.makeBlank()
+                  imageData.copyJava4ByteAlphaToOssimImageDataBuffer(byteDataBuffer.data, sampleModel.bandOffsets)
                   oIData.validate()
-                  //println "STATUS: ${oIData.getDataObjectStatus()}"
-                //  println  "Writer Level, col, row: ${level}, ${colValue},${rowValue}"
-                  if(!gpkgWriter.writeTile(imageData, level, rowValue, colValue))
+                  if (!gpkgWriter.writeTile(imageData, level, rowValue, colValue))
                   {
                      // println "UNABLE TO WRITE TILE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
                   }
@@ -274,8 +304,39 @@ class GeoPkgWriter extends BaseStep implements StepInterface
             }
             else
             {
-               logError("Unsupported interleave type ${sampleModel.class.name}".toString())
+               logError("Unsupported sample model type ${sampleModel.class.name}".toString())
             }
+
+               /*
+            else if(sampleModel instanceof SinglePixelPackedSampleModel)
+            {
+               SinglePixelPackedSampleModel sppSampleModel = sampleModel as SinglePixelPackedSampleModel
+               Raster raster = modifedImage.data
+               DataBuffer dataBuffer = raster?.dataBuffer
+
+               if(dataBuffer instanceof DataBufferByte)
+               {
+                  oIData.makeBlank()
+                  if (sppSampleModel.scanlineStride == 4)
+                  {
+                     println "NEED TO LOAD PACKED ALPHA"
+                     //oIData.loadTile8WithAlpha(dataBuffer.data, ossimInterleaveType.OSSIM_BIP)
+                  }
+                  else
+                  {
+                     println "NEED TO LOAD PACKED NO ALPHA"
+                     //oIData.loadTile8(dataBuffer.data, ossimInterleaveType.OSSIM_BIP)
+                  }
+                  oIData.validate()
+
+//                  if (!gpkgWriter.writeTile(imageData, level, rowValue, colValue))
+//                  {
+                     // println "UNABLE TO WRITE TILE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+//                  }
+
+               }
+            }
+            */
          }
       }
       return true

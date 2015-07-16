@@ -21,7 +21,7 @@ class AppController
   def client()
   {
     def sql = new Sql( dataSource )
-    def tilestoreLayers = sql.rows( "select name from tile_cache_layer_info " )//where epsg_code like '%3857'" )
+    def tilestoreLayers = sql.rows( "select name from tile_cache_layer_info " ) //where epsg_code like '%3857'" )
 
     sql.close()
 
@@ -51,16 +51,16 @@ class AppController
     sql.close()
     [
         initParams: [
-//            wmtsTileGrid: grailsApplication.config.tilestore.wmtsTileGrid ?: false,
+            wmtsTileGrid: grailsApplication.config.tilestore.wmtsTileGrid ?: false,
             wfsURL: grailsLinkGenerator.link( action: 'testWFS' ),
             omarWms: grailsApplication.config.omar.wms,
             omarWfs: grailsApplication.config.omar.wfs,
             omarUrl: grailsApplication.config.omar.url,
+            referenceLayers: grailsApplication.config.tilestore.referenceLayers,
 //            urlProductExport: grailsLinkGenerator.link( controller: 'product', action: 'export' ),
 //            urlLayerActualBounds: grailsLinkGenerator.link( controller: 'accumuloProxy', action: 'actualBounds' ),
             tilestoreWmsURL: grailsLinkGenerator.link( controller: 'wms', action: 'index', absolute: true ),
 //            accumuloProxyWmsURL: grailsLinkGenerator.link( controller: 'accumuloProxy', action: 'wms', absolute: true ),
-//            referenceLayers: grailsApplication.config.tilestore.referenceLayers,
 //            overlayLayers: grailsApplication.config.tilestore.overlayLayers,
             tilestoreLayers: tilestoreLayers
         ] as JSON

@@ -122,22 +122,44 @@ class DiskCacheService {
       try{
          if(!cmd.directory)
          {
-            result.status = HttpStatus.BAD_REQUEST
-            result.message = "No directory given."
+            result.status = HttpStatus.NOT_FOUND
+            result.message = "No directory given.  Please provide a directory to be used as a cache."
          }
          else
          {
-            DiskCache.withTransaction {
-               def diskCache = new DiskCache(cmd.properties);
-               if(!diskCache.save(flush:true))
+            File directory = cmd.directory as File
+            Boolean directoryExists=directory.exists()
+            if(!directoryExists)
+            {
+               if(cmd.autoCreateDirectory)
                {
-                  diskCache.errors.allErrors.each {result.message = "${result.message?'\n':''} ${messageSource.getMessage(it, null)}"  }
-                  result.status = HttpStatus.BAD_REQUEST
+                  if(directory.mkdirs())
+                  {
+                     directoryExists = true
+                  }
                }
-               else
-               {
-                  result.message = "";
+            }
+
+            if(directoryExists)
+            {
+               DiskCache.withTransaction {
+                  def diskCache = new DiskCache(cmd.properties);
+
+                  if(!diskCache.save(flush:true))
+                  {
+                     diskCache.errors.allErrors.each {result.message = "${result.message?'\n':''} ${messageSource.getMessage(it, null)}"  }
+                     result.status = HttpStatus.BAD_REQUEST
+                  }
+                  else
+                  {
+                     result.message = "";
+                  }
                }
+            }
+            else
+            {
+               result.status = HttpStatus.NOT_FOUND
+               result.message = "Directory '${cmd.directory}' does not exist."
             }
          }
       }
@@ -160,26 +182,46 @@ class DiskCacheService {
             // cmd.remove("id")
             if(row)
             {
+               File directory = cmd.directory as File
+               Boolean directoryExists=directory.exists()
                row.directory=cmd.directory?:row.directory
                row.maxSize=cmd.maxSize!=null?cmd.maxSize:row.maxSize
                row.currentSize=cmd.currentSize!=null?cmd.currentSize:row.currentSize
                row.expirePeriod=cmd.expirePeriod!=null?cmd.expirePeriod:row.expirePeriod
-               if(!row.validate())
+               if(!directoryExists)
                {
-                  def fieldErrors = []
-                  row.errors.each { error ->
-                     error.getFieldErrors().each { fieldError ->
-                        //println field.field
-                        fieldErrors << fieldError.field
+                  if(cmd.autoCreateDirectory)
+                  {
+                     if(directory.mkdirs())
+                     {
+                        directoryExists = true
                      }
                   }
+               }
+               if(directoryExists)
+               {
+                  if(!row.validate())
+                  {
+                     def fieldErrors = []
+                     row.errors.each { error ->
+                        error.getFieldErrors().each { fieldError ->
+                           //println field.field
+                           fieldErrors << fieldError.field
+                        }
+                     }
 
-                  result.status = HttpStatus.BAD_REQUEST
-                  result.message = "Bad field value for fields: ${fieldErrors}"
+                     result.status = HttpStatus.BAD_REQUEST
+                     result.message = "Bad field value for fields: ${fieldErrors}"
+                  }
+                  else
+                  {
+                     row.save(flush:true)
+                  }
                }
                else
                {
-                  row.save(flush:true)
+                  result.status = HttpStatus.NOT_FOUND
+                  result.message = "Directory '${cmd.directory}' does not exist."
                }
             }
             else
@@ -218,7 +260,7 @@ class DiskCacheService {
       }
       catch(e)
       {
-         result.status = HttpStatus.BAD_REQUEST
+         result.status = HttpStatus.NOT_FOUND
          result.message = e.toString()
       }
 
@@ -265,7 +307,7 @@ class DiskCacheService {
       catch(e)
       {
          e.printStackTrace()
-         result.status = HttpStatus.BAD_REQUEST
+         result.status = HttpStatus.NOT_FOUND
          result.message = e.toString()
       }
 

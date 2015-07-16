@@ -25,7 +25,7 @@ class TileStoreCommonDialog extends BaseStepDialog implements
 
    } as SelectionListener
    def stepnameClosure = {
-      label Messages.getString("TileStoreCommon.Stepname.Label")
+      label Messages.getString("TileStoreCommonDialog.Stepname.Label")
       //text(id:"stepName", text: stepname ,layoutData:"span, growx"){
       text(id: "stepName", layoutData: "span,growx", text: stepname) {
          onEvent(type: 'Modify') { input.setChanged() }

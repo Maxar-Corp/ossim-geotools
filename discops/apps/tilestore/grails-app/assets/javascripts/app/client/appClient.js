@@ -23,7 +23,9 @@ var AppClient = (function () {
         center: [0,0]
     });
 
+    var interactions = ol.interaction.defaults({altShiftDragRotate:false});
     var map = new ol.Map({
+        interactions: interactions,
         controls: ol.control.defaults({
             attributionOptions: ({
                 controlollapsible: false
@@ -58,25 +60,25 @@ var AppClient = (function () {
             // TODO: Add $promise function for error
             error: function (jqXHR, exception) {
                 if (jqXHR.status === 0) {
-                    alert('Not connected.\n Verify Network.');
+                    console.log('Not connected.\n Verify Network.');
                 }
                 else if (jqXHR.status == 404) {
-                    alert('Requested page not found. [404] ' + urlLayerActualBounds);
+                    console.log('Requested page not found. [404] ' + urlLayerActualBounds);
                 }
                 else if (jqXHR.status == 500) {
-                    alert('Internal Server Error [500].');
+                    console.log('Internal Server Error [500].');
                 }
                 else if (exception === 'parsererror') {
-                    alert('Requested JSON parse failed.');
+                    console.log('Requested JSON parse failed.');
                 }
                 else if (exception === 'timeout') {
-                    alert('Time out error.');
+                    console.log('Time out error.');
                 }
                 else if (exception === 'abort') {
-                    alert('Ajax request aborted.');
+                    console.log('Ajax request aborted.');
                 }
                 else {
-                    alert('Uncaught Error.\n' + jqXHR.responseText);
+                    console.log('Uncaught Error.\n' + jqXHR.responseText);
                 }
             }
         });
@@ -98,7 +100,8 @@ var AppClient = (function () {
                 "timeOut": "10000"
 
             }
-            toastr.info('Use the < ALT > and < SHIFT > keys together to define an Area of Interest, and then click "Create Geopackage" to generate a .gpkg file.', 'Define Geopackage AOI');
+            toastr.info('Use the options under the "Tools" menu to define an Area of Interest, and then click "Create' +
+                ' Product" to generate an output file.', 'Define Product AOI');
 
             // Add Zoom Slider
             var zoomslider = new ol.control.ZoomSlider();

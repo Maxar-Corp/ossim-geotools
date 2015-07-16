@@ -14,6 +14,7 @@ var CreateProductClient = (function () {
     var $productType = $('#productType');
     var $productMinLevel = $('#productMinTileLevel');
     var $productMaxLevel = $('#productMaxTileLevel');
+    var $productEpsgCode = $('#productEpsgCode');
     var $aoiLod = $('#aoiLod');
     var $prodcutEpsg = $('#prodcutEpsg');
 
@@ -72,51 +73,58 @@ var CreateProductClient = (function () {
     var urlProductExport;
     var urlLayerActualBounds;
 
-    var aoiFeature = new ol.Feature();
+    //var aoiFeature = new ol.Feature();
 
     // Use a ol.FeatureOverlay to store the AOI
-    var aoiFeatureOverlay = new ol.FeatureOverlay();
+    //var aoiFeatureOverlay = new ol.FeatureOverlay();
 
-    var aoiStyle = new ol.style.Style({
-        stroke: new ol.style.Stroke({
-            color: 'cyan',
-            width: 5
-        }),
-        fill: new ol.style.Fill({
-            color: 'rgba(0, 255, 255, 0.3)'
-        })
-    });
+    //var aoiStyle = new ol.style.Style({
+    //    stroke: new ol.style.Stroke({
+    //        color: 'cyan',
+    //        width: 5
+    //    }),
+    //    fill: new ol.style.Fill({
+    //        color: 'rgba(0, 255, 255, 0.3)'
+    //    })
+    //});
 
-    aoiFeatureOverlay.setStyle(aoiStyle);
+    //aoiFeatureOverlay.setStyle(aoiStyle);
 
-    // A DragBox interaction used to pass the geometry to the aoiFeatureOverlay
-    var dragBoxControl = new ol.interaction.DragBox({
-        condition: ol.events.condition.altShiftKeysOnly,
-        style: aoiStyle
-    });
+    //// A DragBox interaction used to pass the geometry to the aoiFeatureOverlay
+    //var dragBoxControl = new ol.interaction.DragBox({
+    //    condition: ol.events.condition.altShiftKeysOnly,
+    //    style: aoiStyle
+    //});
 
     // Add the DragBox control upon app load.  The interaction is available
     // by using the <ALT> and <SHIFT> key and defining a box
-    AppClient.map.addInteraction(dragBoxControl);
+    //AppClient.map.addInteraction(dragBoxControl);
 
     function createAoi(wkt){
 
+        $createGp.removeClass('disabled');
         $aoiJobInfo.hide();
         gpkgInputTileLayer = $tileLayerSelect.val();
 
         //console.log(wkt);
+        //console.log('----gpkgInputTileLayer------');
         //console.log(gpkgInputTileLayer);
-        //var dataObject = {"layer": gpkgInputTileLayer, "aoi": wkt}
-        //console.log(dataObject);
+        //console.log('---------------------------');
+        //
+        //console.log("url " + urlLayerActualBounds);
 
         $.ajax({
-            url: urlLayerActualBounds, // + "?layer=" + gpkgInputTileLayer + "&aoi=" + wkt,
+            url: urlLayerActualBounds,
             type: 'POST',
-            data: {"layer": gpkgInputTileLayer, "aoi": wkt},
+            data: {"layer": gpkgInputTileLayer, "aoi": wkt, "aoiEpsg":  AppClient.mapEpsg},
             dataType: 'json',
             // TODO: Add $promise function for success
             success: function (data) {
-                //console.log(data);
+
+
+                console.log('----getActualBounds (data)------');
+                console.log(data);
+                console.log('---------------------------');
                 $aoiLod.html(data.minLevel + ' to ' + data.maxLevel);
 
                 var min = data.minLevel;
@@ -124,8 +132,6 @@ var CreateProductClient = (function () {
 
                 $productMinLevel.empty();
                 $productMaxLevel.empty();
-
-                //console.log('min: ' + min);
 
                 for (min; min <= max; min++) {
                     //console.log('min: ' + min);
@@ -141,25 +147,25 @@ var CreateProductClient = (function () {
             // TODO: Add $promise function for error
             error: function (jqXHR, exception) {
                 if (jqXHR.status === 0) {
-                    alert('Not connected.\n Verify Network.');
+                    console.log('Not connected.\n Verify Network.');
                 }
                 else if (jqXHR.status == 404) {
-                    alert('Requested page not found. [404] ' + urlLayerActualBounds);
+                    console.log('Requested page not found. [404] ' + urlLayerActualBounds);
                 }
                 else if (jqXHR.status == 500) {
-                    alert('Internal Server Error [500].');
+                    console.log('Internal Server Error [500].');
                 }
                 else if (exception === 'parsererror') {
-                    alert('Requested JSON parse failed.');
+                    console.log('Requested JSON parse failed.');
                 }
                 else if (exception === 'timeout') {
-                    alert('Time out error.');
+                    console.log('Time out error.');
                 }
                 else if (exception === 'abort') {
-                    alert('Ajax request aborted.');
+                    console.log('Ajax request aborted.');
                 }
                 else {
-                    alert('Uncaught Error.\n' + jqXHR.responseText);
+                    console.log('Uncaught Error.\n' + jqXHR.responseText);
                 }
             }
         });
@@ -167,6 +173,7 @@ var CreateProductClient = (function () {
         product.aoi = wkt;
 
         getMetrics();
+
     }
 
     function addCommas(intNum) {
@@ -238,7 +245,7 @@ var CreateProductClient = (function () {
             // TODO: Add $promise function for success
             success: function (data) {
 
-                console.log('---------------------------');
+                console.log('------estimate (data)------');
                 console.log(data);
                 console.log('---------------------------');
 
@@ -271,29 +278,34 @@ var CreateProductClient = (function () {
 
                 }
 
+                //TODO: Need to possibly reset the $ajax request after it is called, because it appears that
+                //      it is holding the previously returned object.  Additional calls are returning
+                //      tiles === 0 over areas where there should be data
+
+
             },
             // TODO: Add $promise function for error
             error: function (jqXHR, exception) {
                 if (jqXHR.status === 0) {
-                    alert('Not connected.\n Verify Network.');
+                    console.log('Not connected.\n Verify Network.');
                 }
                 else if (jqXHR.status == 404) {
-                    alert('Requested page not found. [404] ' + urlLayerActualBounds);
+                    console.log('Requested page not found. [404] ' + urlLayerActualBounds);
                 }
                 else if (jqXHR.status == 500) {
-                    alert('Internal Server Error [500].');
+                    console.log('Internal Server Error [500].');
                 }
                 else if (exception === 'parsererror') {
-                    alert('Requested JSON parse failed.');
+                    console.log('Requested JSON parse failed.');
                 }
                 else if (exception === 'timeout') {
-                    alert('Time out error.');
+                    console.log('Time out error.');
                 }
                 else if (exception === 'abort') {
-                    alert('Ajax request aborted.');
+                    console.log('Ajax request aborted.');
                 }
                 else {
-                    alert('Uncaught Error.\n' + jqXHR.responseText);
+                    console.log('Uncaught Error.\n' + jqXHR.responseText);
                 }
             }
         });
@@ -320,86 +332,29 @@ var CreateProductClient = (function () {
 
             });
 
-            dragBoxControl.on('boxend', function () {
-
-                $aoiJobInfo.hide();
-
-                // Check to see if there are any features in the aoiFeatureOverlay, and if so we need to remove them before adding a new AOI.
-                if (aoiFeatureOverlay.getFeatures().getArray().length >= 1) {
-                    aoiFeatureOverlay.removeFeature(aoiFeature);
-                }
-
-                // Pass the 'output' as a WKT polygon
-                output = dragBoxControl.getGeometry();
-
-                formatWkt = new ol.format.WKT();
-                outputWkt = formatWkt.writeGeometry(output);
-
-                aoiFeature.setGeometry(output);
-                aoiFeatureOverlay.addFeature(aoiFeature);
-
-                //console.log($('#tileLayerSelect').val());
-                //var gpkgInputTileLayer = $tileLayerSelect.val();
-                // Use an ajax request to pull the level of detail and the bounding box for the AOI
-                //$.ajax({
-                //    url: urlLayerActualBounds + "?layer=" + gpkgInputTileLayer + "&aoi=" + outputWkt,
-                //    type: 'GET',
-                //    dataType: 'json',
-                //    // TODO: Add $promise function for success
-                //    success: function (data) {
-                //        //console.log(data);
-                //        $aoiLod.html(data.minLevel + ' to ' + data.maxLevel);
-                //
-                //        var min = data.minLevel;
-                //        var max = data.maxLevel;
-                //
-                //        $productMinLevel.empty();
-                //        $productMaxLevel.empty();
-                //
-                //        //console.log('min: ' + min);
-                //
-                //        for (min; min <= max; min++) {
-                //            //console.log('min: ' + min);
-                //            $productMinLevel.append('<option value="' + min + '">' + min + '</option>');
-                //            $productMaxLevel.append('<option value="' + min + '">' + min + '</option>');
-                //            $productMinLevel.selectpicker('refresh');
-                //            $productMaxLevel.selectpicker('val', data.maxLevel);
-                //            $productMaxLevel.selectpicker('refresh');
-                //
-                //        }
-                //
-                //    },
-                //    // TODO: Add $promise function for error
-                //    error: function (jqXHR, exception) {
-                //        if (jqXHR.status === 0) {
-                //            alert('Not connected.\n Verify Network.');
-                //        }
-                //        else if (jqXHR.status == 404) {
-                //            alert('Requested page not found. [404] ' + urlLayerActualBounds);
-                //        }
-                //        else if (jqXHR.status == 500) {
-                //            alert('Internal Server Error [500].');
-                //        }
-                //        else if (exception === 'parsererror') {
-                //            alert('Requested JSON parse failed.');
-                //        }
-                //        else if (exception === 'timeout') {
-                //            alert('Time out error.');
-                //        }
-                //        else if (exception === 'abort') {
-                //            alert('Ajax request aborted.');
-                //        }
-                //        else {
-                //            alert('Uncaught Error.\n' + jqXHR.responseText);
-                //        }
-                //    }
-                //});
-
-                createAoi(outputWkt);
-
-                $createGp.removeClass("disabled");
-
-            });
+            //dragBoxControl.on('boxend', function () {
+            //
+            //    $aoiJobInfo.hide();
+            //
+            //    // Check to see if there are any features in the aoiFeatureOverlay, and if so we need to remove them before adding a new AOI.
+            //    if (aoiFeatureOverlay.getFeatures().getArray().length >= 1) {
+            //        aoiFeatureOverlay.removeFeature(aoiFeature);
+            //    }
+            //
+            //    // Pass the 'output' as a WKT polygon
+            //    output = dragBoxControl.getGeometry();
+            //
+            //    formatWkt = new ol.format.WKT();
+            //    outputWkt = formatWkt.writeGeometry(output);
+            //
+            //    aoiFeature.setGeometry(output);
+            //    aoiFeatureOverlay.addFeature(aoiFeature);
+            //
+            //    createAoi(outputWkt);
+            //
+            //    $createGp.removeClass("disabled");
+            //
+            //});
 
             $submitAoi.on("click", function () {
 
@@ -408,10 +363,13 @@ var CreateProductClient = (function () {
                 product.layer = $tileLayerSelect.val();
                 product.properties.filename = $productName.val();
                 product.aoiEpsg = AppClient.mapEpsg //"EPSG:3857";
-                product.minLevel = null;
-                product.maxLevel = null
+                product.minLevel = $productMinLevel.val();
+                product.maxLevel = $productMaxLevel.val();
+                product.outputEpsg = $productEpsgCode.val();
 
-                console.log(product);
+                //console.log('---------------product-------------');
+                //console.log(product);
+                //console.log('-----------------------------------');
 
                 $.ajax({
                     url: urlProductExport,
@@ -505,25 +463,25 @@ var CreateProductClient = (function () {
                     },
                     error: function (jqXHR, exception) {
                         if (jqXHR.status === 0) {
-                            alert('Not connect.\n Verify Network.');
+                            console.log('Not connect.\n Verify Network.');
                         }
                         else if (jqXHR.status == 404) {
-                            alert('Requested page not found. [404]');
+                            console.log('Requested page not found. [404]');
                         }
                         else if (jqXHR.status == 500) {
-                            alert('Internal Server Error [500].');
+                            console.log('Internal Server Error [500].');
                         }
                         else if (exception === 'parsererror') {
-                            alert('Requested JSON parse failed.');
+                            console.log('Requested JSON parse failed.');
                         }
                         else if (exception === 'timeout') {
-                            alert('Time out error.');
+                            console.log('Time out error.');
                         }
                         else if (exception === 'abort') {
-                            alert('Ajax request aborted.');
+                            console.log('Ajax request aborted.');
                         }
                         else {
-                            alert('Uncaught Error.\n' + jqXHR.responseText);
+                            console.log('Uncaught Error.\n' + jqXHR.responseText);
                         }
                     }
                 });
@@ -536,7 +494,7 @@ var CreateProductClient = (function () {
 
                 console.log('filedownload jobNumber: ' + downloadNumber);
                 $.fileDownload("/tilestore/job/download?jobId=" + downloadNumber)
-                    .done(function() {alert('success!');})
+                    .done(function() {console.log('success!');})
                     .fail(function(){
                         toastr.error('Product failed to' +
                             ' download', 'Product download Error');
@@ -555,7 +513,7 @@ var CreateProductClient = (function () {
 
             $cancelAoi.on("click", function () {
 
-                aoiFeatureOverlay.removeFeature(aoiFeature);
+                //aoiFeatureOverlay.removeFeature(aoiFeature);
                 $createGp.removeClass("disabled");
                 resetProductForm();
 
@@ -564,7 +522,10 @@ var CreateProductClient = (function () {
             // Remove the AOI feature if the user closes the product modal window
             $exportProductModal.on('hidden.bs.modal', function (e) {
 
-                aoiFeatureOverlay.removeFeature(aoiFeature);
+                //aoiFeatureOverlay.removeFeature(aoiFeature);
+                //console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
+                AddLayerClient.aoiVector.getSource().clear();
+                //console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
                 resetProductForm();
 
             });
@@ -596,13 +557,13 @@ var CreateProductClient = (function () {
 
             }
 
-            AppClient.map.addOverlay(aoiFeatureOverlay);
+            //AppClient.map.addOverlay(aoiFeatureOverlay);
 
             $('[data-toggle="tooltip"]').tooltip();
 
         },
-        aoiStyle: aoiStyle,
-        aoiFeatureOverlay: aoiFeatureOverlay,
+        //aoiStyle: aoiStyle,
+        //aoiFeatureOverlay: aoiFeatureOverlay,
         product: product,
         $createGp: $createGp,
         createAoi: createAoi

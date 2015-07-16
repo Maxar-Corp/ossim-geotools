@@ -16,12 +16,12 @@
 
 <body class="fuelux">
 
-<tilestore:securityClassificationBanner class="row text-center security-level-top"/>
+    <tilestore:securityClassificationBanner class="row text-center security-level-top"/>
 
-<div class="corner-ribbon top-left sticky red shadow">Alpha</div>
+    <div class="corner-ribbon top-left sticky red shadow">Alpha</div>
 
-<!-- Main navBar -->
-<div class="container">
+    <!-- Main navBar -->
+    <div class="container">
     <nav style="top:28px" class="navbar navbar-fixed-top navbar-default" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -93,10 +93,10 @@
     </nav>
 </div><!-- /.container" -->
 
-<div class="navbar-offset"></div>
+    <div class="navbar-offset"></div>
 
-<!-- toolBarRow -->
-<div class="container-fluid">
+    <!-- toolBarRow -->
+    <div class="container-fluid">
     <div id="toolBarRow" class="row">
         <div id="omarFeedToolbar" class="col-md-2 text-center">
             <nav class="navbar navbar-default">
@@ -136,26 +136,34 @@
                     </div>
                     <div class="collapse navbar-collapse" id="previewMapNavbar">
                         <form class="navbar-form navbar-left" role="search">
-                            <button type="button" id="ingestModalButton" class="btn btn-primary disabled"
+                            <button type="button" id="ingestModalButton" class="btn btn-primary"
                                     data-toggle="tooltip" data-placement="bottom"
                                     title="Ingest the definied AOI"><i
                                     class="fa fa-sign-in fa-rotate-90"></i>&nbsp;&nbsp;Ingest</button>
+                            <button type="button" id="clearAoiButton" class="btn btn-primary"
+                                    data-toggle="tooltip" data-placement="bottom"
+                                    title="Clear the defined AOI"><i
+                                    class="fa fa-trash-o"></i>&nbsp;&nbsp;Clear</button>
                         </form>
                         <ul class="nav navbar-nav navbar-right">
                             <li id="omarMapToolsDropdown" class="dropdown disabled">
                                 <a id="omarMapToolsDropdownItem" class="dropdown-toggle disabled"
                                    data-toggle="dropdown" href="#"><i
-                                        class="fa fa-cog"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
+                                        class="fa fa-wrench"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li role="presentation" class="dropdown-header">Cutting</li>
+                                    <li role="presentation" class="dropdown-header">Manual cut</li>
                                     <li><a id="drawRectangle" href="#"><i class="fa fa-square-o fa-lg"></i>&nbsp;&nbsp;by
                                     Rectangle</a></li>
-                                    <li><a id="drawPolygon" href="#"><i class="fa fa-lemon-o fa-lg"></i>&nbsp;&nbsp;by
+                                    <li><a id="drawPolygon" href="#"><i class="fa fa-hand-o-up fa-lg"></i>&nbsp;&nbsp;by
                                     Freehand Polygon</a></li>
-                                    %{--<li><a id="drawCircle" href="#"><i class="fa fa-circle-thin"></i>&nbsp;&nbsp;by Circle</a></li>--}%
-                                    <li class="divider"></li>
                                     <li class="disabled"><a id="endCuts" href="#"><i
-                                            class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Cutting Off</a></li>
+                                            class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Manual Cutting Off</a></li>
+                                    <li class="divider"></li>
+                                    <li role="presentation" class="dropdown-header">Pre-generated cut</li>
+                                    <li><a id="uploadCutFile" href="#"><i
+                                            class="fa fa-upload fa-lg"></i>&nbsp;&nbsp;Upload Cut File</a></li>
+                                    <li><a id="pasteGeometry" href="#"><i
+                                            class="fa fa-paste fa-lg"></i>&nbsp;&nbsp;Paste Geometry</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -180,7 +188,8 @@
                             %{--<li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>--}%
                             %{--<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>--}%
                             <li class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-cog"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i
+                                        class="fa fa-wrench"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     <li role="presentation" class="dropdown-header">Manage tile layers</li>
                                     <li><a id="navCreateLayer" href="#"><span
@@ -207,8 +216,8 @@
     </div>
 </div>
 
-<!-- mapsRow -->
-<div class="container-fluid">
+    <!-- mapsRow -->
+    <div class="container-fluid">
     <div id="mapsRow" class="row">
         
         <div id="omarFeed" class="col-md-2">
@@ -275,8 +284,8 @@
 
 </div>
 
-<!-- Create tile layer modal -->
-<div class="modal fade" id="createTileLayerModal" tabindex="-1" role="dialog" aria-labelledby="createTileLayerModalLabel" Saria-hidden="true">
+    <!-- Create tile layer modal -->
+    <div class="modal fade" id="createTileLayerModal" tabindex="-1" role="dialog" aria-labelledby="createTileLayerModalLabel" Saria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -331,8 +340,8 @@
     </div><!-- /.modal-dialog modal-lg -->
 </div><!-- /.modal fade "createTileLayerModal" -->
 
-<!-- Rename tile layer modal -->
-<div class="modal fade" id="renameTileLayerModal" tabindex="-1" role="dialog" aria-labelledby="renameTileLayerModalLabel"
+    <!-- Rename tile layer modal -->
+    <div class="modal fade" id="renameTileLayerModal" tabindex="-1" role="dialog" aria-labelledby="renameTileLayerModalLabel"
      Saria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -380,8 +389,8 @@
     </div><!-- /.modal-dialog modal-lg -->
 </div><!-- /.modal fade "renameTileLayerModal" -->
 
-<!-- Delete tile layer modal -->
-<div class="modal fade" id="deleteTileLayerModal" tabindex="-1" role="dialog"
+    <!-- Delete tile layer modal -->
+    <div class="modal fade" id="deleteTileLayerModal" tabindex="-1" role="dialog"
      aria-labelledby="deleteTileLayerModalLabel" Saria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -418,8 +427,8 @@
     </div><!-- /.modal-dialog modal-lg -->
 </div><!-- /.modal fade "deleteTileLayerModal" -->
 
-<!-- Filter wfs modal -->
-<div class="modal fade" id="filterWfsModal" tabindex="-1" role="dialog"
+    <!-- Filter wfs modal -->
+    <div class="modal fade" id="filterWfsModal" tabindex="-1" role="dialog"
      aria-labelledby="filterwfsModalLabel" Saria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -707,8 +716,114 @@
     </div><!-- /.modal-dialog modal-lg -->
 </div><!-- /.modal fade "deleteTileLayerModal" -->
 
-<!-- Ingest image modal -->
-<div class="modal fade" id="ingestImageModal" tabindex="-1" role="dialog"
+    <!-- Upload cut by file form -->
+    <div class="modal fade" id="uploadCutByFileModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     Saria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title"><i class="fa fa-scissors fa-lg"></i>&nbsp;&nbsp;Upload cut from file
+                </h3>
+            </div>
+            <div class="modal-body">
+                <form id="uploadCutByFileForm" data-toggle="validator">
+                    <div class="container">
+                        <div class="row col-sm-6 col-md-6">
+
+                            <div id="uploadCutByFormElements">
+                                <p>Select a shapefile, geojson, or KML file, and upload to the server to perform the
+                                cut for the
+                                specified
+                                geometries contained in the file.</p>
+                                <p class="alert alert-info">You can also drag and drop the files into
+                                the map to perform a cut.</p>
+
+                                <input type="hidden" id="cutFormTargetEpsg" class="form-control"
+                                       name="targetEpsg" value="EPSG:3857">
+
+                                <input type="hidden" id="cutFormSourceEpsg" class="form-control"
+                                       name="sourceEpsg" value="EPSG:3857">
+
+                                <label for="sourceEpsgSelect">Set source projection</label>
+                                <select id="sourceEpsgSelect" class="form-control selectpicker show-tick">
+                                    <option value="EPSG:3857">EPSG: 3857</option>
+                                    <option value="EPSG:4326">EPSG: 4326</option>
+                                </select>
+                                <br>
+                                <br>
+                                <!-- The fileinput-button span is used to style the file input field as button -->
+                                <span class="btn btn-primary fileinput-button">
+                                    <i class="fa fa-folder-open"></i>&nbsp;&nbsp;
+                                    <span>Browse</span>
+                                    <!-- The file input field used as target for the file upload widget -->
+                                    <input id="fileupload" type="file" name="files[]" multiple>
+                                </span>
+                                <br>
+                                <br>
+                                <!-- The global progress bar -->
+                                <div id="progress" class="progress">
+                                    <div class="progress-bar progress-bar-success progress-bar-striped"></div>
+                                </div>
+                                <!-- The container for the uploaded files -->
+                                <div id="files" class="files alert alert-success" style="display: none"></div>
+                                <button id="closeUploadCutByFileModal" type="button" class="btn btn-primary pull-right"
+                                        data-style="expand-left">Close</button>
+                            </div>
+
+                        </div>
+                    </div><!-- /.container -->
+                </form><!-- /#uploadCutByFileForm -->
+            </div><!-- /.modal-body -->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog modal-lg -->
+</div><!-- /.modal fade "uploadCutByFileModal" -->
+
+    <!-- Paste cut geometry form -->
+    <div class="modal fade" id="pasteCutGeometryModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     Saria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title"><i class="fa fa-paste fa-lg"></i>&nbsp;&nbsp;Paste geometry
+                </h3>
+            </div>
+            <div class="modal-body">
+                <form id="pasteCutGeometryForm" data-toggle="validator">
+                    <div class="container">
+                        <div class="row col-sm-6 col-md-6">
+
+                            <div id="pasteCutGeometryElements">
+                                <label for="geometryPasteTextArea">Paste geometry string (WKT, KML or GeoJSON)
+                                &nbsp;</label>
+                                <textarea id="geometryPasteTextArea" class="form-control" rows="6"></textarea>
+                                <br>
+                                <input type="hidden" id="pasteFormSourceEpsg" class="form-control"
+                                       name="sourceEpsg" value="EPSG:3857">
+                                <label for="pasteFormEpsgSourceSelect">Set source projection</label>
+                                <select id="pasteFormEpsgSourceSelect" class="form-control selectpicker show-tick">
+                                    <option value="EPSG:3857">EPSG: 3857</option>
+                                    <option value="EPSG:4326">EPSG: 4326</option>
+                                </select>
+                                <br>
+                                <br>
+                                <button id="submitPasteGeometry" type="button" class="btn btn-primary"
+                                        data-style="expand-left">Submit</button>
+                                <button id="closePasteCutGeometryModal" type="button" class="btn btn-primary"
+                                        data-style="expand-left">Close</button>
+                            </div>
+
+                        </div>
+                    </div><!-- /.container -->
+                </form><!-- /#pasteCutGeometryForm -->
+            </div><!-- /.modal-body -->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog modal-lg -->
+</div><!-- /.modal fade "pasteCutGeometryModal" -->
+
+    <!-- Ingest image modal -->
+    <div class="modal fade" id="ingestImageModal" tabindex="-1" role="dialog"
      aria-labelledby="ingestImageModal" Saria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -760,8 +875,8 @@
     </div><!-- /.modal-dialog modal-lg -->
 </div><!-- /.modal fade "ingestImageModal" -->
 
-<!-- OMAR WFS Feed Handlebars template -->
-<script id="image-template"  type="text/x-handlebars-template">
+    <!-- OMAR WFS Feed Handlebars template -->
+    <script id="image-template"  type="text/x-handlebars-template">
     {{#features}}
     <div id="card-{{properties.id}}" class="row image-card">
         <div>
@@ -802,12 +917,13 @@
     {{/features}}
 </script>
 
-<tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
+    <tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
 
 <asset:javascript src="app/admin.js"/>
 <g:javascript>
     $( document ).ready( function ()
     {
+        "use strict";
         var initParams = ${raw( initParams.toString() )};
         //console.log('The params are:');
         //console.log(initParams);
@@ -817,6 +933,7 @@
         AppOmarWfsAdmin.initialize(initParams);
         AppIngestTileAdmin.initialize(initParams);
         AppDrawFeaturesAdmin.initialize(initParams);
+        CutByFileAdmin.initialize(initParams);
 
         //Use polyfill to utilize HTML5 form validation in IE9
         H5F.setup(document.getElementById("createTileLayerForm"));

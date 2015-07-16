@@ -29,6 +29,7 @@ class AccumuloTileLayer extends ImageTileLayer//TileLayer<ImageTile>
    String qualifier = ""
    String visibility = ""
 
+   Boolean useNullReturn = false
    // int count = 0
    Pyramid getPyramid()
    {
@@ -38,10 +39,10 @@ class AccumuloTileLayer extends ImageTileLayer//TileLayer<ImageTile>
    ImageTile get(long z, long x, long y)
    {
       TileCacheImageTile result = new TileCacheImageTile(z,x,y)
-      result.bounds = pyramid.bounds(result)
-      result.res = pyramid.grid(z).xResolution
-      result.key.family = family
-      result.key.qualifier = qualifier
+      result.bounds         = pyramid.bounds(result)
+      result.res            = pyramid.grid(z).xResolution
+      result.key.family     = family
+      result.key.qualifier  = qualifier
       result.key.visibility = visibility
 
       if(layerInfo)
@@ -55,6 +56,10 @@ class AccumuloTileLayer extends ImageTileLayer//TileLayer<ImageTile>
          else
          {
 
+            if(useNullReturn)
+            {
+               result = null
+            }
             //result = null
          }
       }

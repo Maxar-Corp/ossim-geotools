@@ -174,7 +174,7 @@ public class QuadTileWriterDialog extends BaseStepDialog implements
 	
 	private void ok()
 	{
-		if (Const.isEmpty(swt.stepName.text)) return;
+		if (!swt.stepName.text) return;
 
 		stepname = swt.stepName.text
 		input.inputTileField = swt.inputTileField.text
