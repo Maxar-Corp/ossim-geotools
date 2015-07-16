@@ -172,7 +172,6 @@ var AppIngestTileAdmin = (function () {
 
         console.log(ingestBool);
         if (ingestBool) {
-            //alert('previewLayer present!');
             setIngestLevels();
             $ingestImageModal.modal('show');
         }
