@@ -19,7 +19,7 @@
         <div class="corner-ribbon top-left sticky red shadow">Alpha</div>
 
         <nav style="top:28px" class="navbar navbar-fixed-top navbar-default" role="navigation">
-            <div class="container-fluid">
+            %{--<div class="container-fluid">--}%
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-navbar-collapse-1">
                         <span class="sr-only">Toggle navigation</span>
@@ -41,26 +41,28 @@
                                     class="fa fa-cube"></i>&nbsp;&nbsp;Create Product</button>
                         </form>
                         <form class="navbar-form" role="search" id="zoomToForm">
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <div class="input-group-btn">
-                                        <select  class="form-control selectpicker show-tick" data-style="btn-primary"
-                                                 id="coordSelect" >
-                                            <option data-icon="glyphicon-map-marker" value="dd">DD&nbsp;&nbsp;&nbsp;</option>
-                                            <option data-icon="glyphicon-time" value="dms">DMS&nbsp;&nbsp;</option>
-                                            <option data-icon="glyphicon-th-large" value="mgrs">MGRS</option>
-                                        </select>
-                                    </div>
-                                    <input class="form-control" id="coordInput" type="text"
-                                           placeholder="Search by coordinates" value="39.57,-85.61">
-                                    <div class="input-group-btn">
-                                        <button id="zoomButton" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i></button>
-                                    </div>
-                                </div>
-                            </div>
+                            %{--<div class="form-group">--}%
+                                %{--<div class="input-group" id="zoom-input-group">--}%
+                                    %{--<div class="input-group-btn">--}%
+                                        %{--<select  class="form-control selectpicker show-tick" data-style="btn-primary"--}%
+                                                 %{--id="coordSelect" >--}%
+                                            %{--<option data-icon="glyphicon-map-marker" value="dd">DD&nbsp;&nbsp;&nbsp;</option>--}%
+                                            %{--<option data-icon="glyphicon-time" value="dms">DMS&nbsp;&nbsp;</option>--}%
+                                            %{--<option data-icon="glyphicon-th-large" value="mgrs">MGRS</option>--}%
+                                        %{--</select>--}%
+                                    %{--</div>--}%
+                                    %{--<input class="form-control" id="coordInput" type="text"--}%
+                                           %{--placeholder="Search by coordinates" placeholder="Search by coordinates"--}%
+                                          %{-->--}%
+                                    %{--value="39.57,-85.61"--}%
+                                    %{--<div class="input-group-btn">--}%
+                                        %{--<button id="zoomButton" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i></button>--}%
+                                    %{--</div>--}%
+                                %{--</div>--}%
+                            %{--</div>--}%
                             <div class="form-group">
                                 <div class="input-group" id="tileLayerInputGroup">
-                                    <div class="input-group-addon"><i class="fa fa-th"></i>&nbsp;&nbsp;Active
+                                    <div class="input-group-addon"><i class="fa fa-th"></i>&nbsp;&nbsp;
                                     Tile Layer</div>
                                     <select class="form-control selectpicker show-tick" id="tileLayerSelect">
                                     </select>
@@ -121,7 +123,7 @@
                         </div>
                     %{--</div>--}%
                 </div><!-- /.navbar-collapse -->
-            </div><!-- /.container-fluid -->
+            %{--</div><!-- /.container-fluid -->--}%
         </nav>
 
         <div class="navbar-offset"></div>
