@@ -1,7 +1,7 @@
 /* Vendor libs */
 //= require jquery.js
 //= require bootstrap.js
-//= require ../ol3/ol.js
+//= require ../ol3/ol-debug.js
 //= require common/bootstrap-select.js
 //= require common/H5F.js /* Needed for IE9 form validation */
 //= require common/validator.js

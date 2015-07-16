@@ -39,7 +39,7 @@ var AppManageLayersAdmin = (function () {
 
     // Utility function to move layers render order
     function swapTopLayer(mapName, removeId, insertId){
-        //var map = AppAdmin.mapTile;
+
         var layers = mapName.getLayers();
         var topLayer = layers.removeAt(removeId);
         layers.insertAt(insertId, topLayer);
