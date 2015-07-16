@@ -66,6 +66,14 @@
       </tr>
       <tr>
         <td>
+          <label>Auto Create Directory:</label>
+        </td>
+        <td>
+          <input id="autoCreateDirectoryId" name="autoCreateDirectory" type="checkbox" value="true"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
           <label>Directory Type:</label>
         </td>
         <td>
