@@ -6,7 +6,7 @@ body {
   background-color: green; 
   color: white; 
   font-size:20px; 
-  font-weight:bold
+  font-weight:bold;
 }
 
 .security-level-bottom {
@@ -14,7 +14,7 @@ body {
   background-color: green; 
   color: white; 
   font-size: 20px; 
-  font-weight:bold
+  font-weight:bold;
 }
 
 .navbar-offset { margin-top: 56px; }
@@ -113,7 +113,7 @@ body {
 }
 
 #mapTileToolbar {
-    padding-right: 0px
+    padding-right: 0px;
 }
 
 .ol-mouse-position {
@@ -272,6 +272,7 @@ div[role='tooltip'] {
     font-size: 24px;
     transform: rotate(-45deg);
     -webkit-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
 }
 
 .corner-ribbon.sticky{
