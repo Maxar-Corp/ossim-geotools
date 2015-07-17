@@ -10,7 +10,23 @@
 
     <title>Tilestore Viewer</title>
 
-    <asset:stylesheet src="app/client.css"/>
+    %{--<asset:stylesheet src="app/client.css"/>--}%
+
+    <browser:choice>
+        <browser:isMsie versionLower="10">
+            <asset:stylesheet src="ol3/ol.css"/>
+            <asset:stylesheet src="bootstrap.css"/>
+            <asset:stylesheet src="font-awesome.css"/>
+            <asset:stylesheet src="app/common/jquery.fileupload.css"/>
+            <asset:stylesheet src="app/common/bootstrap-select.css"/>
+            <asset:stylesheet src="app/common/toastr.css"/>
+            <asset:stylesheet src="app/client/styles.css"/>
+        </browser:isMsie>
+        <browser:otherwise>
+            <asset:stylesheet src="app/client.css"/>
+        </browser:otherwise>
+    </browser:choice>
+
 
 </head>
     <body>
@@ -41,25 +57,25 @@
                                     class="fa fa-cube"></i>&nbsp;&nbsp;Create Product</button>
                         </form>
                         <form class="navbar-form" role="search" id="zoomToForm">
-                            %{--<div class="form-group">--}%
-                                %{--<div class="input-group" id="zoom-input-group">--}%
-                                    %{--<div class="input-group-btn">--}%
-                                        %{--<select  class="form-control selectpicker show-tick" data-style="btn-primary"--}%
-                                                 %{--id="coordSelect" >--}%
-                                            %{--<option data-icon="glyphicon-map-marker" value="dd">DD&nbsp;&nbsp;&nbsp;</option>--}%
-                                            %{--<option data-icon="glyphicon-time" value="dms">DMS&nbsp;&nbsp;</option>--}%
-                                            %{--<option data-icon="glyphicon-th-large" value="mgrs">MGRS</option>--}%
-                                        %{--</select>--}%
-                                    %{--</div>--}%
-                                    %{--<input class="form-control" id="coordInput" type="text"--}%
-                                           %{--placeholder="Search by coordinates" placeholder="Search by coordinates"--}%
-                                          %{-->--}%
+                            <div class="form-group">
+                                <div class="input-group" id="zoom-input-group">
+                                    <div class="input-group-btn">
+                                        <select  class="form-control selectpicker show-tick" data-style="btn-primary"
+                                                 id="coordSelect" >
+                                            <option data-icon="glyphicon-map-marker" value="dd">DD&nbsp;&nbsp;&nbsp;</option>
+                                            <option data-icon="glyphicon-time" value="dms">DMS&nbsp;&nbsp;</option>
+                                            <option data-icon="glyphicon-th-large" value="mgrs">MGRS</option>
+                                        </select>
+                                    </div>
+                                    <input class="form-control" id="coordInput" type="text"
+                                           placeholder="Search by coordinates" placeholder="Search by coordinates"
+                                          >
                                     %{--value="39.57,-85.61"--}%
-                                    %{--<div class="input-group-btn">--}%
-                                        %{--<button id="zoomButton" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i></button>--}%
-                                    %{--</div>--}%
-                                %{--</div>--}%
-                            %{--</div>--}%
+                                    <div class="input-group-btn">
+                                        <button id="zoomButton" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <div class="input-group" id="tileLayerInputGroup">
                                     <div class="input-group-addon"><i class="fa fa-th"></i>&nbsp;&nbsp;
@@ -147,10 +163,11 @@
                     <div class="modal-body">
                         <form id="productForm" data-toggle="validator">
                             <div class="container-fluid">
-
-
                                 <div class="row">
-
+                                    <div style="display: none"
+                                          class="alert alert-warning metricsSpinner"><i
+                                            class="fa fa-cog fa-spin fa-2x pull-right"></i>&nbsp;Calculating product
+                                    metrics.  Please wait...</div>
                                     <!-- Nav tabs -->
                                     <ul class="nav nav-tabs" role="tablist">
                                         <li role="presentation" class="active"><a href="#productTab"
@@ -246,9 +263,7 @@
                                                     <i class="fa fa-square-o fa-stack-2x"></i>
                                                     <i class="fa fa-bar-chart fa-stack-1x"></i>
                                                 </span>&nbsp;&nbsp;Product Metrics
-                                                    <span style="display: none"
-                                                        class="metricsSpinner"><i
-                                                            class="fa fa-cog fa-spin fa-2x pull-right"></i></span></div>
+                                                    </div>
                                                     <ul class="list-group">
                                                     <li class="list-group-item">Number of tiles<span
                                                             id="prodNumTiles" class="pull-right"></span></li>
@@ -278,9 +293,7 @@
                                                     <i class="fa fa-square-o fa-stack-2x"></i>
                                                     <i class="fa fa-arrows-alt fa-stack-1x"></i>
                                                 </span>&nbsp;&nbsp;Product
-                                                Dimensions<span style="display: none"
-                                                        class="metricsSpinner"><i
-                                                            class="fa fa-cog fa-2x fa-spin pull-right"></i></span></div>
+                                                Dimensions</div>
                                                 <ul class="list-group">
                                                     <li class="list-group-item">Minimum Display Level<span
                                                             id="prodMinLevel" class="pull-right"></span></li>

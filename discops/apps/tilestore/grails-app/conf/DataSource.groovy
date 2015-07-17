@@ -35,18 +35,20 @@ environments {
     }
   }
   production {
-    dbCreate = "update"
-    url = "jdbc:postgresql:tilestore-${appVersion}-prod"
-    pooled = true
-    properties {
-      maxActive = -1
-      minEvictableIdleTimeMillis=1800000
-      timeBetweenEvictionRunsMillis=1800000
-      numTestsPerEvictionRun=3
-      testOnBorrow=true
-      testWhileIdle=true
-      testOnReturn=true
-      validationQuery="SELECT 1"
+    dataSource {
+      dbCreate = "update"
+      url = "jdbc:postgresql:tilestore-${appVersion}-prod"
+      pooled = true
+      properties {
+        maxActive = -1
+        minEvictableIdleTimeMillis=1800000
+        timeBetweenEvictionRunsMillis=1800000
+        numTestsPerEvictionRun=3
+        testOnBorrow=true
+        testWhileIdle=true
+        testOnReturn=true
+        validationQuery="SELECT 1"
+      }
     }
-  }
+   }
 }

@@ -10,7 +10,23 @@
 
     <title>Tilestore Administrator</title>
 
-    <asset:stylesheet src="app/admin.css"/>
+    <browser:choice>
+        <browser:isMsie versionLower="10">
+            <asset:stylesheet src="ol3/ol.css"/>
+            <asset:stylesheet src="bootstrap.css"/>
+            <asset:stylesheet src="font-awesome.css"/>
+            <asset:stylesheet src="app/common/jquery.fileupload.css"/>
+            <asset:stylesheet src="app/common/bootstrap-select.css"/>
+            <asset:stylesheet src="app/common/ladda-themeless.min.css"/>
+            <asset:stylesheet src="app/common/toastr.css"/>
+            <asset:stylesheet src="app/common/fuelux.css"/>
+            <asset:stylesheet src="app/admin/styles.css"/>
+        </browser:isMsie>
+        <browser:otherwise>
+            <asset:stylesheet src="app/admin.css"/>
+        </browser:otherwise>
+    </browser:choice>
+
 
 </head>
 
@@ -276,7 +292,7 @@
         </div>
 
         <div id="mapTile" class="col-md-5">
-            <div id="mapTileSpinner" class="mapSpinner mapInfoElement"><i class="fa fa-spinner fa-pulse fa-3x"></i></div>
+            %{--<div id="mapTileSpinner" class="mapSpinner mapInfoElement"><i class="fa fa-spinner fa-pulse fa-3x"></i></div>--}%
             <div id="mapTileZoomLevel" class="mapZoomLevel mapInfoElement"></div>
             <div id="mapTileInfo" class="mapInfoBox mapInfoElement"></div>
         </div>
