@@ -44,15 +44,24 @@ class DiskCacheService {
          // DiskCache.count()%
          try
          {
-            row = DiskCache.withCriteria {
-               maxResults(1)
-               order("id", "asc")
-               firstResult(roundRobinIndex)
-               setReadOnly(true)
-            }.get(0)
+            Integer count = DiskCache.count()
+            if(count)
+            {
+               row = DiskCache.withCriteria {
+                  maxResults(1)
+                  order("id", "asc")
+                  firstResult(roundRobinIndex)
+                  setReadOnly(true)
+               }.get(0)
 
-            ++roundRobinIndex
-            roundRobinIndex = roundRobinIndex%DiskCache.count()
+               ++roundRobinIndex
+               roundRobinIndex = roundRobinIndex%count
+            }
+            else
+            {
+               roundRobinIndex = 0
+            }
+
          }
          catch (e)
          {
@@ -263,7 +272,7 @@ class DiskCacheService {
          result.status = HttpStatus.NOT_FOUND
          result.message = e.toString()
       }
-
+      roundRobinIndex = 0
       result;
    }
    def list(FetchDataCommand cmd){
