@@ -113,14 +113,14 @@ var CreateProductClient = (function () {
         //
         //console.log("url " + urlLayerActualBounds);
 
-        $.ajax({
+        $.when(
+            $.ajax({
             url: urlLayerActualBounds,
             type: 'POST',
             data: {"layer": gpkgInputTileLayer, "aoi": wkt, "aoiEpsg":  AppClient.mapEpsg},
             dataType: 'json',
             // TODO: Add $promise function for success
             success: function (data) {
-
 
                 console.log('----getActualBounds (data)------');
                 console.log(data);
@@ -168,11 +168,15 @@ var CreateProductClient = (function () {
                     console.log('Uncaught Error.\n' + jqXHR.responseText);
                 }
             }
-        });
+        })
+        ).done(function(){
+                product.aoi = wkt;
+                getMetrics();
+            })
 
-        product.aoi = wkt;
+        //product.aoi = wkt;
 
-        getMetrics();
+        //getMetrics();
 
     }
 
@@ -219,8 +223,6 @@ var CreateProductClient = (function () {
     }
 
     function getMetrics(){
-
-        // TODO: Get the $ajax and set it to a variable
 
         $metricsSpinner.show();
 
@@ -305,6 +307,8 @@ var CreateProductClient = (function () {
                 }
             }
         });
+
+
 
     }
 
@@ -541,6 +545,7 @@ $productMaxLevel.empty();
         //aoiFeatureOverlay: aoiFeatureOverlay,
         product: product,
         $createGp: $createGp,
-        createAoi: createAoi
+        createAoi: createAoi,
+        getMetrics: getMetrics
     };
 })();
