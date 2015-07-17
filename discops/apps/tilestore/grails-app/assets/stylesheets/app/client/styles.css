@@ -175,6 +175,7 @@ h1 { font-family: 'Comfortaa', Arial, serif; font-weight: 400; }
 	font-size: 24px;
 	transform: rotate(-45deg);
 	-webkit-transform: rotate(-45deg);
+	-ms-transform: rotate(-45deg);
 }
 
 .corner-ribbon.sticky{

@@ -217,22 +217,22 @@ var ZoomToClient = (function () {
 
     function zoomTo(lat, lon) {
 
-        //var duration = 2000;
-        //var start = +new Date();
-        //var pan = ol.animation.pan({
-        //    duration: duration,
-        //    source: /** @type {ol.Coordinate} */ (AppClient.mapView.getCenter()),
-        //    start: start
-        //});
-        //var bounce = ol.animation.bounce({
-        //    duration: duration,
-        //    resolution: 4 * AppClient.mapView.getResolution(),
-        //    start: start
-        //});
-        //
-        //AppClient.map.beforeRender(pan, bounce);
+        var duration = 2000;
+        var start = + new Date();
+        var pan = ol.animation.pan({
+            duration: duration,
+            source: /** @type {ol.Coordinate} */ (AppClient.mapView.getCenter()),
+            start: start
+        });
+        var bounce = ol.animation.bounce({
+            duration: duration,
+            resolution: .5 * AppClient.mapView.getResolution(),
+            start: start
+        });
 
-        //console.log('In ZoomTo ' + 'Lat:' + parseFloat(lat) + ' ' + ' Lon:' + parseFloat(lon));
+        AppClient.map.beforeRender(bounce);
+
+        console.log('In ZoomTo ' + 'Lat:' + parseFloat(lat) + ' ' + ' Lon:' + parseFloat(lon));
 
         //var pan = ol.animation.pan({
         //    duration: 2000,
