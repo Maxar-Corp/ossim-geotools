@@ -72,9 +72,9 @@ var AddLayerClient = (function () {
         layers.insertAt(insertId, topLayer);
         //console.log('swapTopLayer fired with: ' + removeId + ' ' + insertId);
 
-        console.log('------------<getArray>-----------');
-        console.log(AppClient.map.getLayers().getArray());
-        console.log('------------</getArray>----------');
+        //console.log('------------<getArray>-----------');
+        //console.log(AppClient.map.getLayers().getArray());
+        //console.log('------------</getArray>----------');
 
     }
 
