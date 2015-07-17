@@ -40,26 +40,26 @@
             </div>
 
             <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
-                %{--<div class="col-sm-4 col-md-4">--}%
-                    %{--<form class="navbar-form" role="search" id="zoomToForm">--}%
-                        %{--<div class="form-group">--}%
-                            %{--<div class="input-group">--}%
-                                %{--<div class="input-group-btn">--}%
-                                    %{--<select  class="form-control selectpicker show-tick" data-style="btn-primary"--}%
-                                             %{--id="coordSelect" >--}%
-                                        %{--<option data-icon="glyphicon-map-marker" value="dd">DD&nbsp;&nbsp;&nbsp;</option>--}%
-                                        %{--<option data-icon="glyphicon-time" value="dms">DMS&nbsp;&nbsp;</option>--}%
-                                        %{--<option data-icon="glyphicon-th-large" value="mgrs">MGRS</option>--}%
-                                    %{--</select>--}%
-                                %{--</div>--}%
-                                %{--<input class="form-control" id="coordInput" type="text" placeholder="Search by coordinates" value="39.57,-85.61">--}%
-                                %{--<div class="input-group-btn">--}%
-                                    %{--<button id="zoomButton" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i></button>--}%
-                                %{--</div>--}%
-                            %{--</div>--}%
-                        %{--</div>--}%
-                    %{--</form>--}%
-                %{--</div>--}%
+                <div class="col-sm-4 col-md-4">
+                    <form class="navbar-form" role="search" id="zoomToForm">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-btn">
+                                    <select  class="form-control selectpicker show-tick" data-style="btn-primary"
+                                             id="coordSelect" >
+                                        <option data-icon="glyphicon-map-marker" value="dd">DD&nbsp;&nbsp;&nbsp;</option>
+                                        <option data-icon="glyphicon-time" value="dms">DMS&nbsp;&nbsp;</option>
+                                        <option data-icon="glyphicon-th-large" value="mgrs">MGRS</option>
+                                    </select>
+                                </div>
+                                <input class="form-control" id="coordInput" type="text" placeholder="Search by coordinates" value="39.57,-85.61">
+                                <div class="input-group-btn">
+                                    <button id="zoomButton" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
                 <ul class="nav navbar-nav navbar-right">
                     <li>
                         <form class="navbar-form">
