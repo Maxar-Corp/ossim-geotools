@@ -33,14 +33,14 @@ import org.pentaho.di.trans.step.StepMetaInterface;
 import org.w3c.dom.Node;
 import org.ossim.kettle.types.OssimValueMetaBase;
 import org.ossim.core.SynchOssimInit
-@Step(
-		id="OSSIMGeoPackageWriter",
-		name="name",
-		description="description",
-		categoryDescription="categoryDescription", 
-		image="org/ossim/kettle/steps/geopackagewriter/icon.png",
-		i18nPackageName="org.ossim.steps.kettle.geopackagewriter"
-) 
+//@Step(
+//		id="OSSIMGeoPackageWriter",
+//		name="name",
+//		description="description",
+//		categoryDescription="categoryDescription",
+//		image="org/ossim/kettle/steps/geopackagewriter/icon.png",
+//		i18nPackageName="org.ossim.steps.kettle.geopackagewriter"
+//)
 public class GeoPackageWriterMeta extends BaseStepMeta implements StepMetaInterface
 {
 	def inputTileWidthField         = "tile_width"
