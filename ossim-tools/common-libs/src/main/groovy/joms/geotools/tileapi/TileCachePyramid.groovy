@@ -252,8 +252,8 @@ class TileCachePyramid extends Pyramid
       for(i = 0; i < resolutions.length;++i)
       {
         if (highest >= resolutions[i]) {
-          maxLevel = i;
-          if (i > 0) maxLevel--;
+          clampMaxLevel = i;
+          if (i > 0) clampMaxLevel--;
           break
         }
       }
@@ -261,7 +261,7 @@ class TileCachePyramid extends Pyramid
       for(i = resolutions.length-1; i >= 0;--i)
       {
         if (coarsest <= resolutions[i]) {
-          minLevel = i;
+          clampMinLevel = i;
           break
         }
       }
