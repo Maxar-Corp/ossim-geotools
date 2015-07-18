@@ -40,7 +40,7 @@ class AccumuloTileLayer extends ImageTileLayer//TileLayer<ImageTile>
    {
       TileCacheImageTile result = new TileCacheImageTile(z,x,y)
       result.bounds         = pyramid.bounds(result)
-      result.res            = pyramid.grid(z).xResolution
+      result.res            = pyramid.grid(z).yResolution
       result.key.family     = family
       result.key.qualifier  = qualifier
       result.key.visibility = visibility
@@ -55,7 +55,6 @@ class AccumuloTileLayer extends ImageTileLayer//TileLayer<ImageTile>
          }
          else
          {
-
             if(useNullReturn)
             {
                result = null
@@ -65,8 +64,6 @@ class AccumuloTileLayer extends ImageTileLayer//TileLayer<ImageTile>
       }
 
       //
-      //println "GETTING TILE ===== Level, x, y: ${z},${x},${y}"
-
       result as ImageTile
    }
 
