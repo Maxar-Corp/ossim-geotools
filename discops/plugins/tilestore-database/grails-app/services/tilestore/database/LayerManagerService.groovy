@@ -486,7 +486,6 @@ class LayerManagerService implements InitializingBean
                     data   : []
       ]
       def gpt = new ossimGpt()
-
       TileCachePyramid pyramid = daoTileCacheService.newPyramidGivenLayerName(cmd.layerName)
       String resUnits = cmd.resUnits?.toLowerCase()
       if (pyramid)
@@ -497,18 +496,27 @@ class LayerManagerService implements InitializingBean
             if (resUnits && (resUnits != "degrees"))
             {
                cmd.res = cmd.res * (1.0 / gpt.metersPerDegree().y)
+               cmd.resUnits = "degrees"
             }
-         } else
+         }
+         else
          {
             // make sure the units are meters
             if (resUnits && (resUnits != "meters"))
             {
                cmd.res = cmd.res * (gpt.metersPerDegree().y)
+               cmd.resUnits = "meters"
             }
          }
 
          result.data = pyramid.clampLevels(cmd.res, cmd.resLevels)
-      } else
+         if(!result.data)
+         {
+            result.status = HttpStatus.NOT_FOUND
+            result.message = "The request is outside the bounds of the layer"
+         }
+      }
+      else
       {
          result.status = HttpStatus.NOT_FOUND
          result.message = "Can't get information from layer name = ${cmd.layerName}."
