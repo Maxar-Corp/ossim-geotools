@@ -225,7 +225,6 @@ class TileCachePyramid extends Pyramid
   {
     HashMap result = [:]
     def gridsSorted = grids.sort(){a,b->a.z<=>b.z}
-
     double[] resolutions = gridsSorted*.yResolution as double[]
     int[] levels = gridsSorted*.z as double[]
 
@@ -234,29 +233,40 @@ class TileCachePyramid extends Pyramid
     Integer i = 0
     double coarsestResolution = fullResolution*(1<<(numberOfResolutions-1))
     double highestResolution  = fullResolution
+    double layerHighestResolution = resolutions[-1]
+    double layerCoarsestResolution = resolutions[0]
 
-    for(i = 0; i < resolutions.length;++i)
+    if((highestResolution > layerCoarsestResolution)||
+            coarsestResolution < layerHighestResolution)
     {
-      if (highestResolution > resolutions[i]) {
-        maxLevel = i;
-        if (i > 0) maxLevel--;
-        break
-      }
+      return result
     }
+    double highest =  Math.max(highestResolution, layerHighestResolution)
+    double coarsest = Math.min(coarsestResolution, layerCoarsestResolution)
 
-    for(i = resolutions.length-1; i >= 0;--i)
+    if(coarsest>=highest)
     {
-      if (coarsestResolution < resolutions[i]) {
-        minLevel = i;
-        break
+      for(i = 0; i < resolutions.length;++i)
+      {
+        if (highest >= resolutions[i]) {
+          maxLevel = i;
+          if (i > 0) maxLevel--;
+          break
+        }
+      }
+
+      for(i = resolutions.length-1; i >= 0;--i)
+      {
+        if (coarsest <= resolutions[i]) {
+          minLevel = i;
+          break
+        }
       }
     }
 
     if((minLevel <= maxLevel)&&(minLevel >-1)&&(maxLevel>-1))
     {
-
       result = [minLevel:minLevel + levels[0], maxLevel:maxLevel + levels[0]]
-
     }
 
     result
