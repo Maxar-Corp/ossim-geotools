@@ -18,7 +18,8 @@ class TileCachePyramid extends Pyramid
 
   Bounds clippedBounds
   def geographicProj = new Projection("EPSG:4326")
-
+  Integer minLevel
+  Integer maxLevel
   /**
    * Options can be supplied to shrink the clip region further.  So if your image covers
    * several levels you can clip to a particular level and region
@@ -205,10 +206,12 @@ class TileCachePyramid extends Pyramid
         }
         if(resultMinLevel <= resultMaxLevel)
         {
-          // we are 0 based but the resolutions were grabbed from the startLevel
-          // so let's shift our result to the start level
-          result = [clippedGeometryLatLon:latLonClipBounds, clippedBounds: clipBounds, minLevel: resultMinLevel, maxLevel: resultMaxLevel]
-          //println "CLAMPED RESULT: ${result}"
+          def minMax = intersectLevels(resultMinLevel, resultMaxLevel)
+          if(minMax)
+          {
+            result = [clippedGeometryLatLon:latLonClipBounds, clippedBounds: clipBounds,
+                      minLevel: minMax?.minLevel, maxLevel: minMax?.maxLevel]
+          }
         }
       }
     }
@@ -228,8 +231,8 @@ class TileCachePyramid extends Pyramid
     double[] resolutions = gridsSorted*.yResolution as double[]
     int[] levels = gridsSorted*.z as double[]
 
-    Integer minLevel = 99999
-    Integer maxLevel = -1
+    Integer clampMinLevel = 99999
+    Integer clampMaxLevel = -1
     Integer i = 0
     double coarsestResolution = fullResolution*(1<<(numberOfResolutions-1))
     double highestResolution  = fullResolution
@@ -264,22 +267,22 @@ class TileCachePyramid extends Pyramid
       }
     }
 
-    if((minLevel <= maxLevel)&&(minLevel >-1)&&(maxLevel>-1))
+    if((clampMinLevel <= clampMaxLevel)&&(clampMinLevel >-1)&&(clampMaxLevel>-1))
     {
-      result = [minLevel:minLevel + levels[0], maxLevel:maxLevel + levels[0]]
+      result = intersectLevels(clampMinLevel + levels[0], clampMaxLevel + levels[0])
     }
 
     result
   }
   def getMinMaxLevel()
   {
-    Long minLevel = 9999
-    Long maxLevel = -1
+    //Long minLevel = 9999
+    //Long maxLevel = -1
 
-    this.grids.each{
-      if(it.z < minLevel) minLevel = it.z
-      if(it.z > maxLevel) maxLevel = it.z
-    }
+    //this.grids.each{
+    //  if(it.z < minLevel) minLevel = it.z
+    //  if(it.z > maxLevel) maxLevel = it.z
+    //}
 
     [minLevel:minLevel, maxLevel:maxLevel]
   }
@@ -354,18 +357,27 @@ class TileCachePyramid extends Pyramid
 
     if(!clippedBounds) clippedBounds = this.bounds
 
-    Integer minLevel = hints.minLevel?:0
-    Integer maxLevel = hints.maxLevel?:22
+    if(hints.minLevel!=null) this.minLevel = hints.minLevel
+    if(hints.maxLevel!=null) this.maxLevel = hints.maxLevel
 
-    if((minLevel!=null)&&(maxLevel!=null))
+    this.minLevel = this.minLevel?:0
+    if(this.maxLevel == null) this.maxLevel = 22
+    if((this.minLevel!=null)&&(this.maxLevel!=null))
     {
-      initializeGrids(minLevel, maxLevel)
+      //Until the bug in geoscript is fixed we will make sure that we always start from 0
+      //Seems geoscript does not like the starting grid to be something other than 0
+      //
+      initializeGrids(0, this.maxLevel)
     }
 
    // println "HINTS: ${this.hints}"
   }
   void initializeGrids(int minLevel, int maxLevel)
   {
+    // Geoscript bug for not allowing for sparse grids where we might start at level 5
+    // instead of 0
+    //
+    if(minLevel >0) minLevel = 0
     if(this.tileWidth&&
        this.tileHeight&&
        this.bounds&&
