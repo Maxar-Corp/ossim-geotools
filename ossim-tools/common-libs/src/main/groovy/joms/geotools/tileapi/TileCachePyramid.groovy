@@ -223,8 +223,11 @@ class TileCachePyramid extends Pyramid
    */
   HashMap clampLevels(double fullResolution, Integer numberOfResolutions)
   {
-    double[] resolutions = grids*.yResolution as double[]
-    int[] levels = grids*.z as double[]
+    HashMap result = [:]
+    def gridsSorted = grids.sort(){a,b->a.z<=>b.z}
+
+    double[] resolutions = gridsSorted*.yResolution as double[]
+    int[] levels = gridsSorted*.z as double[]
 
     Integer minLevel = 99999
     Integer maxLevel = -1
@@ -240,6 +243,7 @@ class TileCachePyramid extends Pyramid
         break
       }
     }
+
     for(i = resolutions.length-1; i >= 0;--i)
     {
       if (coarsestResolution < resolutions[i]) {
@@ -247,10 +251,15 @@ class TileCachePyramid extends Pyramid
         break
       }
     }
-    Integer resultMinLevel = minLevel + levels[0]
-    Integer resultMaxLevel = maxLevel + levels[0]
 
-    [minLevel:resultMinLevel, maxLevel:resultMaxLevel]
+    if((minLevel <= maxLevel)&&(minLevel >-1)&&(maxLevel>-1))
+    {
+
+      result = [minLevel:minLevel + levels[0], maxLevel:maxLevel + levels[0]]
+
+    }
+
+    result
   }
   def getMinMaxLevel()
   {
