@@ -65,6 +65,7 @@ var AppAdmin = (function () {
         //    new ol.interaction.DragRotateAndZoom()
         //]),
         layers: AppManageLayersAdmin.layers,
+        logo: false,
         view: new ol.View({
             zoom: 3,
             projection: mapEpsg,
@@ -93,6 +94,7 @@ var AppAdmin = (function () {
         //    new ol.interaction.DragRotateAndZoom()
         //]),
         layers: AppManageLayersAdmin.layers,
+        logo: false,
         view: mapOmar.getView(),
         target: 'mapTile'
     });
