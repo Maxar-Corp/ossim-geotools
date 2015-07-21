@@ -372,12 +372,12 @@ class TileCachePyramid extends Pyramid
 
    // println "HINTS: ${this.hints}"
   }
-  void initializeGrids(int minLevel, int maxLevel)
+  void initializeGrids(int clampMinLevel, int clampMaxLevel)
   {
     // Geoscript bug for not allowing for sparse grids where we might start at level 5
     // instead of 0
     //
-    if(minLevel >0) minLevel = 0
+    if(clampMinLevel >0) clampMinLevel = 0
     if(this.tileWidth&&
        this.tileHeight&&
        this.bounds&&
@@ -396,7 +396,7 @@ class TileCachePyramid extends Pyramid
         }
       }
       int n = 0
-      this.grids = (minLevel..maxLevel).collect { long z ->
+      this.grids = (clampMinLevel..clampMaxLevel).collect { long z ->
 
         n = 2**z
         double res = modelSize/n
