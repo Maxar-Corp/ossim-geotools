@@ -1,6 +1,7 @@
 package org.ossim.kettle.steps.dirwalk
 
 import groovy.io.FileType
+import groovy.io.FileVisitResult
 import org.ossim.kettle.steps.dirwatch.DirWatchData.FileDoneCompareType
 import org.pentaho.di.core.exception.KettleException
 import org.pentaho.di.core.row.RowMeta
@@ -8,6 +9,7 @@ import org.pentaho.di.trans.Trans
 import org.pentaho.di.trans.TransMeta
 import org.pentaho.di.trans.step.*
 
+import java.nio.file.FileVisitor
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Statement
@@ -18,7 +20,7 @@ class DirWalk extends BaseStep implements StepInterface
    private DirWalkMeta meta = null
    private DirWalkData data = null
    public DirWalk(StepMeta stepMeta, StepDataInterface stepDataInterface,
-                         int copyNr, TransMeta transMeta, Trans trans) {
+                  int copyNr, TransMeta transMeta, Trans trans) {
       super(stepMeta, stepDataInterface, copyNr, transMeta, trans);
    }
    private String getFieldValueAsString(String fieldValue,
@@ -47,7 +49,7 @@ class DirWalk extends BaseStep implements StepInterface
       result
    }
 
-   private scan(HashMap settings)
+   private void scan(HashMap settings)
    {
       def traverseSettings = [:]
 
@@ -66,9 +68,12 @@ class DirWalk extends BaseStep implements StepInterface
          else traverseSettings.type = FileType.FILES
 
          fileToTraverse.traverse(traverseSettings){file->
+            if((isStopped())&&(this.status == BaseStepData.StepExecutionStatus.STATUS_HALTING))
+            {
+               return FileVisitResult.TERMINATE
+            }
             putRow(data.outputRowMeta, [file.toString()] as Object[]);
          }
-
       }
    }
    public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws KettleException
@@ -91,21 +96,27 @@ class DirWalk extends BaseStep implements StepInterface
       {
          if(r)
          {
-               String  directory          = getFieldValueAsString(meta.fieldFilename, r, meta, data) as File
-               String  wildcard           = getFieldValueAsString(meta.fieldWildcard, r, meta, data)
-               String  wildcardExclude    = getFieldValueAsString(meta.fieldWildcardExclude, r, meta, data)
-               Boolean recurseDirectories = getFieldValueAsString(meta.fieldRecurseSubfolders, r, meta, data) as Boolean
-               String  fileType           = getFieldValueAsString(meta.fieldFileType, r, meta, data)
+            String  directory          = getFieldValueAsString(meta.fieldFilename, r, meta, data) as File
+            String  wildcard           = getFieldValueAsString(meta.fieldWildcard, r, meta, data)
+            String  wildcardExclude    = getFieldValueAsString(meta.fieldWildcardExclude, r, meta, data)
+            Boolean recurseDirectories = getFieldValueAsString(meta.fieldRecurseSubfolders, r, meta, data) as Boolean
+            String  fileType           = getFieldValueAsString(meta.fieldFileType, r, meta, data)
 
-               def settings = [
-                       directory:directory as File,
-                       wildcard:wildcard,
-                       wildcardExclude:wildcardExclude,
-                       recurseDirectories:recurseDirectories,
-                       fileType:fileType?:"FILE"
-               ]
-               scan(settings)
-               result = true
+            def settings = [
+                    directory:directory as File,
+                    wildcard:wildcard,
+                    wildcardExclude:wildcardExclude,
+                    recurseDirectories:recurseDirectories,
+                    fileType:fileType?:"FILE"
+            ]
+            scan(settings)
+
+            if((isStopped())&&(this.status == BaseStepData.StepExecutionStatus.STATUS_HALTING))
+            {
+               setOutputDone()
+               return false
+            }
+            result = true
          }
          else
          {
@@ -129,8 +140,13 @@ class DirWalk extends BaseStep implements StepInterface
                     recurseDirectories:recurseDirectories,
                     fileType:fileType
             ]
-
             scan(settings)
+            if((isStopped())&&(this.status == BaseStepData.StepExecutionStatus.STATUS_HALTING))
+            {
+               setOutputDone()
+               return false
+            }
+
 
          }
          setOutputDone()
