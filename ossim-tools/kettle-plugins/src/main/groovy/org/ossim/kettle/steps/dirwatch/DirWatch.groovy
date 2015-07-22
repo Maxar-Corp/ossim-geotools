@@ -302,7 +302,7 @@ class DirWatch extends BaseStep implements StepInterface
                            {
                               rs.updateBoolean("notified", true)
 
-                              putRow(data.outputRowMeta, [file] as Object[]);
+                              putRow(data.outputRowMeta, [file.toString()] as Object[]);
                            }
                            rs.updateTimestamp("last_checked", new Timestamp(new Date().time))
                            rs.updateBigDecimal("last_filesize", file.length())
