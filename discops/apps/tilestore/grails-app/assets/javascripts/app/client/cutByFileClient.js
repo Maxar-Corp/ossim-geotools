@@ -37,29 +37,33 @@ var CutByFileClient = (function () {
         cutFeatureExtent = cutFeature.getGeometry().getExtent();
         console.log(cutFeatureExtent);
 
-        //console.log(CreateProductClient.aoiFeatureOverlay.getFeatures().getArray().length);
-        //if (CreateProductClient.aoiFeatureOverlay.getFeatures().getArray().length >= 1 ) {
-        //
-        //    console.log('aoiFeatureOverlay.getFeatures().getArray().length >= 1');
-        //    console.log(CreateProductClient.aoiFeatureOverlay.getFeatures().getArray()[0]);
-        //    removeFeature = CreateProductClient.aoiFeatureOverlay.getFeatures().getArray()[0];
-        //    CreateProductClient.aoiFeatureOverlay.removeFeature(removeFeature);
-        //
-        //}
-
         if (AddLayerClient.aoiVector.getSource().getFeatures().length >= 1) {
             AddLayerClient.aoiVector.getSource().clear();
             //console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
         }
 
-        //CreateProductClient.aoiFeatureOverlay.addFeature(cutFeature);
         AddLayerClient.aoiVector.getSource().addFeature(cutFeature);
-        //AppClient.map.addOverlay(CreateProductClient.aoiFeatureOverlay);
+
+        //var duration = 1500;
+        var start = + new Date();
+        var pan = ol.animation.pan({
+            duration: 750,
+            source: (AppClient.mapView.getCenter()),
+            start: start
+        });
+        var zoom = ol.animation.zoom({
+            duration: 1000,
+            resolution: AppClient.map.getView().getResolution()
+        });
+
+        AppClient.map.beforeRender(zoom,pan);
+
         AppClient.map.getView().fitExtent(cutFeatureExtent, AppClient.map.getSize());
 
         CreateProductClient.createAoi(wktString);
 
         CreateProductClient.$createGp.removeClass("disabled");
+
     }
 
     function resetUploadForm(){
@@ -102,15 +106,30 @@ var CutByFileClient = (function () {
         dataType: 'json',
         //autoUpload: false,
         done: function (e, data) {
-            console.log('---fileupload (data)------');
-            console.log(data);
-            console.log('---------------------------');
-            addWktToMap(data.result.wkt);
+            //console.log('---fileupload (data)------');
+            //console.log(data);
+            //console.log('---------------------------');
+            //$.each(data.files, function (index, file) {
+            //    $('#files').text('Successfully uploaded: ' + file.name);
+            //});
+
             console.log(data.result.wkt);
-            $.each(data.files, function (index, file) {
-                $('#files').text('Successfully uploaded: ' + file.name) ;
-            });
-            $uploadCutByFileModal.modal('show');
+            addWktToMap(data.result.wkt);
+
+            if(AppClient.map.getView().getResolution()> 1){
+                console.log('------------<AppClient.map.getView().getResolution()>-----------');
+                console.log(AppClient.map.getView().getResolution());
+                console.log('------------</AppClient.map.getView().getResolution()>----------');
+                toastr.success('The file was successfully uploaded to the server.  Use the "Create Product" button' +
+                    ' to start the build process.', 'Success!');
+            }
+            else{
+                console.log('------------<AppClient.map.getView().getResolution()>-----------');
+                console.log(AppClient.map.getView().getResolution());
+                console.log('------------</AppClient.map.getView().getResolution()>----------');
+                toastr.warning('Please make sure you have set the proper projection for the upload file. Use the' +
+                    ' "Upload Cut File" option under "Tools" to set the projection.', 'Warning!');
+            }
 
         },
         error: function(data){
@@ -177,6 +196,31 @@ var CutByFileClient = (function () {
                 //console.log(data);
                 //console.log('---------------------------');
                 addWktToMap(data.wkt);
+                //toastr.success('File was successfully uploaded to the server.  Use the "Create Product" button' +
+                //    ' to start the build process.', 'Success!');
+                $pasteCutGeometryModal.modal('hide');
+
+                if(AppClient.map.getView().getResolution()> 1){
+                    console.log('------------<AppClient.map.getView().getResolution()>-----------');
+                    console.log(AppClient.map.getView().getResolution());
+                    console.log('------------</AppClient.map.getView().getResolution()>----------');
+                    toastr.success('The file was successfully uploaded to the server.  Use the "Create Product"' +
+                        ' button' +
+                        ' to start the build process.', 'Success!');
+                }
+                else{
+                    console.log('------------<AppClient.map.getView().getResolution()>-----------');
+                    console.log(AppClient.map.getView().getResolution());
+                    console.log('------------</AppClient.map.getView().getResolution()>----------');
+                    toastr.warning('Please make sure you have set the proper projection for the upload file. Use the' +
+                        ' "Paste Geometry" option under "Tools" to set the projection.', 'Warning!');
+                }
+
+
+
+
+
+
             },
             error: function(data){
                 

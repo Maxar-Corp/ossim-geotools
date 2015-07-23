@@ -5,8 +5,7 @@
 //= require common/bootstrap-select.js
 //= require common/H5F.js /* Needed for IE9 form validation */
 //= require common/validator.js
-//= require common/geopoint.js
-//= require common/coordinate.js
+//= require common/mgrs.js
 //= require common/toastr.js
 //= require common/jquery.fileDownload.js
 //= require common/jquery.ui.widget.js
