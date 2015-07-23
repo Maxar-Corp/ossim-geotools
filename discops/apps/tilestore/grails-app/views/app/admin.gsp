@@ -68,7 +68,7 @@
                                         <option data-icon="glyphicon-th-large" value="mgrs">MGRS</option>
                                     </select>
                                 </div>
-                                <input class="form-control" id="coordInput" type="text" placeholder="Search by coordinates" value="39.57,-85.61">
+                                <input class="form-control" id="coordInput" type="text" placeholder="Search by coordinates">
                                 <div class="input-group-btn">
                                     <button id="zoomButton" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i></button>
                                 </div>

@@ -4,16 +4,6 @@ var AppManageLayersAdmin = (function () {
     var layersArray = [];
     var loadParams;
 
-    //var osmAll = new ol.layer.Tile({
-    //    opacity: 1.0,
-    //    source: new ol.source.TileWMS({
-    //        //	url: 'http://localhost:8080/geoserver/osm/wms?',
-    //        url: 'http://52.0.52.104/geoserver/ged/wms',
-    //        params: {'LAYERS': 'osm-group', 'TILED': true}
-    //    }),
-    //    name: 'osmAll'
-    //});
-
     var aoiStyle = new ol.style.Style({
         stroke: new ol.style.Stroke({
             color: 'cyan',
@@ -76,9 +66,9 @@ var AppManageLayersAdmin = (function () {
                 AppAdmin.mapTile.addLayer(obj);
             });
 
-            console.log('--------getArray---------');
-            console.log(AppAdmin.mapOmar.getLayers().getArray());//[0].values_.name);
-            console.log('--------------------------');
+            //console.log('--------getArray---------');
+            //console.log(AppAdmin.mapOmar.getLayers().getArray());//[0].values_.name);
+            //console.log('--------------------------');
 
         },
         layers: layersArray,

@@ -67,10 +67,8 @@
                                             <option data-icon="glyphicon-th-large" value="mgrs">MGRS</option>
                                         </select>
                                     </div>
-                                    <input class="form-control" id="coordInput" type="text"
-                                           placeholder="Search by coordinates" placeholder="Search by coordinates"
+                                    <input class="form-control" id="coordInput" type="text" placeholder="Search by coordinates"
                                           >
-                                    %{--value="39.57,-85.61"--}%
                                     <div class="input-group-btn">
                                         <button id="zoomButton" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i></button>
                                     </div>
@@ -368,7 +366,7 @@
                                         <div class="progress-bar progress-bar-success progress-bar-striped"></div>
                                     </div>
                                     <!-- The container for the uploaded files -->
-                                    <div id="files" class="files alert alert-success" style="display: none"></div>
+                                    %{--<div id="files" class="files alert alert-success" style="display: none"></div>--}%
                                     <button id="closeUploadCutByFileModal" type="button" class="btn btn-primary pull-right"
                                             data-style="expand-left">Close</button>
                                 </div>
@@ -428,6 +426,7 @@
     <asset:javascript src="app/client.js"/>
 
     <g:javascript>
+
             "use strict";
             var initParams = ${raw(initParams.toString())};
             AddLayerClient.initialize(initParams);
@@ -435,7 +434,6 @@
             AppDrawFeaturesClient.initialize(initParams);
             CreateProductClient.initialize(initParams);
             CutByFileClient.initialize(initParams);
-            ZoomToClient.initialize(initParams);
 
             //Use polyfill to utilize HTML5 form validation in IE9
             H5F.setup(document.getElementById("productForm"));

@@ -6,6 +6,7 @@
 //= require bootstrap.js
 //= require ../ol3/ol.js
 //= require common/console.message.js
+//= require common/mgrs.js
 //= require common/H5F.js /* Needed for IE9 form validation */
 //= require common/validator.js
 //= require common/handlebars.js
@@ -25,8 +26,7 @@
 //= require admin/ingestTileAdmin.js
 //= require admin/drawFeaturesAdmin.js
 //= require admin/cutByFileAdmin.js
+//= require admin/zoomToAdmin.js
 
-//= require common/coordinate.js
-//= require common/zoomTo.js
 //= require_self
 
