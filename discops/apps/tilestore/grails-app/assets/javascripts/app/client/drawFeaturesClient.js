@@ -5,7 +5,7 @@ var AppDrawFeaturesClient = (function () {
     var $drawRectangle = $('#drawRectangle');
     var $drawPolygon = $('#drawPolygon');
     var $tileLayerSelect = $('#tileLayerSelect');
-    var $mapOmarInfo = $('#mapOmarInfo');
+    var $mapInfo = $('#mapInfo');
     var $ingestModalButton = $('#ingestModalButton');
     var $endCuts = $('#endCuts');
     //var $ingestImageModal = $('#ingestImageModal');
@@ -14,12 +14,12 @@ var AppDrawFeaturesClient = (function () {
 
     $drawRectangle.on('click', function(){
         addInteraction('Rectangle');
-        //$showIngestModal.removeClass('disabled');
+        $drawRectangle.removeClass('btn-primary').addClass('btn-success');
+        $endCuts.removeClass('btn-default').addClass('btn-warning');
     });
 
     $drawPolygon.on('click', function(){
         addInteraction('Polygon');
-        //$showIngestModal.removeClass('disabled');
     });
 
     function addInteraction(value) {
@@ -34,6 +34,7 @@ var AppDrawFeaturesClient = (function () {
             console.log('drawinteractions NOT present...');
         }
 
+
         if (value === 'Polygon') {
 
             // Create the freehand poly cut tool if it doesn't exist
@@ -45,10 +46,16 @@ var AppDrawFeaturesClient = (function () {
                 });
             }
 
+            if ($drawRectangle.hasClass('btn-success')){
+                $drawRectangle.removeClass('btn-success').addClass('btn-primary')
+            }
+            $drawPolygon.removeClass('btn-primary').addClass('btn-success');
+            $endCuts.removeClass('btn-default').addClass('btn-warning');
+
             AppClient.map.addInteraction(drawInteractionFree);
-            //$mapOmarInfo.html('Cutting by: Freehand Polygon');
-            //$mapOmarInfo.show();
-            //AppIngestTileAdmin.$ingestModalButton.removeClass('disabled');
+
+            $mapInfo.html('Cutting by: Freehand Polygon');
+            $mapInfo.show();
 
             drawInteractionFree.on('drawend', function (evt) {
                 //$('#showIngestModal').removeClass('disabled');
@@ -68,15 +75,20 @@ var AppDrawFeaturesClient = (function () {
                 });
             }
 
+            if ($drawPolygon.hasClass('btn-success')){
+                $drawPolygon.removeClass('btn-success').addClass('btn-primary')
+            }
+            $drawRectangle.removeClass('btn-primary').addClass('btn-success');
+            $endCuts.removeClass('btn-default').addClass('btn-warning');
+
             drawInteractionRect.on('boxend', function () {
                 //$('#showIngestModal').removeClass('disabled');
                 addAoiFeatureRectangle();
             });
 
             AppClient.map.addInteraction(drawInteractionRect);
-            //$mapOmarInfo.html('Cutting by: Rectangle');
-            //$mapOmarInfo.show();
-            //AppIngestTileAdmin.$ingestModalButton.removeClass('disabled');
+            $mapInfo.html('Cutting by: Rectangle');
+            $mapInfo.show();
 
         }
 
@@ -147,11 +159,15 @@ var AppDrawFeaturesClient = (function () {
 
         //console.log('endCuts fired...')
         AppClient.map.removeInteraction(drawInteractionFree);
+        $('#drawRectangle').removeClass('btn-success').addClass('btn-primary');
         AppClient.map.removeInteraction(drawInteractionRect);
+        $('#drawPolygon').removeClass('btn-success').addClass('btn-primary');
         AddLayerClient.aoiVector.getSource().clear();
         $endCuts.html('<i class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Manual Cutting Off')
             .closest('li')
-            .addClass('disabled');
+
+        $endCuts.removeClass('btn-warning').addClass('btn-default');
+
         //$ingestModalButton.addClass('disabled');
         //$mapOmarInfo.html('');
         //$mapOmarInfo.hide();
