@@ -1,4 +1,7 @@
 package org.ossim.kettle.types
+
+import geoscript.geom.io.WkbReader
+import geoscript.geom.io.WktReader
 import org.pentaho.di.core.row.value.ValueMetaBase
 
 import javax.media.jai.RenderedOp
@@ -6,20 +9,7 @@ import java.awt.Image
 import java.awt.image.RenderedImage
 import java.awt.image.DataBufferByte
 import java.awt.image.BufferedImage
-import java.awt.image.ColorModel
-import java.awt.image.WritableRaster
-import org.pentaho.di.core.exception.KettleValueException
-import java.net.SocketTimeoutException;
-import java.sql.SQLException;
-import java.io.UnsupportedEncodingException;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.DataOutputStream
-import java.io.DataInputStream
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import javax.imageio.ImageReadParam
-import javax.imageio.stream.ImageInputStream
+
 import javax.imageio.ImageIO
 import org.pentaho.di.core.xml.XMLHandler;
 import org.pentaho.di.core.exception.KettleEOFException;
@@ -332,7 +322,13 @@ public class OssimValueMetaBase extends ValueMetaBase
 		{
 			//	def reader = new com.vividsolutions.jts.io.WKTReader(new GeometryFactory())
 			//	result = reader.read(geomString)
-			result = (new WKTReader()).read(geomString)
+			try{
+				result = (new WktReader()).read(geomString)?.g
+			}
+			catch(e)
+			{
+				result = (new WkbReader()).read(geomString)?.g
+			}
 		}
 
 		result
