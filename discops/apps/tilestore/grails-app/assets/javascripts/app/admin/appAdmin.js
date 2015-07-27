@@ -53,6 +53,12 @@ var AppAdmin = (function () {
         undefinedHTML: '<span class="fa fa-map-marker"></span>'
     });
 
+    var mapOmarView = new ol.View({
+        zoom: 3,
+        projection: mapEpsg,
+        center: ol.proj.transform([-21,33], 'EPSG:4326', 'EPSG:3857')
+    });
+
     var mapOmar = new ol.Map({
         controls: ol.control.defaults({
             attributionOptions: ({
@@ -66,11 +72,7 @@ var AppAdmin = (function () {
         //]),
         layers: AppManageLayersAdmin.layers,
         logo: false,
-        view: new ol.View({
-            zoom: 3,
-            projection: mapEpsg,
-            center: ol.proj.transform([-21,33], 'EPSG:4326', 'EPSG:3857')
-        }),
+        view: mapOmarView,
         target: 'mapOmar'
     });
 
@@ -602,6 +604,7 @@ var AppAdmin = (function () {
             resizeMapRow();
         },
         mapOmar: mapOmar,
+        mapOmarView: mapOmarView,
         mapTile: mapTile,
         mapEpsg: mapEpsg,
         $tilelayerSelect: $tileLayerSelect

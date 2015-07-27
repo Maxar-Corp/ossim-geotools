@@ -28,9 +28,9 @@ var ZoomTo = (function () {
 
     // Config:
     // ********************************************************************
-    var map = AppClient.map;  // Change to your map name
-    var view = AppClient.mapView; // Change to your map view name
-    var zoomToLevel = 10; // Change thie to desired zoom level
+    var map = AppAdmin.mapOmar;  // Change to your map name
+    var view = AppAdmin.mapOmarView; // Change to your map view name
+    var zoomToLevel = 12; // Change thie to desired zoom level
 
     // Cache DOM elements.  Modify to your form element names.
     var $zoomToForm = $('#zoomToForm');
@@ -335,12 +335,13 @@ var ZoomTo = (function () {
 
     }
 
-    //function initialize (initParams) {
-    //}
+    function initialize (initParams) {
+
+    }
 
     return {
 
-        //initialize: initialize
+        initialize: initialize
 
     }
 
