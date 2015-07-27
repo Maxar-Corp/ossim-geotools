@@ -34,8 +34,7 @@
 
         <div class="corner-ribbon top-left sticky red shadow">Alpha</div>
 
-        <nav style="top:28px" class="navbar navbar-fixed-top navbar-default" role="navigation">
-            %{--<div class="container-fluid">--}%
+        <nav id="navBarTop" class="navbar navbar-fixed-top navbar-default" role="navigation">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-navbar-collapse-1">
                         <span class="sr-only">Toggle navigation</span>
@@ -43,8 +42,8 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left"
-                                                                                       style="padding-top: 5px; margin-left: 60px;" src="logo_nav.png" alt="RBT Logo"/></g:link>
+                    <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left top-logo"
+                                                                                       src="logo_nav.png" alt="RBT Logo"/></g:link>
                     <a class="navbar-brand">&nbsp;&nbsp;Tilestore Viewer</a>
                 </div>
 
@@ -59,10 +58,6 @@
                                     <select class="form-control selectpicker show-tick" id="tileLayerSelect">
                                     </select>
                                 </div>
-                                %{--<button type="button" id="zoomFirstValidTile" class="btn btn-primary"--}%
-                                        %{--data-toggle="tooltip" data-placement="bottom"--}%
-                                        %{--title="Zoom to the first valid tile in the active tile layer"><i--}%
-                                        %{--class="fa fa-crosshairs fa-lg"></i>&nbsp;&nbsp;First Tile</button>--}%
                             </div>
                         </form>
 
@@ -75,9 +70,7 @@
                             <span class="icon-bar"></span>
                         </button>
                     </div>
-
-                    %{--<div class="nav navbar-nav navbar-right">--}%
-                        <div class="collapse navbar-collapse" id="mapToolsNavbar">
+                    <div class="collapse navbar-collapse" id="mapToolsNavbar">
                             <ul class="nav navbar-nav navbar-right">
                                 <li id="mapToolsDropdown" class="dropdown">
                                     <a id="MapToolsDropdownItem" class="dropdown-toggle"
@@ -164,34 +157,29 @@
                                 </li>
                             </ul>
                         </div>
-                    %{--</div>--}%
                 </div><!-- /.navbar-collapse -->
-            %{--</div><!-- /.container-fluid -->--}%
         </nav>
 
         <div class="navbar-offset"></div>
 
-
-        <div class="container-fluid">
-            <form role="search" style="position: absolute; left: 54px; top: 100px; width: 300px; z-index: 40"
-                  id="zoomToForm">
-                <div class="form-group">
-                    <div class="input-group" id="zoom-input-group">
-                        <input class="form-control" id="coordInput" style="box-shadow: 0px 5px 5px #808080; z-index:
-                        41" type="text"
-                               placeholder="Search by coordinates" data-toggle="tooltip" data-placement="bottom"
-                               title="Search for a coordinate via Decimal Degrees, Degrees Minutes Seconds, or Military Grid Reference System">
-                        <div class="input-group-btn">
-                            <button id="zoomButton" class="btn btn-primary"  style="box-shadow: -1px 5px 5px #808080;"
-                                    type="button"><i class="glyphicon glyphicon-search"></i></button>
-                        </div>
+    <form id="zoomToForm" role="search">
+            <div class="form-group">
+                <div class="input-group" id="zoom-input-group">
+                    <input class="form-control" id="coordInput" type="text"
+                           placeholder="Search by coordinates" data-toggle="tooltip" data-placement="bottom"
+                           title="Search for a coordinate via Decimal Degrees, Degrees Minutes Seconds, or Military Grid Reference System">
+                    <div class="input-group-btn">
+                        <button id="zoomButton" class="btn btn-primary"  type="button"><i
+                            class="glyphicon glyphicon-search"></i></button>
                     </div>
                 </div>
-            </form>
-            <div id="currentZoomLevel2"></div>
-            <div id="mapInfo" class="mapInfoBox mapInfoElement"></div>
-            <div id="map" class="map"></div>
-        </div>
+            </div>
+        </form>
+
+        <div id="currentZoomLevel2"></div>
+        <div id="mapInfo" class="mapInfoBox mapInfoElement"></div>
+        <div id="map" class="map"></div>
+
 
         <tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
 
@@ -207,7 +195,7 @@
                         <form id="productForm" data-toggle="validator">
                             <div class="container-fluid">
                                 <div class="row">
-                                    <div style="display: none"
+                                    <div id="metric-spinner"
                                           class="alert alert-warning metricsSpinner"><i
                                             class="fa fa-cog fa-spin fa-2x pull-right"></i>&nbsp;Calculating product
                                     metrics.  Please wait...</div>
@@ -283,7 +271,7 @@
                                                 <h4 id="jobHeader">Submitted Job Information:</h4>
                                                 <p><strong>ID:</strong>&nbsp;<span id="aoiJobId"></span></p>
                                             </div>
-                                            <div id="prodcutProgress" style="display: none">
+                                            <div id="prodcutProgress">
                                                 <div class="alert alert-info">Note: You can close this dialog if you do
                                                 not
                                                 wish
@@ -293,7 +281,7 @@
                                                 page</a>.</div>
                                                 <div id="productStatus"></div>
                                             </div>
-                                            <p id="downloadProduct" style="display: none"><i
+                                            <p id="downloadProduct"><i
                                                     class="fa fa-check fa-2x"></i>&nbsp;&nbsp;Ready for
                                             download:&nbsp;&nbsp;
                                                 <button id="downloadProductButton" type="button" href="javascript:void(0)"
@@ -411,7 +399,6 @@
                                         <div class="progress-bar progress-bar-success progress-bar-striped"></div>
                                     </div>
                                     <!-- The container for the uploaded files -->
-                                    %{--<div id="files" class="files alert alert-success" style="display: none"></div>--}%
                                     <button id="closeUploadCutByFileModal" type="button" class="btn btn-primary pull-right"
                                             data-style="expand-left">Close</button>
                                 </div>
