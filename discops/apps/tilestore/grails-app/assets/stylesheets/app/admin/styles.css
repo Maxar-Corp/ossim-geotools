@@ -2,11 +2,13 @@ body {
   overflow: hidden;
 }
 
-.security-level-top{
-  background-color: green; 
-  color: white; 
-  font-size:20px; 
-  font-weight:bold;
+#navBarTop {
+    top:28px
+}
+
+.top-logo {
+    padding-top: 5px;
+    margin-left: 60px;
 }
 
 .security-level-bottom {
@@ -179,6 +181,27 @@ a.ol-zoomslider-handle:hover {
     color: grey;
 }
 
+.filter-form-width {
+    width: 100%;
+}
+
+.filter-form-display-none {
+    display: none;
+}
+
+.filter-form-width-inherit {
+    width: inherit;
+}
+
+#resultsSet {
+    display: none;
+}
+
+.paginationButtons {
+    height: 50px;
+    display: none;
+}
+
 #omarImageList .row {
     /*border: 1px solid #337ab7;*/
     /*border: 1px solid #e7e7e7;*/
@@ -255,6 +278,11 @@ a.ol-zoomslider-handle:hover {
 div[role='tooltip'] {
     z-index:9999;
 }
+
+#files{
+    display: none;
+}
+
 /* END OMAR WFS Feed */
 
 .corner-ribbon{
@@ -292,7 +320,7 @@ div[role='tooltip'] {
     z-index: 99999;
 }
 
-#easyPaginate {width:300px;}
-#easyPaginate img {display:block;margin-bottom:10px;}
-.easyPaginateNav a {padding:5px;}
-.easyPaginateNav a.current {font-weight:bold;text-decoration:underline;}
+/*#easyPaginate {width:300px;}*/
+/*#easyPaginate img {display:block;margin-bottom:10px;}*/
+/*.easyPaginateNav a {padding:5px;}*/
+/*.easyPaginateNav a.current {font-weight:bold;text-decoration:underline;}*/
