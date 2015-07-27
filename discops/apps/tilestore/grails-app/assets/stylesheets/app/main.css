@@ -9,6 +9,16 @@ body{
     /*background-image: url('../../images/handmadepaper.png');*/
 }
 
+#loginInfo {
+    padding-top: 10px;
+}
+
+.top-logo {
+    width: 75px;
+    height: 75px;
+    margin-right: 20px;
+}
+
 .shadow {
     -webkit-box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
     -moz-box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
@@ -33,6 +43,22 @@ body{
     -ms-transform: rotate(-45deg);
 }
 
+.features:hover{
+    z-index: 10000;
+    background: linear-gradient(to top,#fff 0,#f4f6f7 100%);
+    -webkit-box-shadow: 0 38px 118px -20px rgba(0,0,0,.75);
+    -moz-box-shadow: 0 38px 118px -20px rgba(0,0,0,.75);
+    box-shadow: 0 38px 118px -20px rgba(0,0,0,.75);
+    border-left: 1px solid rgba(255,255,255,0);
+    animation: ease-in-out 1s;
+}
+
+footer {
+    background-color: #000;
+    color: #ffffff;
+    height: 110px
+}
+
 .corner-ribbon.sticky{
     position: fixed;
 }
@@ -45,14 +71,6 @@ body{
     -webkit-transform: rotate(-45deg);
     z-index: 99999;
 }
-.features:hover{
-    z-index: 10000;
-    background: linear-gradient(to top,#fff 0,#f4f6f7 100%);
-    -webkit-box-shadow: 0 38px 118px -20px rgba(0,0,0,.75);
-    -moz-box-shadow: 0 38px 118px -20px rgba(0,0,0,.75);
-    box-shadow: 0 38px 118px -20px rgba(0,0,0,.75);
-    border-left: 1px solid rgba(255,255,255,0);
-    animation: ease-in-out 1s;
-}
+
 
 

@@ -19,7 +19,7 @@
 
     <div class="container">
         <div class="row">
-            <p class="text-right" style="padding-top: 10px;">
+            <p id="loginInfo" class="text-right">
                 <sec:ifLoggedIn>
                     Logged in as: <sec:username/> <i class="fa fa-user"></i> (<g:link controller='logout'>Logout</g:link>)
                 </sec:ifLoggedIn>
@@ -29,17 +29,16 @@
             </p>
         </div>
         <div class="row">
-            <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left"
-                                                                               style="width: 75px; height: 75px; margin-right: 20px;"
+            <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left top-logo"
                                                                                src="logo.png" alt="Tilestore Logo"/></g:link>
             <h1>Tilestore</h1>
-
         </div>
         <div class="row">
             <h4><em>Web services for managing geospatial imagery within PostgreSQL and Accumulo</em></h4>
         </div>
     </div>
     <hr/>
+    <br/>
     <div class="container-fluid">
         <div class="container">
             <div class="row text-center">
@@ -101,20 +100,17 @@
     <br>
     <br>
 
-    %{--<footer style="background-color: #000; color: #ffffff; height:100px">--}%
+    %{--<footer>--}%
         %{--<div class="container">--}%
             %{--<br>--}%
             %{--<div class="row">--}%
                 %{--<div class="col-md-3">--}%
                     %{--<i class="fa fa-github fa-2x"></i>&nbsp;&nbsp;&nbsp;<a--}%
                         %{--href="https://github.com/radiantbluetechnologies/ossim-geotools">View project on Github</a><br/>--}%
-                    %{--<i class="fa fa-envelope-o fa-2x"></i>&nbsp;&nbsp;<a href="#">Contact RadiantBlue Technologies</a>--}%
                 %{--</div>--}%
             %{--</div>--}%
         %{--</div>--}%
     %{--</footer>--}%
-
-    <br>
     <tilestore:securityClassificationBanner class="navbar-default navbar-fixed-bottom text-center"/>
 <asset:javascript src="app/main.js"/>
 </body>
