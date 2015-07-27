@@ -3,7 +3,6 @@
 
 "use strict";
 var ZoomTo = (function () {
-
     // An Openlayers 3 module for 'zooming' to a particular location on the map based on
     // input via Decimal Degrees, Degrees Minutes Seconds, or Military Grid Reference System.
 
@@ -29,24 +28,22 @@ var ZoomTo = (function () {
     // Config:
     // ********************************************************************
     var map = AppClient.map;  // Change to your map name
-    var view = AppClient.mapView; // Change to your map view name
-    var zoomToLevel = 10; // Change thie to desired zoom level
+    var zoomToLevel = 12; // Change thie to desired zoom level
 
     // Cache DOM elements.  Modify to your form element names.
     var $zoomToForm = $('#zoomToForm');
     var $zoomButton =  $('#zoomButton');
-    var $coordSelect = $('#coordSelect');
     var $coordInput = $('#coordInput');
     // ********************************************************************
 
     // Regular expression for the input types
     var dRegExp = /^\s*(\-?\d{1,2})\s*\°?\s*([NnSs])?\s*\,?\s*(\-?\d{1,3})\s*\°?\s*([WwEe])?\s*$/;
-    var ddRegExp = /^\s*(\-?\d{1,2}\.\d*)\s*\°?\s*([NnSs])?\s*\,?\s*(\-?\d{1,3}\.\d*)\s*\°?\s*([WwEe])?\s*$/;
-    var dmsRegExp = /^(\d{1,2})\s?\°?\s?\:?\s?(\d{1,2})\s?\'?\s?\:?\s?(\d{1,2})(\.\d*)?\s?\"?\s*([NnSs])\s?(\d{1,3})\s?\°?\s?\:?\s?(\d{1,2})\s?\'?\s?\:?\s?(\d{1,2})(\.\d*)?\s?\"?\s*([EeWw])$/;
-    var mgrsRegExp = /^(\d{1,2})\s?([A-Za-z])\s?([A-Za-z])\s?([A-Za-z])\s?(\d{1,5})\s?(\d{1,5})$/;
+    var ddRegExp = /^\s*(\-?\d{1,2}\.\d*)\s*\°?\s*([NnSs])?\s*\,?\s*(\-?\d{1,3}\.\d*)\s*\°?\s*([WwEe])?\s*$/
+    var dmsRegExp = /^\s*(\d{1,2})\s*\°?\s*\:?\s?(\d{1,2})\s*\'?\s*\:?\s?(\d{1,2})(\.\d*)?\s*\"?\s*([NnSs])\s*(\d{1,3})\s*\°?\s*\:?\s?(\d{1,2})\s*\'?\s*\:?\s?(\d{1,2})(\.\d*)?\s*\"?\s*([EeWw])\s*$/;
+    var mgrsRegExp = /^\s*(\d{1,2})\s*([A-Za-z])\s*([A-Za-z])\s*([A-Za-z])\s*(\d{1,5})\s*(\d{1,5})\s*$/;
 
     // Bind events
-    $zoomButton.on("click", getCoordinateSelection);
+    $zoomButton.on("click", cycleRegExs);
     $zoomToForm.keypress(suppressKey);
 
     // Suppress <Enter> key from causing a submit behavior
@@ -56,39 +53,26 @@ var ZoomTo = (function () {
         };
     };
 
-    function getCoordinateSelection() {
-        var coordSelect = $coordSelect.val();
-        var coordInput = $coordInput.val();
-
-        switch (coordSelect) {
-            case 'dd':
-                cycleRegExs(coordInput);
-                break;
-            case 'dms':
-                cycleRegExs(coordInput);
-                break;
-            case 'mgrs':
-                cycleRegExs(coordInput);
-                break;
-            default:
-                console.log('No match');
-        }
-    }
-
     function getNum(val) {
-        console.log('val = ' + typeof val);
+        //console.log('val = ' + typeof val);
         if (typeof val === 'undefined'){
-            console.log('undefined!');
+            //console.log('undefined!');
             return "";
         }
         else if (isNaN(val)){
-            console.log('isNaN!');
+            //console.log('isNaN!');
             return "";
         }
         return val;
     }
 
-    function cycleRegExs(coordInput) {
+    function cycleRegExs() {
+
+        var coordInput = $coordInput.val();
+        console.log(coordInput);
+        console.log(coordInput.length);
+        coordInput.trim();
+        console.log(coordInput.length);
 
         if (coordInput.match(ddRegExp)) {
 
@@ -135,8 +119,6 @@ var ZoomTo = (function () {
                     ' try' +
                     ' again.', 'No Match');
             }
-
-            $coordSelect.selectpicker('val', 'dd');
 
             console.log('DD Match');
             console.log('input: ' + coordInput);
@@ -188,8 +170,6 @@ var ZoomTo = (function () {
                     ' again.', 'No Match');
             }
 
-            $coordSelect.selectpicker('val', 'dd');
-
             console.log('D Match');
             console.log('input: ' + coordInput);
             console.log('result: ' + lat + " " + lon);
@@ -238,8 +218,6 @@ var ZoomTo = (function () {
                     ' try' +
                     ' again.', 'No Match');
             }
-
-            $coordSelect.selectpicker('val', 'dms');
 
             console.log('DMS Match');
             console.log('input: ' + coordInput);
@@ -302,7 +280,7 @@ var ZoomTo = (function () {
                 ' and' +
                 ' try' +
                 ' again.', 'No Match');
-       }
+        }
     }
 
     function dmsToDd (degrees, minutes, seconds, position) {
@@ -321,7 +299,7 @@ var ZoomTo = (function () {
         var start = + new Date();
         var pan = ol.animation.pan({
             duration: 750,
-            source: (view.getCenter()),
+            source: (map.getView().getCenter()),
             start: start
         });
         var zoom = ol.animation.zoom({
@@ -330,18 +308,29 @@ var ZoomTo = (function () {
         });
 
         map.beforeRender(zoom,pan);
-        view.setCenter(ol.proj.transform([parseFloat(lon), parseFloat(lat)], 'EPSG:4326', 'EPSG:3857'));
-        view.setZoom(zoomToLevel);
+        map.getView().setCenter(ol.proj.transform([parseFloat(lon), parseFloat(lat)], 'EPSG:4326', 'EPSG:3857'));
+        map.getView().setZoom(zoomToLevel);
 
     }
 
     //function initialize (initParams) {
+    //
     //}
-
-    return {
-
-        //initialize: initialize
-
-    }
+    //
+    //// Parameters for the toastr banner
+    //toastr.options = {
+    //    "closeButton": true,
+    //    "progressBar": true,
+    //    "positionClass": "toast-bottom-right",
+    //    "showMethod": "fadeIn",
+    //    "hideMethod": "fadeOut",
+    //    "timeOut": "10000"
+    //}
+    //
+    //return {
+    //
+    //    initialize: initialize
+    //
+    //}
 
 })();
