@@ -38,7 +38,7 @@
 
     <!-- Main navBar -->
     <div class="container">
-    <nav style="top:28px" class="navbar navbar-fixed-top navbar-default" role="navigation">
+    <nav id="navBarTop" class="navbar navbar-fixed-top navbar-default" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-navbar-collapse-1">
@@ -48,8 +48,7 @@
                     <span class="icon-bar"></span>
                 </button>
 
-                <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left"
-                                                                                   style="padding-top: 5px; margin-left: 60px;"
+                <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left top-logo"
                                                                                    src="logo_nav.png"
                                                                                    alt="RBT Logo"/></g:link>
                 <a class="navbar-brand">&nbsp;&nbsp;Tilestore Administrator</a>
@@ -252,10 +251,10 @@
                     </a>
                 </p>
 
-                <p id="resultsSet" style="display: none;"><small><em>Displaying <span id="startResult">1</span> through
+                <p id="resultsSet"><small><em>Displaying <span id="startResult">1</span> through
                     <span id="endResult">25</span></em></small></p>
 
-                <div class="paginationButtons" style="height: 50px; display: none">
+                <div class="paginationButtons">
                     <div class="btn-group text-center col-md-12" >
                         <div class="center-block">
                             <button type="button" class="btn btn-primary prevWfsImages disabled">Prev
@@ -266,9 +265,10 @@
                 </div>
 
             </div>
+
             <div id="omarImageList"></div>
 
-            <div class="paginationButtons" style="height: 50px; display: none">
+            <div class="paginationButtons">
                 <div class="btn-group text-center col-md-12">
                     <div class="center-block">
                         <button type="button" class="btn btn-primary prevWfsImages disabled">Prev
@@ -447,20 +447,19 @@
                 <h3 class="modal-title"><i class="fa fa-filter fa-lg"></i>&nbsp;&nbsp;Filter OMAR Images</h3>
             </div>
             <div class="modal-body">
-
                 <!-- Date range select -->
                 <div class="form-group">
                     <label class="control-label" for="dateRangeSelect">Date Range</label>
-                    <div class="btn-group selectlist" style="width: 100%"
+                    <div class="btn-group selectlist filter-form-width"
                          data-initialize="selectlist"
                          id="dateRangeSelect" >
-                        <button class="btn btn-default dropdown-toggle" style="width: inherit"
+                        <button class="btn btn-default dropdown-toggle filter-form-width-inherit"
                                 data-toggle="dropdown"
                                 type="button">
                             <span class="selected-label">Date Range</span>
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu" role="menu" style="width:100%;">
+                        <ul class="dropdown-menu filter-form-width" role="menu">
                             <li data-value="none"><a href="#">None</a></li>
                             <li data-value="today"><a href="#">Today</a></li>
                             <li data-value="yesterday"><a href="#">Yesterday</a></li>
@@ -475,9 +474,8 @@
                     </div>
                     <br>
                     <br>
-
                     <!-- Custom date pickers -->
-                    <div id="customFilterDates" style="display: none">
+                    <div id="customFilterDates" class="filter-form-display-none">
                     <label class="control-label" for="customStartDateFilter">Start Date</label>
                         <div class="datepicker fuelux" id="customStartDateFilter">
                             <div class="input-group">
@@ -648,15 +646,15 @@
                         <label class="radio-custom radio-inline" id="acquisitionDateRadioLabel"
                                data-initialize="radio"
                                for="acquisitionDateRadio">
-                            <input class="sr-only" checked="checked" type="radio"
-                                   id="acquisitionDateRadio" name="radios" value="Acquisition Date" style="width: 100%">
+                            <input class="sr-only " checked="checked" type="radio"
+                                   id="acquisitionDateRadio" name="radios" value="Acquisition Date">
                             Acquisition
                         </label>
 
                         <label class="radio-custom radio-inline" id="ingestDateRadioLabel"
                                data-initialize="radio" for="ingestDateRadio">
-                            <input class="sr-only" checked="checked" type="radio" id="ingestDateRadio"
-                                   name="radios" value="Ingest Date" style="width: 100%">
+                            <input class="sr-only filter-form-width" checked="checked" type="radio" id="ingestDateRadio"
+                                   name="radios" value="Ingest Date">
                             Ingest
                         </label>
 
@@ -667,16 +665,16 @@
                     <div class="control-group">
                         <label class="control-label" for="sortByFieldSelect">Sort By Field</label>
                         <div class="controls">
-                            <div class="btn-group selectlist" style="width: 100%"
+                            <div class="btn-group selectlist filter-form-width"
                                  data-initialize="selectlist"
                                  id="sortByFieldSelect">
-                                <button class="btn btn-default dropdown-toggle" style="width: inherit"
+                                <button class="btn btn-default dropdown-toggle filter-form-width-inherit"
                                         data-toggle="dropdown" type="button">
                                     <span class="selected-label">Sort By</span>
                                     <span class="caret"></span>
                                     <span class="sr-only">Toggle Dropdown</span>
                                 </button>
-                                <ul class="dropdown-menu" role="menu" style="width:100%;">
+                                <ul class="dropdown-menu filter-form-width" role="menu">
                                     <li data-value="id"><a href="#">Record ID</a></li>
                                     <li data-value="ingest_date"><a href="#">Ingest Date</a></li>
                                     <li data-value="acquisition_date"><a href="#">Acquisition Date</a></li>
@@ -695,14 +693,14 @@
                     <div class="control-group">
                         <label class="control-label" for="sortByTypeSelect">Sort Type</label>
                         <div class="controls">
-                            <div class="btn-group selectlist" style="width: 100%"
+                            <div class="btn-group selectlist filter-form-width"
                                  data-initialize="selectlist"
                                  id="sortByTypeSelect">
-                                <button class="btn btn-default btn-block dropdown-toggle" data-toggle="dropdown" style="width:100%;" type="button">
+                                <button class="btn btn-default btn-block dropdown-toggle filter-form-width" data-toggle="dropdown" type="button">
                                     <span class="selected-label"></span>
                                     <span class="caret"></span>
                                 </button>
-                                <ul class="dropdown-menu" role="menu" style="width:100%;">
+                                <ul class="dropdown-menu filter-form-width" role="menu">
                                     <li data-value="D"><a href="#">Descending</a></li>
                                     <li data-value="A"><a href="#">Ascending</a></li>
                                 </ul>
@@ -776,7 +774,7 @@
                                     <div class="progress-bar progress-bar-success progress-bar-striped"></div>
                                 </div>
                                 <!-- The container for the uploaded files -->
-                                <div id="files" class="files alert alert-success" style="display: none"></div>
+                                <div id="files" class="files alert alert-success"></div>
                                 <button id="closeUploadCutByFileModal" type="button" class="btn btn-primary pull-right"
                                         data-style="expand-left">Close</button>
                             </div>
