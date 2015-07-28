@@ -99,18 +99,6 @@
     </div><!-- /.container-fluid -->
     <br>
     <br>
-
-    %{--<footer>--}%
-        %{--<div class="container">--}%
-            %{--<br>--}%
-            %{--<div class="row">--}%
-                %{--<div class="col-md-3">--}%
-                    %{--<i class="fa fa-github fa-2x"></i>&nbsp;&nbsp;&nbsp;<a--}%
-                        %{--href="https://github.com/radiantbluetechnologies/ossim-geotools">View project on Github</a><br/>--}%
-                %{--</div>--}%
-            %{--</div>--}%
-        %{--</div>--}%
-    %{--</footer>--}%
     <tilestore:securityClassificationBanner class="navbar-default navbar-fixed-bottom text-center"/>
 <asset:javascript src="app/main.js"/>
 </body>

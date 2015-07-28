@@ -37,9 +37,9 @@ var ZoomTo = (function () {
     // ********************************************************************
 
     // Regular expression for the input types
-    var dRegExp = /^\s*(\-?\d{1,2})\s*\°?\s*([NnSs])?\s*\,?\s*(\-?\d{1,3})\s*\°?\s*([WwEe])?\s*$/;
-    var ddRegExp = /^\s*(\-?\d{1,2}\.\d*)\s*\°?\s*([NnSs])?\s*\,?\s*(\-?\d{1,3}\.\d*)\s*\°?\s*([WwEe])?\s*$/
-    var dmsRegExp = /^\s*(\d{1,2})\s*\°?\s*\:?\s?(\d{1,2})\s*\'?\s*\:?\s?(\d{1,2})(\.\d*)?\s*\"?\s*([NnSs])\s*(\d{1,3})\s*\°?\s*\:?\s?(\d{1,2})\s*\'?\s*\:?\s?(\d{1,2})(\.\d*)?\s*\"?\s*([EeWw])\s*$/;
+    var dRegExp = /^\s*(\-?\d{1,2})\s*\u00B0?\s*([NnSs])?\s*\,?\s*(\-?\d{1,3})\s*\u00B0?\s*([WwEe])?\s*$/;
+    var ddRegExp = /^\s*(\-?\d{1,2}\.\d*)\s*\u00B0?\s*([NnSs])?\s*\,?\s*(\-?\d{1,3}\.\d*)\s*\u00B0?\s*([WwEe])?\s*$/
+    var dmsRegExp = /^\s*(\d{1,2})\s*\u00B0?\s*\:?\s?(\d{1,2})\s*\'?\s*\:?\s?(\d{1,2})(\.\d*)?\s*\"?\s*([NnSs])\s*(\d{1,3})\s*\u00B0?\s*\:?\s?(\d{1,2})\s*\'?\s*\:?\s?(\d{1,2})(\.\d*)?\s*\"?\s*([EeWw])\s*$/;
     var mgrsRegExp = /^\s*(\d{1,2})\s*([A-Za-z])\s*([A-Za-z])\s*([A-Za-z])\s*(\d{1,5})\s*(\d{1,5})\s*$/;
 
     // Bind events

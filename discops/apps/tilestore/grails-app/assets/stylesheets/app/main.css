@@ -53,12 +53,6 @@ body{
     animation: ease-in-out 1s;
 }
 
-footer {
-    background-color: #000;
-    color: #ffffff;
-    height: 110px
-}
-
 .corner-ribbon.sticky{
     position: fixed;
 }
