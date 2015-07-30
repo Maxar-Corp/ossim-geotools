@@ -140,7 +140,7 @@ var AppOmarWfsAdmin = (function () {
 
     function getWfsCards(params){
 
-        console.log('params.queryNone coming in is :' + params.queryNone);
+        //console.log('params.queryNone coming in is :' + params.queryNone);
         if ($('#acquisitionDateRadioLabel').radio('isChecked')){
             //console.log('acq. is checked');
             filterDateType = 'Acquisition';
@@ -160,7 +160,7 @@ var AppOmarWfsAdmin = (function () {
         else {
             queryNone = true;
         }
-        console.log('queryNone is now set as:' + queryNone);
+        //console.log('queryNone is now set as:' + queryNone);
 
         var offset = params.offset || 0;
         var sortByField = $sortByFieldSelect.selectlist('selectedItem').value || 'ingest_date';
@@ -186,7 +186,7 @@ var AppOmarWfsAdmin = (function () {
 
 
         if (queryNone === true){
-            console.log('queryNone: ' + queryNone);
+            //console.log('queryNone: ' + queryNone);
             wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
                 "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter=" +
@@ -222,7 +222,7 @@ var AppOmarWfsAdmin = (function () {
                 ":" + sortByType + "&resultType=hits";
         }
 
-        console.log(wfsCards);
+        //console.log(wfsCards);
         //console.log(wfsCardsCount);
 
         // TODO: Add functionality to restrict the query to a spatial extent (via BBox)
@@ -233,7 +233,7 @@ var AppOmarWfsAdmin = (function () {
             // TODO: Refactor using promises...
             success: function (images) {
 
-                console.log(images);
+                //console.log(images);
                 //console.log(images.features.properties);
 
                 // Clear the DOM before loading the wfs cards
@@ -255,7 +255,7 @@ var AppOmarWfsAdmin = (function () {
             success: function (imageCount){
                 //console.log(imageCount);
                 imageCountTotal = imageCount.numberOfFeatures;
-                console.log(imageCountTotal);
+                //console.log(imageCountTotal);
                 $imageCount.html(imageCount.numberOfFeatures);
                 if (imageCountTotal > 25) {
                     //console.log('showing pagination buttons...')
@@ -471,7 +471,7 @@ var AppOmarWfsAdmin = (function () {
     function previewLayer(obj){
 
         AppIngestTileAdmin.setIngestBool(true);
-        console.log('previewBool in previewLayer: ' + AppIngestTileAdmin.getIngestBool());
+        //console.log('previewBool in previewLayer: ' + AppIngestTileAdmin.getIngestBool());
 
         // Enable the tools menu for cutting out AOI's
         $omarMapToolsDropdown.removeClass("disabled");
@@ -512,10 +512,11 @@ var AppOmarWfsAdmin = (function () {
 
             // Move the previewLayer below the aoiVectorLayer
             // Before:
-            //console.log(AppAdmin.mapOmar.getLayers().getArray());
-            AppManageLayersAdmin.swapTopLayer(2,1);
+            console.log(AppAdmin.mapTile.getLayers().getArray());
+            AppManageLayersAdmin.swapTopLayer(AppAdmin.mapOmar, 2 , 1);
+            AppManageLayersAdmin.swapTopLayer(AppAdmin.mapTile, 2 , 1);
             // After:
-            //console.log(AppAdmin.mapOmar.getLayers().getArray());
+            console.log(AppAdmin.mapTile.getLayers().getArray());
 
         }
 
@@ -595,7 +596,8 @@ var AppOmarWfsAdmin = (function () {
                             })
                         })];
                     };
-                })()
+                })(),
+                name: 'previewAreaVectorLayer'
             });
 
             AppAdmin.mapTile.addLayer(previewFeatureVectorLayer);
@@ -608,7 +610,7 @@ var AppOmarWfsAdmin = (function () {
         objImageClamp.resLevels = obj.properties.number_of_res_levels;
         objImageClamp.res = obj.properties.gsdy;
         objImageClamp.resUnits = obj.properties.gsd_unit;
-        console.log(objImageClamp);
+        //console.log(objImageClamp);
 
         // Store the OMAR card objIngestImage properties here
         // Image properties

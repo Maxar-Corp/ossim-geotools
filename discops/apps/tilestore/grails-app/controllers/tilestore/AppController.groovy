@@ -31,7 +31,7 @@ class AppController
             wfsURL: grailsLinkGenerator.link( action: 'testWFS' ),
             urlProductExport: grailsLinkGenerator.link( controller: 'product', action: 'export' ),
             urlLayerActualBounds: grailsLinkGenerator.link( controller: 'layerManager', action: 'getActualBounds' ),
-            tilestoreWmsURL: grailsLinkGenerator.link( controller: 'wms', action: 'index', absolute: true ),
+            tilestoreWmsURL: grailsLinkGenerator.link( controller: 'wms', action: 'index'),//, absolute: true ),
             referenceLayers: grailsApplication.config.tilestore.referenceLayers,
             overlayLayers: grailsApplication.config.tilestore.overlayLayers,
             tilestoreLayers: tilestoreLayers,
@@ -59,7 +59,7 @@ class AppController
             referenceLayers: grailsApplication.config.tilestore.referenceLayers,
 //            urlProductExport: grailsLinkGenerator.link( controller: 'product', action: 'export' ),
 //            urlLayerActualBounds: grailsLinkGenerator.link( controller: 'accumuloProxy', action: 'actualBounds' ),
-            tilestoreWmsURL: grailsLinkGenerator.link( controller: 'wms', action: 'index', absolute: true ),
+            tilestoreWmsURL: grailsLinkGenerator.link( controller: 'wms', action: 'index'),// absolute: true ),
 //            accumuloProxyWmsURL: grailsLinkGenerator.link( controller: 'accumuloProxy', action: 'wms', absolute: true ),
 //            overlayLayers: grailsApplication.config.tilestore.overlayLayers,
             tilestoreLayers: tilestoreLayers

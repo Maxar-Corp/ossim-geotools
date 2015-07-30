@@ -33,6 +33,7 @@ var AppClient = (function () {
         }).extend([
             mousePositionControl
         ]),
+        logo: false,
         view: mapView,
         target: 'map'
     });

@@ -10,7 +10,23 @@
 
     <title>Tilestore Viewer</title>
 
-    <asset:stylesheet src="app/client.css"/>
+    %{--<asset:stylesheet src="app/client.css"/>--}%
+
+    <browser:choice>
+        <browser:isMsie versionLower="10">
+            <asset:stylesheet src="ol3/ol.css"/>
+            <asset:stylesheet src="bootstrap.css"/>
+            <asset:stylesheet src="font-awesome.css"/>
+            <asset:stylesheet src="app/common/jquery.fileupload.css"/>
+            <asset:stylesheet src="app/common/bootstrap-select.css"/>
+            <asset:stylesheet src="app/common/toastr.css"/>
+            <asset:stylesheet src="app/client/styles.css"/>
+        </browser:isMsie>
+        <browser:otherwise>
+            <asset:stylesheet src="app/client.css"/>
+        </browser:otherwise>
+    </browser:choice>
+
 
 </head>
     <body>
@@ -18,8 +34,7 @@
 
         <div class="corner-ribbon top-left sticky red shadow">Alpha</div>
 
-        <nav style="top:28px" class="navbar navbar-fixed-top navbar-default" role="navigation">
-            <div class="container-fluid">
+        <nav id="navBarTop" class="navbar navbar-fixed-top navbar-default" role="navigation">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-navbar-collapse-1">
                         <span class="sr-only">Toggle navigation</span>
@@ -27,51 +42,24 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left"
-                                                                                       style="padding-top: 5px; margin-left: 60px;" src="logo_nav.png" alt="RBT Logo"/></g:link>
+                    <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left top-logo"
+                                                                                       src="logo_nav.png" alt="RBT Logo"/></g:link>
                     <a class="navbar-brand">&nbsp;&nbsp;Tilestore Viewer</a>
                 </div>
 
                 <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
-                    <div class="col-sm-8 col-md-8">
-                        <form class="navbar-form navbar-left" role="search">
-                            <button type="button" id="createGp" class="btn btn-primary disabled"
-                                    data-toggle="tooltip" data-placement="bottom"
-                                    title="Use the <Alt> key to generate an AOI for the Geopackage"><i
-                                    class="fa fa-cube"></i>&nbsp;&nbsp;Create Product</button>
-                        </form>
-                        <form class="navbar-form" role="search" id="zoomToForm">
+                        <form class="navbar-form navbar-left">
                             <div class="form-group">
-                                <div class="input-group">
-                                    <div class="input-group-btn">
-                                        <select  class="form-control selectpicker show-tick" data-style="btn-primary"
-                                                 id="coordSelect" >
-                                            <option data-icon="glyphicon-map-marker" value="dd">DD&nbsp;&nbsp;&nbsp;</option>
-                                            <option data-icon="glyphicon-time" value="dms">DMS&nbsp;&nbsp;</option>
-                                            <option data-icon="glyphicon-th-large" value="mgrs">MGRS</option>
-                                        </select>
-                                    </div>
-                                    <input class="form-control" id="coordInput" type="text"
-                                           placeholder="Search by coordinates" value="39.57,-85.61">
-                                    <div class="input-group-btn">
-                                        <button id="zoomButton" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-search"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
+
+
                                 <div class="input-group" id="tileLayerInputGroup">
-                                    <div class="input-group-addon"><i class="fa fa-th"></i>&nbsp;&nbsp;Active
+                                    <div class="input-group-addon"><i class="fa fa-th"></i>&nbsp;&nbsp;
                                     Tile Layer</div>
                                     <select class="form-control selectpicker show-tick" id="tileLayerSelect">
                                     </select>
                                 </div>
-                                <button type="button" id="zoomFirstValidTile" class="btn btn-primary"
-                                        data-toggle="tooltip" data-placement="bottom"
-                                        title="Zoom to the first valid tile in the active tile layer"><i
-                                        class="fa fa-crosshairs fa-lg"></i>&nbsp;&nbsp;First Tile</button>
                             </div>
                         </form>
-                    </div>
 
                     <div class="navbar-header">
                         <button type="button" class="navbar-toggle" data-toggle="collapse"
@@ -82,31 +70,81 @@
                             <span class="icon-bar"></span>
                         </button>
                     </div>
-
-                    %{--<div class="nav navbar-nav navbar-right">--}%
-                        <div class="collapse navbar-collapse" id="mapToolsNavbar">
+                    <div class="collapse navbar-collapse" id="mapToolsNavbar">
                             <ul class="nav navbar-nav navbar-right">
                                 <li id="mapToolsDropdown" class="dropdown">
                                     <a id="MapToolsDropdownItem" class="dropdown-toggle"
                                        data-toggle="dropdown" href="#"><i
                                             class="fa fa-wrench"></i>&nbsp;&nbsp;Tools<span class="caret"></span></a>
-                                    <ul class="dropdown-menu">
+                                    <ul id="toolMenuDropdown" class="dropdown-menu">
+                                        <li>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="text-muted toolMenuDropDownHeading"><strong>Zoom</strong></div>
+                                                    <div class="toolMenuDropdownDiv">
+                                                        <button type="button"
+                                                                id="zoomFirstValidTile"
+                                                            class="btn btn-info dropMenuButtonFull"
+                                                        data-toggle="tooltip" data-placement="bottom"
+                                                        title="Zoom to the first valid tile in the active tile layer"><i
+                                                        class="fa fa-crosshairs fa-lg"></i>&nbsp;&nbsp;First Tile</button>
+                                                    </div>
+                                                    <div><hr/></div>
+                                                    <div class="text-muted toolMenuDropDownHeading"><strong>Build
+                                                    </strong></div>
+                                                    <div class="toolMenuDropdownDiv">
+                                                        <button type="button" id="createGp"
+                                                                class="btn btn-primary dropMenuButtonFull disabled"
+                                                                data-toggle="tooltip" data-placement="bottom"
+                                                                title="Use the <Alt> key to generate an AOI for the Geopackage"><i
+                                                                class="fa fa-cube"></i>&nbsp;&nbsp;Create
+                                                        Product</button>
+                                                    </div>
+                                                    <div><hr/></div>
+                                                    <div class="text-muted toolMenuDropDownHeading"><strong>AOI
+                                                    (Manual)</strong></div>
+                                                    <div class="toolMenuDropdownDiv">
+                                                        <button type="button" id="drawRectangle"
+                                                                class="btn btn-primary dropMenuButtonHalf"
+                                                                data-toggle="tooltip" data-placement="bottom"
+                                                                title="Manually draw an area of interest on the map using the rectangle tool."><i
+                                                                class="fa fa-square-o fa-lg"></i>&nbsp;&nbsp;
+                                                        Rectangle</button>
+                                                        <button type="button" id="drawPolygon"
+                                                                class="btn btn-primary dropMenuButtonHalf"
+                                                                data-toggle="tooltip" data-placement="bottom"
+                                                                title="Manually draw an area of interest on the map using the freehand tool."><i
+                                                                class="fa fa-hand-o-up fa-lg"></i>&nbsp;&nbsp;
+                                                        Freehand</button>
+                                                    </div>
+                                                    <div class="toolMenuDropdownDiv">
+                                                        <button type="button" id="endCuts"
+                                                                class="btn btn-default dropMenuButtonFull" data-toggle="tooltip" data-placement="bottom"
+                                                                title="Turn of the manual cutting tools."><i
+                                                                class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Manual Cutting Off</button>
+                                                    </div>
+                                                    <div><hr/></div>
+                                                    <div class="text-muted toolMenuDropDownHeading"><strong>AOI (Pre-generated)</strong></div>
+                                                    <div class="toolMenuDropdownDiv">
+                                                        <button type="button" id="uploadCutFile"
+                                                                class="btn btn-primary dropMenuButtonHalf"
+                                                                data-toggle="tooltip" data-placement="bottom"
+                                                                title="Upload a file (Shapefile, KML, or GeoJSON) to define an AOI.  You can also simply drag and drop those files directly into the map without using the upload tool."><i
+                                                                class="fa fa-upload fa-lg"></i>&nbsp;&nbsp;Upload
+                                                        </button>
+                                                        <button type="button" id="pasteGeometry"
+                                                                class="btn btn-primary dropMenuButtonHalf"
+                                                                data-toggle="tooltip" data-placement="bottom"
+                                                                title="Paste text (geometry) from KML, WKT or GeoJSON.  Be sure to set the projection before submitting the text."><i
+                                                                class="fa fa-paste fa-lg"></i>&nbsp;&nbsp;Paste
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
 
-                                        <li role="presentation" class="dropdown-header">Manual cut</li>
-                                        <li><a id="drawRectangle" href="#"><i
-                                                class="fa fa-square-o fa-lg"></i>&nbsp;&nbsp;
-                                        Rectangle</a></li>
-                                        <li><a id="drawPolygon" href="#"><i
-                                                class="fa fa-hand-o-up fa-lg"></i>&nbsp;&nbsp;
-                                        Freehand Polygon</a></li>
-                                        <li class="disabled"><a id="endCuts" href="#"><i
-                                                class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Manual Cutting Off</a></li>
-                                        <li class="divider"></li>
-                                        <li role="presentation" class="dropdown-header">Pre-generated cut</li>
-                                        <li><a id="uploadCutFile" href="#"><i
-                                                class="fa fa-upload fa-lg"></i>&nbsp;&nbsp;Upload Cut File</a></li>
-                                        <li><a id="pasteGeometry" href="#"><i
-                                                class="fa fa-paste fa-lg"></i>&nbsp;&nbsp;Paste Geometry</a></li>
+                                        <li></li>
+                                        <li></li>
                                     </ul>
                                 </li>
                                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
@@ -119,18 +157,29 @@
                                 </li>
                             </ul>
                         </div>
-                    %{--</div>--}%
                 </div><!-- /.navbar-collapse -->
-            </div><!-- /.container-fluid -->
         </nav>
 
         <div class="navbar-offset"></div>
 
+    <form id="zoomToForm" role="search">
+            <div class="form-group">
+                <div class="input-group" id="zoom-input-group">
+                    <input class="form-control" id="coordInput" type="text"
+                           placeholder="Search by coordinates" data-toggle="tooltip" data-placement="bottom"
+                           title="Search for a coordinate via Decimal Degrees, Degrees Minutes Seconds, or Military Grid Reference System">
+                    <div class="input-group-btn">
+                        <button id="zoomButton" class="btn btn-primary"  type="button"><i
+                            class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </form>
 
-        <div class="container-fluid">
-            <div id="currentZoomLevel2"></div>
-            <div id="map" class="map"></div>
-        </div>
+        <div id="currentZoomLevel2"></div>
+        <div id="mapInfo" class="mapInfoBox mapInfoElement"></div>
+        <div id="map" class="map"></div>
+
 
         <tilestore:securityClassificationBanner class="navbar navbar-default navbar-fixed-bottom text-center security-level-bottom"/>
 
@@ -145,10 +194,11 @@
                     <div class="modal-body">
                         <form id="productForm" data-toggle="validator">
                             <div class="container-fluid">
-
-
                                 <div class="row">
-
+                                    <div id="metric-spinner"
+                                          class="alert alert-warning metricsSpinner"><i
+                                            class="fa fa-cog fa-spin fa-2x pull-right"></i>&nbsp;Calculating product
+                                    metrics.  Please wait...</div>
                                     <!-- Nav tabs -->
                                     <ul class="nav nav-tabs" role="tablist">
                                         <li role="presentation" class="active"><a href="#productTab"
@@ -221,7 +271,7 @@
                                                 <h4 id="jobHeader">Submitted Job Information:</h4>
                                                 <p><strong>ID:</strong>&nbsp;<span id="aoiJobId"></span></p>
                                             </div>
-                                            <div id="prodcutProgress" style="display: none">
+                                            <div id="prodcutProgress">
                                                 <div class="alert alert-info">Note: You can close this dialog if you do
                                                 not
                                                 wish
@@ -231,7 +281,7 @@
                                                 page</a>.</div>
                                                 <div id="productStatus"></div>
                                             </div>
-                                            <p id="downloadProduct" style="display: none"><i
+                                            <p id="downloadProduct"><i
                                                     class="fa fa-check fa-2x"></i>&nbsp;&nbsp;Ready for
                                             download:&nbsp;&nbsp;
                                                 <button id="downloadProductButton" type="button" href="javascript:void(0)"
@@ -244,9 +294,7 @@
                                                     <i class="fa fa-square-o fa-stack-2x"></i>
                                                     <i class="fa fa-bar-chart fa-stack-1x"></i>
                                                 </span>&nbsp;&nbsp;Product Metrics
-                                                    <span style="display: none"
-                                                        class="metricsSpinner"><i
-                                                            class="fa fa-cog fa-spin fa-2x pull-right"></i></span></div>
+                                                    </div>
                                                     <ul class="list-group">
                                                     <li class="list-group-item">Number of tiles<span
                                                             id="prodNumTiles" class="pull-right"></span></li>
@@ -276,9 +324,7 @@
                                                     <i class="fa fa-square-o fa-stack-2x"></i>
                                                     <i class="fa fa-arrows-alt fa-stack-1x"></i>
                                                 </span>&nbsp;&nbsp;Product
-                                                Dimensions<span style="display: none"
-                                                        class="metricsSpinner"><i
-                                                            class="fa fa-cog fa-2x fa-spin pull-right"></i></span></div>
+                                                Dimensions</div>
                                                 <ul class="list-group">
                                                     <li class="list-group-item">Minimum Display Level<span
                                                             id="prodMinLevel" class="pull-right"></span></li>
@@ -353,7 +399,6 @@
                                         <div class="progress-bar progress-bar-success progress-bar-striped"></div>
                                     </div>
                                     <!-- The container for the uploaded files -->
-                                    <div id="files" class="files alert alert-success" style="display: none"></div>
                                     <button id="closeUploadCutByFileModal" type="button" class="btn btn-primary pull-right"
                                             data-style="expand-left">Close</button>
                                 </div>
@@ -413,6 +458,7 @@
     <asset:javascript src="app/client.js"/>
 
     <g:javascript>
+
             "use strict";
             var initParams = ${raw(initParams.toString())};
             AddLayerClient.initialize(initParams);
@@ -420,7 +466,6 @@
             AppDrawFeaturesClient.initialize(initParams);
             CreateProductClient.initialize(initParams);
             CutByFileClient.initialize(initParams);
-            ZoomToClient.initialize(initParams);
 
             //Use polyfill to utilize HTML5 form validation in IE9
             H5F.setup(document.getElementById("productForm"));

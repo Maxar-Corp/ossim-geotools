@@ -2,11 +2,13 @@ body { overflow: hidden; }
 
 h1 { font-family: 'Comfortaa', Arial, serif; font-weight: 400; }
 
-.security-level-top {
-	background-color: green; 
-	color: white; 
-	font-size:20px; 
-	font-weight:bold
+#navBarTop {
+	top:28px
+}
+
+.top-logo {
+	padding-top: 5px;
+	margin-left: 60px;
 }
 
 .security-level-bottom {
@@ -26,6 +28,27 @@ h1 { font-family: 'Comfortaa', Arial, serif; font-weight: 400; }
 .toast-bottom-right {
     bottom: 7em;
     margin-right: 10px;
+}
+
+#zoomToForm {
+	position: absolute;
+	left: 54px;
+	top: 100px;
+	width: 300px;
+	z-index: 40
+}
+
+#zoomToForm input {
+	font-size: 18px;
+}
+
+#zoom-input-group {
+	box-shadow: 0px 5px 5px #808080;
+	z-index: 41
+}
+
+#zoomButton {
+	box-shadow: 1px 2px 5px #808080;
 }
 
 #map { 
@@ -90,7 +113,7 @@ h1 { font-family: 'Comfortaa', Arial, serif; font-weight: 400; }
 	width: 15px;
 	margin: 0;
 	filter: none;
-	background-color: rgba(0,60,136,0.6);
+	background-color: #fff;
 	border-radius: 20px;
 }
 #map a.ol-zoomslider-handle:hover {
@@ -107,10 +130,10 @@ h1 { font-family: 'Comfortaa', Arial, serif; font-weight: 400; }
 	border-radius: 5px;
 }
 
-#currentZoomLevel2{
+#currentZoomLevel2 {
 	position: absolute;
 	left: 47%;
-	top: 10%;
+	top: 100px;
 	z-index: 999;
 	color: #fff;
 	background-color: rgba(0,60,136,0.4);
@@ -125,20 +148,6 @@ h1 { font-family: 'Comfortaa', Arial, serif; font-weight: 400; }
 #tileLayerInputGroup .selectpicker {
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
-}
-
-.tooltip.bottom .tooltip-arrow {
-	bottom: 0;
-	left: 50%;
-	margin-left: -5px;
-	border-top-color: #fff;
-	border-width: 5px 5px 0;
-}
-
-.tooltip-inner {
-	color: #000;
-	background: #fff;
-	border: solid 1px #fff;
 }
 
 .input-group-btn:first-child > .btn-group:not(:first-child) > .btn {
@@ -175,6 +184,7 @@ h1 { font-family: 'Comfortaa', Arial, serif; font-weight: 400; }
 	font-size: 24px;
 	transform: rotate(-45deg);
 	-webkit-transform: rotate(-45deg);
+	-ms-transform: rotate(-45deg);
 }
 
 .corner-ribbon.sticky{
@@ -192,6 +202,22 @@ h1 { font-family: 'Comfortaa', Arial, serif; font-weight: 400; }
 	transform: rotate(-45deg);
 	-webkit-transform: rotate(-45deg);
 	z-index: 99999;
+}
+
+.mapInfoBox {
+	display: none;
+	position: absolute;
+	top: 125px;
+	right: 8px;
+	z-index: 99 !important;
+}
+
+.mapInfoElement {
+	z-index: 1;
+	color: #fff;
+	background-color: rgba(0,60,136,0.5);
+	padding: 2px 10px;
+	border-radius: 5px;
 }
 
 /* File upload elements */
@@ -218,4 +244,45 @@ input[readonly] {
 	background-color: white !important;
 	cursor: text !important;
 }
+
+#toolMenuDropdown {
+	width: 250px;
+	background-color: rgba(255,255,255,.8);
+}
+
+#toolMenuDropdown hr {
+	margin-top: 0px;
+	margin-bottom: 5px;
+}
+
+.toolMenuDropdownDiv {
+	margin: 12px;
+}
+
+.toolMenuDropDownHeading {
+	margin-left: 12px;
+}
+
+.dropMenuButtonFull{
+	width: 100%;
+}
+
+.dropMenuButtonHalf{
+	width: 49%;
+}
+
+#metric-spinner {
+	display: none;
+}
+
+#downloadProduct {
+	display: none;
+}
+
+#prodcutProgress{
+	display: none;
+}
+
+
+
 

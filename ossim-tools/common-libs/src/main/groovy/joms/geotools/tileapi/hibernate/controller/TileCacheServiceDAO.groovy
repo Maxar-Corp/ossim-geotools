@@ -104,9 +104,13 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
               proj: proj,
               origin: Pyramid.Origin.TOP_LEFT,
               tileWidth: layerInfo.tileWidth,
-              tileHeight: layerInfo.tileHeight
+              tileHeight: layerInfo.tileHeight,
+              minLevel:layerInfo.minLevel,
+              maxLevel:layerInfo.maxLevel
       )
-      result.initializeGrids( layerInfo.minLevel, layerInfo.maxLevel )
+      // for geoscript we always need the 0 level defined
+      // we will clamp in the layer
+      result.initializeGrids( 0, layerInfo.maxLevel)//layerInfo.minLevel, layerInfo.maxLevel )
     }
     result
   }

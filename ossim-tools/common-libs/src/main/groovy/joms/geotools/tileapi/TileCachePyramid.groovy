@@ -18,7 +18,8 @@ class TileCachePyramid extends Pyramid
 
   Bounds clippedBounds
   def geographicProj = new Projection("EPSG:4326")
-
+  Integer minLevel
+  Integer maxLevel
   /**
    * Options can be supplied to shrink the clip region further.  So if your image covers
    * several levels you can clip to a particular level and region
@@ -205,10 +206,12 @@ class TileCachePyramid extends Pyramid
         }
         if(resultMinLevel <= resultMaxLevel)
         {
-          // we are 0 based but the resolutions were grabbed from the startLevel
-          // so let's shift our result to the start level
-          result = [clippedGeometryLatLon:latLonClipBounds, clippedBounds: clipBounds, minLevel: resultMinLevel, maxLevel: resultMaxLevel]
-          //println "CLAMPED RESULT: ${result}"
+          def minMax = intersectLevels(resultMinLevel, resultMaxLevel)
+          if(minMax)
+          {
+            result = [clippedGeometryLatLon:latLonClipBounds, clippedBounds: clipBounds,
+                      minLevel: minMax?.minLevel, maxLevel: minMax?.maxLevel]
+          }
         }
       }
     }
@@ -223,44 +226,63 @@ class TileCachePyramid extends Pyramid
    */
   HashMap clampLevels(double fullResolution, Integer numberOfResolutions)
   {
-    double[] resolutions = grids*.yResolution as double[]
-    int[] levels = grids*.z as double[]
+    HashMap result = [:]
+    def gridsSorted = grids.sort(){a,b->a.z<=>b.z}
+    double[] resolutions = gridsSorted*.yResolution as double[]
+    int[] levels = gridsSorted*.z as double[]
 
-    Integer minLevel = 99999
-    Integer maxLevel = -1
+    Integer clampMinLevel = 99999
+    Integer clampMaxLevel = -1
     Integer i = 0
     double coarsestResolution = fullResolution*(1<<(numberOfResolutions-1))
     double highestResolution  = fullResolution
+    double layerHighestResolution = resolutions[-1]
+    double layerCoarsestResolution = resolutions[0]
 
-    for(i = 0; i < resolutions.length;++i)
+    if((highestResolution > layerCoarsestResolution)||
+            coarsestResolution < layerHighestResolution)
     {
-      if (highestResolution > resolutions[i]) {
-        maxLevel = i;
-        if (i > 0) maxLevel--;
-        break
+      return result
+    }
+    double highest =  Math.max(highestResolution, layerHighestResolution)
+    double coarsest = Math.min(coarsestResolution, layerCoarsestResolution)
+
+    if(coarsest>=highest)
+    {
+      for(i = 0; i < resolutions.length;++i)
+      {
+        if (highest >= resolutions[i]) {
+          clampMaxLevel = i;
+          if (i > 0) clampMaxLevel--;
+          break
+        }
+      }
+
+      for(i = resolutions.length-1; i >= 0;--i)
+      {
+        if (coarsest <= resolutions[i]) {
+          clampMinLevel = i;
+          break
+        }
       }
     }
-    for(i = resolutions.length-1; i >= 0;--i)
-    {
-      if (coarsestResolution < resolutions[i]) {
-        minLevel = i;
-        break
-      }
-    }
-    Integer resultMinLevel = minLevel + levels[0]
-    Integer resultMaxLevel = maxLevel + levels[0]
 
-    [minLevel:resultMinLevel, maxLevel:resultMaxLevel]
+    if((clampMinLevel <= clampMaxLevel)&&(clampMinLevel >-1)&&(clampMaxLevel>-1))
+    {
+      result = intersectLevels(clampMinLevel + levels[0], clampMaxLevel + levels[0])
+    }
+
+    result
   }
   def getMinMaxLevel()
   {
-    Long minLevel = 9999
-    Long maxLevel = -1
+    //Long minLevel = 9999
+    //Long maxLevel = -1
 
-    this.grids.each{
-      if(it.z < minLevel) minLevel = it.z
-      if(it.z > maxLevel) maxLevel = it.z
-    }
+    //this.grids.each{
+    //  if(it.z < minLevel) minLevel = it.z
+    //  if(it.z > maxLevel) maxLevel = it.z
+    //}
 
     [minLevel:minLevel, maxLevel:maxLevel]
   }
@@ -335,18 +357,27 @@ class TileCachePyramid extends Pyramid
 
     if(!clippedBounds) clippedBounds = this.bounds
 
-    Integer minLevel = hints.minLevel?:0
-    Integer maxLevel = hints.maxLevel?:22
+    if(hints.minLevel!=null) this.minLevel = hints.minLevel
+    if(hints.maxLevel!=null) this.maxLevel = hints.maxLevel
 
-    if((minLevel!=null)&&(maxLevel!=null))
+    this.minLevel = this.minLevel?:0
+    if(this.maxLevel == null) this.maxLevel = 22
+    if((this.minLevel!=null)&&(this.maxLevel!=null))
     {
-      initializeGrids(minLevel, maxLevel)
+      //Until the bug in geoscript is fixed we will make sure that we always start from 0
+      //Seems geoscript does not like the starting grid to be something other than 0
+      //
+      initializeGrids(0, this.maxLevel)
     }
 
    // println "HINTS: ${this.hints}"
   }
-  void initializeGrids(int minLevel, int maxLevel)
+  void initializeGrids(int clampMinLevel, int clampMaxLevel)
   {
+    // Geoscript bug for not allowing for sparse grids where we might start at level 5
+    // instead of 0
+    //
+    if(clampMinLevel >0) clampMinLevel = 0
     if(this.tileWidth&&
        this.tileHeight&&
        this.bounds&&
@@ -365,7 +396,7 @@ class TileCachePyramid extends Pyramid
         }
       }
       int n = 0
-      this.grids = (minLevel..maxLevel).collect { long z ->
+      this.grids = (clampMinLevel..clampMaxLevel).collect { long z ->
 
         n = 2**z
         double res = modelSize/n

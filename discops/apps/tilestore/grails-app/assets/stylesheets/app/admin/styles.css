@@ -2,11 +2,13 @@ body {
   overflow: hidden;
 }
 
-.security-level-top{
-  background-color: green; 
-  color: white; 
-  font-size:20px; 
-  font-weight:bold
+#navBarTop {
+    top:28px
+}
+
+.top-logo {
+    padding-top: 5px;
+    margin-left: 60px;
 }
 
 .security-level-bottom {
@@ -14,7 +16,7 @@ body {
   background-color: green; 
   color: white; 
   font-size: 20px; 
-  font-weight:bold
+  font-weight:bold;
 }
 
 .navbar-offset { margin-top: 56px; }
@@ -113,7 +115,7 @@ body {
 }
 
 #mapTileToolbar {
-    padding-right: 0px
+    padding-right: 0px;
 }
 
 .ol-mouse-position {
@@ -177,6 +179,27 @@ a.ol-zoomslider-handle:hover {
 
 .imageFilter {
     color: grey;
+}
+
+.filter-form-width {
+    width: 100%;
+}
+
+.filter-form-display-none {
+    display: none;
+}
+
+.filter-form-width-inherit {
+    width: inherit;
+}
+
+#resultsSet {
+    display: none;
+}
+
+.paginationButtons {
+    height: 50px;
+    display: none;
 }
 
 #omarImageList .row {
@@ -255,6 +278,11 @@ a.ol-zoomslider-handle:hover {
 div[role='tooltip'] {
     z-index:9999;
 }
+
+#files{
+    display: none;
+}
+
 /* END OMAR WFS Feed */
 
 .corner-ribbon{
@@ -272,6 +300,7 @@ div[role='tooltip'] {
     font-size: 24px;
     transform: rotate(-45deg);
     -webkit-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
 }
 
 .corner-ribbon.sticky{
@@ -291,7 +320,7 @@ div[role='tooltip'] {
     z-index: 99999;
 }
 
-#easyPaginate {width:300px;}
-#easyPaginate img {display:block;margin-bottom:10px;}
-.easyPaginateNav a {padding:5px;}
-.easyPaginateNav a.current {font-weight:bold;text-decoration:underline;}
+/*#easyPaginate {width:300px;}*/
+/*#easyPaginate img {display:block;margin-bottom:10px;}*/
+/*.easyPaginateNav a {padding:5px;}*/
+/*.easyPaginateNav a.current {font-weight:bold;text-decoration:underline;}*/

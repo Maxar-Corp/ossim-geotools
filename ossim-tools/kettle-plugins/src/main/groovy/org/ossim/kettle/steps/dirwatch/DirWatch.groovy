@@ -302,7 +302,7 @@ class DirWatch extends BaseStep implements StepInterface
                            {
                               rs.updateBoolean("notified", true)
 
-                              putRow(data.outputRowMeta, [file] as Object[]);
+                              putRow(data.outputRowMeta, [file.toString()] as Object[]);
                            }
                            rs.updateTimestamp("last_checked", new Timestamp(new Date().time))
                            rs.updateBigDecimal("last_filesize", file.length())
@@ -383,13 +383,14 @@ class DirWatch extends BaseStep implements StepInterface
             String  wildcard           = getFieldValueAsString(meta.fieldWildcard, r, meta, data)
             String  wildcardExclude    = getFieldValueAsString(meta.fieldWildcardExclude, r, meta, data)
             Boolean recurseDirectories = getFieldValueAsString(meta.fieldRecurseSubfolders, r, meta, data) as Boolean
+            Boolean useMemoryDatabase  = getFieldValueAsString(meta.fieldUseMemoryDatabase, r, meta, data) as Boolean
 
             def settings = [
                     directory:directoryToWatch as File,
                     wildcard:wildcard,
                     wildcardExclude:wildcardExclude,
                     recurseDirectories:recurseDirectories,
-                    useMemoryDatabase:true
+                    useMemoryDatabase:useMemoryDatabase
             ]
             data.newContext(settings)
          }

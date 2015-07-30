@@ -24,7 +24,7 @@ var ZoomTo = (function () {
 
     // Config:
     // ********************************************************************
-    var map = AppClient.map;  // Change to your map name
+    var map = AppAdmin.mapOmar;  // Change to your map name
     var zoomToLevel = 12; // Change this to desired zoom level
 
     // Cache DOM elements.  Modify to your form element names.
@@ -300,6 +300,7 @@ var ZoomTo = (function () {
         });
 
         map.beforeRender(zoom,pan);
+        AppAdmin.mapTile.beforeRender(zoom,pan);
         map.getView().setCenter(ol.proj.transform([parseFloat(lon), parseFloat(lat)], 'EPSG:4326', 'EPSG:3857'));
         map.getView().setZoom(zoomToLevel);
 

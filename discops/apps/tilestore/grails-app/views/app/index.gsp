@@ -19,7 +19,7 @@
 
     <div class="container">
         <div class="row">
-            <p class="text-right" style="padding-top: 10px;">
+            <p id="loginInfo" class="text-right">
                 <sec:ifLoggedIn>
                     Logged in as: <sec:username/> <i class="fa fa-user"></i> (<g:link controller='logout'>Logout</g:link>)
                 </sec:ifLoggedIn>
@@ -29,23 +29,22 @@
             </p>
         </div>
         <div class="row">
-            <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left"
-                                                                               style="width: 75px; height: 75px; margin-right: 20px;"
+            <g:link title="Go to Tile Server Home" action="index"><asset:image class="pull-left top-logo"
                                                                                src="logo.png" alt="Tilestore Logo"/></g:link>
             <h1>Tilestore</h1>
-
         </div>
         <div class="row">
             <h4><em>Web services for managing geospatial imagery within PostgreSQL and Accumulo</em></h4>
         </div>
     </div>
     <hr/>
+    <br/>
     <div class="container-fluid">
         <div class="container">
             <div class="row text-center">
             <div class="col-md-1"></div>
             <sec:ifAllGranted roles="ROLE_LAYER_ADMIN">
-                <div class="col-md-3 well">
+                <div class="col-md-3 well features">
                     <div class="fa fa-th fa-2x"></div>
                     <h3>Build Tiles</h3>
                     <p>Use the Administrator to create or update existing tile reference layers from imagery in OMAR
@@ -55,7 +54,7 @@
             </sec:ifAllGranted>
             <div class="col-md-1"></div>
             <sec:ifAllGranted roles="ROLE_ADMIN">
-                <div class="col-md-3 well">
+                <div class="col-md-3 well features">
                     <div class="fa fa-hdd-o fa-2x"></div>
                     <h3>Disk Management</h3>
                     <p>Create server directories choosing location, size, and expiration period.</p>
@@ -65,7 +64,7 @@
             </sec:ifAllGranted>
             <div class="col-md-1"></div>
             <sec:ifAllGranted roles="ROLE_ADMIN">
-                <div class="col-md-3 well">
+                <div class="col-md-3 well features">
                     <div class="fa fa-unlock-alt fa-2x"></div>
                     <h3>Security Settings</h3>
                     <p>Manage users, create and assign roles.</p>
@@ -79,7 +78,7 @@
         </div>
             <div class="row text-center">
             <div class="col-md-3"></div>
-            <div class="col-md-3 well">
+            <div class="col-md-3 well features">
                 <div class="fa fa-cube fa-2x"></div>
                 <h3 href="client/client.html">Export Tiles</h3>
                 <p>Use the Viewer to export tile server data to a geopackages for offline use in external applications
@@ -87,7 +86,7 @@
                 <g:link action="client" class="btn btn-primary" role="button">View</g:link>
             </div>
             <div class="col-md-1"></div>
-            <div class="col-md-3 well">
+            <div class="col-md-3 well features">
                 <div class="fa fa-tachometer fa-2x"></div>
                 <h3 href="client/client.html">Job Status</h3>
                 <p>View current server jobs for creating tile layers and geopackages.</p>
@@ -99,21 +98,6 @@
         </div><!-- /.container -->
     </div><!-- /.container-fluid -->
     <br>
-    <br>
-
-    %{--<footer style="background-color: #000; color: #ffffff; height:100px">--}%
-        %{--<div class="container">--}%
-            %{--<br>--}%
-            %{--<div class="row">--}%
-                %{--<div class="col-md-3">--}%
-                    %{--<i class="fa fa-github fa-2x"></i>&nbsp;&nbsp;&nbsp;<a--}%
-                        %{--href="https://github.com/radiantbluetechnologies/ossim-geotools">View project on Github</a><br/>--}%
-                    %{--<i class="fa fa-envelope-o fa-2x"></i>&nbsp;&nbsp;<a href="#">Contact RadiantBlue Technologies</a>--}%
-                %{--</div>--}%
-            %{--</div>--}%
-        %{--</div>--}%
-    %{--</footer>--}%
-
     <br>
     <tilestore:securityClassificationBanner class="navbar-default navbar-fixed-bottom text-center"/>
 <asset:javascript src="app/main.js"/>

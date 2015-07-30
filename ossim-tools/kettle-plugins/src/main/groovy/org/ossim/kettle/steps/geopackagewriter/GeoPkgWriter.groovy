@@ -239,41 +239,51 @@ class GeoPkgWriter extends BaseStep implements StepInterface
                throw KettleException("Geopackage writer step only supports images with 1, 3 or 4 bands")
             }
 
-/*
 
+ /*
             ByteArrayOutputStream outStream
             HashMap status = ImageUtil.computeStatus(modifedImage)
-
-            println status
+            def tileCodec
+           // println status
             if(status.opaqueCount)
             {
+               String ext = ""
                outStream = new ByteArrayOutputStream()
                if(status.transparentCount>0)
                {
-                  println "DOING PNG"
+                 // println "DOING PNG"
                   ImageIO.write(modifedImage,"png",outStream)
+                  ext = ".png"
                }
                else
                {
+                  modifedImage = JAI.create("BandSelect", modifedImage, [0, 1, 2] as int[])
                   ImageIO.write(modifedImage,"jpeg",outStream)
-                  println "DOING JPEG"
+                 // println "DOING JPEG"
+                  ext = ".jpg"
                }
+               tileCodec = outStream.toByteArray()
+
+               File out = new File("/tmp/${level}_${rowValue}_${colValue}${ext}")
+               out.withOutputStream { it.write(tileCodec) }
+
             }
             else
             {
                // all transparent nothing to do
             }
 
-            if(outStream)
+            if(tileCodec)
             {
-               def tileCodec = outStream.toByteArray()
+
+
                if (!gpkgWriter.writeCodecTile(tileCodec, tileCodec.size(), level, rowValue, colValue))
                {
 
                }
                outStream = null
             }
-  */
+*/
 
 
 

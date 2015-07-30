@@ -60,6 +60,22 @@ var AddLayerClient = (function () {
         AppClient.map.addLayer(addNewLayer);
         initLayer = addNewLayer;
 
+
+        swapTopLayer(AppClient.map, 2, 1);
+
+    }
+
+    function swapTopLayer(mapName, removeId, insertId){
+
+        var layers = mapName.getLayers();
+        var topLayer = layers.removeAt(removeId);
+        layers.insertAt(insertId, topLayer);
+        //console.log('swapTopLayer fired with: ' + removeId + ' ' + insertId);
+
+        //console.log('------------<getArray>-----------');
+        //console.log(AppClient.map.getLayers().getArray());
+        //console.log('------------</getArray>----------');
+
     }
 
     $tileLayerSelect.on('change', function() {
@@ -202,7 +218,9 @@ var AddLayerClient = (function () {
 
             AppClient.map.addLayer(aoiVector);
 
-            //console.log(aoiVector.getSource().getFeatures().length);
+            //console.log('------------<getArray>-----------');
+            //console.log(AppClient.map.getLayers().getArray());
+            //console.log('------------</getArray>----------');
 
         },
         layersArray: layersArray,
