@@ -1,8 +1,5 @@
-// Refactored initial code based on the following MDN post.  Switched from RegExp.$n to RegExp array
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/n
-
-"use strict";
 var ZoomTo = (function () {
+    "use strict";
     // An Openlayers 3 module for 'zooming' to a particular location on the map based on
     // input via Decimal Degrees, Degrees Minutes Seconds, or Military Grid Reference System.
 
@@ -28,7 +25,7 @@ var ZoomTo = (function () {
     // Config:
     // ********************************************************************
     var map = AppClient.map;  // Change to your map name
-    var zoomToLevel = 12; // Change thie to desired zoom level
+    var zoomToLevel = 12; // Change this to desired zoom level
 
     // Cache DOM elements.  Modify to your form element names.
     var $zoomToForm = $('#zoomToForm');
@@ -36,9 +33,16 @@ var ZoomTo = (function () {
     var $coordInput = $('#coordInput');
     // ********************************************************************
 
+    var lat,
+        lon,
+        latNum,
+        latDir,
+        lonNum,
+        lonDir;
+
     // Regular expression for the input types
     var dRegExp = /^\s*(\-?\d{1,2})\s*\u00B0?\s*([NnSs])?\s*\,?\s*(\-?\d{1,3})\s*\u00B0?\s*([WwEe])?\s*$/;
-    var ddRegExp = /^\s*(\-?\d{1,2}\.\d*)\s*\u00B0?\s*([NnSs])?\s*\,?\s*(\-?\d{1,3}\.\d*)\s*\u00B0?\s*([WwEe])?\s*$/
+    var ddRegExp = /^\s*(\-?\d{1,2}\.\d*)\s*\u00B0?\s*([NnSs])?\s*\,?\s*(\-?\d{1,3}\.\d*)\s*\u00B0?\s*([WwEe])?\s*$/;
     var dmsRegExp = /^\s*(\d{1,2})\s*\u00B0?\s*\:?\s?(\d{1,2})\s*\'?\s*\:?\s?(\d{1,2})(\.\d*)?\s*\"?\s*([NnSs])\s*(\d{1,3})\s*\u00B0?\s*\:?\s?(\d{1,2})\s*\'?\s*\:?\s?(\d{1,2})(\.\d*)?\s*\"?\s*([EeWw])\s*$/;
     var mgrsRegExp = /^\s*(\d{1,2})\s*([A-Za-z])\s*([A-Za-z])\s*([A-Za-z])\s*(\d{1,5})\s*(\d{1,5})\s*$/;
 
@@ -49,18 +53,15 @@ var ZoomTo = (function () {
     // Suppress <Enter> key from causing a submit behavior
     function suppressKey (event) {
         if (event.keyCode == 10 || event.keyCode == 13){
-            event.preventDefault()
-        };
-    };
+            event.preventDefault();
+        }
+    }
 
     function getNum(val) {
-        //console.log('val = ' + typeof val);
         if (typeof val === 'undefined'){
-            //console.log('undefined!');
             return "";
         }
         else if (isNaN(val)){
-            //console.log('isNaN!');
             return "";
         }
         return val;
@@ -69,15 +70,9 @@ var ZoomTo = (function () {
     function cycleRegExs() {
 
         var coordInput = $coordInput.val();
-        console.log(coordInput);
-        console.log(coordInput.length);
         coordInput.trim();
-        console.log(coordInput.length);
 
         if (coordInput.match(ddRegExp)) {
-
-            var lat;
-            var lon;
 
             //console.log(coordInput.match(ddRegExp));
             //console.log('0= ' + coordInput.match(ddRegExp)[0]);
@@ -85,11 +80,11 @@ var ZoomTo = (function () {
             //console.log('2= ' + coordInput.match(ddRegExp)[2]);
             //console.log('3= ' + coordInput.match(ddRegExp)[3]);
 
-            var latNum = coordInput.match(ddRegExp)[1];
-            var latDir = coordInput.match(ddRegExp)[2];
+            latNum = coordInput.match(ddRegExp)[1];
+            latDir = coordInput.match(ddRegExp)[2];
 
-            var lonNum = coordInput.match(ddRegExp)[3];
-            var lonDir = coordInput.match(ddRegExp)[4];
+            lonNum = coordInput.match(ddRegExp)[3];
+            lonDir = coordInput.match(ddRegExp)[4];
 
             if ((latNum >= -90 && latNum <= 90) && (lonNum >= -180 && lonNum <= 180)) {
 
@@ -127,20 +122,17 @@ var ZoomTo = (function () {
 
         else if (coordInput.match(dRegExp)) {
 
-            var lat;
-            var lon;
-
             //console.log(coordInput.match(ddRegExp));
             //console.log('0= ' + coordInput.match(ddRegExp)[0]);
             //console.log('1= ' + coordInput.match(ddRegExp)[1]);
             //console.log('2= ' + coordInput.match(ddRegExp)[2]);
             //console.log('3= ' + coordInput.match(ddRegExp)[3]);
 
-            var latNum = coordInput.match(dRegExp)[1];
-            var latDir = coordInput.match(dRegExp)[2];
+            latNum = coordInput.match(dRegExp)[1];
+            latDir = coordInput.match(dRegExp)[2];
 
-            var lonNum = coordInput.match(dRegExp)[3];
-            var lonDir = coordInput.match(dRegExp)[4];
+            lonNum = coordInput.match(dRegExp)[3];
+            lonDir = coordInput.match(dRegExp)[4];
 
             if ((latNum >= -90 && latNum <= 90) && (lonNum >= -180 && lonNum <= 180)) {
 
@@ -200,14 +192,14 @@ var ZoomTo = (function () {
 
             var lonDeg = coordInput.match(dmsRegExp)[6]; // degrees
             var lonMin = coordInput.match(dmsRegExp)[7]; // minutes
-            var lonSec = (coordInput.match(dmsRegExp)[8]) + getNum(coordInput.match(dmsRegExp)[9]) // seconds
+            var lonSec = (coordInput.match(dmsRegExp)[8]) + getNum(coordInput.match(dmsRegExp)[9]); // seconds
             // decimal number
             var lonHem = coordInput.match(dmsRegExp)[10]; // hemisphere
 
             if ((latDeg >= -90 && latDeg <= 90) && (lonDeg >= -180 && lonDeg <= 180)) {
 
-                var lat = dmsToDd(latDeg, latMin, latSec, latHem);
-                var lon = dmsToDd(lonDeg, lonMin, lonSec, lonHem);
+                lat = dmsToDd(latDeg, latMin, latSec, latHem);
+                lon = dmsToDd(lonDeg, lonMin, lonSec, lonHem);
                 zoomTo(lat, lon);
 
             }
@@ -292,7 +284,7 @@ var ZoomTo = (function () {
         }
 
         return dd;
-    };
+    }
 
     function zoomTo(lat, lon) {
 
@@ -313,24 +305,14 @@ var ZoomTo = (function () {
 
     }
 
-    //function initialize (initParams) {
-    //
-    //}
-    //
-    //// Parameters for the toastr banner
-    //toastr.options = {
-    //    "closeButton": true,
-    //    "progressBar": true,
-    //    "positionClass": "toast-bottom-right",
-    //    "showMethod": "fadeIn",
-    //    "hideMethod": "fadeOut",
-    //    "timeOut": "10000"
-    //}
-    //
-    //return {
-    //
-    //    initialize: initialize
-    //
-    //}
+    // function initialize (initParams) {
+
+    // }
+
+    // return {
+
+    //     initialize: initialize
+
+    // };
 
 })();

@@ -42,7 +42,7 @@ var AppAdmin = (function () {
     var currentTileLayer;
     var initLayer;
 
-    // Begin map stuff ##############################################################
+    // Begin map setup ##############################################################
 
     var coordTemplate = 'Lat: {y}, Lon: {x}';
     var mousePositionControlOmar = new ol.control.MousePosition({
@@ -186,16 +186,16 @@ var AppAdmin = (function () {
         resizeMapRow();
     });
 
-    // End map stuff #################################################################
+    // End map setup #################################################################
 
-    // Begin CRUD stuff ##############################################################
+    // Begin Layer Management ##############################################################
 
     // Function that gets the tile cache layers from the initParams
     // passed in from the AppController
     function getTileLayers(params, elem) {
         var dfd = $.Deferred();
         $.each(params, function (index, tileCacheLayer) {
-            var deffered = $.Deferred();
+            //var deffered = $.Deferred();
             $(elem).append($('<option>', {
                 value: tileCacheLayer.name,
                 text: tileCacheLayer.name
@@ -210,7 +210,6 @@ var AppAdmin = (function () {
 
     $tileLayerSelect.on('change', function() {
         console.log('select on change:' + $tileLayerSelect.val())
-
         switchCurrentLayer(initLayer, $tileLayerSelect.val());
     });
 
@@ -284,9 +283,11 @@ var AppAdmin = (function () {
                 var newTileLayerName = data.name;
                 //console.log(newTileLayerName);
                 $tileLayerSelect.append('<option value="' + newTileLayerName + '" selected="selected">' + newTileLayerName + '</option>');
+                $tileLayerSelect.selectpicker('refresh');
                 $renameTileLayer.append('<option value="' + newTileLayerName + '" selected="selected">' + newTileLayerName + '</option>');
+                $renameTileLayer.selectpicker('refresh');
                 $deleteTileLayer.append('<option value="' + newTileLayerName + '" selected="selected">' + newTileLayerName + '</option>');
-                $select.selectpicker('refresh');
+                $deleteTileLayer.selectpicker('refresh');
 
                 l.stop() // stop spinner from rotating
 
@@ -350,7 +351,10 @@ var AppAdmin = (function () {
 
     // Bind the list of tile layers to the select element one time only
     $navRenameLayer.one('click', function () {
-        getTileLayers(loadParams.tilestoreLayers, '#renameTileLayer');
+        //console.log(loadParams.tilestoreLayers);
+        //console.log(tileLayersArray);
+        //updateTileLayers(tileLayersArray,'#');
+        //getTileLayers(loadParams.tilestoreLayers, '#renameTileLayer');
     });
 
     $navRenameLayer.click(function () {
@@ -397,11 +401,27 @@ var AppAdmin = (function () {
                 console.log(data);
 
                 // Done 04-20-15
-                $select.find('[value=' + oldLayerName + ']').remove();
+                //$select.find('[value=' + oldLayerName + ']').remove();
+
+                $renameTileLayer.find('[value=' + oldLayerName + ']').remove();
+                $renameTileLayer.selectpicker('refresh');
+
+                $tileLayerSelect.find('[value=' + oldLayerName + ']').remove();
+                $tileLayerSelect.selectpicker('refresh');
+
+                $deleteTileLayer.find('[value=' + oldLayerName + ']').remove();
+                $deleteTileLayer.selectpicker('refresh');
+
                 $renameTileLayer.append('<option value="' + newLayerName + '" selected="selected">' + newLayerName + '</option>');
+                $renameTileLayer.selectpicker('refresh');
                 $tileLayerSelect.append('<option value="' + newLayerName + '" selected="selected">' + newLayerName + '</option>');
+                $tileLayerSelect.selectpicker('refresh');
                 $deleteTileLayer.append('<option value="' + newLayerName + '" selected="selected">' + newLayerName + '</option>');
-                $select.selectpicker('refresh');
+                $deleteTileLayer.selectpicker('refresh');
+                //$select.selectpicker('refresh');
+                //$select.selectpicker('render');
+
+                switchCurrentLayer(initLayer, $tileLayerSelect.val());
 
                 toastr.success('Layer ' + oldLayerName + ' was renamed to ' + newLayerName, 'Success');
                 resetForm('rename');
@@ -433,7 +453,7 @@ var AppAdmin = (function () {
 
     // Binds the list of tile layers to the select element one time only.
     $navDeleteLayer.one('click', function () {
-        getTileLayers(loadParams.tilestoreLayers, '#deleteTileLayer');
+        //getTileLayers(loadParams.tilestoreLayers, '#deleteTileLayer');
     });
 
     $navDeleteLayer.click(function () {
@@ -474,11 +494,23 @@ var AppAdmin = (function () {
             if (jqXHR.status === 200) {
                 //console.log('We have 200!');
                 console.log(data);
-                $select.find('[value=' + deleteLayerName + ']').remove();
-                $select.selectpicker('refresh');
+                //$select.find('[value=' + deleteLayerName + ']').remove();
+                //$select.selectpicker('refresh');
+
+                $deleteTileLayer.find('[value=' + deleteLayerName + ']').remove();
+                $deleteTileLayer.selectpicker('refresh');
+
+                $renameTileLayer.find('[value=' + deleteLayerName + ']').remove();
+                $renameTileLayer.selectpicker('refresh');
+
+                $tileLayerSelect.find('[value=' + deleteLayerName + ']').remove();
+                $tileLayerSelect.selectpicker('refresh');
+
                 toastr.success('Layer ' + deleteLayerName + ' was deleted.', 'Success');
                 l.stop() // stop spinner from rotating
                 $submitDeleteLayer.removeClass('btn-success disabled').addClass('btn-primary');
+
+                switchCurrentLayer(initLayer, $tileLayerSelect.val());
 
             }
             else {
@@ -560,12 +592,13 @@ var AppAdmin = (function () {
         "timeOut": "10000"
     }
 
-    // End CRUD stuff ##############################################################
+    // End Layer Management ##############################################################
 
     return {
         initialize: function (initParams) {
 
             loadParams = initParams;
+            //tileLayersArray = loadParams.tiletilestoreLayers;
             //console.log(loadParams);
 
             // Uses .done via a $.Deffered() to grab the value of the $tileLayerSelect
@@ -574,6 +607,8 @@ var AppAdmin = (function () {
                 .done(
                     getCurrentTileLayer()
                 );
+            getTileLayers(loadParams.tilestoreLayers, $renameTileLayer);
+            getTileLayers(loadParams.tilestoreLayers, $deleteTileLayer);
             var source = new ol.source.TileWMS( {
                 url: loadParams.tilestoreWmsURL,
                 params: {'LAYERS': currentTileLayer, 'TILED': true, 'VERSION': '1.1.1'}
