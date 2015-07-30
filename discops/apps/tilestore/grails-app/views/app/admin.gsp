@@ -417,7 +417,7 @@
                             </p>
                             <div class="form-group">
                                 <label for="deleteTileLayer">Available Layers</label>
-                                <select id="deleteTileLayer" class="form-control selectpicker">
+                                <select id="deleteTileLayer" class="form-control selectpicker show-tick tile-select">
                                 </select>
                                 <br>
                                 <br>
