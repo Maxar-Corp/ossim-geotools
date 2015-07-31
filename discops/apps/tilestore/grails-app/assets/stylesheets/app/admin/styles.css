@@ -283,6 +283,10 @@ div[role='tooltip'] {
     display: none;
 }
 
+#layers_table tbody{
+    cursor: pointer;
+}
+
 /* END OMAR WFS Feed */
 
 .corner-ribbon{

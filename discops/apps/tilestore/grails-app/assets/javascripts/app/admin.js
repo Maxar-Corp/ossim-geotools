@@ -16,6 +16,7 @@
 //= require common/ladda.min.js
 //= require common/fuelux.js
 //= require common/bootstrap-select.js
+//= require common/jquery.dataTables.js
 //= require common/jquery.ui.widget.js
 //= require common/jquery.iframe-transport.js
 //= require common/jquery.fileupload.js

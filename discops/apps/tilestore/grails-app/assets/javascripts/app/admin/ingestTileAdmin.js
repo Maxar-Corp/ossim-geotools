@@ -61,6 +61,7 @@ var AppIngestTileAdmin = (function () {
             // TODO: need to move this to a $promise
             success: function (data) {
                 console.log(data);
+
                 //console.log(data);
                 //$minIngestLevel.selectpicker('val', data.minLevel);
                 //$minIngestLevel.selectpicker('refresh');
@@ -93,19 +94,6 @@ var AppIngestTileAdmin = (function () {
                 //$minIngestLevel.val(min);
                 $maxIngestLevel.val(max);
 
-                // Removed data-initialize in HTML markup per: http://stackoverflow.com/a/27866575/4437795
-                //$minIngestLevelSpin.spinbox({
-                //    'value': data.minLevel,
-                //    'min': data.minLevel,
-                //    'max': data.maxLevel
-                //});
-                //$maxIngestLevelSpin.spinbox({
-                //    'value': data.maxLevel,
-                //    'min': data.minLevel,
-                //    'max': data.maxLevel
-                //});
-
-                //toastr.success('Clamp working', 'Success!'); // TODO: remove after testing...
             },
             // TODO: need to move this to a $promise
             error: function(data){
@@ -115,12 +103,6 @@ var AppIngestTileAdmin = (function () {
             }
         });
 
-        //$minIngestLevel
-        //    .find('option')
-        //    .remove();
-        //$maxIngestLevel
-        //    .find('option')
-        //    .remove();
 
         // Replace HTML option/values on min/max levels dynamically generated
         // from js
@@ -170,7 +152,7 @@ var AppIngestTileAdmin = (function () {
 
     function ingestModalShow() {
 
-        console.log(ingestBool);
+        //console.log(ingestBool);
         if (ingestBool) {
             setIngestLevels();
             $ingestImageModal.modal('show');
