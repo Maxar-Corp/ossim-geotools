@@ -193,6 +193,12 @@
                         <a class="navbar-brand">Tile Map</a>
                     </div>
                     <div class="collapse navbar-collapse" id="tileMapNavbar">
+                        <form class="navbar-form navbar-left" role="search">
+                            <button type="button" id="viewLayersInfo" class="btn btn-info"
+                                    data-toggle="tooltip" data-placement="bottom"
+                                    title="View information about the available tile layers"><i
+                                    class="fa fa-th-list"></i>&nbsp;&nbsp;Info</button>
+                        </form>
                         <ul class="nav navbar-nav navbar-right">
                             %{--<li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>--}%
                             %{--<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>--}%
@@ -882,6 +888,63 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog modal-lg -->
 </div><!-- /.modal fade "ingestImageModal" -->
+
+    <!-- List layers modal -->
+    <div class="modal fade" id="listLayersModal" tabindex="-1" role="dialog"
+     aria-labelledby="listLayersModal" Saria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title"><i class="fa fa-th-list fa-lg"></i>&nbsp;&nbsp;Tile Layers
+                List</h3>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div id="layerTableInfo" class="alert alert-info text-center" role="alert"><strong>Click on
+                            any
+                            table row to
+                            set
+                            that layer as
+                            the
+                            active
+                            layer</strong></div>
+                            <table id="layers_table" class="display">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>EPSG</th>
+                                        <th>Min Level</th>
+                                        <th>Max Level</th>
+                                        <th>Tile Height</th>
+                                        <th>Tile Width</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>EPSG</th>
+                                    <th>Min Level</th>
+                                    <th>Max Level</th>
+                                    <th>Tile Height</th>
+                                    <th>Tile Width</th>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div><!-- /.row -->
+                    <br>
+                </div><!-- /.container -->
+            </div><!-- /.modal-body -->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog modal-lg -->
+</div><!-- /.modal fade "listLayersModal" -->
 
     <!-- OMAR WFS Feed Handlebars template -->
     <script id="image-template"  type="text/x-handlebars-template">

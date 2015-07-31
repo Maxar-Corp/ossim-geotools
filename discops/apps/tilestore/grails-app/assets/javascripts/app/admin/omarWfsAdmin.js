@@ -482,7 +482,7 @@ var AppOmarWfsAdmin = (function () {
         });
 
         omarPreviewLayerId = obj.properties.id;
-        console.log(omarPreviewLayerId);
+        //console.log(omarPreviewLayerId);
         if(omarPreviewLayer){
             console.log('omarPreviewLayer true');
             omarPreviewLayer.getSource().updateParams({'LAYERS': omarPreviewLayerId});
@@ -512,11 +512,11 @@ var AppOmarWfsAdmin = (function () {
 
             // Move the previewLayer below the aoiVectorLayer
             // Before:
-            console.log(AppAdmin.mapTile.getLayers().getArray());
+            //console.log(AppAdmin.mapTile.getLayers().getArray());
             AppManageLayersAdmin.swapTopLayer(AppAdmin.mapOmar, 2 , 1);
             AppManageLayersAdmin.swapTopLayer(AppAdmin.mapTile, 2 , 1);
             // After:
-            console.log(AppAdmin.mapTile.getLayers().getArray());
+            //console.log(AppAdmin.mapTile.getLayers().getArray());
 
         }
 
