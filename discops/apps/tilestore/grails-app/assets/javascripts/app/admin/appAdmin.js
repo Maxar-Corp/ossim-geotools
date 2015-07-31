@@ -37,6 +37,10 @@ var AppAdmin = (function () {
     var $deleteLayerName = $('#deleteLayerName');
     var $submitDeleteLayer = $('#submitDeleteLayer');
 
+    var $viewLayersInfo = $('#viewLayersInfo')
+    var $listLayersModal = $('#listLayersModal');
+    var $layersTable; // set in the info click callback (getLayersInfo())
+
     var $autoRefreshMapToggle = $('#autoRefreshMapToggle');
 
     var currentTileLayer;
@@ -101,7 +105,7 @@ var AppAdmin = (function () {
         target: 'mapTile'
     });
 
-    // Add Zoom Slider
+    // Add Zoom Sliders
     var zoomsliderMapOmar = new ol.control.ZoomSlider();
     var zoomsliderMapTile = new ol.control.ZoomSlider();
     mapOmar.addControl(zoomsliderMapOmar);
@@ -195,7 +199,6 @@ var AppAdmin = (function () {
     function getTileLayers(params, elem) {
         var dfd = $.Deferred();
         $.each(params, function (index, tileCacheLayer) {
-            //var deffered = $.Deferred();
             $(elem).append($('<option>', {
                 value: tileCacheLayer.name,
                 text: tileCacheLayer.name
@@ -279,6 +282,7 @@ var AppAdmin = (function () {
                 // Puts new tile layer into dropdown list, and sets it as the active layer
                 var oldTileLayerName = $tileLayerSelect.val();
                 console.log(oldTileLayerName);
+                console.log(data);
 
                 var newTileLayerName = data.name;
                 //console.log(newTileLayerName);
@@ -349,13 +353,13 @@ var AppAdmin = (function () {
         resetForm('create');
     });
 
-    // Bind the list of tile layers to the select element one time only
-    $navRenameLayer.one('click', function () {
-        //console.log(loadParams.tilestoreLayers);
-        //console.log(tileLayersArray);
-        //updateTileLayers(tileLayersArray,'#');
-        //getTileLayers(loadParams.tilestoreLayers, '#renameTileLayer');
-    });
+    //// Bind the list of tile layers to the select element one time only
+    //$navRenameLayer.one('click', function () {
+    //    //console.log(loadParams.tilestoreLayers);
+    //    //console.log(tileLayersArray);
+    //    //updateTileLayers(tileLayersArray,'#');
+    //    //getTileLayers(loadParams.tilestoreLayers, '#renameTileLayer');
+    //});
 
     $navRenameLayer.click(function () {
 
@@ -451,10 +455,10 @@ var AppAdmin = (function () {
         resetForm('rename');
     });
 
-    // Binds the list of tile layers to the select element one time only.
-    $navDeleteLayer.one('click', function () {
-        //getTileLayers(loadParams.tilestoreLayers, '#deleteTileLayer');
-    });
+    //// Binds the list of tile layers to the select element one time only.
+    //$navDeleteLayer.one('click', function () {
+    //    //getTileLayers(loadParams.tilestoreLayers, '#deleteTileLayer');
+    //});
 
     $navDeleteLayer.click(function () {
 
@@ -565,8 +569,8 @@ var AppAdmin = (function () {
             $select.selectpicker('render');
             //$createTileLayerForm.trigger('reset');
             $submitCreateLayer.removeClass('btn-success disabled').addClass('btn-primary');
-            console.log('min: ' + $minTileLevel.val())
-            console.log('max: ' + $maxTileLevel.val());
+            //console.log('min: ' + $minTileLevel.val())
+            //console.log('max: ' + $maxTileLevel.val());
             $createLayerName.val(''); // IE9 work around
             //$minTileLevel.val('0');
             //$maxTileLevel.val('20');
@@ -594,12 +598,63 @@ var AppAdmin = (function () {
 
     // End Layer Management ##############################################################
 
+    function getLayersInfo() {
+
+        $listLayersModal.modal('show');
+
+        $.ajax({
+            url: "/tilestore/layerManager/list",
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data.rows);
+
+                $layersTable = $('#layers_table').DataTable({
+                    "data": data.rows,
+                    "lengthMenu": [ 10, 20, 30],
+                    columns: [
+                        { data: 'name' },
+                        { data: 'epsgCode'},
+                        { data: 'minLevel'},
+                        { data: 'maxLevel'},
+                        { data: 'tileHeight'},
+                        { data: 'tileWidth'},
+                    ],
+
+                });
+
+            },
+            error: function (data) {
+                alert(data);
+            }
+
+        });
+    }
+
+    $('#layers_table tbody').on('click', 'tr', function () {
+        var name = $('td', this).eq(0).text();
+        //alert( 'You clicked on '+name+'\'s row' );
+        switchCurrentLayer(initLayer, name);
+        $tileLayerSelect.selectpicker('val', name);
+
+        $('#layerTableInfo').removeClass('alert-info').addClass('alert-success');
+        $('#layerTableInfo').html('<strong>' + name + '</strong> is now the active tile layer.')
+
+    } );
+
+    $viewLayersInfo.on('click', getLayersInfo);
+
+    $listLayersModal.on('hidden.bs.modal', function (e) {
+        $('#layerTableInfo').removeClass('alert-success').addClass('alert-info');
+        $('#layerTableInfo').html('<strong>Click on any table row to set that layer as the active layer</strong>');
+        $layersTable.destroy();
+    })
+
     return {
         initialize: function (initParams) {
 
             loadParams = initParams;
-            //tileLayersArray = loadParams.tiletilestoreLayers;
-            //console.log(loadParams);
+            //console.log(initParams);
 
             // Uses .done via a $.Deffered() to grab the value of the $tileLayerSelect
             // This is needed, because the select options are populated after the DOM is loaded.
