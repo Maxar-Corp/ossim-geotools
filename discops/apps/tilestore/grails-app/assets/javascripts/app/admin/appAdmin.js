@@ -39,6 +39,7 @@ var AppAdmin = (function () {
 
     var $viewLayersInfo = $('#viewLayersInfo')
     var $listLayersModal = $('#listLayersModal');
+    var $layerTableInfo = $('#layerTableInfo');
     var $layersTable; // set in the info click callback (getLayersInfo())
 
     var $autoRefreshMapToggle = $('#autoRefreshMapToggle');
@@ -637,16 +638,16 @@ var AppAdmin = (function () {
         switchCurrentLayer(initLayer, name);
         $tileLayerSelect.selectpicker('val', name);
 
-        $('#layerTableInfo').removeClass('alert-info').addClass('alert-success');
-        $('#layerTableInfo').html('<strong>' + name + '</strong> is now the active tile layer.')
+        $layerTableInfo.removeClass('alert-info').addClass('alert-success');
+        $layerTableInfo.html('<strong>' + name + '</strong> is now the active tile layer.')
 
     } );
 
     $viewLayersInfo.on('click', getLayersInfo);
 
     $listLayersModal.on('hidden.bs.modal', function (e) {
-        $('#layerTableInfo').removeClass('alert-success').addClass('alert-info');
-        $('#layerTableInfo').html('<strong>Click on any table row to set that layer as the active layer</strong>');
+        $layerTableInfo.removeClass('alert-success').addClass('alert-info');
+        $layerTableInfo.html('<strong>Click on any table row to set that layer as the active layer</strong>');
         $layersTable.destroy();
     })
 
