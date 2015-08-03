@@ -168,6 +168,7 @@ var AppDrawFeaturesClient = (function () {
 
         $endCuts.removeClass('btn-warning').addClass('btn-default');
 
+        $mapInfo.hide();
         //$ingestModalButton.addClass('disabled');
         //$mapOmarInfo.html('');
         //$mapOmarInfo.hide();
