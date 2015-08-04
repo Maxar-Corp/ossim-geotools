@@ -536,15 +536,13 @@ var CreateProductClient = (function () {
                 $prodcutButtons.show();
                 $downloadProduct.hide();
 
-                // Need if...then here, because sometimes the submit button doesn't
+                // Need an if...then here, because sometimes the submit button doesn't
                 // get added if the previous product job was small, and the server
                 // processed it before a status of 'running' was given
                 if ($submitAoi.hasClass('btn-info')){
-                    alert('it has button-info!');
                     $submitAoi.removeClass('btn-info').addClass('btn-primary');
                 }
                 else if ($submitAoi.hasClass('btn-warning')) {
-                    alert('it has button-warning!');
                     $submitAoi.removeClass('btn-warning').addClass('btn-primary');
                 }
 
