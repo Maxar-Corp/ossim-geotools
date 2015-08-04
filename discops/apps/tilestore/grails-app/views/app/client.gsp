@@ -5,6 +5,7 @@
 
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
     <link rel="shortcut icon" href="${assetPath(src: 'favicon.ico')}" type="image/x-icon">
 
@@ -19,6 +20,7 @@
             <asset:stylesheet src="font-awesome.css"/>
             <asset:stylesheet src="app/common/jquery.fileupload.css"/>
             <asset:stylesheet src="app/common/bootstrap-select.css"/>
+            <asset:stylesheet src="app/common/ladda-themeless.min.css"/>
             <asset:stylesheet src="app/common/toastr.css"/>
             <asset:stylesheet src="app/client/styles.css"/>
         </browser:isMsie>
@@ -90,17 +92,6 @@
                                                         class="fa fa-crosshairs fa-lg"></i>&nbsp;&nbsp;First Tile</button>
                                                     </div>
                                                     <div><hr/></div>
-                                                    <div class="text-muted toolMenuDropDownHeading"><strong>Build
-                                                    </strong></div>
-                                                    <div class="toolMenuDropdownDiv">
-                                                        <button type="button" id="createGp"
-                                                                class="btn btn-primary dropMenuButtonFull disabled"
-                                                                data-toggle="tooltip" data-placement="bottom"
-                                                                title="Use the <Alt> key to generate an AOI for the Geopackage"><i
-                                                                class="fa fa-cube"></i>&nbsp;&nbsp;Create
-                                                        Product</button>
-                                                    </div>
-                                                    <div><hr/></div>
                                                     <div class="text-muted toolMenuDropDownHeading"><strong>AOI
                                                     (Manual)</strong></div>
                                                     <div class="toolMenuDropdownDiv">
@@ -138,6 +129,17 @@
                                                                 title="Paste text (geometry) from KML, WKT or GeoJSON.  Be sure to set the projection before submitting the text."><i
                                                                 class="fa fa-paste fa-lg"></i>&nbsp;&nbsp;Paste
                                                         </button>
+                                                    </div>
+                                                    <div><hr/></div>
+                                                    <div class="text-muted toolMenuDropDownHeading"><strong>Build
+                                                    </strong></div>
+                                                    <div class="toolMenuDropdownDiv">
+                                                        <button type="button" id="createGp"
+                                                                class="btn btn-primary dropMenuButtonFull disabled"
+                                                                data-toggle="tooltip" data-placement="bottom"
+                                                                title="Use the <Alt> key to generate an AOI for the Geopackage"><i
+                                                                class="fa fa-cube"></i>&nbsp;&nbsp;Create
+                                                        Product</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -258,13 +260,8 @@
                                                             class="form-control selectpicker show-tick productFormElement">
                                                         <option value="EPSG:3857">EPSG: 3857</option>
                                                         <option value="EPSG:4326">EPSG: 4326</option>
-                                                    </select>&nbsp;&nbsp;
-                                                    <br>
-                                                    <br>
-                                                    <button type="button" id="submitAoi" class="btn btn-success">Submit</button>
-                                                    <button type="button" id="cancelAoi" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                    </select>
                                                 </div>
-                                                <br>
                                             </div>
                                             <br>
                                             <div id="aoiJobInfo" class="alert alert-info">
@@ -272,20 +269,23 @@
                                                 <p><strong>ID:</strong>&nbsp;<span id="aoiJobId"></span></p>
                                             </div>
                                             <div id="prodcutProgress">
-                                                <div class="alert alert-info">Note: You can close this dialog if you do
-                                                not
-                                                wish
-                                                to wait
-                                                for the product to be created.  To obtain the product at a later time
-                                                visit the <a href="${createLink(controller:'job')}" target="_blank">jobs
+                                                <div class="alert alert-info">Note: You can
+                                                close this dialog if you do not wish to wait for the product to be
+                                                created.  To obtain the product at a later time visit the <a href="${createLink(controller:'job')}" target="_blank">jobs
                                                 page</a>.</div>
                                                 <div id="productStatus"></div>
+                                            </div>
+                                            <div id="productButtons">
+                                                <button id="submitAoi" type="button" class="btn btn-primary ladda-button"
+                                                    data-style="zoom-in"><span class="ladda-label">Submit</span></button>
+                                                <button type="button" id="cancelAoi" class="btn btn-default" data-dismiss="modal">Cancel</button>
                                             </div>
                                             <p id="downloadProduct"><i
                                                     class="fa fa-check fa-2x"></i>&nbsp;&nbsp;Ready for
                                             download:&nbsp;&nbsp;
                                                 <button id="downloadProductButton" type="button" href="javascript:void(0)"
-                                                        class="btn btn-primary fileDownload">Download</button></p>
+                                                        class="btn btn-success fileDownload">Download</button>
+                                            </p>
                                         </div>
                                         <div role="tabpanel" class="tab-pane" id="metricsTab">
                                             <br>
@@ -411,8 +411,8 @@
         </div><!-- /.modal-dialog modal-lg -->
     </div><!-- /.modal fade "uploadCutByFileModal" -->
 
-    <!-- Paste cut geometry form -->
-    <div class="modal fade" id="pasteCutGeometryModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+        <!-- Paste cut geometry form -->
+        <div class="modal fade" id="pasteCutGeometryModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
          Saria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
