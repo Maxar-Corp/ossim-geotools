@@ -33,7 +33,7 @@ switch(System.properties?.hadoopDist?.toLowerCase())
 
 if(System.properties?.kettleVersion)
 {
-   kettleVersion = System.proeprties?.kettleVersion
+   kettleVersion = System.properties?.kettleVersion
 }
 
 def kettleDependencies = [
