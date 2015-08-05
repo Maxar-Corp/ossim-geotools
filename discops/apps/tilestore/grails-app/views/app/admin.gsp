@@ -54,11 +54,32 @@
                                                                                    alt="RBT Logo"/></g:link>
                 <a class="navbar-brand">&nbsp;&nbsp;Tilestore Administrator</a>
             </div>
-
             <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
-                <div class="col-sm-4 col-md-4">
+                <div class="col-sm-6 col-md-6">
                     <form class="navbar-form" role="search" id="zoomToForm">
                         <div class="form-group">
+                            <a type="button" id="home" href="${resource(uri: '/')}" class="btn btn-default"
+                                    data-toggle="tooltip" data-placement="bottom"
+                                    title="Go to Tilestore home page"><i
+                                    class="fa fa-home"></i></a>
+                            <a type="button" id="client" href="${resource(dir: 'app/client')}"
+                               class="btn btn-default"
+                               data-toggle="tooltip" data-placement="bottom"
+                               title="Go to the Export page"><i
+                                    class="fa fa-cube"></i></a>
+                            <a type="button" id="disk" href="${resource(dir: 'diskCache')}"
+                               class="btn btn-default"
+                                    data-toggle="tooltip" data-placement="bottom"
+                                    title="Go to Disk Management page"><i
+                                    class="fa fa-hdd-o"></i></a>
+                            <a type="button" id="security" href="${resource(dir: 'user')}" class="btn btn-default"
+                                    data-toggle="tooltip" data-placement="bottom"
+                                    title="Go to Security page"><i
+                                    class="fa fa-unlock-alt"></i></a>
+                            <a type="button" id="jobs" href="${resource(dir: 'job')}" class="btn btn-default"
+                                    data-toggle="tooltip" data-placement="bottom"
+                                    title="Go to Jobs page"><i
+                                    class="fa fa-tachometer"></i></a>
                             <div class="input-group">
                                 <input class="form-control" id="coordInput" type="text"
                                        placeholder="Search by coordinates" data-toggle="tooltip" data-placement="bottom"
@@ -74,9 +95,9 @@
                     <li>
                         <form class="navbar-form">
                             <div class="form-group">
-                                <div class="input-group" id="tileLayerInputGroup">
-                                    <div class="input-group-addon"><i class="fa fa-th"></i>&nbsp;&nbsp;Active
-                                    Tile Layer</div>
+                                <div class="input-group" id="tileLayerInputGroup" data-toggle="tooltip" data-placement="bottom"
+                                     title="Change the active tile layer">
+                                    <div class="input-group-addon"><i class="fa fa-th"></i></div>
                                     <select id="tileLayerSelect"
                                             class="form-control selectpicker show-tick" maxOptions="10"
                                             data-live-search="true">
@@ -88,12 +109,6 @@
                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
                         class="fa fa-user"></i>&nbsp;&nbsp;<sec:loggedInUserInfo field="username"/><b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-table">&nbsp;&nbsp;<g:link title="Job Status"
-                                                                                               controller="job" target="_blank">Job Status</g:link></i></li>
-                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-unlock-alt">&nbsp;&nbsp;<g:link title="Security"
-                                                                                           controller="user"
-                                    action="search" target="_blank">Security Settings</g:link></i></li>
-                        <li class="divider"></li>
                         <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-power-off">&nbsp;&nbsp;<g:link controller='logout'>Logout</g:link></i></li>
                     </ul>
                 </li>
@@ -107,7 +122,7 @@
 
     <!-- toolBarRow -->
     <div class="container-fluid">
-    <div id="toolBarRow" class="row">
+        <div id="toolBarRow" class="row">
         <div id="omarFeedToolbar" class="col-md-2 text-center">
             <nav class="navbar navbar-default">
                 <div class="container-fluid">
@@ -148,12 +163,12 @@
                         <form class="navbar-form navbar-left" role="search">
                             <button type="button" id="ingestModalButton" class="btn btn-primary"
                                     data-toggle="tooltip" data-placement="bottom"
-                                    title="Ingest the definied AOI"><i
-                                    class="fa fa-sign-in fa-rotate-90"></i>&nbsp;&nbsp;Ingest</button>
+                                    title="Ingest the definied AOI or entire image"><i
+                                    class="fa fa-sign-in fa-rotate-90"></i></button>
                             <button type="button" id="clearAoiButton" class="btn btn-primary"
                                     data-toggle="tooltip" data-placement="bottom"
                                     title="Clear the defined AOI"><i
-                                    class="fa fa-trash-o"></i>&nbsp;&nbsp;Clear</button>
+                                    class="fa fa-trash-o"></i></button>
                         </form>
                         <ul class="nav navbar-nav navbar-right">
                             <li id="omarMapToolsDropdown" class="dropdown disabled">
@@ -198,7 +213,7 @@
                             <button type="button" id="viewLayersInfo" class="btn btn-info"
                                     data-toggle="tooltip" data-placement="bottom"
                                     title="View information about the available tile layers"><i
-                                    class="fa fa-th-list"></i>&nbsp;&nbsp;Info</button>
+                                    class="fa fa-th-list"></i></button>
                         </form>
                         <ul class="nav navbar-nav navbar-right">
                             %{--<li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>--}%
@@ -230,7 +245,7 @@
         </div>
 
     </div>
-</div>
+    </div>
 
     <!-- mapsRow -->
     <div class="container-fluid">

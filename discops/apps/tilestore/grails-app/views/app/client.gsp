@@ -50,18 +50,44 @@
                 </div>
 
                 <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
-                        <form class="navbar-form navbar-left">
-                            <div class="form-group">
-
-
-                                <div class="input-group" id="tileLayerInputGroup">
-                                    <div class="input-group-addon"><i class="fa fa-th"></i>&nbsp;&nbsp;
-                                    Tile Layer</div>
-                                    <select class="form-control selectpicker show-tick" id="tileLayerSelect">
-                                    </select>
-                                </div>
+                    <form class="navbar-form navbar-left">
+                        <div class="form-group">
+                            <a type="button" id="home" href="${resource(uri: '/')}" class="btn btn-default"
+                               data-toggle="tooltip" data-placement="bottom"
+                               title="Go to Tilestore home page"><i
+                                    class="fa fa-home"></i></a>
+                            <sec:ifAllGranted roles="ROLE_LAYER_ADMIN">
+                            <a type="button" id="admin" href="${resource(dir: 'app/admin')}"
+                               class="btn btn-default"
+                               data-toggle="tooltip" data-placement="bottom"
+                               title="Go to the Build page"><i
+                                    class="fa fa-th"></i></a>
+                            </sec:ifAllGranted>
+                            <sec:ifAllGranted roles="ROLE_ADMIN">
+                            <a type="button" id="disk" href="${resource(dir: 'diskCache')}"
+                               class="btn btn-default"
+                               data-toggle="tooltip" data-placement="bottom"
+                               title="Go to Disk Management page"><i
+                                    class="fa fa-hdd-o"></i></a>
+                            </sec:ifAllGranted>
+                            <sec:ifAllGranted roles="ROLE_ADMIN">
+                            <a type="button" id="security" href="${resource(dir: 'user')}" class="btn btn-default"
+                               data-toggle="tooltip" data-placement="bottom"
+                               title="Go to Security page"><i
+                                    class="fa fa-unlock-alt"></i></a>
+                            </sec:ifAllGranted>
+                            <a type="button" id="jobs" href="${resource(dir: 'job')}" class="btn btn-default"
+                               data-toggle="tooltip" data-placement="bottom"
+                               title="Go to Jobs page"><i
+                                    class="fa fa-tachometer"></i></a>
+                            <div class="input-group" id="tileLayerInputGroup" data-toggle="tooltip" data-placement="bottom"
+                                 title="Change the active tile layer">
+                                <div class="input-group-addon"><i class="fa fa-th"></i></div>
+                                <select class="form-control selectpicker show-tick" id="tileLayerSelect">
+                                </select>
                             </div>
-                        </form>
+                        </div>
+                    </form>
 
                     <div class="navbar-header">
                         <button type="button" class="navbar-toggle" data-toggle="collapse"
@@ -152,8 +178,6 @@
                                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
                                         class="fa fa-user"></i>&nbsp;&nbsp;<sec:loggedInUserInfo field="username"/><b class="caret"></b>&nbsp;&nbsp;&nbsp;&nbsp;</a>
                                     <ul class="dropdown-menu">
-                                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-table">&nbsp;&nbsp;<g:link title="Job Status" controller="job" target="_blank">Job Status</g:link></i></li>
-                                        <li class="divider"></li>
                                         <li>&nbsp;&nbsp;<i class="fa fa-power-off">&nbsp;&nbsp;<g:link controller='logout'>Logout</g:link></i></li>
                                     </ul>
                                 </li>
@@ -164,7 +188,7 @@
 
         <div class="navbar-offset"></div>
 
-    <form id="zoomToForm" role="search">
+        <form id="zoomToForm" role="search">
             <div class="form-group">
                 <div class="input-group" id="zoom-input-group">
                     <input class="form-control" id="coordInput" type="text"
