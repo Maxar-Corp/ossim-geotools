@@ -1,14 +1,53 @@
 /*
 
-*=require easyui/themes/default/icon.css
+*= require bootstrap.css
+*= require font-awesome.css
+
+*=require easyui/themes/icon.css
 *=require easyui/themes/default/easyui.css
+
 *= require_self
 */
 
-body{
-    visibility:hidden;
+/*body{*/
+    /*visibility:hidden;*/
+/*}*/
+
+
+body {
+    overflow: hidden;
 }
 
 .text-center{
     text-align: center;
+}
+
+#navBarTop {
+    top:28px
+}
+
+#navBarTop .fa-home, .fa-th, .fa-hdd-o, .fa-unlock-alt, .fa-tachometer {
+    color: #337ab7;
+}
+
+.top-logo {
+    padding-top: 5px;
+    margin-left: 60px;
+}
+
+#content{
+    position: absolute;
+    top: 78px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    /*background-color: #ccc;*/
+}
+
+.security-level-bottom {
+    min-height: 20px;
+    background-color: green;
+    color: white;
+    font-size: 20px;
+    font-weight:bold
 }

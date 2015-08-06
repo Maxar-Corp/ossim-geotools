@@ -22,11 +22,6 @@
     <tilestore:securityClassificationBanner class="row text-center"/>
 </div>
 
-<div region="south" class="banner">
-    <tilestore:securityClassificationBanner class="row text-center"/>
-</div>
-
-
 <div region="center" split="true">
     <div class="easyui-layout" fit="true">
         <div region="north" style="overflow:hidden;">
@@ -104,6 +99,9 @@
     </div>
 </div>
 
+<div region="south" class="banner">
+    <tilestore:securityClassificationBanner class="row text-center"/>
+</div>
 
 <g:javascript>
     $( document ).ready( function ()
