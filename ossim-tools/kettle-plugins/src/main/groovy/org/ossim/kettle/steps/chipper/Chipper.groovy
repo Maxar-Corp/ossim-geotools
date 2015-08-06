@@ -13,7 +13,9 @@ import org.pentaho.di.trans.step.BaseStep;
 import org.pentaho.di.trans.step.StepDataInterface;
 import org.pentaho.di.trans.step.StepInterface;
 import org.pentaho.di.trans.step.StepMeta;
-import org.pentaho.di.trans.step.StepMetaInterface;
+import org.pentaho.di.trans.step.StepMetaInterface
+
+import java.awt.image.SampleModel;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -106,6 +108,30 @@ class Chipper extends BaseStep implements StepInterface
       result
    }
 
+   private createPlanarImage(DataBuffer dataBuffer, SampleModel sampleModel)
+   {
+      def cs = ColorSpace.getInstance( ColorSpace.CS_sRGB )
+
+      def colorModel = new ComponentColorModel( cs, null,
+              true, false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE )
+
+      def raster = Raster.createRaster( sampleModel, dataBuffer, new Point( 0, 0 ) )
+      def image = new BufferedImage( colorModel, raster, false, null )
+
+      def planarImage = PlanarImage.wrapRenderedImage(image as RenderedImage)
+      // convert to a serializable planar image planar
+      planarImage = JAI.create("NULL", planarImage)
+      planarImage.data
+      //	planarImage.setProperty("metadata","<metadata></metadata>")
+      //	planarImage.getProperty("metadata")
+      //	def file = "/tmp/foo${tileLevel}_${tileRow}_${tileCol}.jpg"
+      //				println file
+      //def fos= new FileOutputStream(file)
+      //	def threeBand = JAI.create("BandSelect", planarImage, [0,1,2] as int[])
+      //	ImageIO.write( threeBand, 'jpg', file as File )
+
+      planarImage
+   }
    public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws KettleException {
 
       meta = (ChipperMeta) smi;
@@ -268,42 +294,50 @@ class Chipper extends BaseStep implements StepInterface
                case ossimDataObjectStatus.OSSIM_FULL.swigValue:
                case ossimDataObjectStatus.OSSIM_PARTIAL.swigValue:
                   try{
-                     def cs = ColorSpace.getInstance( ColorSpace.CS_sRGB )
-
-                     def colorModel = new ComponentColorModel( cs, null,
-                             true, false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE )
-
-                     def raster = Raster.createRaster( sampleModel, dataBuffer, new Point( 0, 0 ) )
-                     def image = new BufferedImage( colorModel, raster, false, null )
-
-                     def planarImage = PlanarImage.wrapRenderedImage(image as RenderedImage)
-                     // convert to a serializable planar image planar
-                     planarImage = JAI.create("NULL", planarImage)
-                     planarImage.data
-                     //	planarImage.setProperty("metadata","<metadata></metadata>")
-                     //	planarImage.getProperty("metadata")
+                     def planarImage = createPlanarImage(dataBuffer, sampleModel)
                      resultArray << ((chipperResult==ossimDataObjectStatus.OSSIM_PARTIAL.swigValue)?"PARTIAL":"FULL")
                      resultArray << planarImage
-                     //	def file = "/tmp/foo${tileLevel}_${tileRow}_${tileCol}.jpg"
-                     //				println file
-                     //def fos= new FileOutputStream(file)
-                     //	def threeBand = JAI.create("BandSelect", planarImage, [0,1,2] as int[])
-                     //	ImageIO.write( threeBand, 'jpg', file as File )
                   }
                   catch(e)
                   {
                      e.printStackTrace()
+                     if(meta.passNullTiles)
+                     {
+                        resultArray << "NULL"
+                        result << (PlanarImage)null
+                     }
                      //	resultArray << null
+                  }
+                  break
+               case ossimDataObjectStatus.OSSIM_EMPTY.swigValue:
+                  if(meta.passEmptyTiles)
+                  {
+                     try{
+                        def planarImage = createPlanarImage(dataBuffer, sampleModel)
+                        resultArray << "EMPTY"
+                        resultArray << planarImage
+                     }
+                     catch(e)
+                     {
+                        logError(e.toString())
+                        if(meta.passNullTiles)
+                        {
+                           resultArray << "NULL"
+                           result << (PlanarImage)null
+                        }
+                        //	resultArray << null
+                     }
+                  }
+                  break
+               case ossimDataObjectStatus.OSSIM_NULL.swigValue:
+                  if(meta.passNullTiles)
+                  {
+                     resultArray << "NULL"
+                     result << (PlanarImage)null
                   }
                   break
                default:
                   break
-            //Object[] outputRow = RowDataUtil.addRowData(r,
-            //		                                          data.outputRowMeta.size()-(resultArray.size()),
-            //		                                          resultArray as Object []);
-
-            //   println chipperOptionsMap
-            //putRow(data.outputRowMeta, outputRow);
             }
             if(resultArray)
             {
@@ -313,17 +347,9 @@ class Chipper extends BaseStep implements StepInterface
                }
                resultArray.each{outputRow<<it}
                putRow(data.outputRowMeta, outputRow as Object[]);
-
-               //Object[] outputRow = RowDataUtil.addRowData(r,
-               //        data.outputRowMeta.size()-(resultArray.size()),
-               //        resultArray as Object []);
-               //putRow(data.outputRowMeta, outputRow);
-            }
+             }
          }
       }
-
-      //putRow(data.outputRowMeta, r);
-
       return true; // finished with this row, process the next row
    }
    public boolean init(StepMetaInterface smi, StepDataInterface sdi)

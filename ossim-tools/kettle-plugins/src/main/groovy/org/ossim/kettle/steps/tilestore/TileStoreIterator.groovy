@@ -45,6 +45,8 @@ class TileStoreIterator  extends BaseStep implements StepInterface
    private Integer tileBoundsIdx
    private Integer tileEpsgIdx
    private Integer tileImageIdx
+   private Integer summaryTotalTilesIdx
+   private long    summaryTotalTiles = 0
    private Integer numberOfOutputFields
    private Integer columnOffset
    private Boolean nextRowFlag
@@ -56,6 +58,8 @@ class TileStoreIterator  extends BaseStep implements StepInterface
    private TileCacheLayerInfo layerInfo
    private def     sqlRows
    private Object[] currentInputRow
+
+   Boolean calculateTotalCount = true
 
    TileStoreIterator(StepMeta stepMeta, StepDataInterface stepDataInterface,
                      int copyNr, TransMeta transMeta, Trans trans) {
@@ -96,7 +100,9 @@ class TileStoreIterator  extends BaseStep implements StepInterface
          tileBoundsIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_bounds"])
          tileEpsgIdx   = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_epsg"])
          tileImageIdx  = selectedRowMeta.indexOfValue(meta.outputFieldNames["tile_image"])
-
+         summaryTotalTilesIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_total_tiles"])
+         calculateTotalCount = false
+         if(summaryTotalTilesIdx > -1) calculateTotalCount = true
          numberOfOutputFields = selectedRowMeta.size()
          columnOffset = data.outputRowMeta.size()-numberOfOutputFields
          sql = data.hibernate.cacheSql
@@ -175,6 +181,14 @@ class TileStoreIterator  extends BaseStep implements StepInterface
             queryString = "select ${selectionClause.join(',')} from ${layerInfo.tileStoreTable} ${whereClause} ${orderByClause}".toString()
             currentResultOffset = 0
             nextRowFlag = false
+
+            if(calculateTotalCount)
+            {
+               String queryCount = "select count(*) from ${layerInfo.tileStoreTable} ${whereClause}".toString()
+               def queryCountResult = sql.firstRow(queryCount)
+               summaryTotalTiles = queryCountResult.count
+               calculateTotalCount = false
+            }
          }
 
          // check to see if we need to reload the next sql batch
@@ -262,7 +276,11 @@ class TileStoreIterator  extends BaseStep implements StepInterface
                      //}
                   }
                }
-               String id = "${sqlRow.z}${sqlRow.y}${sqlRow.x}"
+               if(summaryTotalTilesIdx >=0)
+               {
+                  resultArray[summaryTotalTilesIdx] = summaryTotalTiles
+               }
+              // String id = "${sqlRow.z}${sqlRow.y}${sqlRow.x}"
 
                def outputRow = []
                (0..<inputRowMeta.size()).each { Integer i ->

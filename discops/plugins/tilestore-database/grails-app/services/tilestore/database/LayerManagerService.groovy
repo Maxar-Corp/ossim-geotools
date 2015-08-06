@@ -32,6 +32,7 @@ import org.springframework.beans.factory.InitializingBean
 import org.springframework.web.multipart.commons.CommonsMultipartFile
 import tilestore.job.CreateJobCommand
 import tilestore.job.JobStatus
+import tilestore.security.SecUser
 
 import javax.imageio.ImageIO
 import javax.servlet.http.HttpServletRequest
@@ -45,7 +46,7 @@ import java.util.regex.Pattern
 @Transactional
 class LayerManagerService implements InitializingBean
 {
-
+   def springSecurityService
    def grailsApplication
    def jobService
    TileCacheHibernate hibernate
@@ -591,12 +592,36 @@ class LayerManagerService implements InitializingBean
       ingestCommand.jobId = jobId
       ingestCommand.type = "TileServerIngestMessage"
 
+      def username = "anonymous"
+      def jobName  = cmd.jobName
+      def jobDescription  = cmd.jobDescription
+      SecUser user= springSecurityService.currentUser
+      if(user)
+      {
+         username = user.username
+      }
+
+      if(!jobName)
+      {
+         jobName = "Ingest into ${cmd.layer.name}"
+      }
+      if(!jobDescription)
+      {
+         def maxSize = 30
+         def filename = cmd.input.filename?:""
+         if(filename.length() > 20)
+         {
+            filename = "${filename.substring(0,(int)(maxSize/2)-2)}...${filename.substring(filename.length()-(int)(maxSize/2))}"
+         }
+         jobDescription = "Ingesting ${filename} into ${cmd.layer.name}"
+      }
       CreateJobCommand jobCommand = new CreateJobCommand(
               jobId: jobId,
               type: "TileServerIngestMessage",
               jobDir: "",
-              name: cmd.jobName,
-              username: "anonymous",
+              name: jobName,
+              description:jobDescription,
+              username: username,
               status: JobStatus.READY.toString(),
               statusMessage: "",
               message: (ingestCommand as JSON).toString(),

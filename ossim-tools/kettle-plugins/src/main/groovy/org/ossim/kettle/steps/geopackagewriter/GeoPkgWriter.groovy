@@ -349,6 +349,11 @@ class GeoPkgWriter extends BaseStep implements StepInterface
             */
          }
       }
+
+      if(meta.passInputFields)
+      {
+         putRow(inputRowMeta, r)
+      }
       return true
    }
    public boolean init(StepMetaInterface smi, StepDataInterface sdi)

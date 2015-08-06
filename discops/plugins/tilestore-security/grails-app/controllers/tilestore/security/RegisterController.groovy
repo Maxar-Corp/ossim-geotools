@@ -9,10 +9,63 @@ import grails.validation.Validateable
 class RegisterController extends grails.plugin.springsecurity.ui.RegisterController
 {
   def springSecurityService
+  def mailService
+  def ldapUtilService
+
+  def resetPassword = { ResetPasswordCommand command ->
+
+    String token = params.t
+
+    def registrationCode = token ? RegistrationCode.findByToken( token ) : null
+    if ( !registrationCode )
+    {
+      flash.error = message( code: 'spring.security.ui.resetPassword.badCode' )
+      redirect uri: SpringSecurityUtils.securityConfig.successHandler.defaultTargetUrl
+      return
+    }
+
+    if ( !request.post )
+    {
+      return [token: token, command: new ResetPasswordCommand()]
+    }
+
+    command.username = registrationCode.username
+    command.validate()
+
+    if ( command.hasErrors() )
+    {
+      return [token: token, command: command]
+    }
+
+    String salt = saltSource instanceof NullSaltSource ? null : registrationCode.username
+    RegistrationCode.withTransaction { status ->
+      def user = lookupUserClass().findByUsername( registrationCode.username )
+      def newPassword = springSecurityService.encodePassword( command.password, salt )
+
+      if ( user?.password == "Authenticated by LDAP" )
+      {
+        ldapUtilService.changePassword( [username: user.username, password: newPassword] )
+      }
+      else
+      {
+        user.password = newPassword
+        user.save()
+      }
+      registrationCode.delete()
+    }
+
+    springSecurityService.reauthenticate registrationCode.username
+
+    flash.message = message( code: 'spring.security.ui.resetPassword.success' )
+
+    def conf = SpringSecurityUtils.securityConfig
+    String postResetUrl = conf.ui.register.postResetUrl ?: conf.successHandler.defaultTargetUrl
+    redirect uri: postResetUrl
+  }
+
 
   def register(RegisterCommand command)
   {
-
     if ( command.hasErrors() )
     {
       render view: 'index', model: [command: command]
@@ -90,12 +143,59 @@ class RegisterController extends grails.plugin.springsecurity.ui.RegisterControl
       redirect uri: conf.ui.register.postRegisterUrl ?: defaultTargetUrl
     }
   }
+
+  static final myPasswordValidator = { String password, command ->
+
+    if(!password)
+    {
+      return 'registerCommand.password.blank'
+    }
+    if ( command.username && command.username.equals( password ) )
+    {
+      return 'command.password.error.username'
+    }
+
+    if(password?.length() <8)
+    {
+      return 'registerCommand.password.minSize.notmet'
+    }
+    else if(password?.length() > 64)
+    {
+      return 'registerCommand.password.maxSize.exceeded'
+    }
+    if ( password && password.length() >= 8 && password.length() <= 64 &&
+            ( !password.matches( '^.*\\p{Alpha}.*$' ) ||
+                    !password.matches( '^.*\\p{Digit}.*$' ) ||
+                    !password.matches( '^.*[!@#$%^&].*$' ) ) )
+    {
+      return 'command.password.error.strength'
+    }
+  }
+
+  static final myPassword2Validator = { value, command ->
+    if(!command?.password2)
+    {
+      return 'registerCommand.password.blank'
+    }
+    if ( command.password != command.password2 )
+    {
+      return 'command.password2.error.mismatch'
+    }
+  }
+
+  static final myEmailValidator = { value, command ->
+    if ( command.email != command.email2 )
+    {
+      return 'registerCommand.email.error.mismatch'
+    }
+  }
+
+
 }
 
 @Validateable
 class RegisterCommand
 {
-
   String username
   String email
   String password
@@ -105,6 +205,7 @@ class RegisterCommand
 
   static constraints = {
     username blank: false, validator: { value, command ->
+      println "VALIDATING USERNAME"
       if ( value )
       {
         def User = command.grailsApplication.getDomainClass(
@@ -116,7 +217,20 @@ class RegisterCommand
       }
     }
     email blank: false, email: true
-    password blank: false, validator: RegisterController.passwordValidator
-    password2 validator: RegisterController.password2Validator
+    password blank: false, validator: RegisterController.myPasswordValidator
+    password2 validator: RegisterController.myPassword2Validator
+  }
+}
+
+@Validateable
+class ResetPasswordCommand
+{
+  String username
+  String password
+  String password2
+
+  static constraints = {
+    password blank: false, minSize: 8, maxSize: 64, validator: RegisterController.myPasswordValidator
+    password2 validator: RegisterController.myPassword2Validator
   }
 }

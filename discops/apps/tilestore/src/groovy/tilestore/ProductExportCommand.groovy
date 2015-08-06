@@ -11,6 +11,7 @@ import org.ossim.common.CaseInsensitiveBind
 @ToString(includeNames = true)
 class ProductExportCommand implements CaseInsensitiveBind{
    String jobName
+   String jobDescription
    String layer// = [] as String[]
    String aoi
    String aoiEpsg

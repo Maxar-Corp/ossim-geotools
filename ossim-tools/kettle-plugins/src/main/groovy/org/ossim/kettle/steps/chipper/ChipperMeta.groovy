@@ -45,6 +45,8 @@ import org.ossim.core.SynchOssimInit
 )
 public class ChipperMeta extends BaseStepMeta implements StepMetaInterface
 {
+	Boolean passNullTiles    = true
+	Boolean passEmptyTiles   = true
 	def imageResultField     = "image"
 	def imageStatusField     = "image_status"
 
@@ -88,6 +90,8 @@ public class ChipperMeta extends BaseStepMeta implements StepMetaInterface
 	{
 		def retval = new StringBuffer(400);
 
+		retval.append("    ").append(XMLHandler.addTagValue("passEmptyTiles",     passEmptyTiles))
+		retval.append("    ").append(XMLHandler.addTagValue("passNullTiles",     passNullTiles))
 		retval.append("    ").append(XMLHandler.addTagValue("imageResultField",     imageResultField))
 		retval.append("    ").append(XMLHandler.addTagValue("resampleFilterType",     resampleFilterType))
 		retval.append("    ").append(XMLHandler.addTagValue("histogramOperationType",     histogramOperationType))
@@ -156,6 +160,8 @@ public class ChipperMeta extends BaseStepMeta implements StepMetaInterface
 		try
 		{
 
+			def passEmptyTilesString = XMLHandler.getTagValue(values, "passEmptyTiles");
+			def passNullTilesString = XMLHandler.getTagValue(values, "passNullTiles");
 			def histogramOperationTypeString = XMLHandler.getTagValue(values, "histogramOperationType");
 			def resampleFilterTypeString = XMLHandler.getTagValue(values, "resampleFilterType");
 			def imageResultFieldString     = XMLHandler.getTagValue(values, "imageResultField");
@@ -171,6 +177,9 @@ public class ChipperMeta extends BaseStepMeta implements StepMetaInterface
 			def inputEpsgCodeFieldString   = XMLHandler.getTagValue(values, "inputEpsgCodeField");
 			def inputTileWidthFieldString  = XMLHandler.getTagValue(values, "inputTileWidthField");
 			def inputTileHeightFieldString = XMLHandler.getTagValue(values, "inputTileHeightField");
+
+			if(passEmptyTilesString) passEmptyTiles = passEmptyTilesString.toBoolean()
+			if(passNullTilesString) passNullTiles = passNullTilesString.toBoolean()
 
 			if(histogramOperationTypeString)
 			{
@@ -243,6 +252,8 @@ public class ChipperMeta extends BaseStepMeta implements StepMetaInterface
 		imageResultField     = "image"
 		imageStatusField     = "image_status"
 		resampleFilterType   = "bilinear"
+		passEmptyTiles       = true
+		passNullTiles        = true
 		SynchOssimInit.initialize()
 	}
 	void readRep(Repository rep, ObjectId id_step, List<DatabaseMeta> databases, Map<String, Counter> counters) throws KettleException
@@ -250,6 +261,8 @@ public class ChipperMeta extends BaseStepMeta implements StepMetaInterface
 		this.setDefault();
 		try
 		{
+			String passEmptyTilesString     = rep.getStepAttributeString(id_step, "passEmptyTiles");
+			String passNullTilesString     = rep.getStepAttributeString(id_step, "passNullTiles");
 			String histogramOperationTypeString     = rep.getStepAttributeString(id_step, "histogramOperationType");
 			String resampleFilterTypeString     = rep.getStepAttributeString(id_step, "resampleFilterType");
 			String imageResultFieldString     = rep.getStepAttributeString(id_step, "imageResultField");
@@ -265,6 +278,9 @@ public class ChipperMeta extends BaseStepMeta implements StepMetaInterface
 			String inputEpsgCodeFieldString   = rep.getStepAttributeString(id_step, "inputEpsgCodeField");
 			String inputTileWidthFieldString  = rep.getStepAttributeString(id_step, "inputTileWidthField");
 			String inputTileHeightFieldString = rep.getStepAttributeString(id_step, "inputTileHeightField");
+
+			if(passEmptyTilesString) passEmptyTiles = passEmptyTilesString.toBoolean()
+			if(passNullTilesString) passNullTiles   = passNullTilesString.toBoolean()
 
 			if(histogramOperationTypeString)
 			{
@@ -338,6 +354,12 @@ public class ChipperMeta extends BaseStepMeta implements StepMetaInterface
 	{
 		try
 		{
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "passNullTiles",
+					  passNullTiles) //$NON-NLS-1$
+			rep.saveStepAttribute(id_transformation,
+					  id_step, "passEmptyTiles",
+					  passEmptyTiles) //$NON-NLS-1$
 			rep.saveStepAttribute(id_transformation,
 					  id_step, "resampleFilterType",
 					  resampleFilterType) //$NON-NLS-1$

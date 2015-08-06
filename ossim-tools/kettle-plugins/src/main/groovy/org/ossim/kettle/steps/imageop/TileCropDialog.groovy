@@ -1,6 +1,8 @@
 package org.ossim.kettle.steps.imageop
 
+import org.eclipse.swt.SWT
 import org.eclipse.swt.widgets.Display
+import org.eclipse.swt.widgets.MessageBox
 import org.eclipse.swt.widgets.Shell
 import org.ossim.kettle.groovyswt.KettleSwtBuilder
 import org.ossim.kettle.types.OssimValueMetaBase
@@ -42,7 +44,7 @@ class TileCropDialog extends BaseStepDialog implements
 
             //text(id:"stepName", text: stepname ,layoutData:"span, growx"){
             text(id: "stepName", layoutData: "span,growx", text: stepname) {
-               onEvent(type: 'Modify') { input.setChanged() }
+               onEvent(type: 'Modify') { changed=true }
             }
          }
          group(id: "cropDefinitionsGroupId", text: "Crop definitions", style: "none", layoutData: "span,growx") {
@@ -53,7 +55,7 @@ class TileCropDialog extends BaseStepDialog implements
                     layoutData: "span,growx")
                     {
                        onEvent(type: 'Modify') {
-                          input.setChanged()
+                          changed=true
                        }
                     }
             label "Tile Aoi"
@@ -62,7 +64,7 @@ class TileCropDialog extends BaseStepDialog implements
                     layoutData: "span,growx")
                     {
                        onEvent(type: 'Modify') {
-                          input.setChanged()
+                          changed=true
                        }
                     }
             label "Tile"
@@ -71,9 +73,28 @@ class TileCropDialog extends BaseStepDialog implements
                     layoutData: "span,growx")
                     {
                        onEvent(type: 'Modify') {
-                          input.setChanged()
+                          changed=true
                        }
                     }
+            label Messages.getString("TileCropDialog.PassNullTiles.Label")
+            checkBox(id: "passNullTiles",
+                    text: "",
+                    selection: true,
+                    layoutData: "span, growx, wrap") {
+               onEvent(type: "Selection") {
+                  changed=true
+
+               }
+            }
+            label Messages.getString("TileCropDialog.PassEmptyTiles.Label")
+            checkBox(id: "passEmptyTiles",
+                    text: "",
+                    selection: true,
+                    layoutData: "span, growx, wrap") {
+               onEvent(type: "Selection") {
+                  changed=true
+               }
+            }
          }
          group(layoutData: "span,growx") {
             migLayout(layoutConstraints: "insets 2, wrap 2", columnConstraints: "[] [grow]")
@@ -91,7 +112,6 @@ class TileCropDialog extends BaseStepDialog implements
       shell.text = Messages.getString("TileCropDialog.Shell.Title")
       getData(); // initialize data fields
       setSize(); // shrink and fit dialog to fit inputs
-      input.setChanged(changed)
       shell.doMainloop()
 
       return stepname;
@@ -104,6 +124,8 @@ class TileCropDialog extends BaseStepDialog implements
       swt.aoiField.text     = input.aoiField?:""
       swt.tileAoiField.text = input.tileAoiField?:""
       swt.tileField.text    = input.tileField?:""
+      swt.passNullTiles.selection  = input.passNullTiles
+      swt.passEmptyTiles.selection = input.passEmptyTiles
    }
 
    private void cancel()
@@ -115,13 +137,24 @@ class TileCropDialog extends BaseStepDialog implements
 
    private void ok()
    {
-      if (!swt.stepName.text) return;
+      if (Const.isEmpty(swt.stepName.text)){
+         MessageBox mb = new MessageBox(shell, SWT.OK | SWT.ICON_ERROR );
+         mb.message = "Stepname empty"; //$NON-NLS-1$
+         mb.text = "Stepname empty" //$NON-NLS-1$
+         mb.open()
+         return;
+      }
 
       stepname = swt.stepName.text
 
       input.aoiField     = swt.aoiField.text
       input.tileAoiField = swt.tileAoiField.text
       input.tileField    = swt.tileField.text
+
+      input.passNullTiles  = swt.passNullTiles.selection
+      input.passEmptyTiles = swt.passEmptyTiles.selection
+
+      input.setChanged(changed)
 
       dispose()
    }

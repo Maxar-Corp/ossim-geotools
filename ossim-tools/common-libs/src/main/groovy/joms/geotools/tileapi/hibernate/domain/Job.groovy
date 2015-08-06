@@ -23,6 +23,7 @@ class Job
     jobDir          nullable:true
     type            nullable:true
     name            nullable:true
+    description     nullable:true
     username        nullable:false
     status          nullable:true
     statusMessage   nullable:true
@@ -58,6 +59,10 @@ class Job
   @Column(name="name", nullable = true)
   @Index(name = "job_name_idx")
   String    name
+
+  @Column(name="description", nullable = true)
+  @Type(type="text")
+  String    description
 
   @Column(name="username", nullable = false)
   @Index(name = "job_username_idx")

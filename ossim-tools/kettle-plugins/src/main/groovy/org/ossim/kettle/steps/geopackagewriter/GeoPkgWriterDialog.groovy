@@ -44,6 +44,15 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
             text(id: "stepName", layoutData: "span,growx", text: stepname) {
                onEvent(type: 'Modify') { input.setChanged() }
             }
+            label Messages.getString("GeoPackageWriterDialog.PassInputFields.Label")
+            checkBox(id: "passInputFields",
+                    text: "",
+                    selection: true,
+                    layoutData: "span, growx, wrap") {
+               onEvent(type: "Selection") {
+                  changed=true
+               }
+            }
          }
          group(id: "tileGroupId", text: "Tile definitions", style: "none", layoutData: "span,growx") {
             migLayout(layoutConstraints: "insets 2, wrap 2", columnConstraints: "[] [grow]")
