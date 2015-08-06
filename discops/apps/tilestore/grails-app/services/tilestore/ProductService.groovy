@@ -24,7 +24,6 @@ class ProductService {
                     message:"",
                     data:[:]
       ]
-      println cmd.layer
       if(!cmd.layer)
       {
          result.status = HttpStatus.BAD_REQUEST
@@ -45,6 +44,14 @@ class ProductService {
          ]
          String jobDir = diskCacheService.nextLocation.directory
 
+         if(!jobDir)
+         {
+            result.status = HttpStatus.BAD_REQUEST
+            result.message = "No job directory to write to. Please add a director using the disk management."
+
+            return result
+         }
+
          File jobDirFile = new File(jobDir as File,jobId)
          jobSpec.jobDir = jobDirFile.toString()
          if(!jobDirFile.mkdirs())
@@ -54,8 +61,6 @@ class ProductService {
          }
          else
          {
-
-
             SecUser user= springSecurityService.currentUser
             if(user)
             {
@@ -67,6 +72,8 @@ class ProductService {
             {
                cmd.properties = [:]
             }
+            def name = cmd.jobName?: "Export ${cmd.layer}"
+            def description = cmd.jobDescription?: "Exporting Geopackage from layer ${cmd.layer}"
 
             if(!cmd.properties.filename) cmd.properties.filename = "image"
             if(layerInfo)
@@ -87,7 +94,8 @@ class ProductService {
                                           deleteInputAfterArchiving:true
                                   ]
                                  ]as JSON
-
+               jobSpec.name = name
+               jobSpec.description = description
                result = jobService.create(new CreateJobCommand(jobSpec))
             }
          }
