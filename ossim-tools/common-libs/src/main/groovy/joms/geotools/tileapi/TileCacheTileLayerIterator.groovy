@@ -35,6 +35,27 @@ class TileCacheTileLayerIterator {
     //  minLevelIndex = 0
     //  maxLevelIndex = (maxLevel-minLevel) + 1
    }
+   long totalTiles()
+   {
+      long result = 0
+      def tempBounds = bounds?:regionOfInterest.bounds
+      def levelIdx = minLevel?:0
+      while(levelIdx <= maxLevel)
+      {
+         if(!tempBounds)
+         {
+            result += layer?.tiles(levelIdx)?.size
+         }
+         else
+         {
+
+            result += layer?.tiles(bounds, levelIdx)?.size
+         }
+         ++levelIdx
+       }
+
+      result
+   }
    Bounds getBounds(def z)
    {
       if(!bounds&&regionOfInterest)

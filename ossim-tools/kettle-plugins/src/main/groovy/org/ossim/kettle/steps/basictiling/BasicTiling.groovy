@@ -72,6 +72,7 @@ class BasicTiling extends BaseStep implements StepInterface
    Integer summaryTileHeightIdx
    Integer summaryDeltaxLevelZeroIdx
    Integer summaryDeltayLevelZeroIdx
+   Integer summaryTotalTiles
 
 
    public BasicTiling(StepMeta stepMeta, StepDataInterface stepDataInterface,
@@ -203,7 +204,7 @@ class BasicTiling extends BaseStep implements StepInterface
          summaryTileHeightIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_tile_height"])
          summaryDeltaxLevelZeroIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_deltax_level_zero"])
          summaryDeltayLevelZeroIdx = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_deltay_level_zero"])
-
+         summaryTotalTiles  = selectedRowMeta.indexOfValue(meta.outputFieldNames["summary_total_tiles"])
 
       }
       if(meta?.clampMinLevel)
@@ -274,6 +275,8 @@ class BasicTiling extends BaseStep implements StepInterface
 
          }
       }
+
+      def subBounds
       //-----------------------------------
       // now find the clamp set to iterate of the global tiling scheme
       //
@@ -412,6 +415,11 @@ class BasicTiling extends BaseStep implements StepInterface
             {
                resultArray[summaryDeltayLevelZeroIdx] = pyramid.grids[0].yResolution
             }
+            if(summaryTotalTiles > -1)
+            {
+               Integer size = 0
+               resultArray[summaryTotalTiles]  = tileIterator.totalTiles()
+            }
             if(meta.isSummaryOnly())
             {
 
@@ -431,6 +439,7 @@ class BasicTiling extends BaseStep implements StepInterface
             {
                //println "********** NOT SUMMARY CALLING NEXT TILE ***************"
                def tile
+
                while(tile = tileIterator.nextTile())
                {
                   def tileBounds = pyramid.bounds(tile)

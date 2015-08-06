@@ -37,6 +37,7 @@ import org.w3c.dom.Node
 )
 class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
 {
+   Boolean passInputFields
    String tileLevelField  = ""
    String tileRowField    = ""
    String tileColField    = ""
@@ -53,6 +54,7 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
    {
       def retval = new StringBuffer(400);
 
+      retval.append( "    " ).append( XMLHandler.addTagValue( "passInputFields", passInputFields) );
       retval.append("    ").append(XMLHandler.addTagValue("tileLevelField", tileLevelField?:""))
       retval.append("    ").append(XMLHandler.addTagValue("tileRowField",   tileRowField?:""))
       retval.append("    ").append(XMLHandler.addTagValue("tileColField",   tileColField?:""))
@@ -95,6 +97,7 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
       minLevelField  = ""
       maxLevelField  = ""
       writerMode  = "mixed"
+      passInputFields      = true
    }
 
    void loadXML(Node stepnode, List<DatabaseMeta> databases, Map<String,Counter> counters)
@@ -104,6 +107,7 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
       try
       {
 
+         String passInputFieldsString  = XMLHandler.getTagValue(stepnode, "passInputFields");
          tileLevelField  = XMLHandler.getTagValue(stepnode, "tileLevelField");
          tileRowField    = XMLHandler.getTagValue(stepnode, "tileRowField");
          tileColField    = XMLHandler.getTagValue(stepnode, "tileColField");
@@ -116,10 +120,12 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
          maxLevelField   = XMLHandler.getTagValue(stepnode, "maxLevelField");
          writerMode      = XMLHandler.getTagValue(stepnode, "writerMode")?:"mixed";
 
+
+         if(passInputFieldsString) passInputFields = passInputFieldsString.toBoolean()
       }
       catch (e)
       {
-
+         logError(e.toString())
       }
    }
 
@@ -128,6 +134,7 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
       this.setDefault();
       try
       {
+         String passInputFieldsString = XMLHandler.getTagValue(stepnode, "passInputFields");
          tileLevelField  = rep.getStepAttributeString(id_step, "tileLevelField");
          tileRowField    = rep.getStepAttributeString(id_step, "tileRowField");
          tileColField    = rep.getStepAttributeString(id_step, "tileColField");
@@ -139,9 +146,12 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
          minLevelField   = rep.getStepAttributeString(id_step, "minLevelField");
          maxLevelField   = rep.getStepAttributeString(id_step, "maxLevelField");
          writerMode      = rep.getStepAttributeString(id_step, "writerMode")?:"mixed";
+
+         if(passInputFieldsString) passInputFields = passInputFieldsString.toBoolean()
       }
       catch (e)
       {
+         logError(e.toString())
       }
    }
 
@@ -149,6 +159,7 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
    {
       try
       {
+         rep.saveStepAttribute( id_transformation, id_step, 0, "passInputFields", passInputFields );
          rep.saveStepAttribute(id_transformation,
                  id_step, "tileLevelField",
                  tileLevelField) //$NON-NLS-1$
@@ -185,6 +196,7 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
       }
       catch(e)
       {
+         logError(e.toString())
       }
    }
 

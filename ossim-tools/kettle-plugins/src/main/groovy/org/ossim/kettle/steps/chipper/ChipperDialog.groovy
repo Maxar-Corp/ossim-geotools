@@ -62,7 +62,7 @@ public class ChipperDialog extends BaseStepDialog implements
 		Display display = parent.getDisplay();
 		swt = new KettleSwtBuilder()
    	def lsMod = { 
-	   					event -> input.setChanged()
+	   					event -> changed = true
    				   } as ModifyListener
 		ColumnInfo[] colinf = new ColumnInfo[2];
 		colinf[0] =
@@ -83,19 +83,38 @@ public class ChipperDialog extends BaseStepDialog implements
 				
 				//text(id:"stepName", text: stepname ,layoutData:"span, growx"){
 				text(id:"stepName", layoutData:"span,growx", text: stepname){
-					onEvent(type:'Modify') { input.setChanged() }
+					onEvent(type:'Modify') { changed = true }
 				}
 				label Messages.getString("ChipperDialog.ImageResult.Label")
 				
 				//text(id:"stepName", text: stepname ,layoutData:"span, growx"){
 				text(id:"imageResultField", layoutData:"span,growx", text: stepname){
-					onEvent(type:'Modify') { input.setChanged() }
+					onEvent(type:'Modify') { changed = true }
 				}
 				label Messages.getString("ChipperDialog.ImageStatus.Label")
 				
 				//text(id:"stepName", text: stepname ,layoutData:"span, growx"){
 				text(id:"imageStatusField", layoutData:"span,growx", text: stepname){
-					onEvent(type:'Modify') { input.setChanged() }
+					onEvent(type:'Modify') { changed = true }
+				}
+				label Messages.getString("ChipperDialog.PassNullTiles.Label")
+				checkBox(id: "passNullTiles",
+						  text: "",
+						  selection: true,
+						  layoutData: "span, growx, wrap") {
+					onEvent(type: "Selection") {
+						changed=true
+
+					}
+				}
+				label Messages.getString("ChipperDialog.PassEmptyTiles.Label")
+				checkBox(id: "passEmptyTiles",
+						  text: "",
+						  selection: true,
+						  layoutData: "span, growx, wrap") {
+					onEvent(type: "Selection") {
+						changed=true
+					}
 				}
 
 			}
@@ -109,8 +128,8 @@ public class ChipperDialog extends BaseStepDialog implements
 					   style:"READ_ONLY",
 					   layoutData:"span,growx")
 				{
-					onEvent(type:'Modify') { 
-						input.setChanged() 
+					onEvent(type:'Modify') {
+						changed = true
 					}
 				}
 				label(layoutData:"",  text: Messages.getString("ChipperDialog.resampleFilterType.Label"))
@@ -121,8 +140,8 @@ public class ChipperDialog extends BaseStepDialog implements
 					   style:"READ_ONLY",
 					   layoutData:"span,growx")
 				{
-					onEvent(type:'Modify') { 
-						input.setChanged() 
+					onEvent(type:'Modify') {
+						changed = true
 					}
 				}
 
@@ -155,7 +174,6 @@ public class ChipperDialog extends BaseStepDialog implements
 		shell.text = Messages.getString("ChipperDialog.Shell.Title")
 		getData(); // initialize data fields
 		setSize(); // shrink and fit dialog to fit inputs
-		input.setChanged(changed);
 
 		shell.doMainloop()
 
@@ -182,6 +200,8 @@ public class ChipperDialog extends BaseStepDialog implements
 			++idx
 		}
 
+		swt.passNullTiles.selection  = input.passNullTiles
+		swt.passEmptyTiles.selection = input.passEmptyTiles
 		//swt.fileFieldName.text = Const.NVL((String)input.fileFieldName, "")
 		//swt.infoFieldName.text = Const.NVL((String)input.omsInfoFieldName, "")
 	}
@@ -218,8 +238,12 @@ public class ChipperDialog extends BaseStepDialog implements
 			input."${key}" = value
 		}
 
-		stepname = swt.stepName.text
-	
+		stepname             = swt.stepName.text
+		input.passNullTiles  = swt.passNullTiles.selection
+		input.passEmptyTiles = swt.passEmptyTiles.selection
+
+		input.setChanged(changed)
+
 		dispose();
 	}
 

@@ -87,6 +87,15 @@ class TileStoreWriterDialog extends BaseStepDialog implements
             text(id: "stepName", layoutData: "span,growx", text: stepname) {
                onEvent(type: 'Modify') { input.setChanged() }
             }
+            label Messages.getString("TileStoreCommonDialog.PassInputFields.Label")
+            checkBox(id: "passInputFields",
+                    text: "",
+                    selection: true,
+                    layoutData: "span, growx, wrap") {
+               onEvent(type: "Selection") {
+                  changed=true
+               }
+            }
          }
          composite(id:"connectionLayoutId", style:"none", layoutData:"span,growx") {
             migLayout(layoutConstraints: "inset 0", columnConstraints: "[][][][]")
@@ -109,7 +118,7 @@ class TileStoreWriterDialog extends BaseStepDialog implements
                      cid.setDatabaseMeta(databaseMeta);
                      cid.setModalDialog(true);
                      if (cid.open() != null) {
-                        input.setChanged()
+                        changed=true
                      }
                   }
                }
@@ -335,6 +344,8 @@ class TileStoreWriterDialog extends BaseStepDialog implements
    {
       databaseMeta = input.tileStoreCommon.databaseMeta
       swt.stepName.selectAll();
+      swt.passInputFields.selection = input.passInputFields
+
       if(databaseMeta?.name)
       {
          int idx = swt.connectionList.indexOf(databaseMeta.name);
@@ -442,6 +453,10 @@ class TileStoreWriterDialog extends BaseStepDialog implements
          def value = item.getText(2)
          input."${key}" = value
       }
+
+      input.passInputFields = swt.passInputFields.selection
+      input.setChanged(changed)
+
       dispose();
    }
 }
