@@ -111,57 +111,71 @@ class TileCrop extends BaseStep implements StepInterface
          first = false
       }
 
-      def image = imageConverter.getImage(r[tileFieldIdx])
+      def image
+
+      if(r[tileFieldIdx]) image = imageConverter.getImage(r[tileFieldIdx])
       def tileGeometry = r[tileAoiFieldIdx] as Geometry
       def aoiGeometry  = r[aoiFieldIdx] as Geometry
-
+      Boolean transparentImage = null
       if(image&&tileGeometry&&aoiGeometry)
       {
-         if(tileGeometry.intersects(aoiGeometry))
+         transparentImage = (ImageUtil.isTransparent(image))
+         if(!transparentImage)
          {
-
-            if(!aoiGeometry.contains(tileGeometry))
+            if(tileGeometry.intersects(aoiGeometry))
             {
-               BufferedImage bufferedImage = image.asBufferedImage
-               Envelope env = tileGeometry.envelopeInternal
-               //Geometry intersectGeometry = tileGeometry.intersection(aoiGeometry)
 
-               if(aoiGeometry instanceof GeometryCollection)
+               if(!aoiGeometry.contains(tileGeometry))
                {
-                  GeometryCollection geomCollection = aoiGeometry as GeometryCollection
-                  Integer i = 0
+                  BufferedImage bufferedImage = image.asBufferedImage
+                  Envelope env = tileGeometry.envelopeInternal
+                  //Geometry intersectGeometry = tileGeometry.intersection(aoiGeometry)
 
-                  def imageResult = bufferedImage
-                  for(i=0;i<geomCollection.numGeometries;++i)
+                  if(aoiGeometry instanceof GeometryCollection)
                   {
-                     // now crop the image
-                     Geometry g = geomCollection.getGeometryN(i)
+                     GeometryCollection geomCollection = aoiGeometry as GeometryCollection
+                     Integer i = 0
 
-                     imageResult = cropImage(imageResult, env, geoscript.geom.Geometry.wrap(g))
+                     def imageResult = bufferedImage
+                     for(i=0;i<geomCollection.numGeometries;++i)
+                     {
+                        // now crop the image
+                        Geometry g = geomCollection.getGeometryN(i)
+
+                        imageResult = cropImage(imageResult, env, geoscript.geom.Geometry.wrap(g))
+                     }
+                     image = imageResult
                   }
-                  image = imageResult
+                  else
+                  {
+                     //image = cropImage(bufferedImage, env, geoscript.geom.Geometry.wrap(intersectGeometry))
+                     image = cropImage(bufferedImage, env, geoscript.geom.Geometry.wrap(aoiGeometry))
+                  }
                }
                else
                {
-                  //image = cropImage(bufferedImage, env, geoscript.geom.Geometry.wrap(intersectGeometry))
-                  image = cropImage(bufferedImage, env, geoscript.geom.Geometry.wrap(aoiGeometry))
+                  // completely contained within the aoi
                }
             }
             else
             {
-               // completely contained within the aoi
+               image = null
             }
          }
          else
          {
-            image = null
          }
       }
-      // only output valid data for now
-      if(image)//&&(!ImageUtil.isTransparent(image)))
+      if(image)
       {
-         r[tileFieldIdx] = image
-
+         if(!transparentImage || (transparentImage&&meta.passEmptyTiles))
+         {
+            r[tileFieldIdx] = image
+            putRow(data.outputRowMeta, r);
+         }
+      }
+      else if(meta.passNullTiles)
+      {
          putRow(data.outputRowMeta, r);
       }
 

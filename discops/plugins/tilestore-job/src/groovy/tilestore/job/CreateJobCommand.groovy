@@ -15,6 +15,7 @@ class CreateJobCommand implements CaseInsensitiveBind
    String    type
    String    jobDir
    String    name
+   String    description
    String    username
    JobStatus status
    String    statusMessage
@@ -30,6 +31,7 @@ class CreateJobCommand implements CaseInsensitiveBind
       type:type,
       jobDir:jobDir,
       name:name,
+      description:description,
       username:username,
       status:status,
       statusMessage:statusMessage,

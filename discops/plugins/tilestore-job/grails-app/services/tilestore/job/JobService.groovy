@@ -15,7 +15,7 @@ class JobService
    def rabbitProducer
    def grailsApplication
    def columnNames = [
-           'id', 'jobId', 'jobDir', 'type', 'name', 'username', 'status', 'statusMessage', 'percentComplete', 'submitDate', 'startDate', 'endDate'
+           'id', 'jobId', 'jobDir', 'type', 'name', 'description', 'username', 'status', 'statusMessage', 'percentComplete', 'submitDate', 'startDate', 'endDate'
    ]
 
 
@@ -28,7 +28,7 @@ class JobService
       tempColumnNames.remove("jobDir")
       def columns = tempColumnNames?.collect {column->
          def property = ( column == 'id' ) ? domain?.identifier : domain?.getPersistentProperty( column )
-         def sortable = !(property?.name in ["type"])
+         def sortable = !(property?.name in ["type", "description"])
          [field: property?.name, type: property?.type, title: property?.naturalName, sortable: sortable]
       }
       columns.remove("jobDir")
@@ -139,6 +139,7 @@ class JobService
          result.message = "Exception: ${e.toString}"
       }
       result.data = [total: total?:0, rows: rows?:[:]]
+
 
       result
    }

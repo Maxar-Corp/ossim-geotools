@@ -49,6 +49,8 @@ class TileStoreWriterMeta extends BaseStepMeta implements StepMetaInterface
 {
    TileStoreCommon tileStoreCommon
 
+   Boolean passInputFields
+
    /**
     * If Layer field name is not empty then the input field will contain the layer to write to
     * else we will ue the layerName field
@@ -71,6 +73,7 @@ class TileStoreWriterMeta extends BaseStepMeta implements StepMetaInterface
    {
       StringBuffer retval = new StringBuffer(400);
 
+      retval.append( "    " ).append( XMLHandler.addTagValue( "passInputFields", passInputFields) );
       retval.append( "    " ).append( XMLHandler.addTagValue( "layerFieldName", layerFieldName?:"" ) );
       retval.append( "    " ).append( XMLHandler.addTagValue( "layerName", layerName?:"" ) );
 
@@ -124,6 +127,7 @@ class TileStoreWriterMeta extends BaseStepMeta implements StepMetaInterface
    {
       try
       {
+         String passInputFieldsString = XMLHandler.getTagValue(stepnode, "passInputFields");
          layerFieldName       = XMLHandler.getTagValue(stepnode, "layerFieldName");
          layerName            = XMLHandler.getTagValue(stepnode, "layerName");
          tileLevelFieldName   = XMLHandler.getTagValue(stepnode, "tileLevelFieldName")?:""
@@ -137,6 +141,7 @@ class TileStoreWriterMeta extends BaseStepMeta implements StepMetaInterface
          imageFieldName       = XMLHandler.getTagValue(stepnode, "imageFieldName")?:""
          imageStatusFieldName = XMLHandler.getTagValue(stepnode, "imageStatusFieldName")?:""
 
+         if(passInputFieldsString) passInputFields = passInputFieldsString.toBoolean()
          tileStoreCommon.readData(stepnode, databases, repository)
       }
       catch (Exception e)
@@ -159,6 +164,7 @@ class TileStoreWriterMeta extends BaseStepMeta implements StepMetaInterface
       imageStatusFieldName = "image_status"
       tileStoreCommon      = new TileStoreCommon()
       tileStoreCommon.setDefault()
+      passInputFields      = true
    }
 
    void readRep(Repository rep, ObjectId id_step, List<DatabaseMeta> databases, Map<String, Counter> counters) throws KettleException {
@@ -166,6 +172,7 @@ class TileStoreWriterMeta extends BaseStepMeta implements StepMetaInterface
       this.setDefault();
       try
       {
+         String passInputFieldsString  = rep.getStepAttributeString(id_step, "passInputFieldsString")?:""
          layerFieldName  = rep.getStepAttributeString(id_step, "layerFieldName")?:""
          layerName  = rep.getStepAttributeString(id_step, "layerName")?:""
          tileLevelFieldName  = rep.getStepAttributeString(id_step, "tileLevelFieldName")?:""
@@ -178,6 +185,8 @@ class TileStoreWriterMeta extends BaseStepMeta implements StepMetaInterface
          imageFieldName  = rep.getStepAttributeString(id_step, "imageFieldName")?:""
          imageStatusFieldName  = rep.getStepAttributeString(id_step, "imageStatusFieldName")?:""
          tileStoreCommon.readRep(rep, id_step, databases, counters)
+
+         if(passInputFieldsString) passInputFields = passInputFieldsString.toBoolean()
       }
       catch (Exception e)
       {
@@ -190,6 +199,7 @@ class TileStoreWriterMeta extends BaseStepMeta implements StepMetaInterface
    {
       try
       {
+         rep.saveStepAttribute( id_transformation, id_step, 0, "passInputFields", passInputFields );
          if ( layerName ) {
             rep.saveStepAttribute( id_transformation, id_step, 0, "layerName", layerName );
          }
@@ -231,7 +241,7 @@ class TileStoreWriterMeta extends BaseStepMeta implements StepMetaInterface
       }
       catch(e)
       {
-
+         logError(e.toString())
       }
    }
 

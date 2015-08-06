@@ -55,7 +55,8 @@ class TileStoreIteratorMeta extends BaseStepMeta implements StepMetaInterface
            tile_bounds:"tile_bounds",
            tile_epsg:"tile_epsg",
            tile_hashid:"tile_hashid",
-           tile_image:"tile_image"
+           tile_image:"tile_image",
+           summary_total_tiles:"summary_total_tiles",
            ]
    def fieldNameDefinitions = [  tile_level:[type:ValueMetaInterface.TYPE_INTEGER,columnName:"z"],
                                  tile_row:[type:ValueMetaInterface.TYPE_INTEGER,columnName:"y"],
@@ -64,8 +65,9 @@ class TileStoreIteratorMeta extends BaseStepMeta implements StepMetaInterface
                                  tile_bounds:[type:OssimValueMetaBase.TYPE_GEOMETRY_2D, columnName:"bounds"],
                                  tile_epsg:[type:ValueMetaInterface.TYPE_STRING],
                                  tile_hashid:[type:ValueMetaInterface.TYPE_STRING, columnName:"hash_id"],
-                                 tile_image:[type:OssimValueMetaBase.TYPE_IMAGE]
-           ]
+                                 tile_image:[type:OssimValueMetaBase.TYPE_IMAGE],
+                                 summary_total_tiles:[type:ValueMetaInterface.TYPE_STRING],
+   ]
                                  //		tile_global_row:[type:ValueMetaInterface.TYPE_INTEGER],
 
    String getXML() throws KettleValueException
