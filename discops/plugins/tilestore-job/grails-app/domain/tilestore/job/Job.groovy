@@ -5,6 +5,7 @@ class Job {
    String    type
    String    jobDir
    String    name
+   String    description
    String    username
    JobStatus status
    String    statusMessage
@@ -19,6 +20,7 @@ class Job {
       jobDir type:'text', index:"job_jobdir_idx"
       status index:"job_status_idx"
       name   index:"job_name_idx"
+      description type:'text'
       username index:"job_username_idx"
       message   type:"text"
       submitDate index:"job_submit_date_idx"
@@ -30,6 +32,7 @@ class Job {
       jobDir          nullable:true
       type            nullable:true
       name            nullable:true
+      description     nullable:true
       username        nullable:false
       status          nullable:true
       statusMessage   nullable:true
