@@ -14,6 +14,7 @@ class IngestCommand  implements CaseInsensitiveBind
 {
    String type
    String jobName
+   String jobDescription
    HashMap layer
    String aoi
    String aoiEpsg
@@ -24,6 +25,7 @@ class IngestCommand  implements CaseInsensitiveBind
    static constraints ={
       type nullable:true
       jobName nullable: true
+      jobDescription nullable: true
       layer nullable: false, blank: false
       input nullable:false
       aoi nullable: true, validator: { val, cmd ->
