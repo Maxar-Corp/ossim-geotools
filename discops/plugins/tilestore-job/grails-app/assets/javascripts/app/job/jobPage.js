@@ -5,6 +5,7 @@ var Job = Backbone.Model.extend({
         id:null,
         jobId: null,
         name: null,
+        description: null,
   		jobType: null,
         status: null,
         statusMessage: null,
@@ -19,7 +20,7 @@ var Job = Backbone.Model.extend({
     },
 
     parse:function(response){
-        alert("response = ");// + JSON.stringify(response) );
+//        alert("response = ");// + JSON.stringify(response) );
 
         var result = this.attributes;
 
