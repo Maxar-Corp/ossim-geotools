@@ -44,6 +44,14 @@ body {
     /*background-color: #ccc;*/
 }
 
+#jobStatusGroupId p {
+    margin-bottom: 0px;
+}
+
+#jobStatusGroupId input[type="checkbox"] {
+    margin-left: 10px;
+}
+
 .security-level-bottom {
     min-height: 20px;
     background-color: green;
