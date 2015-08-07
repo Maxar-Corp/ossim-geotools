@@ -2,6 +2,7 @@
 <%@ page import="grails.converters.JSON" contentType="text/html;charset=UTF-8" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="shortcut icon" href="${assetPath(src: 'favicon.ico')}" type="image/x-icon">
     <asset:stylesheet src="app/jobPage.css"/>
@@ -10,16 +11,12 @@
 
     <asset:javascript src="app/job.js"/>
 
-    %{--<style type="text/css">--}%
-    %{--.banner{--}%
-        %{--overflow:hidden;--}%
-    %{--}--}%
-    %{--</style>--}%
-
 </head>
 
 <body class="" id="JobPagId">
     <tilestore:securityClassificationBanner class="row text-center"/>
+
+    <div class="corner-ribbon top-left sticky red shadow">Alpha</div>
 
     <nav id="navBarTop" class="navbar navbar-fixed-top navbar-default" role="navigation">
         <div class="navbar-header">
@@ -96,80 +93,53 @@
     </nav>
 
     <div id="content" class="container-fluid">
+        <br/>
+        <div class="row">
+            <div  class="col-md-12">
+                <p class="alert alert-info">Monitor, manage and filter the ingest and product jobs
+            using the tools below.</p>
+            </div>
+        </div>
         <div class="row" >
-            <div class="col-md-2" >
-                <h3 class="text-center">Filters</h3>
-                %{--<table id="propertyGridId">--}%
-                    %{--<tr>--}%
-                        %{--<td/>--}%
-                        %{--<td>--}%
-                            %{--Job Type:--}%
-                        %{--</td>--}%
-                        %{--<td>--}%
-                            %{--<div id="jobStatusGroupId" class="jobStatusGroupClass">--}%
-                                %{--<g:checkBox  id="readyCheckboxId"  name="status" checked="false" value="READY">READY</g:checkBox>--}%
-                                %{--<label>READY</label><br/>--}%
-                                %{--<g:checkBox  id="runningCheckboxId" name="status" checked="false" value="RUNNING">RUNNING</g:checkBox>--}%
-                                %{--<label>RUNNING</label><br/>--}%
-                                %{--<g:checkBox  id="finishedCheckboxId"  name="status" checked="false" value="FINISHED">FINISHED</g:checkBox>--}%
-                                %{--<label>FINISHED</label><br/>--}%
-                                %{--<g:checkBox  id="canceledCheckboxId" name="status" checked="false" value="CANCELED">CANCELED</g:checkBox>--}%
-                                %{--<label>CANCELED</label><br/>--}%
-                                %{--<g:checkBox  id="pausedCheckboxId" name="status" checked="false" value="PAUSED">PAUSED</g:checkBox>--}%
-                                %{--<label>PAUSED</label><br/>--}%
-                                %{--<g:checkBox  id="failedCheckboxId" name="status" checked="false" value="FAILED">FAILED</g:checkBox>--}%
-                                %{--<label>FAILED</label><br/>--}%
-                            %{--</div>--}%
-                        %{--</td>--}%
-                    %{--</tr>--}%
-                    %{--<sec:ifAllGranted roles="ROLE_ADMIN">--}%
-                        %{--<tr>--}%
-                            %{--<td/>--}%
-                            %{--<td>User name:</td>--}%
-                            %{--<td>--}%
-                                %{--<g:textField id="usernameId" name="username"/>--}%
-                                %{--<label>Comparator:</label>--}%
-                                %{--<g:select id="usernameOpTypeId" name="opType" from="${['equals', 'contains', 'Starts With', 'Ends With']}"></g:select>--}%
-                            %{--</td>--}%
-                        %{--</tr>--}%
-                    %{--</sec:ifAllGranted>--}%
-
-                %{--</table>--}%
-                <form>
-                    <div id="jobStatusGroupId" class="form-group">
-                        <p><strong>Job Type</strong></p>
-                        <g:checkBox  id="readyCheckboxId"  name="status" checked="false" value="READY">READY</g:checkBox>
-                        READY<br/>
-                        <g:checkBox  id="runningCheckboxId" name="status" checked="false" value="RUNNING">RUNNING</g:checkBox>
-                        RUNNING<br/>
-                        <g:checkBox  id="finishedCheckboxId"  name="status" checked="false" value="FINISHED">FINISHED</g:checkBox>
-                        FINISHED<br/>
-                        <g:checkBox  id="canceledCheckboxId" name="status" checked="false" value="CANCELED">CANCELED</g:checkBox>
-                        CANCELED<br/>
-                        <g:checkBox  id="pausedCheckboxId" name="status" checked="false" value="PAUSED">PAUSED</g:checkBox>
-                        PAUSED<br/>
-                        <g:checkBox  id="failedCheckboxId" name="status" checked="false" value="FAILED">FAILED</g:checkBox>
-                        FAILED<br/>
+            <div id="filter" class="col-md-2">
+                <div class="well">
+                    <h3 class="text-center">Filters</h3>
+                    <form>
+                        <div id="jobStatusGroupId" class="form-group">
+                            <p><strong>Job Type</strong></p>
+                            <g:checkBox  id="readyCheckboxId"  name="status" checked="false" value="READY">READY</g:checkBox>
+                            READY<br/>
+                            <g:checkBox  id="runningCheckboxId" name="status" checked="false" value="RUNNING">RUNNING</g:checkBox>
+                            RUNNING<br/>
+                            <g:checkBox  id="finishedCheckboxId"  name="status" checked="false" value="FINISHED">FINISHED</g:checkBox>
+                            FINISHED<br/>
+                            <g:checkBox  id="canceledCheckboxId" name="status" checked="false" value="CANCELED">CANCELED</g:checkBox>
+                            CANCELED<br/>
+                            <g:checkBox  id="pausedCheckboxId" name="status" checked="false" value="PAUSED">PAUSED</g:checkBox>
+                            PAUSED<br/>
+                            <g:checkBox  id="failedCheckboxId" name="status" checked="false" value="FAILED">FAILED</g:checkBox>
+                            FAILED<br/>
+                        </div>
+                        <sec:ifAllGranted roles="ROLE_ADMIN">
+                            <div class="form-group">
+                                <label for="usernameId">User Name</label>
+                                <input type="email" class="form-control" id="usernameId" placeholder="Enter Name">
+                            </div>
+                            <div class="form-group">
+                                <label for="usernameOpTypeId">Comparator</label>
+                                <select id="usernameOpTypeId" name="opType" class="form-control">
+                                    <option>equals</option>
+                                    <option>contains</option>
+                                    <option>Starts With</option>
+                                    <option>Ends With</option>
+                                </select>
+                            </div>
+                        </sec:ifAllGranted>
+                    </form>
+                    <div align='center'>
+                        <button id="applyFilterButtonId" class="btn btn-primary">Apply</button>
+                        <button id="resetButtonId" class="btn btn-primary">Reset</button>
                     </div>
-                    <sec:ifAllGranted roles="ROLE_ADMIN">
-                        <div class="form-group">
-                            <label for="usernameId">User Name</label>
-                            <input type="email" class="form-control" id="usernameId" placeholder="Enter Name">
-                        </div>
-                        <div class="form-group">
-                            <label for="usernameOpTypeId">Comparator</label>
-                            <select id="usernameOpTypeId" name="opType" class="form-control">
-                                <option>equals</option>
-                                <option>contains</option>
-                                <option>Starts With</option>
-                                <option>Ends With</option>
-                            </select>
-                        </div>
-                    </sec:ifAllGranted>
-            </form>
-                <div align='center'>
-                    <button id="applyFilterButtonId" class="btn btn-primary">Apply</button>
-                    <button id="resetButtonId" class="btn btn-primary">Reset</button>
                 </div>
             </div><!-- /.col-md-2 -->
             <div class="col-md-10" >
@@ -249,15 +219,16 @@
         {
             var initParams = ${raw( initParams.toString() )};
             var $tables = $('#tables');
+            var $jobTableId = $('#jobTableId')
            // initParams.model =new Job({urlRoot:initParams.urls.base})
 
             JobPage(jQuery, initParams);
              $("body").css("visibility","visible");
 
              function resizeRow(){
-                $('#tables').animate({height:$(window).height()- 104}, 100, function(){
+                $tables.animate({height:$(window).height()- 198}, 100, function(){
                     console.log('resize firing...');
-                    $('#jobTableId').datagrid('resize');
+                    $jobTableId.datagrid('resize');
                 });
              }
 
