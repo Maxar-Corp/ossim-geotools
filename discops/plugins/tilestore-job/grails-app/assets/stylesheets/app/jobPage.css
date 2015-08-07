@@ -26,7 +26,7 @@ body {
     top:28px
 }
 
-#navBarTop .fa-home, .fa-th, .fa-hdd-o, .fa-unlock-alt, .fa-tachometer {
+#navBarTop .fa-home, .fa-cube, .fa-th, .fa-hdd-o, .fa-unlock-alt {
     color: #337ab7;
 }
 
@@ -42,6 +42,14 @@ body {
     left: 0px;
     right: 0px;
     /*background-color: #ccc;*/
+}
+
+#jobStatusGroupId p {
+    margin-bottom: 0px;
+}
+
+#jobStatusGroupId input[type="checkbox"] {
+    margin-left: 10px;
 }
 
 .security-level-bottom {

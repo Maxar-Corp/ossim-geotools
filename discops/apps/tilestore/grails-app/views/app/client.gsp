@@ -52,31 +52,36 @@
                 <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
                     <form class="navbar-form navbar-left">
                         <div class="form-group">
-                            <a type="button" id="home" href="${resource(uri: '/')}" class="btn btn-default"
+                            <a type="button" id="home" href="${createLink(uri:'/')}" class="btn btn-default"
                                data-toggle="tooltip" data-placement="bottom"
                                title="Go to Tilestore home page"><i
                                     class="fa fa-home"></i></a>
+                            <a type="button" id="client" href="${createLink(controller:'app', action:'client')}"
+                               class="btn btn-primary"
+                               data-toggle="tooltip" data-placement="bottom"
+                               title="Go to the Export page"><i
+                                    class="fa fa-cube"></i></a>
                             <sec:ifAllGranted roles="ROLE_LAYER_ADMIN">
-                            <a type="button" id="admin" href="${resource(dir: 'app/admin')}"
+                            <a type="button" id="admin" href="${createLink(controller:'app', action:'admin')}"
                                class="btn btn-default"
                                data-toggle="tooltip" data-placement="bottom"
                                title="Go to the Build page"><i
                                     class="fa fa-th"></i></a>
                             </sec:ifAllGranted>
                             <sec:ifAllGranted roles="ROLE_ADMIN">
-                            <a type="button" id="disk" href="${resource(dir: 'diskCache')}"
+                            <a type="button" id="disk" href="${createLink(controller:"diskCache")}"
                                class="btn btn-default"
                                data-toggle="tooltip" data-placement="bottom"
                                title="Go to Disk Management page"><i
                                     class="fa fa-hdd-o"></i></a>
                             </sec:ifAllGranted>
                             <sec:ifAllGranted roles="ROLE_ADMIN">
-                            <a type="button" id="security" href="${resource(dir: 'user')}" class="btn btn-default"
+                            <a type="button" id="security" href="${createLink(controller: 'user')}" class="btn btn-default"
                                data-toggle="tooltip" data-placement="bottom"
                                title="Go to Security page"><i
                                     class="fa fa-unlock-alt"></i></a>
                             </sec:ifAllGranted>
-                            <a type="button" id="jobs" href="${resource(dir: 'job')}" class="btn btn-default"
+                            <a type="button" id="jobs" href="${createLink(controller: 'job')}" class="btn btn-default"
                                data-toggle="tooltip" data-placement="bottom"
                                title="Go to Jobs page"><i
                                     class="fa fa-tachometer"></i></a>
