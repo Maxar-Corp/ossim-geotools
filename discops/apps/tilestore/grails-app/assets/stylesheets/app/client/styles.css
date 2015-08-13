@@ -6,6 +6,10 @@ h1 { font-family: 'Comfortaa', Arial, serif; font-weight: 400; }
 	top:28px
 }
 
+#navBarTop .fa-home, .fa-th, .fa-hdd-o, .fa-unlock-alt, .fa-tachometer {
+	color: #337ab7;
+}
+
 .top-logo {
 	padding-top: 5px;
 	margin-left: 60px;
@@ -36,10 +40,6 @@ h1 { font-family: 'Comfortaa', Arial, serif; font-weight: 400; }
 	top: 100px;
 	width: 300px;
 	z-index: 40
-}
-
-#zoomToForm input {
-	font-size: 18px;
 }
 
 #zoom-input-group {

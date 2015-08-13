@@ -69,6 +69,10 @@ var JobPageView = Backbone.View.extend({
         this.donwnloadJobId = "#downloadId";
         this.reloadId = "#reloadId";
         this.cancelJobId = "#cancelJobId";
+        this.confirmModal ='#confirmModal';
+        this.deleteRow = '#deleteRow';
+        this.errorModal = '#errorModal';
+        this.errorModalMessage = '#errorModalMessage';
         this.urls=params.urls;
         $(this.applyFilterButtonId).click($.proxy(this.refresh, this));
         $(this.resetButtonId).click($.proxy(this.resetFilter, this));
@@ -167,17 +171,27 @@ var JobPageView = Backbone.View.extend({
         if(canRemove)
         {
             var values = [];
-            $.messager.confirm('Confirm','Are you sure you want to remove and unregister this location?',function(r){
-                if(r)
-                {
+            //$.messager.confirm('Confirm','Are you sure you want to remove and unregister this location?', function(r){
+            //    if(r)
+            //    {
+            //
+            //        thisPtr.removeSelectedRows();
+            //    }
+            //});
 
-                    thisPtr.removeSelectedRows();
-                }
+            $(this.confirmModal).modal('show');
+
+            $(this.deleteRow).on('click', function(){
+                console.log('thisPtr = ', thisPtr);
+                thisPtr.removeSelectedRows();
             });
+
         }
         else
         {
-            $.messager.alert('Warning',errorMessage);
+            //$.messager.alert('Warning',errorMessage);
+            $(this.errorModal).modal('show');
+            $(this.errorModalMessage).html(errorMessage);
         }
      },
     resetFilter:function(){

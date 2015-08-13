@@ -5,6 +5,7 @@
 
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
     <link rel="shortcut icon" href="${assetPath(src: 'favicon.ico')}" type="image/x-icon">
 
@@ -19,6 +20,7 @@
             <asset:stylesheet src="font-awesome.css"/>
             <asset:stylesheet src="app/common/jquery.fileupload.css"/>
             <asset:stylesheet src="app/common/bootstrap-select.css"/>
+            <asset:stylesheet src="app/common/ladda-themeless.min.css"/>
             <asset:stylesheet src="app/common/toastr.css"/>
             <asset:stylesheet src="app/client/styles.css"/>
         </browser:isMsie>
@@ -48,18 +50,49 @@
                 </div>
 
                 <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
-                        <form class="navbar-form navbar-left">
-                            <div class="form-group">
-
-
-                                <div class="input-group" id="tileLayerInputGroup">
-                                    <div class="input-group-addon"><i class="fa fa-th"></i>&nbsp;&nbsp;
-                                    Tile Layer</div>
-                                    <select class="form-control selectpicker show-tick" id="tileLayerSelect">
-                                    </select>
-                                </div>
+                    <form class="navbar-form navbar-left">
+                        <div class="form-group">
+                            <a type="button" id="home" href="${createLink(uri:'/')}" class="btn btn-default"
+                               data-toggle="tooltip" data-placement="bottom"
+                               title="Go to Tilestore home page"><i
+                                    class="fa fa-home"></i></a>
+                            <a type="button" id="client" href="${createLink(controller:'app', action:'client')}"
+                               class="btn btn-primary"
+                               data-toggle="tooltip" data-placement="bottom"
+                               title="Go to the Export page"><i
+                                    class="fa fa-cube"></i></a>
+                            <sec:ifAllGranted roles="ROLE_LAYER_ADMIN">
+                            <a type="button" id="admin" href="${createLink(controller:'app', action:'admin')}"
+                               class="btn btn-default"
+                               data-toggle="tooltip" data-placement="bottom"
+                               title="Go to the Build page"><i
+                                    class="fa fa-th"></i></a>
+                            </sec:ifAllGranted>
+                            <sec:ifAllGranted roles="ROLE_ADMIN">
+                            <a type="button" id="disk" href="${createLink(controller:"diskCache")}"
+                               class="btn btn-default"
+                               data-toggle="tooltip" data-placement="bottom"
+                               title="Go to Disk Management page"><i
+                                    class="fa fa-hdd-o"></i></a>
+                            </sec:ifAllGranted>
+                            <sec:ifAllGranted roles="ROLE_ADMIN">
+                            <a type="button" id="security" href="${createLink(controller: 'user')}" class="btn btn-default"
+                               data-toggle="tooltip" data-placement="bottom"
+                               title="Go to Security page"><i
+                                    class="fa fa-unlock-alt"></i></a>
+                            </sec:ifAllGranted>
+                            <a type="button" id="jobs" href="${createLink(controller: 'job')}" class="btn btn-default"
+                               data-toggle="tooltip" data-placement="bottom"
+                               title="Go to Jobs page"><i
+                                    class="fa fa-tachometer"></i></a>
+                            <div class="input-group" id="tileLayerInputGroup" data-toggle="tooltip" data-placement="bottom"
+                                 title="Change the active tile layer">
+                                <div class="input-group-addon"><i class="fa fa-th"></i></div>
+                                <select class="form-control selectpicker show-tick" id="tileLayerSelect">
+                                </select>
                             </div>
-                        </form>
+                        </div>
+                    </form>
 
                     <div class="navbar-header">
                         <button type="button" class="navbar-toggle" data-toggle="collapse"
@@ -88,17 +121,6 @@
                                                         data-toggle="tooltip" data-placement="bottom"
                                                         title="Zoom to the first valid tile in the active tile layer"><i
                                                         class="fa fa-crosshairs fa-lg"></i>&nbsp;&nbsp;First Tile</button>
-                                                    </div>
-                                                    <div><hr/></div>
-                                                    <div class="text-muted toolMenuDropDownHeading"><strong>Build
-                                                    </strong></div>
-                                                    <div class="toolMenuDropdownDiv">
-                                                        <button type="button" id="createGp"
-                                                                class="btn btn-primary dropMenuButtonFull disabled"
-                                                                data-toggle="tooltip" data-placement="bottom"
-                                                                title="Use the <Alt> key to generate an AOI for the Geopackage"><i
-                                                                class="fa fa-cube"></i>&nbsp;&nbsp;Create
-                                                        Product</button>
                                                     </div>
                                                     <div><hr/></div>
                                                     <div class="text-muted toolMenuDropDownHeading"><strong>AOI
@@ -139,6 +161,17 @@
                                                                 class="fa fa-paste fa-lg"></i>&nbsp;&nbsp;Paste
                                                         </button>
                                                     </div>
+                                                    <div><hr/></div>
+                                                    <div class="text-muted toolMenuDropDownHeading"><strong>Build
+                                                    </strong></div>
+                                                    <div class="toolMenuDropdownDiv">
+                                                        <button type="button" id="createGp"
+                                                                class="btn btn-primary dropMenuButtonFull disabled"
+                                                                data-toggle="tooltip" data-placement="bottom"
+                                                                title="Use the <Alt> key to generate an AOI for the Geopackage"><i
+                                                                class="fa fa-cube"></i>&nbsp;&nbsp;Create
+                                                        Product</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </li>
@@ -150,8 +183,6 @@
                                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
                                         class="fa fa-user"></i>&nbsp;&nbsp;<sec:loggedInUserInfo field="username"/><b class="caret"></b>&nbsp;&nbsp;&nbsp;&nbsp;</a>
                                     <ul class="dropdown-menu">
-                                        <li>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-table">&nbsp;&nbsp;<g:link title="Job Status" controller="job" target="_blank">Job Status</g:link></i></li>
-                                        <li class="divider"></li>
                                         <li>&nbsp;&nbsp;<i class="fa fa-power-off">&nbsp;&nbsp;<g:link controller='logout'>Logout</g:link></i></li>
                                     </ul>
                                 </li>
@@ -162,7 +193,7 @@
 
         <div class="navbar-offset"></div>
 
-    <form id="zoomToForm" role="search">
+        <form id="zoomToForm" role="search">
             <div class="form-group">
                 <div class="input-group" id="zoom-input-group">
                     <input class="form-control" id="coordInput" type="text"
@@ -258,13 +289,8 @@
                                                             class="form-control selectpicker show-tick productFormElement">
                                                         <option value="EPSG:3857">EPSG: 3857</option>
                                                         <option value="EPSG:4326">EPSG: 4326</option>
-                                                    </select>&nbsp;&nbsp;
-                                                    <br>
-                                                    <br>
-                                                    <button type="button" id="submitAoi" class="btn btn-success">Submit</button>
-                                                    <button type="button" id="cancelAoi" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                    </select>
                                                 </div>
-                                                <br>
                                             </div>
                                             <br>
                                             <div id="aoiJobInfo" class="alert alert-info">
@@ -272,20 +298,23 @@
                                                 <p><strong>ID:</strong>&nbsp;<span id="aoiJobId"></span></p>
                                             </div>
                                             <div id="prodcutProgress">
-                                                <div class="alert alert-info">Note: You can close this dialog if you do
-                                                not
-                                                wish
-                                                to wait
-                                                for the product to be created.  To obtain the product at a later time
-                                                visit the <a href="${createLink(controller:'job')}" target="_blank">jobs
+                                                <div class="alert alert-info">Note: You can
+                                                close this dialog if you do not wish to wait for the product to be
+                                                created.  To obtain the product at a later time visit the <a href="${createLink(controller:'job')}" target="_blank">jobs
                                                 page</a>.</div>
                                                 <div id="productStatus"></div>
+                                            </div>
+                                            <div id="productButtons">
+                                                <button id="submitAoi" type="button" class="btn btn-primary ladda-button"
+                                                    data-style="zoom-in"><span class="ladda-label">Submit</span></button>
+                                                <button type="button" id="cancelAoi" class="btn btn-default" data-dismiss="modal">Cancel</button>
                                             </div>
                                             <p id="downloadProduct"><i
                                                     class="fa fa-check fa-2x"></i>&nbsp;&nbsp;Ready for
                                             download:&nbsp;&nbsp;
                                                 <button id="downloadProductButton" type="button" href="javascript:void(0)"
-                                                        class="btn btn-primary fileDownload">Download</button></p>
+                                                        class="btn btn-success fileDownload">Download</button>
+                                            </p>
                                         </div>
                                         <div role="tabpanel" class="tab-pane" id="metricsTab">
                                             <br>
@@ -411,8 +440,8 @@
         </div><!-- /.modal-dialog modal-lg -->
     </div><!-- /.modal fade "uploadCutByFileModal" -->
 
-    <!-- Paste cut geometry form -->
-    <div class="modal fade" id="pasteCutGeometryModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+        <!-- Paste cut geometry form -->
+        <div class="modal fade" id="pasteCutGeometryModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
          Saria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">

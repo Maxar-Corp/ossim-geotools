@@ -25,15 +25,15 @@ var CreateProductClient = (function () {
     var $aoiJobInfo = $('#aoiJobInfo');
     var $productStatus = $('#productStatus');
     var $prodcutProgress = $('#prodcutProgress');
+    var $prodcutButtons = $('#productButtons');
     var $jobHeader = $('#jobHeader');
     var $downloadProduct = $('#downloadProduct');
+    var $metricsSpinner =  $('.metricsSpinner');
+    var $productFormElement = $('.productFormElement');
 
     var $aoiJobId = $('#aoiJobId');
     var $submitAoi = $('#submitAoi');
     var $cancelAoi = $('#cancelAoi');
-
-    var $metricsSpinner =  $('.metricsSpinner');
-    var $productFormElement = $('.productFormElement');
 
     var $prodNumTiles = $('#prodNumTiles');
     var $prodJpgComp=  $('#prodJpgComp');
@@ -50,7 +50,6 @@ var CreateProductClient = (function () {
     var $prodMinX = $('#prodMinX');
     var $prodMaxY = $('#prodMaxY');
     var $prodMinY = $('#prodMinY');
-
 
     var product = {
         type:"GeopackageExport",
@@ -334,6 +333,9 @@ var CreateProductClient = (function () {
 
             $submitAoi.on("click", function () {
 
+                var l = Ladda.create(this);
+                l.start();
+
                 $prodcutProgress.show();
 
                 product.layer = $tileLayerSelect.val();
@@ -343,9 +345,10 @@ var CreateProductClient = (function () {
                 product.maxLevel = $productMaxLevel.val();
                 product.outputEpsg = $productEpsgCode.val();
 
-                //console.log('---------------product-------------');
-                //console.log(product);
-                //console.log('-----------------------------------');
+                $.ajaxSetup ({
+                    // Disable caching of AJAX responses */
+                    cache: false
+                });
 
                 $.ajax({
                     url: urlProductExport,
@@ -383,22 +386,27 @@ var CreateProductClient = (function () {
                                             $prodcutProgress.hide();
                                             $aoiJobInfo.removeClass('alert-warning').addClass('alert-success');
                                             $jobHeader.html('Product build complete!');
+                                            l.stop();
+
+                                            // TODO: $buttons.hide();
+                                            $prodcutButtons.hide();
                                             $downloadProduct.show();
 
                                         }
                                         // Product build 'READY'
                                         else if (data.rows[0].jobId === jobId && data.rows[0].status === 'READY'){
 
-                                            $productStatus.html('<i class="fa fa-cog fa-spin' +
-                                                ' fa-2x"></i>&nbsp;&nbsp;Product added to build queue.');
+                                            $productStatus.html('Product added to build queue...</br></br>');
+                                            $submitAoi.removeClass('btn-primary').addClass('btn-info');
 
                                         }
                                         // Product build 'RUNNING'
                                         else if (data.rows[0].jobId === jobId && data.rows[0].status === 'RUNNING'){
 
                                             $aoiJobInfo.removeClass('alert-info').addClass('alert-warning');
-                                            $productStatus.html('<i class="fa fa-cog fa-spin' +
-                                                ' fa-2x"></i>&nbsp;&nbsp;Product is being built. Please wait...');
+                                            $productStatus.html('Product is being built. Please wait...</br></br>');
+                                            $submitAoi.removeClass('btn-info').addClass('btn-warning');
+
 
                                         }
                                         // Product build 'FAILED'
@@ -513,7 +521,7 @@ var CreateProductClient = (function () {
                 $productName.val('');;
 
                 $productMinLevel.empty();
-$productMaxLevel.empty();
+                $productMaxLevel.empty();
 
                 $productType.selectpicker('val', 'EPSG:3857');
                 $productType.selectpicker('render');
@@ -521,11 +529,24 @@ $productMaxLevel.empty();
                 $prodcutEpsg.selectpicker('val', 'EPSG:3857');
                 $prodcutEpsg.selectpicker('render');
 
-                $aoiJobId.html("");
+                $aoiJobId.html('');
                 $aoiJobInfo.hide();
 
                 $productFormElements.show();
+                $prodcutButtons.show();
                 $downloadProduct.hide();
+
+                // Need an if...then here, because sometimes the submit button doesn't
+                // get added if the previous product job was small, and the server
+                // processed it before a status of 'running' was given
+                if ($submitAoi.hasClass('btn-info')){
+                    $submitAoi.removeClass('btn-info').addClass('btn-primary');
+                }
+                else if ($submitAoi.hasClass('btn-warning')) {
+                    $submitAoi.removeClass('btn-warning').addClass('btn-primary');
+                }
+
+                $productStatus.html('');
 
                 $aoiJobInfo.addClass('alert-info').removeClass('alert-success');
                 $jobHeader.html('Submitted Job Information:');
