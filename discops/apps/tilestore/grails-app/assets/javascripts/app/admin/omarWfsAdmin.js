@@ -138,6 +138,70 @@ var AppOmarWfsAdmin = (function () {
         $filterWfsModal.modal('show');
     });
 
+    function toCql(constraints){
+        var result = ""
+        //
+        //
+        var constraintToExpression
+        if(constraints.startDate&&constraints.endDate)
+        {
+            constraintToExpression = constraints.dateType + " between " + "'" + constraints.startDate + "'" +
+                " AND " +
+                "'" + constraints.endDate + "'";
+
+            if(result=="")
+            {
+                result = "(" + constraintToExpression + ")";
+            }
+            else
+            {
+                result = result + " AND (" +constraintToExpression + ")"
+            }
+        }
+ /*       else if(constraints.startDate)
+        {
+            constraintToExpression = constraints.dateType + ">='" +constraints.startDate+"'";
+            if(result=="")
+            {
+                result = "(" + constraintToExpression + ")";
+            }
+            else
+            {
+                result = result + " AND (" +constraintToExpression + ")"
+            }
+        }
+        else if(constraints.endDate)
+        {
+            constraintToExpression = constraints.dateType + "<='" +constraints.endDate+"'";
+            if(result=="")
+            {
+                result = "(" + constraintToExpression + ")";
+            }
+            else
+            {
+                result = result + " AND (" +constraintToExpression + ")"
+            }
+        }
+*/
+        if(constraints.constrainToViewport)
+        {
+            var constraintToExpression = "BBOX(" + constraints.geomType + "," + constraints.bbox + ")";
+
+            if(result=="")
+            {
+                result = "(" + constraintToExpression + ")";
+            }
+            else
+            {
+                result = result + " AND (" +constraintToExpression + ")"
+            }
+        }
+
+        return result
+        //
+        //
+    }
+
     function getWfsCards(params){
 
         //console.log('params.queryNone coming in is :' + params.queryNone);
@@ -172,6 +236,20 @@ var AppOmarWfsAdmin = (function () {
 
         //console.log('queryNone after being called:');
         //console.log('offset --> ' + offset);
+        var cqlParams = {
+            "dateType":dateType,
+            "constrainToViewport":true,
+            "startDate":null,
+            "endDate":null,
+            "geomType":"ground_geom",
+            "bbox":"-180,-90,180,90"
+        };
+        if(typeof startDate != "undefined") cqlParams.startDate = startDate;
+        if(typeof endDate != "undefined") cqlParams.endDate = endDate;
+
+        console.log("cqlParams",cqlParams);
+
+        var cqlFilter = toCql(cqlParams);
 
         // Feedback on the UI for the current filter
         $imageFilterDate.html('Date = ' + filterDateType);
@@ -184,46 +262,46 @@ var AppOmarWfsAdmin = (function () {
             $imageFilter.html(" Sort field: " + sortByFieldText + ", Sort type: " + sortByTypeText);
         }
 
-
-        if (queryNone === true){
+/*        if (queryNone === true){
             //console.log('queryNone: ' + queryNone);
             wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
-                "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter=" +
+                "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter="+ cqlFilter +
                 "&sortBy=" + sortByField +
                 ":" + sortByType;
             wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
-                "&offset=0&maxFeatures=25&outputFormat=json&filter=" +
+                "&offset=0&maxFeatures=25&outputFormat=json&filter=" + cqlFilter
                 "&sortBy=" + sortByField +
                 ":" + sortByType + "&resultType=hits";
         }
         else {
-            console.log('else queryNone value: ' + queryNone);
+        */
+            //console.log('else queryNone value: ' + queryNone);
             wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
-                "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter=" +
-                dateType +
-                "+between+" +
-                "'" + startDate + "'" +
-                "+and+" +
-                "'" + endDate + "'" +
+                "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter=" + cqlFilter +
+//                dateType +
+//                "+between+" +
+ //               "'" + startDate + "'" +
+ //               "+and+" +
+ //               "'" + endDate + "'" +
                 "&sortBy=" + sortByField +
                 ":" + sortByType;
             wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
-                "&outputFormat=json&filter=" +
-                dateType +
-                "+between+" +
-                "'" + startDate + "'" +
-                "+and+" +
-                "'" + endDate + "'" +
+                "&outputFormat=json&filter=" + cqlFilter +
+ //               dateType +
+ //               "+between+" +
+ //               "'" + startDate + "'" +
+ //               "+and+" +
+ //             "'" + endDate + "'" +
                 "&sortBy=" + sortByField +
                 ":" + sortByType + "&resultType=hits";
-        }
+        //}
 
-        //console.log(wfsCards);
-        //console.log(wfsCardsCount);
+        console.log(wfsCards);
+        console.log(wfsCardsCount);
 
         // TODO: Add functionality to restrict the query to a spatial extent (via BBox)
         $.ajax({
@@ -537,7 +615,7 @@ var AppOmarWfsAdmin = (function () {
             ])
         });
         //polyFeature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
-
+        alert(AppAdmin.mapOmar.getView().getExtent());
         var extent = polyFeature.getGeometry().getExtent();
         AppAdmin.mapOmar.getView().fitExtent(extent, AppAdmin.mapOmar.getSize());
 
