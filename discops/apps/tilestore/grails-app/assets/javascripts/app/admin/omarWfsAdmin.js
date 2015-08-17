@@ -158,31 +158,31 @@ var AppOmarWfsAdmin = (function () {
                 result = result + " AND (" +constraintToExpression + ")"
             }
         }
- /*       else if(constraints.startDate)
-        {
-            constraintToExpression = constraints.dateType + ">='" +constraints.startDate+"'";
-            if(result=="")
-            {
-                result = "(" + constraintToExpression + ")";
-            }
-            else
-            {
-                result = result + " AND (" +constraintToExpression + ")"
-            }
-        }
-        else if(constraints.endDate)
-        {
-            constraintToExpression = constraints.dateType + "<='" +constraints.endDate+"'";
-            if(result=="")
-            {
-                result = "(" + constraintToExpression + ")";
-            }
-            else
-            {
-                result = result + " AND (" +constraintToExpression + ")"
-            }
-        }
-*/
+         /*       else if(constraints.startDate)
+                {
+                    constraintToExpression = constraints.dateType + ">='" +constraints.startDate+"'";
+                    if(result=="")
+                    {
+                        result = "(" + constraintToExpression + ")";
+                    }
+                    else
+                    {
+                        result = result + " AND (" +constraintToExpression + ")"
+                    }
+                }
+                else if(constraints.endDate)
+                {
+                    constraintToExpression = constraints.dateType + "<='" +constraints.endDate+"'";
+                    if(result=="")
+                    {
+                        result = "(" + constraintToExpression + ")";
+                    }
+                    else
+                    {
+                        result = result + " AND (" +constraintToExpression + ")"
+                    }
+                }
+        */
         if(constraints.constrainToViewport)
         {
             var constraintToExpression = "BBOX(" + constraints.geomType + "," + constraints.bbox + ")";
@@ -198,8 +198,6 @@ var AppOmarWfsAdmin = (function () {
         }
 
         return result
-        //
-        //
     }
 
     function getWfsCards(params){
@@ -751,9 +749,3 @@ var AppOmarWfsAdmin = (function () {
         objImageClamp: objImageClamp
     }
 })();
-
-//var wfsUrl = "http://omar.ossim.org/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=20&outputFormat=geojson&filter=file_type='tiff'";
-//var wfsUrl = "http://omar.ossim.org/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=200&outputFormat=geojson&filter=sensor_id='VIIRS'";
-//var wfsUrl = "http://localhost:9999/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=50&outputFormat=geojson&filter=" + filterName + filterRangeLow + "'"+ filter + "'";
-//var wfsUrl = "http://localhost:9999/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=50&outputFormat=geojson&filter=acquisition_date>='2003-01-23'+and+acquisition_date<='2003-01-24'";
-//var wfsUrl = "http://localhost:9999/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=50&outputFormat=geojson&filter=" + filterName + filterRangeLow + filterLow + '+and+' + filterName + filterRangeHigh + filterHigh;
