@@ -61,5 +61,8 @@ class RasterEntryFile
         result.append("</RasterEntryFile>")
         result.toString()
     }
-   
+
+   void forceEager()
+   {
+   }
 }
