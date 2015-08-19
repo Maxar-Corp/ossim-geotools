@@ -5,5 +5,6 @@
 //= require common/jquery.fileDownload.js
 //= require common/jquery.easyui.min.js
 //= require common/easyui/datagrid-scrollview.js
+//= require common/toastr.js
 //= require job/jobPage.js
 //= require_self

@@ -11,4 +11,6 @@
 //= require jquery/jquery.bgiframe.js
 //= require jquery/jquery.jdMenu.js
 //= require jquery/jquery.dataTables.min.js
+//= require bootstrap.js
 //= require spring-security-ui.js
+

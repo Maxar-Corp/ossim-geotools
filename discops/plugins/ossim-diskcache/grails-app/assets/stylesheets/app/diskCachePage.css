@@ -5,16 +5,9 @@
 
 *=require easyui/themes/icon.css
 *=require easyui/themes/default/easyui.css
+*=require common/toastr.css
 *= require_self
 */
-
-/*body{*/
-    /*visibility:hidden;*/
-/*}*/
-
-/*.text-center{*/
-    /*text-align: center;*/
-/*}*/
 
 #navBarTop {
     top:28px
@@ -50,6 +43,11 @@
     -webkit-box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
     -moz-box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
     box-shadow: 14px 18px 36px -13px rgba(0,0,0,0.76);
+}
+
+.toast-bottom-right {
+    right: 12px;
+    bottom: 52px;
 }
 
 .corner-ribbon{
