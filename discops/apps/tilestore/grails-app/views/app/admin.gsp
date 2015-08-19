@@ -473,116 +473,208 @@
     <!-- Filter wfs modal -->
     <div class="modal fade" id="filterWfsModal" tabindex="-1" role="dialog"
      aria-labelledby="filterwfsModalLabel" Saria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-title"><i class="fa fa-filter fa-lg"></i>&nbsp;&nbsp;Filter OMAR Images</h3>
-            </div>
-            <div class="modal-body">
-                <!-- Date range select -->
-                <div class="form-group">
-                    <label class="control-label" for="dateRangeSelect">Date Range</label>
-                    <div class="btn-group selectlist filter-form-width"
-                         data-initialize="selectlist"
-                         id="dateRangeSelect" >
-                        <button class="btn btn-default dropdown-toggle filter-form-width-inherit"
-                                data-toggle="dropdown"
-                                type="button">
-                            <span class="selected-label">Date Range</span>
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu filter-form-width" role="menu">
-                            <li data-value="none"><a href="#">None</a></li>
-                            <li data-value="today"><a href="#">Today</a></li>
-                            <li data-value="yesterday"><a href="#">Yesterday</a></li>
-                            <li data-value="last7Days"><a href="#">Last 7 days</a></li>
-                            <li data-value="thisMonth"><a href="#">This month</a></li>
-                            <li data-value="last3Months"><a href="#">Last 3 Months</a></li>
-                            <li data-value="last6Months"><a href="#">Last 6 Months</a></li>
-                            <li data-value="customDateRange"><a href="#">Custom Date Range</a></li>
-                        </ul>
-                        <input class="hidden hidden-field" name="dateRangeSelect" readonly="readonly"
-                               aria-hidden="true" type="text">
-                    </div>
-                    <br>
-                    <br>
-                    <!-- Custom date pickers -->
-                    <div id="customFilterDates" class="filter-form-display-none">
-                    <label class="control-label" for="customStartDateFilter">Start Date</label>
-                        <div class="datepicker fuelux" id="customStartDateFilter">
-                            <div class="input-group">
-                                <input class="form-control" id="customStartDateFilterInput" type="text" />
-                                <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                        <span class="glyphicon glyphicon-calendar"></span>
-                                        <span class="sr-only">Toggle Calendar</span>
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-right datepicker-calendar-wrapper" role="menu">
-                                        <div class="datepicker-calendar">
-                                            <div class="datepicker-calendar-header">
-                                                <button type="button" class="prev"><span class="glyphicon glyphicon-chevron-left"></span><span class="sr-only">Previous Month</span></button>
-                                                <button type="button" class="next"><span class="glyphicon glyphicon-chevron-right"></span><span class="sr-only">Next Month</span></button>
-                                                <button type="button" class="title" data-month="11" data-year="2014">
-                                                    <span class="month">
-                                                        <span data-month="0">January</span>
-                                                        <span data-month="1">February</span>
-                                                        <span data-month="2">March</span>
-                                                        <span data-month="3">April</span>
-                                                        <span data-month="4">May</span>
-                                                        <span data-month="5">June</span>
-                                                        <span data-month="6">July</span>
-                                                        <span data-month="7">August</span>
-                                                        <span data-month="8">September</span>
-                                                        <span data-month="9">October</span>
-                                                        <span data-month="10">November</span>
-                                                        <span data-month="11" class="current">December</span>
-                                                    </span> <span class="year">2014</span>
-                                                </button>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title"><i class="fa fa-filter fa-lg"></i>&nbsp;&nbsp;Filter OMAR Images</h3>
+                </div>
+                <div class="modal-body">
+                    <!-- Date range select -->
+                    <div class="form-group">
+                        <div class="checkbox highlight" id="constrainToViewportCheckbox">
+                            <label class="checkbox-custom checked highlight" data-initialize="checkbox" data-toggle="tooltip"
+                                   data-placement="bottom"
+                                   title="Restrict and view only the images that are in the current map extent">
+                                <input class="sr-only" checked="checked" type="checkbox" value="" >
+                                <span class="checkbox-label">Filter to images in current map
+                                extent</span>
+                            </label>
+                        </div>
+
+                        <label class="control-label" for="dateRangeSelect">Date Range</label>
+                        <div class="btn-group selectlist filter-form-width"
+                             data-initialize="selectlist"
+                             id="dateRangeSelect" >
+                            <button class="btn btn-default dropdown-toggle filter-form-width-inherit"
+                                    data-toggle="dropdown"
+                                    type="button">
+                                <span class="selected-label">Date Range</span>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu filter-form-width" role="menu">
+                                <li data-value="none"><a href="#">None</a></li>
+                                <li data-value="today"><a href="#">Today</a></li>
+                                <li data-value="yesterday"><a href="#">Yesterday</a></li>
+                                <li data-value="last7Days"><a href="#">Last 7 days</a></li>
+                                <li data-value="thisMonth"><a href="#">This month</a></li>
+                                <li data-value="last3Months"><a href="#">Last 3 Months</a></li>
+                                <li data-value="last6Months"><a href="#">Last 6 Months</a></li>
+                                <li data-value="customDateRange"><a href="#">Custom Date Range</a></li>
+                            </ul>
+                            <input class="hidden hidden-field" name="dateRangeSelect" readonly="readonly"
+                                   aria-hidden="true" type="text">
+                        </div>
+                        <br>
+                        <br>
+                        <!-- Custom date pickers -->
+                        <div id="customFilterDates" class="filter-form-display-none">
+                        <label class="control-label" for="customStartDateFilter">Start Date</label>
+                            <div class="datepicker fuelux" id="customStartDateFilter">
+                                <div class="input-group">
+                                    <input class="form-control" id="customStartDateFilterInput" type="text" />
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                            <span class="sr-only">Toggle Calendar</span>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right datepicker-calendar-wrapper" role="menu">
+                                            <div class="datepicker-calendar">
+                                                <div class="datepicker-calendar-header">
+                                                    <button type="button" class="prev"><span class="glyphicon glyphicon-chevron-left"></span><span class="sr-only">Previous Month</span></button>
+                                                    <button type="button" class="next"><span class="glyphicon glyphicon-chevron-right"></span><span class="sr-only">Next Month</span></button>
+                                                    <button type="button" class="title" data-month="11" data-year="2014">
+                                                        <span class="month">
+                                                            <span data-month="0">January</span>
+                                                            <span data-month="1">February</span>
+                                                            <span data-month="2">March</span>
+                                                            <span data-month="3">April</span>
+                                                            <span data-month="4">May</span>
+                                                            <span data-month="5">June</span>
+                                                            <span data-month="6">July</span>
+                                                            <span data-month="7">August</span>
+                                                            <span data-month="8">September</span>
+                                                            <span data-month="9">October</span>
+                                                            <span data-month="10">November</span>
+                                                            <span data-month="11" class="current">December</span>
+                                                        </span> <span class="year">2014</span>
+                                                    </button>
+                                                </div>
+                                                <table class="datepicker-calendar-days">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Su</th>
+                                                        <th>Mo</th>
+                                                        <th>Tu</th>
+                                                        <th>We</th>
+                                                        <th>Th</th>
+                                                        <th>Fr</th>
+                                                        <th>Sa</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                                <div class="datepicker-calendar-footer">
+                                                    <button type="button" class="datepicker-today">Today</button>
+                                                </div>
                                             </div>
-                                            <table class="datepicker-calendar-days">
-                                                <thead>
-                                                <tr>
-                                                    <th>Su</th>
-                                                    <th>Mo</th>
-                                                    <th>Tu</th>
-                                                    <th>We</th>
-                                                    <th>Th</th>
-                                                    <th>Fr</th>
-                                                    <th>Sa</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody></tbody>
-                                            </table>
-                                            <div class="datepicker-calendar-footer">
-                                                <button type="button" class="datepicker-today">Today</button>
+                                            <div class="datepicker-wheels" aria-hidden="true">
+                                                <div class="datepicker-wheels-month">
+                                                    <h2 class="header">Month</h2>
+                                                    <ul>
+                                                        <li data-month="0"><button type="button">Jan</button></li>
+                                                        <li data-month="1"><button type="button">Feb</button></li>
+                                                        <li data-month="2"><button type="button">Mar</button></li>
+                                                        <li data-month="3"><button type="button">Apr</button></li>
+                                                        <li data-month="4"><button type="button">May</button></li>
+                                                        <li data-month="5"><button type="button">Jun</button></li>
+                                                        <li data-month="6"><button type="button">Jul</button></li>
+                                                        <li data-month="7"><button type="button">Aug</button></li>
+                                                        <li data-month="8"><button type="button">Sep</button></li>
+                                                        <li data-month="9"><button type="button">Oct</button></li>
+                                                        <li data-month="10"><button type="button">Nov</button></li>
+                                                        <li data-month="11"><button type="button">Dec</button></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="datepicker-wheels-year">
+                                                    <h2 class="header">Year</h2>
+                                                    <ul></ul>
+                                                </div>
+                                                <div class="datepicker-wheels-footer clearfix">
+                                                    <button type="button" class="btn datepicker-wheels-back"><span class="glyphicon glyphicon-arrow-left"></span><span class="sr-only">Return to Calendar</span></button>
+                                                    <button type="button" class="btn datepicker-wheels-select">Select <span class="sr-only">Month and Year</span></button>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="datepicker-wheels" aria-hidden="true">
-                                            <div class="datepicker-wheels-month">
-                                                <h2 class="header">Month</h2>
-                                                <ul>
-                                                    <li data-month="0"><button type="button">Jan</button></li>
-                                                    <li data-month="1"><button type="button">Feb</button></li>
-                                                    <li data-month="2"><button type="button">Mar</button></li>
-                                                    <li data-month="3"><button type="button">Apr</button></li>
-                                                    <li data-month="4"><button type="button">May</button></li>
-                                                    <li data-month="5"><button type="button">Jun</button></li>
-                                                    <li data-month="6"><button type="button">Jul</button></li>
-                                                    <li data-month="7"><button type="button">Aug</button></li>
-                                                    <li data-month="8"><button type="button">Sep</button></li>
-                                                    <li data-month="9"><button type="button">Oct</button></li>
-                                                    <li data-month="10"><button type="button">Nov</button></li>
-                                                    <li data-month="11"><button type="button">Dec</button></li>
-                                                </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <label class="control-label" for="customEndDateFilter">End Date</label>
+                            <div class="datepicker fuelux" id="customEndDateFilter">
+                                <div class="input-group">
+                                    <input class="form-control" id="customEndDateFilterInput" type="text" />
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                            <span class="sr-only">Toggle Calendar</span>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right datepicker-calendar-wrapper" role="menu">
+                                            <div class="datepicker-calendar">
+                                                <div class="datepicker-calendar-header">
+                                                    <button type="button" class="prev"><span class="glyphicon glyphicon-chevron-left"></span><span class="sr-only">Previous Month</span></button>
+                                                    <button type="button" class="next"><span class="glyphicon glyphicon-chevron-right"></span><span class="sr-only">Next Month</span></button>
+                                                    <button type="button" class="title" data-month="11" data-year="2014">
+                                                        <span class="month">
+                                                            <span data-month="0">January</span>
+                                                            <span data-month="1">February</span>
+                                                            <span data-month="2">March</span>
+                                                            <span data-month="3">April</span>
+                                                            <span data-month="4">May</span>
+                                                            <span data-month="5">June</span>
+                                                            <span data-month="6">July</span>
+                                                            <span data-month="7">August</span>
+                                                            <span data-month="8">September</span>
+                                                            <span data-month="9">October</span>
+                                                            <span data-month="10">November</span>
+                                                            <span data-month="11" class="current">December</span>
+                                                        </span> <span class="year">2014</span>
+                                                    </button>
+                                                </div>
+                                                <table class="datepicker-calendar-days">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Su</th>
+                                                        <th>Mo</th>
+                                                        <th>Tu</th>
+                                                        <th>We</th>
+                                                        <th>Th</th>
+                                                        <th>Fr</th>
+                                                        <th>Sa</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                                <div class="datepicker-calendar-footer">
+                                                    <button type="button" class="datepicker-today">Today</button>
+                                                </div>
                                             </div>
-                                            <div class="datepicker-wheels-year">
-                                                <h2 class="header">Year</h2>
-                                                <ul></ul>
-                                            </div>
-                                            <div class="datepicker-wheels-footer clearfix">
-                                                <button type="button" class="btn datepicker-wheels-back"><span class="glyphicon glyphicon-arrow-left"></span><span class="sr-only">Return to Calendar</span></button>
-                                                <button type="button" class="btn datepicker-wheels-select">Select <span class="sr-only">Month and Year</span></button>
+                                            <div class="datepicker-wheels" aria-hidden="true">
+                                                <div class="datepicker-wheels-month">
+                                                    <h2 class="header">Month</h2>
+                                                    <ul>
+                                                        <li data-month="0"><button type="button">Jan</button></li>
+                                                        <li data-month="1"><button type="button">Feb</button></li>
+                                                        <li data-month="2"><button type="button">Mar</button></li>
+                                                        <li data-month="3"><button type="button">Apr</button></li>
+                                                        <li data-month="4"><button type="button">May</button></li>
+                                                        <li data-month="5"><button type="button">Jun</button></li>
+                                                        <li data-month="6"><button type="button">Jul</button></li>
+                                                        <li data-month="7"><button type="button">Aug</button></li>
+                                                        <li data-month="8"><button type="button">Sep</button></li>
+                                                        <li data-month="9"><button type="button">Oct</button></li>
+                                                        <li data-month="10"><button type="button">Nov</button></li>
+                                                        <li data-month="11"><button type="button">Dec</button></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="datepicker-wheels-year">
+                                                    <h2 class="header">Year</h2>
+                                                    <ul></ul>
+                                                </div>
+                                                <div class="datepicker-wheels-footer clearfix">
+                                                    <button type="button" class="btn datepicker-wheels-back"><span class="glyphicon glyphicon-arrow-left"></span><span class="sr-only">Return to Calendar</span></button>
+                                                    <button type="button" class="btn datepicker-wheels-select">Select <span class="sr-only">Month and Year</span></button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -590,172 +682,90 @@
                             </div>
                         </div>
                         <br>
-                        <label class="control-label" for="customEndDateFilter">End Date</label>
-                        <div class="datepicker fuelux" id="customEndDateFilter">
-                            <div class="input-group">
-                                <input class="form-control" id="customEndDateFilterInput" type="text" />
-                                <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                        <span class="glyphicon glyphicon-calendar"></span>
-                                        <span class="sr-only">Toggle Calendar</span>
+
+                        <!-- Date type radios -->
+                        <label class="control-label" for="radios">Date Type</label>
+                        <div class="controls">
+                            <label class="radio-custom radio-inline" id="acquisitionDateRadioLabel"
+                                   data-initialize="radio"
+                                   for="acquisitionDateRadio">
+                                <input class="sr-only " checked="checked" type="radio"
+                                       id="acquisitionDateRadio" name="radios" value="Acquisition Date">
+                                Acquisition
+                            </label>
+
+                            <label class="radio-custom radio-inline" id="ingestDateRadioLabel"
+                                   data-initialize="radio" for="ingestDateRadio">
+                                <input class="sr-only filter-form-width" checked="checked" type="radio" id="ingestDateRadio"
+                                       name="radios" value="Ingest Date">
+                                Ingest
+                            </label>
+
+                        </div>
+                        <br>
+
+                        <!-- Sort by field select -->
+                        <div class="control-group">
+                            <label class="control-label" for="sortByFieldSelect">Sort By Field</label>
+                            <div class="controls">
+                                <div class="btn-group selectlist filter-form-width"
+                                     data-initialize="selectlist"
+                                     id="sortByFieldSelect">
+                                    <button class="btn btn-default dropdown-toggle filter-form-width-inherit"
+                                            data-toggle="dropdown" type="button">
+                                        <span class="selected-label">Sort By</span>
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
                                     </button>
-                                    <div class="dropdown-menu dropdown-menu-right datepicker-calendar-wrapper" role="menu">
-                                        <div class="datepicker-calendar">
-                                            <div class="datepicker-calendar-header">
-                                                <button type="button" class="prev"><span class="glyphicon glyphicon-chevron-left"></span><span class="sr-only">Previous Month</span></button>
-                                                <button type="button" class="next"><span class="glyphicon glyphicon-chevron-right"></span><span class="sr-only">Next Month</span></button>
-                                                <button type="button" class="title" data-month="11" data-year="2014">
-                                                    <span class="month">
-                                                        <span data-month="0">January</span>
-                                                        <span data-month="1">February</span>
-                                                        <span data-month="2">March</span>
-                                                        <span data-month="3">April</span>
-                                                        <span data-month="4">May</span>
-                                                        <span data-month="5">June</span>
-                                                        <span data-month="6">July</span>
-                                                        <span data-month="7">August</span>
-                                                        <span data-month="8">September</span>
-                                                        <span data-month="9">October</span>
-                                                        <span data-month="10">November</span>
-                                                        <span data-month="11" class="current">December</span>
-                                                    </span> <span class="year">2014</span>
-                                                </button>
-                                            </div>
-                                            <table class="datepicker-calendar-days">
-                                                <thead>
-                                                <tr>
-                                                    <th>Su</th>
-                                                    <th>Mo</th>
-                                                    <th>Tu</th>
-                                                    <th>We</th>
-                                                    <th>Th</th>
-                                                    <th>Fr</th>
-                                                    <th>Sa</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody></tbody>
-                                            </table>
-                                            <div class="datepicker-calendar-footer">
-                                                <button type="button" class="datepicker-today">Today</button>
-                                            </div>
-                                        </div>
-                                        <div class="datepicker-wheels" aria-hidden="true">
-                                            <div class="datepicker-wheels-month">
-                                                <h2 class="header">Month</h2>
-                                                <ul>
-                                                    <li data-month="0"><button type="button">Jan</button></li>
-                                                    <li data-month="1"><button type="button">Feb</button></li>
-                                                    <li data-month="2"><button type="button">Mar</button></li>
-                                                    <li data-month="3"><button type="button">Apr</button></li>
-                                                    <li data-month="4"><button type="button">May</button></li>
-                                                    <li data-month="5"><button type="button">Jun</button></li>
-                                                    <li data-month="6"><button type="button">Jul</button></li>
-                                                    <li data-month="7"><button type="button">Aug</button></li>
-                                                    <li data-month="8"><button type="button">Sep</button></li>
-                                                    <li data-month="9"><button type="button">Oct</button></li>
-                                                    <li data-month="10"><button type="button">Nov</button></li>
-                                                    <li data-month="11"><button type="button">Dec</button></li>
-                                                </ul>
-                                            </div>
-                                            <div class="datepicker-wheels-year">
-                                                <h2 class="header">Year</h2>
-                                                <ul></ul>
-                                            </div>
-                                            <div class="datepicker-wheels-footer clearfix">
-                                                <button type="button" class="btn datepicker-wheels-back"><span class="glyphicon glyphicon-arrow-left"></span><span class="sr-only">Return to Calendar</span></button>
-                                                <button type="button" class="btn datepicker-wheels-select">Select <span class="sr-only">Month and Year</span></button>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <ul class="dropdown-menu filter-form-width" role="menu">
+                                        <li data-value="id"><a href="#">Record ID</a></li>
+                                        <li data-value="ingest_date"><a href="#">Ingest Date</a></li>
+                                        <li data-value="acquisition_date"><a href="#">Acquisition Date</a></li>
+                                        <li data-value="file_type"><a href="#">Image Type</a></li>
+                                        <li data-value="sensor_id"><a href="#">Sensor</a></li>
+                                        <li data-value="mission_id"><a href="#">Mision</a></li>
+                                    </ul>
+                                    <input class="hidden hidden-field" name="sortByFieldSelect" readonly="readonly"
+                                           aria-hidden="true" type="text">
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <br>
+                        <br>
 
-                    <!-- Date type radios -->
-                    <label class="control-label" for="radios">Date Type</label>
-                    <div class="controls">
-                        <label class="radio-custom radio-inline" id="acquisitionDateRadioLabel"
-                               data-initialize="radio"
-                               for="acquisitionDateRadio">
-                            <input class="sr-only " checked="checked" type="radio"
-                                   id="acquisitionDateRadio" name="radios" value="Acquisition Date">
-                            Acquisition
-                        </label>
-
-                        <label class="radio-custom radio-inline" id="ingestDateRadioLabel"
-                               data-initialize="radio" for="ingestDateRadio">
-                            <input class="sr-only filter-form-width" checked="checked" type="radio" id="ingestDateRadio"
-                                   name="radios" value="Ingest Date">
-                            Ingest
-                        </label>
-
-                    </div>
-                    <br>
-
-                    <!-- Sort by field select -->
-                    <div class="control-group">
-                        <label class="control-label" for="sortByFieldSelect">Sort By Field</label>
-                        <div class="controls">
-                            <div class="btn-group selectlist filter-form-width"
-                                 data-initialize="selectlist"
-                                 id="sortByFieldSelect">
-                                <button class="btn btn-default dropdown-toggle filter-form-width-inherit"
-                                        data-toggle="dropdown" type="button">
-                                    <span class="selected-label">Sort By</span>
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu filter-form-width" role="menu">
-                                    <li data-value="id"><a href="#">Record ID</a></li>
-                                    <li data-value="ingest_date"><a href="#">Ingest Date</a></li>
-                                    <li data-value="acquisition_date"><a href="#">Acquisition Date</a></li>
-                                    <li data-value="file_type"><a href="#">Image Type</a></li>
-                                    <li data-value="sensor_id"><a href="#">Sensor</a></li>
-                                    <li data-value="mission_id"><a href="#">Mision</a></li>
-                                </ul>
-                                <input class="hidden hidden-field" name="sortByFieldSelect" readonly="readonly"
-                                       aria-hidden="true" type="text">
+                        <!-- Sort type select -->
+                        <div class="control-group">
+                            <label class="control-label" for="sortByTypeSelect">Sort Type</label>
+                            <div class="controls">
+                                <div class="btn-group selectlist filter-form-width"
+                                     data-initialize="selectlist"
+                                     id="sortByTypeSelect">
+                                    <button class="btn btn-default btn-block dropdown-toggle filter-form-width" data-toggle="dropdown" type="button">
+                                        <span class="selected-label"></span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu filter-form-width" role="menu">
+                                        <li data-value="D"><a href="#">Descending</a></li>
+                                        <li data-value="A"><a href="#">Ascending</a></li>
+                                    </ul>
+                                    <input class="hidden hidden-field" name="sortTypeSelect"
+                                           readonly="readonly"
+                                           aria-hidden="true" type="text">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <br>
+                        <br>
 
-                    <!-- Sort type select -->
-                    <div class="control-group">
-                        <label class="control-label" for="sortByTypeSelect">Sort Type</label>
-                        <div class="controls">
-                            <div class="btn-group selectlist filter-form-width"
-                                 data-initialize="selectlist"
-                                 id="sortByTypeSelect">
-                                <button class="btn btn-default btn-block dropdown-toggle filter-form-width" data-toggle="dropdown" type="button">
-                                    <span class="selected-label"></span>
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu filter-form-width" role="menu">
-                                    <li data-value="D"><a href="#">Descending</a></li>
-                                    <li data-value="A"><a href="#">Ascending</a></li>
-                                </ul>
-                                <input class="hidden hidden-field" name="sortTypeSelect"
-                                       readonly="readonly"
-                                       aria-hidden="true" type="text">
-                            </div>
-                        </div>
-                    </div>
-                    <br>
+                    </div><!--/form group -->
 
-                </div><!--/form group -->
+                    <button id="submitFilter" class="btn btn-primary ladda-button"
+                                        data-style="expand-left"><span class="ladda-label">Submit</span></button>
+                    <button id="cancelFilter" type="button" class="btn btn-default"
+                            data-dismiss="modal">Close</button>
 
-                <button id="submitFilter" class="btn btn-primary ladda-button"
-                                    data-style="expand-left"><span class="ladda-label">Submit</span></button>
-                <button id="cancelFilter" type="button" class="btn btn-default"
-                        data-dismiss="modal">Close</button>
-
-            </div><!-- /.modal-body -->
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog modal-lg -->
-</div><!-- /.modal fade "deleteTileLayerModal" -->
+                </div><!-- /.modal-body -->
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog modal-lg -->
+    </div><!-- /.modal fade "deleteTileLayerModal" -->
 
     <!-- Upload cut by file form -->
     <div class="modal fade" id="uploadCutByFileModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"

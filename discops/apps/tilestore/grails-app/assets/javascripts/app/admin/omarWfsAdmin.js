@@ -53,8 +53,18 @@ var AppOmarWfsAdmin = (function () {
         end: '',
         none: true
     };
+    var cqlParams = {};
     var $customStartDateFilter = $('#customStartDateFilter');
     var $customEndDateFilter = $('#customEndDateFilter');
+
+    // Spatial filter variables
+    var mapOmarSpatialQueryExtent3857;
+    var mapOmarSpatialQueryExtent4326;
+
+    //var clustfeaturesArray = [];
+    //var clustLat, // cluster coordinate latitude
+    //    clustLon,  // cluster coordinate longitude
+    //    arrayItem; // item in cluster array
 
     var $submitFilter = $('#submitFilter');
     var $startResult = $('#startResult');
@@ -138,12 +148,18 @@ var AppOmarWfsAdmin = (function () {
         $filterWfsModal.modal('show');
     });
 
+    function getSpatalQueryExtent() {
+        mapOmarSpatialQueryExtent3857 = AppAdmin.mapOmar.getView().calculateExtent(AppAdmin.mapOmar.getSize());
+        mapOmarSpatialQueryExtent4326 = ol.proj.transformExtent(mapOmarSpatialQueryExtent3857, "EPSG:3857",
+         "EPSG:4326");
+        return mapOmarSpatialQueryExtent4326;
+    }
+
     function toCql(constraints){
         var result = ""
-        //
-        //
+
         var constraintToExpression
-        if(constraints.startDate&&constraints.endDate)
+        if(constraints.startDate && constraints.endDate)
         {
             constraintToExpression = constraints.dateType + " between " + "'" + constraints.startDate + "'" +
                 " AND " +
@@ -200,6 +216,13 @@ var AppOmarWfsAdmin = (function () {
         return result
     }
 
+    AppAdmin.mapOmar.on('moveend', function () {
+
+        getWfsCards(filterOpts);
+        //console.log('map movend fired');
+
+    });
+
     function getWfsCards(params){
 
         //console.log('params.queryNone coming in is :' + params.queryNone);
@@ -215,13 +238,14 @@ var AppOmarWfsAdmin = (function () {
         var dateType = params.dateType || 'ingest_date'; // default value
         var startDate = params.startDate // || dateLast7Days; // default value
         var endDate = params.endDate // ||  dateToday; // default value
-        var queryNone;
-        if (params.queryNone === false){
-            queryNone = false;
-        }
-        else {
-            queryNone = true;
-        }
+
+        //var queryNone;
+        //if (params.queryNone === false){
+        //    queryNone = false;
+        //}
+        //else {
+        //    queryNone = true;
+        //}
         //console.log('queryNone is now set as:' + queryNone);
 
         var offset = params.offset || 0;
@@ -234,18 +258,26 @@ var AppOmarWfsAdmin = (function () {
 
         //console.log('queryNone after being called:');
         //console.log('offset --> ' + offset);
-        var cqlParams = {
-            "dateType":dateType,
-            "constrainToViewport":true,
-            "startDate":null,
-            "endDate":null,
-            "geomType":"ground_geom",
-            "bbox":"-180,-90,180,90"
+
+        cqlParams = {
+            "dateType": dateType,
+            "constrainToViewport": true,
+            "startDate": null,
+            "endDate": null,
+            "geomType": "ground_geom",
+            "bbox": getSpatalQueryExtent()
         };
+
+        if ( !$('#constrainToViewportCheckbox').checkbox('isChecked') ){
+            //console.log('nope, it is not checked!!!!');
+            cqlParams.constrainToViewport = false;
+        }
+        console.log('cqlParams.constrainToViewPort', cqlParams.constrainToViewport);
+
         if(typeof startDate != "undefined") cqlParams.startDate = startDate;
         if(typeof endDate != "undefined") cqlParams.endDate = endDate;
 
-        console.log("cqlParams",cqlParams);
+        //console.log("cqlParams", cqlParams);
 
         var cqlFilter = toCql(cqlParams);
 
@@ -260,46 +292,46 @@ var AppOmarWfsAdmin = (function () {
             $imageFilter.html(" Sort field: " + sortByFieldText + ", Sort type: " + sortByTypeText);
         }
 
-/*        if (queryNone === true){
-            //console.log('queryNone: ' + queryNone);
-            wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
-                "=GetFeature&typeName=omar:raster_entry" +
-                "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter="+ cqlFilter +
-                "&sortBy=" + sortByField +
-                ":" + sortByType;
-            wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
-                "=GetFeature&typeName=omar:raster_entry" +
-                "&offset=0&maxFeatures=25&outputFormat=json&filter=" + cqlFilter
-                "&sortBy=" + sortByField +
-                ":" + sortByType + "&resultType=hits";
-        }
-        else {
-        */
+            /*        if (queryNone === true){
+                //console.log('queryNone: ' + queryNone);
+                wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
+                    "=GetFeature&typeName=omar:raster_entry" +
+                    "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter="+ cqlFilter +
+                    "&sortBy=" + sortByField +
+                    ":" + sortByType;
+                wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
+                    "=GetFeature&typeName=omar:raster_entry" +
+                    "&offset=0&maxFeatures=25&outputFormat=json&filter=" + cqlFilter
+                    "&sortBy=" + sortByField +
+                    ":" + sortByType + "&resultType=hits";
+            }
+            else {
+            */
             //console.log('else queryNone value: ' + queryNone);
             wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
                 "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter=" + cqlFilter +
-//                dateType +
-//                "+between+" +
- //               "'" + startDate + "'" +
- //               "+and+" +
- //               "'" + endDate + "'" +
+                //dateType +
+                //"+between+" +
+                //"'" + startDate + "'" +
+                //"+and+" +
+                //"'" + endDate + "'" +
                 "&sortBy=" + sortByField +
                 ":" + sortByType;
             wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
                 "&outputFormat=json&filter=" + cqlFilter +
- //               dateType +
- //               "+between+" +
- //               "'" + startDate + "'" +
- //               "+and+" +
- //             "'" + endDate + "'" +
+              //  dateType +
+              //  "+between+" +
+              //  "'" + startDate + "'" +
+              //  "+and+" +
+              //"'" + endDate + "'" +
                 "&sortBy=" + sortByField +
                 ":" + sortByType + "&resultType=hits";
         //}
 
-        console.log(wfsCards);
-        console.log(wfsCardsCount);
+        //console.log(wfsCards);
+        //console.log(wfsCardsCount);
 
         // TODO: Add functionality to restrict the query to a spatial extent (via BBox)
         $.ajax({
@@ -308,9 +340,42 @@ var AppOmarWfsAdmin = (function () {
 
             // TODO: Refactor using promises...
             success: function (images) {
+                //console.log('images.length', images.features.length);
 
-                //console.log(images);
-                //console.log(images.features.properties);
+                // ####################################    WIP   #####################################################
+                // This would provide feedback in the map using OL3's clustering functionality. However, at this time,
+                // the performance is not acceptable for this project.  Will revisit this as time permits.
+                //AppManageLayersAdmin.source.clear();
+                //AppManageLayersAdmin.clustfeaturesArray.length = 0;
+                //for (var i = 0; i < images.features.length; ++i){
+                //
+                //    clustLat = images.features[i].geometry.coordinates[0][0][0];
+                //    clustLon = images.features[i].geometry.coordinates[0][0][1];
+                //    //console.log('coords', clustLat + ', ' + clustLon);
+                //
+                //    arrayItem = new ol.Feature(new ol.geom.Point(ol.proj.transform([clustLat, clustLon], 'EPSG:4326', 'EPSG:3857')));
+                //    //console.log('arrayItem', arrayItem);
+                //
+                //    // Add clustfeatures to source
+                //    AppManageLayersAdmin.clustfeaturesArray.push(arrayItem);
+                //    //console.log(AppManageLayersAdmin.clustfeaturesArray);
+                //
+                //}
+                //
+                //AppManageLayersAdmin.source.addFeatures(AppManageLayersAdmin.clustfeaturesArray);
+                ////console.log('clustfeaturesArray.length', AppManageLayersAdmin.clustfeaturesArray.length);
+                //console.log('source.getFeatures', AppManageLayersAdmin.source.getFeatures());
+                //
+                //AppManageLayersAdmin.clusters.setSource(AppManageLayersAdmin.clusterSource);
+                //
+                //
+                //// TODO: Check to see if we are below zoom level 10.  If so, hide/remove the zoom layer and
+                ////       show the polygons for the footprints instead
+                //console.log('mapOmar Zoom Level', AppAdmin.mapOmar.getView().getZoom());
+                //console.log('--------getArray---------');
+                //console.log(AppAdmin.mapOmar.getLayers().getArray()); //[0].values_.name);
+                //console.log('--------------------------');
+                // ####################################    /WIP   ####################################################
 
                 // Clear the DOM before loading the wfs cards
                 $omarImageList.empty();
@@ -461,20 +526,20 @@ var AppOmarWfsAdmin = (function () {
         resetPagination();
 
         var queryRange = getQueryType();
-        console.log(queryRange.none);
+        //console.log(queryRange.none);
 
         if ($dateRangeSelect.selectlist('selectedItem').value === 'none') {
 
-            console.log('none firing!');
+            //console.log('none firing!');
             filterOpts.queryNone = true;
-            console.log(filterOpts.queryNone);
+            //console.log(filterOpts.queryNone);
 
         }
         else {
 
-            console.log('we need to filter');
+            //console.log('we need to filter');
             filterOpts.queryNone = false;
-            console.log(filterOpts.queryNone);
+            //console.log(filterOpts.queryNone);
 
         }
 
@@ -613,7 +678,7 @@ var AppOmarWfsAdmin = (function () {
             ])
         });
         //polyFeature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
-        alert(AppAdmin.mapOmar.getView().getExtent());
+        //alert(AppAdmin.mapOmar.getView().getExtent());
         var extent = polyFeature.getGeometry().getExtent();
         AppAdmin.mapOmar.getView().fitExtent(extent, AppAdmin.mapOmar.getSize());
 
@@ -643,8 +708,6 @@ var AppOmarWfsAdmin = (function () {
                 features: previewFeatureArray
             });
 
-            // TODO: Move this out of the click on the image card, and put it in the appAddLayers
-            //       file so that it is always the top layer rendered.
             previewFeatureVectorLayer = new ol.layer.Vector({
                 source: previewFeatureVectorSource,
                 style: (function() {
@@ -678,7 +741,6 @@ var AppOmarWfsAdmin = (function () {
 
             AppAdmin.mapTile.addLayer(previewFeatureVectorLayer);
 
-
         }
 
         // This sets the ingest clamping obj from the image
@@ -692,7 +754,6 @@ var AppOmarWfsAdmin = (function () {
         // Image properties
         AppIngestTileAdmin.objIngestImage.input.filename = obj.properties.filename;
         AppIngestTileAdmin.objIngestImage.input.entry = obj.properties.entry_id;
-
         //console.log(AppIngestTileAdmin.objIngestImage);
 
     }
@@ -742,7 +803,7 @@ var AppOmarWfsAdmin = (function () {
             //        })
             //    })
             //});
-            getWfsCards({}); // use defaults
+            //getWfsCards({}); // use defaults
 
         },
         previewLayer: previewLayer,
