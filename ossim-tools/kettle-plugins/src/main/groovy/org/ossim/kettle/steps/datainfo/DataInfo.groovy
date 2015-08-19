@@ -84,20 +84,28 @@ public class DataInfo extends BaseStep implements StepInterface
     if(idx >= 0 ) filename = getInputRowMeta().getString(r,idx);
 
 
-    if(filename != null)
+    if((filename != null)&&meta.omsInfoFieldName)
     {
        joms.oms.DataInfo dataInfo = new joms.oms.DataInfo();
        if ( dataInfo.open( filename ) )
        {
+          def resultArray = []
           String valueString = dataInfo.getInfo();
           valueString = valueString.replaceAll("(\\r|\\n)", "");
-
+          resultArray << valueString
          // System.out.println(valueString);
-         ValueMetaAndData value = new ValueMetaAndData(fileFieldName, valueString);
-         Object extraValue = value.getValueData();
-         Object[] outputRow = RowDataUtil.addValueData(r, data.outputRowMeta.size()-1, extraValue);
-         putRow(data.outputRowMeta, outputRow);     // copy row to possible alternate rowset(s).
+         //ValueMetaAndData value = new ValueMetaAndData(fileFieldName, valueString);
+         //Object extraValue = value.getValueData();
+         //Object[] outputRow = RowDataUtil.addValueData(r, data.outputRowMeta.size()-1, extraValue);
+         //putRow(data.outputRowMeta, outputRow);     // copy row to possible alternate rowset(s).
         //System.out.println( dataInfo.getInfo() );
+          def outputRow = []
+          (0..<inputRowMeta.size()).each { Integer i ->
+             outputRow << r[i]
+          }
+          resultArray.each{outputRow<<it}
+          putRow(data.outputRowMeta, outputRow as Object[]);
+
        }
        else
        {
@@ -108,7 +116,10 @@ public class DataInfo extends BaseStep implements StepInterface
        dataInfo.delete();
        dataInfo = null;
     }
-
+    else
+    {
+       //putRow(inputRowMeta, r);
+    }
 
     if ((linesRead%Const.ROWS_UPDATE)==0) logBasic("Linenr "+linesRead);  // Some basic logging every 5000 rows.
 		return true;
