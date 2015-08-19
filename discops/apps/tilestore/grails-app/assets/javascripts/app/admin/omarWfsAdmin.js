@@ -13,8 +13,6 @@ var AppOmarWfsAdmin = (function () {
     var filter;
     var filterDateType;
 
-    var previewBool = false;
-
     var previewFeatureVectorLayer, previewFeatureVectorSource, omarPreviewLayerId, omarPreviewLayer;
     var previewFeatureArray = [];
     var $omarMapToolsDropdown = $("#omarMapToolsDropdown");
@@ -219,13 +217,11 @@ var AppOmarWfsAdmin = (function () {
     AppAdmin.mapOmar.on('moveend', function () {
 
         getWfsCards(filterOpts);
-        //console.log('map movend fired');
 
     });
 
     function getWfsCards(params){
 
-        //console.log('params.queryNone coming in is :' + params.queryNone);
         if ($('#acquisitionDateRadioLabel').radio('isChecked')){
             //console.log('acq. is checked');
             filterDateType = 'Acquisition';
@@ -239,15 +235,6 @@ var AppOmarWfsAdmin = (function () {
         var startDate = params.startDate // || dateLast7Days; // default value
         var endDate = params.endDate // ||  dateToday; // default value
 
-        //var queryNone;
-        //if (params.queryNone === false){
-        //    queryNone = false;
-        //}
-        //else {
-        //    queryNone = true;
-        //}
-        //console.log('queryNone is now set as:' + queryNone);
-
         var offset = params.offset || 0;
         var sortByField = $sortByFieldSelect.selectlist('selectedItem').value || 'ingest_date';
         var sortByType = $sortByTypeSelect.selectlist('selectedItem').value || 'A';
@@ -256,7 +243,6 @@ var AppOmarWfsAdmin = (function () {
         var sortByFieldText = $sortByFieldSelect.selectlist('selectedItem').text;
         var sortByTypeText = $sortByTypeSelect.selectlist('selectedItem').text;
 
-        //console.log('queryNone after being called:');
         //console.log('offset --> ' + offset);
 
         cqlParams = {
@@ -269,10 +255,9 @@ var AppOmarWfsAdmin = (function () {
         };
 
         if ( !$('#constrainToViewportCheckbox').checkbox('isChecked') ){
-            //console.log('nope, it is not checked!!!!');
             cqlParams.constrainToViewport = false;
         }
-        console.log('cqlParams.constrainToViewPort', cqlParams.constrainToViewport);
+        //console.log('cqlParams.constrainToViewPort', cqlParams.constrainToViewport);
 
         if(typeof startDate != "undefined") cqlParams.startDate = startDate;
         if(typeof endDate != "undefined") cqlParams.endDate = endDate;
@@ -292,40 +277,14 @@ var AppOmarWfsAdmin = (function () {
             $imageFilter.html(" Sort field: " + sortByFieldText + ", Sort type: " + sortByTypeText);
         }
 
-            /*        if (queryNone === true){
-                //console.log('queryNone: ' + queryNone);
-                wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
-                    "=GetFeature&typeName=omar:raster_entry" +
-                    "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter="+ cqlFilter +
-                    "&sortBy=" + sortByField +
-                    ":" + sortByType;
-                wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
-                    "=GetFeature&typeName=omar:raster_entry" +
-                    "&offset=0&maxFeatures=25&outputFormat=json&filter=" + cqlFilter
-                    "&sortBy=" + sortByField +
-                    ":" + sortByType + "&resultType=hits";
-            }
-            else {
-            */
-            //console.log('else queryNone value: ' + queryNone);
             wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
                 "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter=" + cqlFilter +
-                //dateType +
-                //"+between+" +
-                //"'" + startDate + "'" +
-                //"+and+" +
-                //"'" + endDate + "'" +
                 "&sortBy=" + sortByField +
                 ":" + sortByType;
             wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
                 "&outputFormat=json&filter=" + cqlFilter +
-              //  dateType +
-              //  "+between+" +
-              //  "'" + startDate + "'" +
-              //  "+and+" +
-              //"'" + endDate + "'" +
                 "&sortBy=" + sortByField +
                 ":" + sortByType + "&resultType=hits";
         //}
@@ -489,8 +448,6 @@ var AppOmarWfsAdmin = (function () {
         console.log('Next Button => filter options below:');
         console.log(filterOpts);
         getWfsCards(filterOpts);
-
-        getWfsCards(filterOpts);
         $omarFeed.animate({
             scrollTop: 0,
         }, 'slow');
@@ -522,7 +479,7 @@ var AppOmarWfsAdmin = (function () {
         //console.log('dateLast6Months: ' + dateLast6Months);
 
         // reset the offset to 0
-        //filterOpts.offset = 0;
+        // filterOpts.offset = 0;
         resetPagination();
 
         var queryRange = getQueryType();
@@ -648,16 +605,13 @@ var AppOmarWfsAdmin = (function () {
             });
             AppAdmin.mapOmar.addLayer(omarPreviewLayer);
 
-            // Need to move the omarPreviewLayer below the vector layers
-            //console.log(AppAdmin.mapOmar.getLayers().getArray().length);
-
             // Move the previewLayer below the aoiVectorLayer
             // Before:
-            //console.log(AppAdmin.mapTile.getLayers().getArray());
+            // console.log(AppAdmin.mapTile.getLayers().getArray());
             AppManageLayersAdmin.swapTopLayer(AppAdmin.mapOmar, 2 , 1);
             AppManageLayersAdmin.swapTopLayer(AppAdmin.mapTile, 2 , 1);
             // After:
-            //console.log(AppAdmin.mapTile.getLayers().getArray());
+            // console.log(AppAdmin.mapTile.getLayers().getArray());
 
         }
 
@@ -678,13 +632,9 @@ var AppOmarWfsAdmin = (function () {
             ])
         });
         //polyFeature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
-        //alert(AppAdmin.mapOmar.getView().getExtent());
         var extent = polyFeature.getGeometry().getExtent();
         AppAdmin.mapOmar.getView().fitExtent(extent, AppAdmin.mapOmar.getSize());
 
-        // This adds the polyFeature to a vectorlayer and displays it on the map.
-        // TODO: Use this in a function to run all of the OMAR images through it
-        //       and display their bounding box on the map.
         if (previewFeatureArray.length === 1) {
 
             previewFeatureVectorSource.clear();
@@ -758,52 +708,11 @@ var AppOmarWfsAdmin = (function () {
 
     }
 
-
     return {
         initialize: function (initParams) {
 
             loadParams = initParams;
             //console.log(loadParams);
-
-            // TODO: Add $ajax to a function that gets called on init
-            // Source retrieving WFS data in GeoJSON format using JSONP technique
-            //var vectorSource = new ol.source.ServerVector({
-            //    format: new ol.format.WFS({
-            //        featureNS: 'http://omar.ossim.org',
-            //        featureType: 'omar:raster_entry'
-            //    }),
-            //    loader: function(extent, resolution, projection) {
-            //        var url = "http://localhost:9999/omar/wfs?service=WFS&version=1.1.0&request" +
-            //            "=GetFeature&typeName=omar:raster_entry" +
-            //            "&maxFeatures=200&filter=" //+
-            //            //"bbox=" + extent.join(',');
-            //        //console.log(url);
-            //        $.ajax({
-            //            url: url//,
-            //            //dataType: 'jsonp'
-            //        })
-            //            .done(function(response) {
-            //                console.log(response);
-            //                vectorSource.addFeatures(vectorSource.readFeatures(response));
-            //            });
-            //    },
-            //    strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
-            //        maxZoom: 19
-            //    })),
-            //    projection: 'EPSG:3857'
-            //});
-            //
-            //// Vector layer
-            //var vectorLayer = new ol.layer.Vector({
-            //    source: vectorSource,
-            //    style: new ol.style.Style({
-            //        stroke: new ol.style.Stroke({
-            //            color: 'green',
-            //            width: 2
-            //        })
-            //    })
-            //});
-            //getWfsCards({}); // use defaults
 
         },
         previewLayer: previewLayer,
