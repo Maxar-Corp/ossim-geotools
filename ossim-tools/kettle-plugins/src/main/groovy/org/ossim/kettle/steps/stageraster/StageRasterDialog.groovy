@@ -186,7 +186,7 @@ public class StageRasterDialog extends BaseStepDialog implements
 		swt.compressionQuality.text  = "${input.compressionQuality}"
 
 		swt.outputOmsInfoFlag.selection = input.outputOmsInfoFlag
-		swt.omsInfoFieldName.enabled    = swt.outputResultCheckbox.selection
+		swt.omsInfoFieldName.enabled    = swt.outputOmsInfoFlag.selection
 		swt.omsInfoFieldName.text       = input.omsInfoFieldName
 
 		updateEnableDisableFields()

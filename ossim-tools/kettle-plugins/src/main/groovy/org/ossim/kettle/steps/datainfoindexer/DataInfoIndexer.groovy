@@ -42,6 +42,7 @@ public class DataInfoIndexer extends BaseStep implements StepInterface
 	private def count = 0
 	private def outputRows = []
 	private def repository
+	private def currentTransaction
 	public DataInfoIndexer(StepMeta s, StepDataInterface stepDataInterface, int c, TransMeta t, Trans dis)
 	{
 		super(s,stepDataInterface,c,t,dis);
@@ -59,27 +60,34 @@ public class DataInfoIndexer extends BaseStep implements StepInterface
 			outputRow[data.outputRowMeta.size()-1] = ""
 		}
 		outputResults()
-		count = 0
+
+		currentTransaction = null;
+		session?.clear();
+
 	}
 	private void commitTransaction(){
 		try{
-			if(session?.transaction?.isActive())
+			if(currentTransaction?.isActive())
 			{
-				session?.transaction?.commit()
-				session?.flush()
+				currentTransaction?.commit()
 				session?.clear();
 			}
 			outputResults()
 		}
 		catch(def e)
 		{
+			logError(e.toString())
+			//e.printStackTrace()
 			session?.transaction?.rollback()
 			rollbackResults()
 		}
+		currentTransaction = null
+		count = 0
+
 	}
 	private def processRasterDataSetNode(def rasterDataSetNode)
 	{
-	   def hints = new XmlIoHints()
+		def hints = new XmlIoHints()
 		def rasterDataSet = RasterDataSetXmlReader.initRasterDataSet(rasterDataSetNode, null, hints)
 		Query query
 		def rasterFile
@@ -93,69 +101,84 @@ public class DataInfoIndexer extends BaseStep implements StepInterface
 			try{
 				query = session.createQuery("FROM RasterFile where name = '${rasterDataSet.mainFile}'").setMaxResults(1)
 				def queryList = query?.list()
-        if(queryList)
-        {
-          rasterFile = queryList[0]
-        }
+				if(queryList)
+				{
+					rasterFile = queryList[0]
+				}
 			}
 			catch(e)
 			{
-        //println "ERROR QUERYING THE LIST!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        //e.printStackTrace()
-         // println "Checking data set ${e}"
+				logError(e.toString())
+				//println "ERROR QUERYING THE LIST!!!!!!!!!!!!!!!!!!!!!!!!!!"
+				//e.printStackTrace()
+				// println "Checking data set ${e}"
 			}
 		}
 
+//		println "*"*40
+//		println "BEFORE RASTER ENTRIES? ${rasterDataSet?.rasterEntries*.indexId}"
+//		println "*"*40
 		// if we had a lookup and already existed
 		if(rasterFile)
 		{
+//			println "FOUND!!!!!!!!!!!!!!!!!!!!"
 			rasterDataSet = rasterFile.rasterDataSet
+
+			rasterDataSet.forceEager()
 			if(rasterDataSet)
 			{
+				result[0] = rasterDataSet.id as long
+
 				if(repository) rasterDataSet?.repository = repository
 				if(meta.indexingModeUpdateFlag)
 				{
-					RasterDataSetXmlReader.initRasterDataSet(rasterDataSetNode, rasterDataSet, hints)
 					try
 					{
-            session.saveOrUpdate(rasterDataSet)
-            result[0] = rasterDataSet.id as long
-          }
+						RasterDataSetXmlReader.initRasterDataSet(rasterDataSetNode, rasterDataSet, hints)
+						session.saveOrUpdate(rasterDataSet)
+						result[0] = rasterDataSet.id as long
+					}
 					catch(e)
 					{
-          //  println e
-						e.printStackTrace()
+						logError(e.toString())
+						//  println e
+						//	e.printStackTrace()
 					}
 				}
 			}
 		}
 		else if(meta.indexingModeAddFlag)
 		{
+//			println "NOT FOUND!!!!!!!!!!!!!!!!!!!!"
 			if(rasterDataSet)
 			{
 				if(repository) rasterDataSet?.repository = repository
 				try
 				{
-          session.saveOrUpdate(rasterDataSet)
+					session.saveOrUpdate(rasterDataSet)
 					result[0] = rasterDataSet.id as long
 				}
 				catch(e)
 				{
-            e.printStackTrace()
+					logError(e.toString())
+					//e.printStackTrace()
 				}
-			}  
+			}
 		}
+//		println "*"*40
+//		println "AFTER RASTER ENTRIES? ${rasterDataSet.rasterEntries*.indexId}"
+//		println "*"*40
 
 		result
 	}
 	private def processVideoDataSetNode(def videoDataSetNode)
 	{
-	   def hints = new XmlIoHints()
+		def hints = new XmlIoHints()
 		def videoDataSet = VideoDataSetXmlReader.initVideoDataSet(videoDataSetNode, null, hints)
-		def query 
+		def query
 		def videoFile
 		def result = [-1 as long,"video_data_set"] as Object[]
-	
+
 		// if we are in update mode or check if exists mode then we will look up the raster file entry
 		//
 		if(meta.indexingModeUpdateFlag||meta.checkIfAlreadyExistsFlag&&videoDataSet?.mainFile)
@@ -170,7 +193,7 @@ public class DataInfoIndexer extends BaseStep implements StepInterface
 			if(repository) videoDataSet?.repository = repository
 			if(meta.indexingModeUpdateFlag)
 			{
-				if(videoDataSet) 
+				if(videoDataSet)
 				{
 					VideoDataSetXmlReader.initVideoDataSet(videoDataSetNode, videoDataSet, hints)
 					session.saveOrUpdate(videoDataSet)
@@ -181,7 +204,7 @@ public class DataInfoIndexer extends BaseStep implements StepInterface
 		else if(meta.indexingModeAddFlag)
 		{
 			if(repository) videoDataSet?.repository = repository
-			if(videoDataSet) session.save(videoDataSet); 
+			if(videoDataSet) session.save(videoDataSet);
 			result[0] = videoDataSet.id as long
 		}
 
@@ -195,7 +218,7 @@ public class DataInfoIndexer extends BaseStep implements StepInterface
 		else if(columnValue.isInteger())
 		{
 			def id = columnValue.toInteger()
-			if(repository) 
+			if(repository)
 			{
 				if(repository.id != id)
 				{
@@ -210,7 +233,7 @@ public class DataInfoIndexer extends BaseStep implements StepInterface
 		}
 		else
 		{
-			if(repository) 
+			if(repository)
 			{
 				if(repository.repositoryBaseDir != columnValue)
 				{
@@ -239,26 +262,26 @@ public class DataInfoIndexer extends BaseStep implements StepInterface
 			}
 		}
 		repository
-   }
+	}
 	public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws KettleException
 	{
 		Object[] r=getRow();    // get row, set busy!
 		if(r == null)
 		{
-    		commitTransaction()
-		   setOutputDone();
-		   return false;
-		} 
+			commitTransaction()
+			setOutputDone();
+			return false;
+		}
 		if(!session)
 		{
 			throw new KettleException("No session present")
-		}  
+		}
 		if(first)
 		{
-		 first = false;
-		 data.outputRowMeta = getInputRowMeta().clone();
-		 meta.getFields(data.outputRowMeta, getStepname(), null, null, this); 
-		// System.out.println("=============================== " +  ); 
+			first = false;
+			data.outputRowMeta = getInputRowMeta().clone();
+			meta.getFields(data.outputRowMeta, getStepname(), null, null, this);
+			// System.out.println("=============================== " +  );
 		}
 
 		def result
@@ -272,61 +295,66 @@ public class DataInfoIndexer extends BaseStep implements StepInterface
 		{
 			if(hibernate.applicationContext)
 			{
-		   def dataInfoXml = new XmlSlurper().parseText(dataInfo);
+//				println "*"*40
+//				println dataInfo
+//				println "*"*40
+				def dataInfoXml = new XmlSlurper().parseText(dataInfo);
 
-			try{
-				if(count == 0)	session.beginTransaction();
-				repository = getRepository(repoColumnValue)
-				if(dataInfoXml.name() == "oms")
-				{                	
-					for (def rasterDataSetNode in dataInfoXml?.dataSets?.RasterDataSet )
+				try{
+					if(!currentTransaction)	currentTransaction = session.beginTransaction();
+					repository = getRepository(repoColumnValue)
+					if(dataInfoXml.name() == "oms")
 					{
-						result = processRasterDataSetNode(rasterDataSetNode)
+						for (def rasterDataSetNode in dataInfoXml?.dataSets?.RasterDataSet )
+						{
+							result = processRasterDataSetNode(rasterDataSetNode)
+						}
+						// index videos
+						for (def videoDataSetNode in dataInfoXml?.dataSets?.VideoDataSet )
+						{
+							result = processVideoDataSetNode(videoDataSetNode)
+						}
 					}
-				// index videos
-					for (def videoDataSetNode in dataInfoXml?.dataSets?.VideoDataSet )
+					else if(dataInfoXml.name() == "RasterDataSet")
 					{
-						result = processVideoDataSetNode(videoDataSetNode)
+						result = processRasterDataSetNode(dataInfoXml)
+						//def rasterDataSetNoderDataSet = RasterDataSetXmlReader.initRasterDataSet(dataInfoXml, null, hints)
+						//session.saveOrUpdate(rasterDataSet);
 					}
+					else if(dataInfoXml.name() == "VideoDataSet")
+					{
+						result = processVideoDataSetNode(dataInfoXml)
+					}
+					++count
+					if(meta.outputResultFlag)
+					{
+						outputRows << RowDataUtil.addRowData(r,
+								  data.outputRowMeta.size()-(result.size()),
+								  result as Object []);
+					}
+					if (count % meta.batchSize== 0)
+					{
+						commitTransaction()
+					}
+
 				}
-				else if(dataInfoXml.name() == "RasterDataSet")
+				catch(e)
 				{
-					result = processRasterDataSetNode(dataInfoXml)
-					//def rasterDataSetNoderDataSet = RasterDataSetXmlReader.initRasterDataSet(dataInfoXml, null, hints)
-					//session.saveOrUpdate(rasterDataSet); 
+					logError(e.toString())
+				//	println "processRow........................"
+				//	println e
+					//e.printStackTrace()
+					rollbackResults()
 				}
-				else if(dataInfoXml.name() == "VideoDataSet")
-				{
-					result = processVideoDataSetNode(dataInfoXml)
-				}
-				++count
-				if(meta.outputResultFlag)
-				{
-					outputRows << RowDataUtil.addRowData(r, 
-		 	                                             data.outputRowMeta.size()-(result.size()), 
-		 	                                             result as Object []);
-				}
-				if (count % meta.batchSize== 0) 
-				{
-          //println "COMMITING TRANSACTION---------------------"
-					commitTransaction()
-				}
-				
-		    }
-		    catch(e)
-		    {
-		    	e.printStackTrace()
-		    	rollbackResults()
-		    }
 			}
 		}
 
-     if ((linesRead%Const.ROWS_UPDATE)==0) logBasic("Linenr "+linesRead);  // Some basic logging every 5000 rows.
+		if ((linesRead%Const.ROWS_UPDATE)==0) logBasic("Linenr "+linesRead);  // Some basic logging every 5000 rows.
 
 		return true;
 	}
 
-    public boolean init(StepMetaInterface smi, StepDataInterface sdi)
+	public boolean init(StepMetaInterface smi, StepDataInterface sdi)
 	{
 		SynchOssimInit.initialize()
 		meta = (DataInfoIndexerMeta)smi;
@@ -343,19 +371,19 @@ public class DataInfoIndexer extends BaseStep implements StepInterface
 	}
 	public void dispose(StepMetaInterface smi, StepDataInterface sdi)
 	{
-    try{
-      meta = (DataInfoIndexerMeta)smi;
-      data = (DataInfoIndexerData)sdi;
-      hibernate?.shutdown()
-      session?.close()
-      session = null
-    }
-    catch(def e)
-    {
-      println e
-    }
-    finally{
-      super.dispose(smi, sdi);
-    }
+		try{
+			meta = (DataInfoIndexerMeta)smi;
+			data = (DataInfoIndexerData)sdi;
+			hibernate?.shutdown()
+			session?.close()
+			session = null
+		}
+		catch(def e)
+		{
+			logError(e.toString())
+		}
+		finally{
+			super.dispose(smi, sdi);
+		}
 	}
 }

@@ -11,11 +11,28 @@ import org.ossim.common.CaseInsensitiveBind
 @ToString(includeNames = true)
 class RemoveJobCommand implements CaseInsensitiveBind
 {
-   Integer id
+   String id
    String jobId
 
    static constraints ={
       id nullable:true
       jobId nullable: true
+      idList nullable:true
+   }
+
+   def getIdList()
+   {
+      def result
+
+      if(id)
+      {
+         result = id.split(",").collect(){it.toInteger()}
+      }
+      else if(jobId)
+      {
+         result = jobId.split(",")
+      }
+
+      result
    }
 }
