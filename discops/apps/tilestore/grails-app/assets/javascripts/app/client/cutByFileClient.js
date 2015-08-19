@@ -117,16 +117,16 @@ var CutByFileClient = (function () {
             addWktToMap(data.result.wkt);
 
             if(AppClient.map.getView().getResolution()> 1){
-                console.log('------------<AppClient.map.getView().getResolution()>-----------');
-                console.log(AppClient.map.getView().getResolution());
-                console.log('------------</AppClient.map.getView().getResolution()>----------');
+                //console.log('------------<AppClient.map.getView().getResolution()>-----------');
+                //console.log(AppClient.map.getView().getResolution());
+                //console.log('------------</AppClient.map.getView().getResolution()>----------');
                 toastr.success('The file was successfully uploaded to the server.  Use the "Create Product" button' +
                     ' to start the build process.', 'Success!');
             }
             else{
-                console.log('------------<AppClient.map.getView().getResolution()>-----------');
-                console.log(AppClient.map.getView().getResolution());
-                console.log('------------</AppClient.map.getView().getResolution()>----------');
+                //console.log('------------<AppClient.map.getView().getResolution()>-----------');
+                //console.log(AppClient.map.getView().getResolution());
+                //console.log('------------</AppClient.map.getView().getResolution()>----------');
                 toastr.warning('Please make sure you have set the proper projection for the upload file. Use the' +
                     ' "Upload Cut File" option under "Tools" to set the projection.', 'Warning!');
             }
@@ -181,9 +181,9 @@ var CutByFileClient = (function () {
             "sourceEpsg": $pasteFormEpsgSourceSelect.val(),
             "targetEpsg": AppClient.mapEpsg
         }
-        console.log('---------pasteObj----------');
-        console.log(pasteObj);
-        console.log('---------------------------');
+        //console.log('---------pasteObj----------');
+        //console.log(pasteObj);
+        //console.log('---------------------------');
 
         $.ajax({
             url: urlConvertGeometry,
@@ -201,25 +201,26 @@ var CutByFileClient = (function () {
                 $pasteCutGeometryModal.modal('hide');
 
                 if(AppClient.map.getView().getResolution()> 1){
-                    console.log('------------<AppClient.map.getView().getResolution()>-----------');
-                    console.log(AppClient.map.getView().getResolution());
-                    console.log('------------</AppClient.map.getView().getResolution()>----------');
+                    //console.log('------------<AppClient.map.getView().getResolution()>-----------');
+                    //console.log(AppClient.map.getView().getResolution());
+                    //console.log('------------</AppClient.map.getView().getResolution()>----------');
+
+                    // TODO: Remove the create product disabled class
+                    CreateProductClient.$createGp.removeClass("disabled");
+
+
+
                     toastr.success('The file was successfully uploaded to the server.  Use the "Create Product"' +
                         ' button' +
                         ' to start the build process.', 'Success!');
                 }
                 else{
-                    console.log('------------<AppClient.map.getView().getResolution()>-----------');
-                    console.log(AppClient.map.getView().getResolution());
-                    console.log('------------</AppClient.map.getView().getResolution()>----------');
+                    //console.log('------------<AppClient.map.getView().getResolution()>-----------');
+                    //console.log(AppClient.map.getView().getResolution());
+                    //console.log('------------</AppClient.map.getView().getResolution()>----------');
                     toastr.warning('Please make sure you have set the proper projection for the upload file. Use the' +
                         ' "Paste Geometry" option under "Tools" to set the projection.', 'Warning!');
                 }
-
-
-
-
-
 
             },
             error: function(data){
