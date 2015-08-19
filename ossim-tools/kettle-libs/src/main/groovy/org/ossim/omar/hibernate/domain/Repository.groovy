@@ -39,4 +39,9 @@ class Repository
     
     @Column(name="scan_end_date", nullable=true)
     Date scanEndDate
+
+    void forceEager()
+    {
+
+    }
 }

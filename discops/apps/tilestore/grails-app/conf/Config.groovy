@@ -214,4 +214,10 @@ rabbitmq {
   }
 }
 
+
+login.registration.enabled=true
+login.registration.userVerification="manual"
+login.registration.createLdapUser=false
+login.registration.useMail=(login.registration.userVerification=="email")
+
 grails.assets.excludes  = ['**/*-debug.js']
