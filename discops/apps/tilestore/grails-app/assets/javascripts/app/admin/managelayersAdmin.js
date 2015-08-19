@@ -22,10 +22,55 @@ var AppManageLayersAdmin = (function () {
         name: 'aoiVectorLayer'
     });
 
-    //AppAdmin.mapOmar.addLayer(aoiVector);
-
-    //layersArray.push(osmAll, aoiVector);
-    //layersArray.push(aoiVector);
+    // ####################################    WIP   #####################################################
+    // This would provide feedback in the map using OL3's clustering functionality. However, at this time,
+    // the performance is not acceptable for this project.  Will revisit this as time permits.
+    //var clustfeaturesArray = [];
+    //
+    //var source = new ol.source.Vector({
+    //    features: clustfeaturesArray
+    //});
+    //
+    //var clusterSource = new ol.source.Cluster({
+    //        distance: 350,
+    //        source: source
+    //});
+    //
+    //var styleCache = {};
+    //
+    //var clusters = new ol.layer.Vector({
+    //    source: clusterSource,
+    //    style: function(feature, resolution) {
+    //        //console.log('feature.length', feature.get('features').length);
+    //        //console.log('feature', feature)
+    //        var size = feature.get('features').length;
+    //        var style = styleCache[size];
+    //        if (!style) {
+    //            style = [new ol.style.Style({
+    //                image: new ol.style.Circle({
+    //                    radius: 15,
+    //                    stroke: new ol.style.Stroke({
+    //                        color: '#fff'
+    //                    }),
+    //                    fill: new ol.style.Fill({
+    //                        color: 'rgba(92, 184, 92, 0.8)'
+    //                    })
+    //                }),
+    //                text: new ol.style.Text({
+    //                    text: size.toString(),
+    //                    fill: new ol.style.Fill({
+    //                        color: '#fff'
+    //                    })
+    //                })
+    //            })];
+    //            styleCache[size] = style;
+    //        }
+    //        return style;
+    //    },
+    //    name: 'clusters'
+    //});
+    //
+    ////AppAdmin.mapOmar.addLayer(clusters);
 
     // Utility function to move layers render order
     function swapTopLayer(mapName, removeId, insertId){
@@ -40,9 +85,6 @@ var AppManageLayersAdmin = (function () {
     return {
         initialize: function (initParams) {
 
-            //console.log('----<initParams>-----');
-            //console.log(initParams);
-            //console.log('----</initParams>----');
             loadParams = initParams;
 
             $.each(initParams.referenceLayers, function (idx, referenceLayer) {
@@ -60,11 +102,15 @@ var AppManageLayersAdmin = (function () {
             });
 
             layersArray.push(aoiVector);
+            //layersArray.push(clusters);
 
             $.each(layersArray, function (i, obj) {
                 AppAdmin.mapOmar.addLayer(obj);
                 AppAdmin.mapTile.addLayer(obj);
             });
+
+            //AppAdmin.mapTile.removeLayer(clusters);
+
 
             //console.log('--------getArray---------');
             //console.log(AppAdmin.mapOmar.getLayers().getArray());//[0].values_.name);
@@ -75,6 +121,10 @@ var AppManageLayersAdmin = (function () {
         aoiSource: aoiSource,
         aoiStyle: aoiStyle,
         aoiVector: aoiVector,
-        swapTopLayer: swapTopLayer
+        //clustfeaturesArray: clustfeaturesArray,
+        //source: source,
+        //clusterSource: clusterSource,
+        //clusters: clusters,
+        swapTopLayer: swapTopLayer,
     };
 })();
