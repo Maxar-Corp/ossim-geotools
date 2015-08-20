@@ -37,7 +37,7 @@ var AppAdmin = (function () {
     var $deleteLayerName = $('#deleteLayerName');
     var $submitDeleteLayer = $('#submitDeleteLayer');
 
-    var $viewLayersInfo = $('#viewLayersInfo')
+    var $viewLayersInfo = $('#viewLayersInfo');
     var $listLayersModal = $('#listLayersModal');
     var $layerTableInfo = $('#layerTableInfo');
     var $layersTable; // set in the info click callback (getLayersInfo())
@@ -153,14 +153,14 @@ var AppAdmin = (function () {
             var refreshMap = null;
             return function(e) {
                 if (refreshMap) {
-                    console.log('true');
+                    //console.log('true');
                     clearInterval(refreshMap);
                     refreshMap = null;
                     $mapTileInfo.html('');
                     $mapTileInfo.hide();
                 }
                 else {
-                    console.log('false');
+                    //console.log('false');
                     $mapTileInfo.html('Autorefresh Map On');
                     $mapTileInfo.show();
                     refreshMap = setInterval(function() {
@@ -168,7 +168,7 @@ var AppAdmin = (function () {
                         //console.log(params);
                         params.t = new Date().getMilliseconds();
                         initLayer.getSource().updateParams(params);
-                        console.log('refreshing!');
+                        //console.log('refreshing!');
                     }, 5000);
                 }
             };
@@ -213,7 +213,7 @@ var AppAdmin = (function () {
     var objLayer = {};
 
     $tileLayerSelect.on('change', function() {
-        console.log('select on change:' + $tileLayerSelect.val());
+        //console.log('select on change:' + $tileLayerSelect.val());
         switchCurrentLayer(initLayer, $tileLayerSelect.val());
     });
 
@@ -282,8 +282,8 @@ var AppAdmin = (function () {
 
                 // Puts new tile layer into dropdown list, and sets it as the active layer
                 var oldTileLayerName = $tileLayerSelect.val();
-                console.log(oldTileLayerName);
-                console.log(data);
+                //console.log(oldTileLayerName);
+                //console.log(data);
 
                 var newTileLayerName = data.name;
                 //console.log(newTileLayerName);
@@ -395,15 +395,15 @@ var AppAdmin = (function () {
 
         // Grab this from a input box
         var newLayerName = $renameLayerName.val(); // Need to truncate to 50 characters
-        console.log(newLayerName);
+        //console.log(newLayerName);
 
         function successHandlerRename(data, textStatus, jqXHR) {
-            console.log(jqXHR.status);
-            console.log(textStatus);
+            //console.log(jqXHR.status);
+            //console.log(textStatus);
 
             if (jqXHR.status === 200) {
                 //console.log('We have 200!');
-                console.log(data);
+                //console.log(data);
 
                 // Done 04-20-15
                 //$select.find('[value=' + oldLayerName + ']').remove();
@@ -440,7 +440,7 @@ var AppAdmin = (function () {
         }
 
         function errorHandlerRename(data) {
-            console.log(data);
+            //console.log(data);
             l.stop(); // stop spinner from rotating
             $submitRenameLayer.removeClass('btn-success disabled').addClass('btn-primary');
             // Handles error reporting from server
@@ -498,7 +498,7 @@ var AppAdmin = (function () {
 
             if (jqXHR.status === 200) {
                 //console.log('We have 200!');
-                console.log(data);
+                //console.log(data);
                 //$select.find('[value=' + deleteLayerName + ']').remove();
                 //$select.selectpicker('refresh');
 
@@ -608,7 +608,7 @@ var AppAdmin = (function () {
             type: 'GET',
             dataType: 'json',
             success: function (data) {
-                console.log(data.rows);
+                //console.log(data.rows);
 
                 $layersTable = $('#layers_table').DataTable({
                     "data": data.rows,

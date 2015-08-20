@@ -38,7 +38,7 @@ var CutByFileAdmin = (function () {
         //console.log(cutFeature);
         //console.log(cutFeature.getGeometry().getExtent());
         cutFeatureExtent = cutFeature.getGeometry().getExtent();
-        console.log(cutFeatureExtent);
+        //console.log(cutFeatureExtent);
 
         // TODO: Use clearAOI() from drawFeatures.js
         //if (AppManageLayersAdmin.aoiVector.getSource().getFeatures().length >= 1) {
@@ -87,9 +87,9 @@ var CutByFileAdmin = (function () {
 
     function setSourceEpsgCutForm(){
 
-        console.log('select: ' + $sourceEpsgSelect.val());
+        //console.log('select: ' + $sourceEpsgSelect.val());
         $cutFormSourceEpsg.val($sourceEpsgSelect.val());
-        console.log('hidden: ' + $cutFormSourceEpsg.val());
+        //console.log('hidden: ' + $cutFormSourceEpsg.val());
 
     }
 
@@ -106,10 +106,10 @@ var CutByFileAdmin = (function () {
         dataType: 'json',
         //autoUpload: false,
         done: function (e, data) {
-            console.log('---fileupload (data)------');
-            console.log(data);
-            console.log('---------------------------');
-            console.log(data.result.wkt);
+            //console.log('---fileupload (data)------');
+            //console.log(data);
+            //console.log('---------------------------');
+            //console.log(data.result.wkt);
             addWktToMap(data.result.wkt);
             $.each(data.files, function (index, file) {
                 $('#files').text('Successfully uploaded: ' + file.name) ;
@@ -118,7 +118,7 @@ var CutByFileAdmin = (function () {
 
         },
         error: function(data){
-            console.log(data);
+            //console.log(data);
             toastr.error(JSON.stringify(data.responseJSON.message),'Error');
         },
         progressall: function (e, data) {
@@ -184,7 +184,7 @@ var CutByFileAdmin = (function () {
             },
             error: function(data){
                 
-                console.log(data);
+                //console.log(data);
                 toastr.error("Error parsing geometry string. Please check the syntax and try again.",'Error');
 
             }

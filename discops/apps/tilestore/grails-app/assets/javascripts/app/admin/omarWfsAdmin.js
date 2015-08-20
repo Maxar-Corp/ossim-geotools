@@ -122,8 +122,8 @@ var AppOmarWfsAdmin = (function () {
                 inStartDate = $customStartDateFilter.datepicker('getFormattedDate');
                 outStartDate = $customEndDateFilter.datepicker('getFormattedDate');
 
-                console.log(moment(inStartDate).format('YYYY-MM-DD'));
-                console.log(moment(outStartDate).format('YYYY-MM-DD'));
+                //console.log(moment(inStartDate).format('YYYY-MM-DD'));
+                //console.log(moment(outStartDate).format('YYYY-MM-DD'));
 
                 queryRange.start = moment(inStartDate).format('YYYY-MM-DD'); // = '05-12-2014';
                 queryRange.end = moment(outStartDate).format('YYYY-MM-DD'); // = '05-29-2015';
@@ -384,7 +384,7 @@ var AppOmarWfsAdmin = (function () {
             $nextWfsImages.addClass("disabled");
         }
         else{
-            console.log('nope, counterEnd < imageCountTotal');
+            //console.log('nope, counterEnd < imageCountTotal');
         }
 
         //console.log('counterStart: ' + counterStart);
@@ -407,8 +407,8 @@ var AppOmarWfsAdmin = (function () {
             filterOpts.queryNone = true;
         }
 
-        console.log('Next Button => filter options below:');
-        console.log(filterOpts);
+        //console.log('Next Button => filter options below:');
+        //console.log(filterOpts);
         getWfsCards(filterOpts);
         $omarFeed.animate({
             scrollTop: 0
@@ -422,7 +422,7 @@ var AppOmarWfsAdmin = (function () {
         counterStart = filterOpts.offset - 24;
         counterEnd = filterOpts.offset;
 
-        console.log(counterStart + ' ' + counterEnd);
+        //console.log(counterStart + ' ' + counterEnd);
 
         $startResult.html(counterStart);
         $endResult.html(counterEnd);
@@ -435,7 +435,7 @@ var AppOmarWfsAdmin = (function () {
             $prevWfsImages.removeClass("disabled");
         }
 
-        console.log('imageCountTotal: ' + imageCountTotal + ' offset: ' + (filterOpts.offset + 24));
+        //console.log('imageCountTotal: ' + imageCountTotal + ' offset: ' + (filterOpts.offset + 24));
         if(imageCountTotal >= (filterOpts.offset+ 25)) {
             $nextWfsImages.removeClass("disabled");
         }
@@ -445,8 +445,8 @@ var AppOmarWfsAdmin = (function () {
             filterOpts.queryNone = true;
         }
 
-        console.log('Next Button => filter options below:');
-        console.log(filterOpts);
+        //console.log('Next Button => filter options below:');
+        //console.log(filterOpts);
         getWfsCards(filterOpts);
         $omarFeed.animate({
             scrollTop: 0

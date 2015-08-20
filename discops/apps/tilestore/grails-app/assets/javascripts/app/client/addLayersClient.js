@@ -47,7 +47,7 @@ var AddLayerClient = (function () {
 
         AppClient.map.removeLayer(removeOldLayer);
 
-        console.log('Now loading: ' + addNewLayer);
+        //console.log('Now loading: ' + addNewLayer);
 
         addNewLayer = new ol.layer.Tile( {
             opacity: 1.0,
@@ -80,7 +80,7 @@ var AddLayerClient = (function () {
 
     $tileLayerSelect.on('change', function() {
 
-        console.log('select on change:' + $tileLayerSelect.val());
+        //console.log('select on change:' + $tileLayerSelect.val());
         switchCurrentLayer(initLayer, $tileLayerSelect.val());
 
     });
@@ -176,7 +176,7 @@ var AddLayerClient = (function () {
             });
 
             if (initParams.wmtsTileGrid) {
-                console.log('Adding tile grid!');
+                //console.log('Adding tile grid!');
                 layersArray.push(tileParamGrid);
             }
 

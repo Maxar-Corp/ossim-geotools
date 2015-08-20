@@ -34,7 +34,7 @@ var CutByFileClient = (function () {
         //console.log(cutFeature);
         //console.log(cutFeature.getGeometry().getExtent());
         cutFeatureExtent = cutFeature.getGeometry().getExtent();
-        console.log(cutFeatureExtent);
+        //console.log(cutFeatureExtent);
 
         if (AddLayerClient.aoiVector.getSource().getFeatures().length >= 1) {
             AddLayerClient.aoiVector.getSource().clear();
@@ -86,9 +86,9 @@ var CutByFileClient = (function () {
 
     function setSourceEpsgCutForm(){
 
-        console.log('select: ' + $sourceEpsgSelect.val());
+        //console.log('select: ' + $sourceEpsgSelect.val());
         $cutFormSourceEpsg.val($sourceEpsgSelect.val());
-        console.log('hidden: ' + $cutFormSourceEpsg.val());
+        //console.log('hidden: ' + $cutFormSourceEpsg.val());
 
     }
 
@@ -112,7 +112,7 @@ var CutByFileClient = (function () {
             //    $('#files').text('Successfully uploaded: ' + file.name);
             //});
 
-            console.log(data.result.wkt);
+            //console.log(data.result.wkt);
             addWktToMap(data.result.wkt);
 
             if(AppClient.map.getView().getResolution()> 1){
@@ -132,7 +132,7 @@ var CutByFileClient = (function () {
 
         },
         error: function(data){
-            console.log(data);
+            //console.log(data);
             toastr.error(JSON.stringify(data.responseJSON.message),'Error');
         },
         progressall: function (e, data) {
@@ -223,7 +223,7 @@ var CutByFileClient = (function () {
             },
             error: function(data){
                 
-                console.log(data);
+                //console.log(data);
                 toastr.error("Error parsing geometry string. Please check the syntax and try again.",'Error');
 
             }

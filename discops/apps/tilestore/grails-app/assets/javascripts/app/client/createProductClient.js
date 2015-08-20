@@ -336,7 +336,7 @@ var CreateProductClient = (function () {
                         jobId = data.jobId;
 
                         function checkJobStatus(jobId) {
-                            console.log('checkJobStatus: ' + jobId);
+                            //console.log('checkJobStatus: ' + jobId);
                             $.ajax({
                                 url: "/tilestore/job/show?jobId=" + jobId,
                                 type: 'GET',
@@ -346,8 +346,8 @@ var CreateProductClient = (function () {
                                     // Make sure data is being returned.  If not the job has been terminated, and an
                                     // error needs to be returned.
                                     if (data && data.total > 0){
-                                        console.log('total: ' + data.total);
-                                        console.log(data.rows[0].status);
+                                        //console.log('total: ' + data.total);
+                                        //console.log(data.rows[0].status);
 
                                         // Product build 'Finished'
                                         if (data.rows[0].jobId === jobId && data.rows[0].status === 'FINISHED'){
@@ -448,7 +448,7 @@ var CreateProductClient = (function () {
 
             function fileDownload(downloadNumber){
 
-                console.log('filedownload jobNumber: ' + downloadNumber);
+                //console.log('filedownload jobNumber: ' + downloadNumber);
                 $.fileDownload("/tilestore/job/download?jobId=" + downloadNumber)
                     .done(function() {console.log('success!');})
                     .fail(function(){
@@ -462,7 +462,7 @@ var CreateProductClient = (function () {
 
             $(document).on("click", "button.fileDownload",function(){
 
-                console.log('your jobId is: ' + jobId);
+                //console.log('your jobId is: ' + jobId);
                 fileDownload(jobId);
 
             });
@@ -529,7 +529,7 @@ var CreateProductClient = (function () {
 
                 $createGp.addClass('disabled');
 
-                console.log('reset fired!');
+                //console.log('reset fired!');
 
             }
 

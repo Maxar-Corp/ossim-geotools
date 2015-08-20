@@ -72,8 +72,8 @@ var AppIngestTileAdmin = (function () {
                 min = data.minLevel;
                 max = data.maxLevel;
 
-                console.log(data.minLevel);
-                console.log(data.maxLevel);
+                //console.log(data.minLevel);
+                //console.log(data.maxLevel);
 
                 $minIngestLevel.empty();
                 $maxIngestLevel.empty();
@@ -98,7 +98,7 @@ var AppIngestTileAdmin = (function () {
             },
             // TODO: need to move this to a $promise
             error: function(data){
-                console.log(data);
+                //console.log(data);
                 toastr.error(data.message, 'Error on obtaining clamp bounds.');
 
             }
@@ -127,7 +127,7 @@ var AppIngestTileAdmin = (function () {
         objIngestImage.minLevel = $minIngestLevel.val(); //$minIngestLevelSpin.spinbox('value');
         objIngestImage.maxLevel =  $maxIngestLevel.val(); //$maxIngestLevelSpin.spinbox('value');
 
-        console.log(objIngestImage);
+        //console.log(objIngestImage);
 
         //TODO: Refactor using promises...
         $.ajax({
@@ -141,7 +141,7 @@ var AppIngestTileAdmin = (function () {
 
             },
             error: function(data){
-                console.log(data);
+                //console.log(data);
                 toastr.error(data.message, 'Error on ingest');
 
             }
@@ -173,7 +173,7 @@ var AppIngestTileAdmin = (function () {
 
     $submitIngestImage.on('click', function(){
 
-        console.log('ingesting selected image...');
+        //console.log('ingesting selected image...');
         ingestImage();
 
     });
