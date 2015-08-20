@@ -1,12 +1,11 @@
-"use strict";
 var AppDrawFeaturesClient = (function () {
-
+    "use strict";
     var loadParams, outputWkt, formatWkt, drawInteractionFree, drawInteractionRect;
     var $drawRectangle = $('#drawRectangle');
     var $drawPolygon = $('#drawPolygon');
     var $tileLayerSelect = $('#tileLayerSelect');
     var $mapInfo = $('#mapInfo');
-    var $ingestModalButton = $('#ingestModalButton');
+    //var $ingestModalButton = $('#ingestModalButton');
     var $endCuts = $('#endCuts');
     //var $ingestImageModal = $('#ingestImageModal');
 
@@ -26,12 +25,12 @@ var AppDrawFeaturesClient = (function () {
 
         // Clear the draw/cut interactions if they exist
         if (drawInteractionFree || drawInteractionRect){
-            console.log('drawinteractions present...removing existing interactions');
+            //console.log('drawinteractions present...removing existing interactions');
             AppClient.map.removeInteraction(drawInteractionFree);
             AppClient.map.removeInteraction(drawInteractionRect);
         }
         else{
-            console.log('drawinteractions NOT present...');
+            //console.log('drawinteractions NOT present...');
         }
 
 
@@ -39,7 +38,7 @@ var AppDrawFeaturesClient = (function () {
 
             // Create the freehand poly cut tool if it doesn't exist
             if (!drawInteractionFree){
-                console.log('!drawInteractionFree');
+                //console.log('!drawInteractionFree');
                 drawInteractionFree = new ol.interaction.Draw({
                     source: AddLayerClient.aoiSource,
                     type: (value)
@@ -47,7 +46,7 @@ var AppDrawFeaturesClient = (function () {
             }
 
             if ($drawRectangle.hasClass('btn-success')){
-                $drawRectangle.removeClass('btn-success').addClass('btn-primary')
+                $drawRectangle.removeClass('btn-success').addClass('btn-primary');
             }
             $drawPolygon.removeClass('btn-primary').addClass('btn-success');
             $endCuts.removeClass('btn-default').addClass('btn-warning');
@@ -60,7 +59,7 @@ var AppDrawFeaturesClient = (function () {
             drawInteractionFree.on('drawend', function (evt) {
                 //$('#showIngestModal').removeClass('disabled');
                 aoiFeature = evt.feature;
-                console.log(aoiFeature.getGeometry());
+                //console.log(aoiFeature.getGeometry());
                 addAoiFeaturePolygon(aoiFeature.getGeometry());
             });
 
@@ -69,14 +68,14 @@ var AppDrawFeaturesClient = (function () {
 
             // Create the rectangle cut tool if it doesn't exist
             if(!drawInteractionRect){
-                console.log('!drawInteractionRect');
+                //console.log('!drawInteractionRect');
                 drawInteractionRect = new ol.interaction.DragBox({
                     style: AddLayerClient.aoiStyle
                 });
             }
 
             if ($drawPolygon.hasClass('btn-success')){
-                $drawPolygon.removeClass('btn-success').addClass('btn-primary')
+                $drawPolygon.removeClass('btn-success').addClass('btn-primary');
             }
             $drawRectangle.removeClass('btn-primary').addClass('btn-success');
             $endCuts.removeClass('btn-default').addClass('btn-warning');
@@ -105,14 +104,14 @@ var AppDrawFeaturesClient = (function () {
         //console.log(aoiVector.getSource().getFeatures().length);
         if (AddLayerClient.aoiVector.getSource().getFeatures().length >= 1) {
             AddLayerClient.aoiVector.getSource().clear();
-            console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
+            //console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
         }
 
         formatWkt = new ol.format.WKT();
         outputWkt = formatWkt.writeGeometry(geom);
 
-        console.log(outputWkt);
-        console.log($tileLayerSelect.val());
+        //console.log(outputWkt);
+        //console.log($tileLayerSelect.val());
 
         //AppIngestTileAdmin.objIngestImage.aoi = outputWkt;
         CreateProductClient.createAoi(outputWkt);
@@ -122,11 +121,11 @@ var AppDrawFeaturesClient = (function () {
     }
 
     function addAoiFeatureRectangle(){
-        console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
+        //console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
 
         if (AddLayerClient.aoiVector.getSource().getFeatures().length >= 1) {
             AddLayerClient.aoiVector.getSource().clear();
-            console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
+            //console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
         }
 
         // Pass the 'output' as a WKT polygon
@@ -135,7 +134,7 @@ var AppDrawFeaturesClient = (function () {
         formatWkt = new ol.format.WKT();
         outputWkt = formatWkt.writeGeometry(drawInteractionRect.getGeometry());
 
-        console.log(outputWkt);
+        //console.log(outputWkt);
 
         aoiFeature.setGeometry(output);
         AddLayerClient.aoiVector.getSource().addFeature(aoiFeature);
@@ -164,7 +163,7 @@ var AppDrawFeaturesClient = (function () {
         $('#drawPolygon').removeClass('btn-success').addClass('btn-primary');
         AddLayerClient.aoiVector.getSource().clear();
         $endCuts.html('<i class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Manual Cutting Off')
-            .closest('li')
+            .closest('li');
 
         $endCuts.removeClass('btn-warning').addClass('btn-default');
 
@@ -172,7 +171,7 @@ var AppDrawFeaturesClient = (function () {
         //$ingestModalButton.addClass('disabled');
         //$mapOmarInfo.html('');
         //$mapOmarInfo.hide();
-    })
+    });
 
     return {
         initialize: function (initParams) {

@@ -1,6 +1,6 @@
-"use strict";
-var AppManageLayersAdmin = (function () {
 
+var AppManageLayersAdmin = (function () {
+    "use strict";
     var layersArray = [];
     var loadParams;
 
@@ -125,6 +125,6 @@ var AppManageLayersAdmin = (function () {
         //source: source,
         //clusterSource: clusterSource,
         //clusters: clusters,
-        swapTopLayer: swapTopLayer,
+        swapTopLayer: swapTopLayer
     };
 })();

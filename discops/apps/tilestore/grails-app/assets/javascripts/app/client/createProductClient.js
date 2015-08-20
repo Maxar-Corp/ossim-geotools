@@ -1,6 +1,5 @@
-"use strict";
 var CreateProductClient = (function () {
-
+    "use strict";
     // Cache all the DOM elements
 
     // Navbar DOM elements
@@ -67,7 +66,7 @@ var CreateProductClient = (function () {
 
     var jobId;
 
-    var output, outputWkt, formatWkt;
+    //var output, outputWkt, formatWkt;
 
     var urlProductExport;
     var urlLayerActualBounds;
@@ -144,7 +143,7 @@ var CreateProductClient = (function () {
         ).done(function(){
                 product.aoi = wkt;
                 getMetrics();
-            })
+            });
 
     }
 
@@ -174,16 +173,16 @@ var CreateProductClient = (function () {
         }
         else if (val < megabyte){
 
-            result = myRound(val / kilobyte, 1000) + " Kb"
+            result = myRound(val / kilobyte, 1000) + " Kb";
         }
         else if (val < gigabyte){
 
-            result = myRound(val / megabyte, 1000) + " Mb"
+            result = myRound(val / megabyte, 1000) + " Mb";
 
         }
         else {
 
-            result = myRound(val / gigabyte, 1000) + " Gb"
+            result = myRound(val / gigabyte, 1000) + " Gb";
 
         }
         return result;
@@ -203,7 +202,7 @@ var CreateProductClient = (function () {
             "aoiEpsg": product.aoiEpsg,
             "minLevel": $productMinLevel.val(),
             "maxLevel": $productMaxLevel.val()
-        }
+        };
 
         //console.log(metricObj);
 
@@ -313,7 +312,7 @@ var CreateProductClient = (function () {
 
                 product.layer = $tileLayerSelect.val();
                 product.properties.filename = $productName.val();
-                product.aoiEpsg = AppClient.mapEpsg //"EPSG:3857";
+                product.aoiEpsg = AppClient.mapEpsg;
                 product.minLevel = $productMinLevel.val();
                 product.maxLevel = $productMaxLevel.val();
                 product.outputEpsg = $productEpsgCode.val();
@@ -337,7 +336,7 @@ var CreateProductClient = (function () {
                         jobId = data.jobId;
 
                         function checkJobStatus(jobId) {
-                            console.log('checkJobStatus: ' + jobId);
+                            //console.log('checkJobStatus: ' + jobId);
                             $.ajax({
                                 url: "/tilestore/job/show?jobId=" + jobId,
                                 type: 'GET',
@@ -347,8 +346,8 @@ var CreateProductClient = (function () {
                                     // Make sure data is being returned.  If not the job has been terminated, and an
                                     // error needs to be returned.
                                     if (data && data.total > 0){
-                                        console.log('total: ' + data.total);
-                                        console.log(data.rows[0].status);
+                                        //console.log('total: ' + data.total);
+                                        //console.log(data.rows[0].status);
 
                                         // Product build 'Finished'
                                         if (data.rows[0].jobId === jobId && data.rows[0].status === 'FINISHED'){
@@ -409,7 +408,7 @@ var CreateProductClient = (function () {
 
                                 }
                             });
-                        };
+                        }
 
                         checkForProduct = setInterval(
 
@@ -449,7 +448,7 @@ var CreateProductClient = (function () {
 
             function fileDownload(downloadNumber){
 
-                console.log('filedownload jobNumber: ' + downloadNumber);
+                //console.log('filedownload jobNumber: ' + downloadNumber);
                 $.fileDownload("/tilestore/job/download?jobId=" + downloadNumber)
                     .done(function() {console.log('success!');})
                     .fail(function(){
@@ -463,7 +462,7 @@ var CreateProductClient = (function () {
 
             $(document).on("click", "button.fileDownload",function(){
 
-                console.log('your jobId is: ' + jobId);
+                //console.log('your jobId is: ' + jobId);
                 fileDownload(jobId);
 
             });
@@ -495,7 +494,7 @@ var CreateProductClient = (function () {
 
                 clearInterval(checkForProduct);
 
-                $productName.val('');;
+                $productName.val('');
 
                 $productMinLevel.empty();
                 $productMaxLevel.empty();
@@ -530,7 +529,7 @@ var CreateProductClient = (function () {
 
                 $createGp.addClass('disabled');
 
-                console.log('reset fired!');
+                //console.log('reset fired!');
 
             }
 

@@ -1,5 +1,5 @@
-"use strict";
 var AppClient = (function () {
+    "use strict";
     var mapEpsg = 'EPSG:3857';
     var loadParams;
     var currentTilelayer;
@@ -85,7 +85,7 @@ var AppClient = (function () {
         });
 
 
-    })
+    });
 
     return {
         initialize: function (appClientParams) {
@@ -100,7 +100,7 @@ var AppClient = (function () {
                 "hideMethod": "fadeOut",
                 "timeOut": "10000"
 
-            }
+            };
             toastr.info('Use the options under the "Tools" menu to define an Area of Interest, and then click "Create' +
                 ' Product" to generate an output file.', 'Define Product AOI');
 
