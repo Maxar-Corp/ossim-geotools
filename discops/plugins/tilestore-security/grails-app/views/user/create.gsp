@@ -30,6 +30,8 @@ tabData << [name: 'roles',    icon: 'icon_role', messageCode: 'spring.security.u
 			<s2ui:passwordFieldRow name='password' labelCode='user.password.label' bean="${user}"
                                 labelCodeDefault='Password' value="${user?.password}"/>
 
+			<tilestore:confirmPassword/>
+
 			<s2ui:checkboxRow name='enabled' labelCode='user.enabled.label' bean="${user}"
                            labelCodeDefault='Enabled' value="${user?.enabled}"/>
 
@@ -57,14 +59,24 @@ tabData << [name: 'roles',    icon: 'icon_role', messageCode: 'spring.security.u
 </s2ui:tabs>
 
 <div style='float:left; margin-top: 10px; '>
-<s2ui:submitButton elementId='create' form='userCreateForm' messageCode='default.button.create.label'/>
+<tilestore:submitButton elementId='create' form='userCreateForm' messageCode='default.button.create.label'/>
 </div>
 
 </g:form>
 
 <script>
 $(document).ready(function() {
+
 	$('#username').focus();
+	console.log('Create user page loading...');
+
+
+	$('#create').on('click', function(){
+		console.log('create submit!');
+	});
+
+
+
 	<s2ui:initCheckboxes/>
 });
 </script>
