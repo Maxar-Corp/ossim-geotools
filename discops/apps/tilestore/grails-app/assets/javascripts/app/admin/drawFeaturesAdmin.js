@@ -1,12 +1,12 @@
-"use strict";
-var AppDrawFeaturesAdmin = (function () {
 
+var AppDrawFeaturesAdmin = (function () {
+    "use strict";
     var loadParams, outputWkt, formatWkt, drawInteractionFree, drawInteractionRect;
     var $drawRectangle = $('#drawRectangle');
     var $drawPolygon = $('#drawPolygon');
     var $tileLayerSelect = $('#tileLayerSelect');
     var $mapOmarInfo = $('#mapOmarInfo');
-    var $ingestModalButton = $('#ingestModalButton');
+    //var $ingestModalButton = $('#ingestModalButton');
     var $endCuts = $('#endCuts');
     var $ingestImageModal = $('#ingestImageModal');
 

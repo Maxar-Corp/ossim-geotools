@@ -1,6 +1,6 @@
-"use strict";
-var AppOmarWfsAdmin = (function () {
 
+var AppOmarWfsAdmin = (function () {
+    "use strict";
     var loadParams;
     var $omarFeed = $('#omarFeed');
     var $omarImageList = $('#omarImageList');
@@ -45,7 +45,7 @@ var AppOmarWfsAdmin = (function () {
         endDate: '',
         queryNone: false,
         offset: 0
-    }
+    };
     var queryRange = {
         start: '',
         end: '',
@@ -66,7 +66,7 @@ var AppOmarWfsAdmin = (function () {
 
     var $submitFilter = $('#submitFilter');
     var $startResult = $('#startResult');
-    var $endResult = $('#endResult')
+    var $endResult = $('#endResult');
 
     dateToday = moment().format('MM-DD-YYYY 00:00');
     dateTodayEnd = moment().format('MM-DD-YYYY 23:59');
@@ -154,22 +154,22 @@ var AppOmarWfsAdmin = (function () {
     }
 
     function toCql(constraints){
-        var result = ""
+        var result = "";
 
-        var constraintToExpression
+        var constraintToExpression;
         if(constraints.startDate && constraints.endDate)
         {
             constraintToExpression = constraints.dateType + " between " + "'" + constraints.startDate + "'" +
                 " AND " +
                 "'" + constraints.endDate + "'";
 
-            if(result=="")
+            if(result === "")
             {
                 result = "(" + constraintToExpression + ")";
             }
             else
             {
-                result = result + " AND (" +constraintToExpression + ")"
+                result = result + " AND (" + constraintToExpression + ")";
             }
         }
          /*       else if(constraints.startDate)
@@ -199,19 +199,19 @@ var AppOmarWfsAdmin = (function () {
         */
         if(constraints.constrainToViewport)
         {
-            var constraintToExpression = "BBOX(" + constraints.geomType + "," + constraints.bbox + ")";
+            constraintToExpression = "BBOX(" + constraints.geomType + "," + constraints.bbox + ")";
 
-            if(result=="")
+            if(result === "")
             {
                 result = "(" + constraintToExpression + ")";
             }
             else
             {
-                result = result + " AND (" +constraintToExpression + ")"
+                result = result + " AND (" +constraintToExpression + ")";
             }
         }
 
-        return result
+        return result;
     }
 
     AppAdmin.mapOmar.on('moveend', function () {
@@ -232,8 +232,8 @@ var AppOmarWfsAdmin = (function () {
         }
 
         var dateType = params.dateType || 'ingest_date'; // default value
-        var startDate = params.startDate // || dateLast7Days; // default value
-        var endDate = params.endDate // ||  dateToday; // default value
+        var startDate = params.startDate; // || dateLast7Days; // default value
+        var endDate = params.endDate; // ||  dateToday; // default value
 
         var offset = params.offset || 0;
         var sortByField = $sortByFieldSelect.selectlist('selectedItem').value || 'ingest_date';
@@ -367,7 +367,7 @@ var AppOmarWfsAdmin = (function () {
                     $resultsSet.hide();
                 }
             }
-        })
+        });
 
     }
 
@@ -411,7 +411,7 @@ var AppOmarWfsAdmin = (function () {
         console.log(filterOpts);
         getWfsCards(filterOpts);
         $omarFeed.animate({
-            scrollTop: 0,
+            scrollTop: 0
         }, 'slow');
 
     }
@@ -449,7 +449,7 @@ var AppOmarWfsAdmin = (function () {
         console.log(filterOpts);
         getWfsCards(filterOpts);
         $omarFeed.animate({
-            scrollTop: 0,
+            scrollTop: 0
         }, 'slow');
 
     }
@@ -537,7 +537,7 @@ var AppOmarWfsAdmin = (function () {
     Handlebars.registerHelper("formatDate", function convertDate(date){
 
         if(date){
-            var inDate, outDate, options;
+            //var inDate, outDate, options;
 
             //inDate = new Date(date);
             //options = { year: '2-digit', month: 'numeric', day: 'numeric', hour12: 'true', hour: 'numeric', minute: 'numeric', second: 'numeric' }
@@ -717,5 +717,5 @@ var AppOmarWfsAdmin = (function () {
         },
         previewLayer: previewLayer,
         objImageClamp: objImageClamp
-    }
+    };
 })();

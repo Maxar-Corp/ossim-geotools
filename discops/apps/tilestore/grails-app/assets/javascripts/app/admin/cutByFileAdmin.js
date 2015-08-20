@@ -1,6 +1,6 @@
-"use strict";
-var CutByFileAdmin = (function () {
 
+var CutByFileAdmin = (function () {
+    "use strict";
     // Cache DOM elements
 
     var $ingestModalButton = $('#ingestModalButton');
@@ -25,8 +25,8 @@ var CutByFileAdmin = (function () {
 
     var cutFeature, // holds the polygons from the kml/shapefile cut files
         cutFeatureExtent, // holds the geometry extent of the cut feature polygons
-        removeFeature, // previously uploaded feature
-        progress // file upload progress percentage
+        //removeFeature, // previously uploaded feature
+        progress; // file upload progress percentage
 
     $cutFormTargetEpsg.val(AppAdmin.mapEpsg);  // grabs the EPSG code from the map element // #
 
@@ -39,7 +39,6 @@ var CutByFileAdmin = (function () {
         //console.log(cutFeature.getGeometry().getExtent());
         cutFeatureExtent = cutFeature.getGeometry().getExtent();
         console.log(cutFeatureExtent);
-
 
         // TODO: Use clearAOI() from drawFeatures.js
         //if (AppManageLayersAdmin.aoiVector.getSource().getFeatures().length >= 1) {
@@ -166,10 +165,10 @@ var CutByFileAdmin = (function () {
             "geometry": $geometryPasteTextArea.val(),
             "sourceEpsg": $pasteFormEpsgSourceSelect.val(),
             "targetEpsg":  AppAdmin.mapEpsg
-        }
-        console.log('---------pasteObj----------');
-        console.log(pasteObj);
-        console.log('---------------------------');
+        };
+        //console.log('---------pasteObj----------');
+        //console.log(pasteObj);
+        //console.log('---------------------------');
 
         $.ajax({
             url: urlConvertGeometry,
@@ -214,6 +213,6 @@ var CutByFileAdmin = (function () {
             //console.log(initParams);
 
         }
-    }
+    };
 
 })();

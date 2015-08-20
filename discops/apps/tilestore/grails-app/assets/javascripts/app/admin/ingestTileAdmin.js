@@ -1,5 +1,6 @@
-"use strict";
+
 var AppIngestTileAdmin = (function () {
+    "use strict";
     var loadParams;
 
     var $ingestModalButton = $('#ingestModalButton');
@@ -51,7 +52,7 @@ var AppIngestTileAdmin = (function () {
         //http://localhost:8080/tilestore/wfs?request=getFeature&TypeName=tilestore:tile_cache_layer_info&outputFormat=json&filter=name=%27aaron%27
 
        // Get objClamp from appAdmin
-        console.log(AppOmarWfsAdmin.objImageClamp);
+        //console.log(AppOmarWfsAdmin.objImageClamp);
 
         $.ajax({
             url: "/tilestore/layerManager/getClampedBounds",
@@ -60,7 +61,7 @@ var AppIngestTileAdmin = (function () {
             data: AppOmarWfsAdmin.objImageClamp,
             // TODO: need to move this to a $promise
             success: function (data) {
-                console.log(data);
+                //console.log(data);
 
                 //console.log(data);
                 //$minIngestLevel.selectpicker('val', data.minLevel);
@@ -189,6 +190,6 @@ var AppIngestTileAdmin = (function () {
         setIngestBool: setIngestBool,
         getIngestBool: getIngestBool
 
-    }
+    };
 
 })();
