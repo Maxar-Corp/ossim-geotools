@@ -72,33 +72,6 @@ var CreateProductClient = (function () {
     var urlProductExport;
     var urlLayerActualBounds;
 
-    //var aoiFeature = new ol.Feature();
-
-    // Use a ol.FeatureOverlay to store the AOI
-    //var aoiFeatureOverlay = new ol.FeatureOverlay();
-
-    //var aoiStyle = new ol.style.Style({
-    //    stroke: new ol.style.Stroke({
-    //        color: 'cyan',
-    //        width: 5
-    //    }),
-    //    fill: new ol.style.Fill({
-    //        color: 'rgba(0, 255, 255, 0.3)'
-    //    })
-    //});
-
-    //aoiFeatureOverlay.setStyle(aoiStyle);
-
-    //// A DragBox interaction used to pass the geometry to the aoiFeatureOverlay
-    //var dragBoxControl = new ol.interaction.DragBox({
-    //    condition: ol.events.condition.altShiftKeysOnly,
-    //    style: aoiStyle
-    //});
-
-    // Add the DragBox control upon app load.  The interaction is available
-    // by using the <ALT> and <SHIFT> key and defining a box
-    //AppClient.map.addInteraction(dragBoxControl);
-
     function createAoi(wkt){
 
         $createGp.removeClass('disabled');
@@ -121,9 +94,9 @@ var CreateProductClient = (function () {
             // TODO: Add $promise function for success
             success: function (data) {
 
-                console.log('----getActualBounds (data)------');
-                console.log(data);
-                console.log('---------------------------');
+                //console.log('----getActualBounds (data)------');
+                //console.log(data);
+                //console.log('---------------------------');
                 $aoiLod.html(data.minLevel + ' to ' + data.maxLevel);
 
                 var min = data.minLevel;
@@ -172,10 +145,6 @@ var CreateProductClient = (function () {
                 product.aoi = wkt;
                 getMetrics();
             })
-
-        //product.aoi = wkt;
-
-        //getMetrics();
 
     }
 
@@ -246,9 +215,9 @@ var CreateProductClient = (function () {
             // TODO: Add $promise function for success
             success: function (data) {
 
-                console.log('------estimate (data)------');
-                console.log(data);
-                console.log('---------------------------');
+                //console.log('------estimate (data)------');
+                //console.log(data);
+                //console.log('---------------------------');
 
                 if (data.numberOfTiles >= 1){
 
@@ -307,15 +276,19 @@ var CreateProductClient = (function () {
             }
         });
 
-
-
     }
 
-    $productFormElement.on("change", function(){
+    $productFormElement.on('change', function(){
 
         getMetrics();
 
-    })
+    });
+
+    $('#clearAoi').on('click', function(){
+
+        AddLayerClient.aoiVector.getSource().clear();
+
+    });
 
     return {
         initialize: function (initParams) {
@@ -508,7 +481,11 @@ var CreateProductClient = (function () {
 
                 //aoiFeatureOverlay.removeFeature(aoiFeature);
                 //console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
-                AddLayerClient.aoiVector.getSource().clear();
+
+
+                //AddLayerClient.aoiVector.getSource().clear();
+
+
                 //console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
                 resetProductForm();
 

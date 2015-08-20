@@ -172,6 +172,16 @@
                                                                 class="fa fa-cube"></i>&nbsp;&nbsp;Create
                                                         Product</button>
                                                     </div>
+                                                    <div><hr/></div>
+                                                    <div class="text-muted toolMenuDropDownHeading"><strong>Remove
+                                                    </strong></div>
+                                                    <div class="toolMenuDropdownDiv">
+                                                        <button type="button" id="clearAoi"
+                                                                class="btn btn-default dropMenuButtonFull" data-toggle="tooltip" data-placement="bottom"
+                                                                title="Clear defined AOI."><i
+                                                                class="fa fa-trash-o fa-lg"></i>&nbsp;&nbsp;
+                                                        Clear AOI</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </li>
