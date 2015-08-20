@@ -1,12 +1,11 @@
-"use strict";
 var AppDrawFeaturesClient = (function () {
-
+    "use strict";
     var loadParams, outputWkt, formatWkt, drawInteractionFree, drawInteractionRect;
     var $drawRectangle = $('#drawRectangle');
     var $drawPolygon = $('#drawPolygon');
     var $tileLayerSelect = $('#tileLayerSelect');
     var $mapInfo = $('#mapInfo');
-    var $ingestModalButton = $('#ingestModalButton');
+    //var $ingestModalButton = $('#ingestModalButton');
     var $endCuts = $('#endCuts');
     //var $ingestImageModal = $('#ingestImageModal');
 
@@ -47,7 +46,7 @@ var AppDrawFeaturesClient = (function () {
             }
 
             if ($drawRectangle.hasClass('btn-success')){
-                $drawRectangle.removeClass('btn-success').addClass('btn-primary')
+                $drawRectangle.removeClass('btn-success').addClass('btn-primary');
             }
             $drawPolygon.removeClass('btn-primary').addClass('btn-success');
             $endCuts.removeClass('btn-default').addClass('btn-warning');
@@ -76,7 +75,7 @@ var AppDrawFeaturesClient = (function () {
             }
 
             if ($drawPolygon.hasClass('btn-success')){
-                $drawPolygon.removeClass('btn-success').addClass('btn-primary')
+                $drawPolygon.removeClass('btn-success').addClass('btn-primary');
             }
             $drawRectangle.removeClass('btn-primary').addClass('btn-success');
             $endCuts.removeClass('btn-default').addClass('btn-warning');
@@ -164,7 +163,7 @@ var AppDrawFeaturesClient = (function () {
         $('#drawPolygon').removeClass('btn-success').addClass('btn-primary');
         AddLayerClient.aoiVector.getSource().clear();
         $endCuts.html('<i class="fa fa-toggle-off fa-lg"></i>&nbsp;&nbsp;Manual Cutting Off')
-            .closest('li')
+            .closest('li');
 
         $endCuts.removeClass('btn-warning').addClass('btn-default');
 
@@ -172,7 +171,7 @@ var AppDrawFeaturesClient = (function () {
         //$ingestModalButton.addClass('disabled');
         //$mapOmarInfo.html('');
         //$mapOmarInfo.hide();
-    })
+    });
 
     return {
         initialize: function (initParams) {

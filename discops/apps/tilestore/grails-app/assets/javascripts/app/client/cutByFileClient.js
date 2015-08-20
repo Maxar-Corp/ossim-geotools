@@ -1,6 +1,5 @@
-"use strict";
 var CutByFileClient = (function () {
-
+    "use strict";
     // Cache DOM elements
 
     // Upload Form DOM elements
@@ -24,8 +23,8 @@ var CutByFileClient = (function () {
 
     var cutFeature, // holds the polygons from the kml/shapefile cut files
         cutFeatureExtent, // holds the geometry extent of the cut feature polygons
-        removeFeature, // previously uploaded feature
-        progress // file upload progress percentage
+        //removeFeature, // previously uploaded feature
+        progress; // file upload progress percentage
 
     function addWktToMap(wktString){
 
@@ -180,7 +179,7 @@ var CutByFileClient = (function () {
             "geometry": $geometryPasteTextArea.val(),
             "sourceEpsg": $pasteFormEpsgSourceSelect.val(),
             "targetEpsg": AppClient.mapEpsg
-        }
+        };
         //console.log('---------pasteObj----------');
         //console.log(pasteObj);
         //console.log('---------------------------');
@@ -205,7 +204,6 @@ var CutByFileClient = (function () {
                     //console.log(AppClient.map.getView().getResolution());
                     //console.log('------------</AppClient.map.getView().getResolution()>----------');
 
-                    // TODO: Remove the create product disabled class
                     CreateProductClient.$createGp.removeClass("disabled");
 
 
@@ -254,6 +252,6 @@ var CutByFileClient = (function () {
             //console.log(initParams);
 
         }
-    }
+    };
 
 })();

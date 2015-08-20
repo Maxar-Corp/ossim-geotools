@@ -1,6 +1,5 @@
-"use strict";
 var CreateProductClient = (function () {
-
+    "use strict";
     // Cache all the DOM elements
 
     // Navbar DOM elements
@@ -67,7 +66,7 @@ var CreateProductClient = (function () {
 
     var jobId;
 
-    var output, outputWkt, formatWkt;
+    //var output, outputWkt, formatWkt;
 
     var urlProductExport;
     var urlLayerActualBounds;
@@ -144,7 +143,7 @@ var CreateProductClient = (function () {
         ).done(function(){
                 product.aoi = wkt;
                 getMetrics();
-            })
+            });
 
     }
 
@@ -174,16 +173,16 @@ var CreateProductClient = (function () {
         }
         else if (val < megabyte){
 
-            result = myRound(val / kilobyte, 1000) + " Kb"
+            result = myRound(val / kilobyte, 1000) + " Kb";
         }
         else if (val < gigabyte){
 
-            result = myRound(val / megabyte, 1000) + " Mb"
+            result = myRound(val / megabyte, 1000) + " Mb";
 
         }
         else {
 
-            result = myRound(val / gigabyte, 1000) + " Gb"
+            result = myRound(val / gigabyte, 1000) + " Gb";
 
         }
         return result;
@@ -203,7 +202,7 @@ var CreateProductClient = (function () {
             "aoiEpsg": product.aoiEpsg,
             "minLevel": $productMinLevel.val(),
             "maxLevel": $productMaxLevel.val()
-        }
+        };
 
         //console.log(metricObj);
 
@@ -313,7 +312,7 @@ var CreateProductClient = (function () {
 
                 product.layer = $tileLayerSelect.val();
                 product.properties.filename = $productName.val();
-                product.aoiEpsg = AppClient.mapEpsg //"EPSG:3857";
+                product.aoiEpsg = AppClient.mapEpsg;
                 product.minLevel = $productMinLevel.val();
                 product.maxLevel = $productMaxLevel.val();
                 product.outputEpsg = $productEpsgCode.val();
@@ -409,7 +408,7 @@ var CreateProductClient = (function () {
 
                                 }
                             });
-                        };
+                        }
 
                         checkForProduct = setInterval(
 
@@ -495,7 +494,7 @@ var CreateProductClient = (function () {
 
                 clearInterval(checkForProduct);
 
-                $productName.val('');;
+                $productName.val('');
 
                 $productMinLevel.empty();
                 $productMaxLevel.empty();

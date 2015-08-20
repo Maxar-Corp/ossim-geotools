@@ -1,5 +1,5 @@
-"use strict";
 var AddLayerClient = (function () {
+    "use strict";
     var loadParams; // parameters passed in from AppController
     //var wfsURL;
     var layersArray = [];
@@ -29,7 +29,7 @@ var AddLayerClient = (function () {
     function getTileLayers(params, elem) {
         var dfd = $.Deferred();
         $.each(params, function (index, tileCacheLayer) {
-            var deffered = $.Deferred();
+            //var deffered = $.Deferred();
             $(elem).append($('<option>', {
                 value: tileCacheLayer.name,
                 text: tileCacheLayer.name
@@ -80,7 +80,7 @@ var AddLayerClient = (function () {
 
     $tileLayerSelect.on('change', function() {
 
-        console.log('select on change:' + $tileLayerSelect.val())
+        console.log('select on change:' + $tileLayerSelect.val());
         switchCurrentLayer(initLayer, $tileLayerSelect.val());
 
     });
@@ -196,7 +196,7 @@ var AddLayerClient = (function () {
                 initLayer = new ol.layer.Tile( {
                     opacity: 1.0,
                     source: source,
-                    name: currentTileLayer,
+                    name: currentTileLayer
                 } );
                 //source.on('tileloadstart', function(event) {
                 //    //progress.addLoaded();
