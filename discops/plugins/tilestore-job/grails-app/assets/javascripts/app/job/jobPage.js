@@ -137,14 +137,18 @@ var JobPageView = Backbone.View.extend({
         {
             var thisPtr = this;
             var nRows = rows.length;
-            $(rows).each(function(idx,v){
-                $.post(thisPtr.urls.remove,{id:v.id},function(result){
-                })
-                    .complete(function(result){
-                        $(thisPtr.jobTableId).datagrid('clearSelections');
-                        thisPtr.refresh();
-                    })
+            var removeIdList = [];
+
+            $(rows).each(function(idx,v) {
+                removeIdList.push(v.id);
             });
+            $.post(thisPtr.urls.remove,{id:removeIdList.join(",")},function(result){
+            })
+                .complete(function(result){
+                    $(thisPtr.jobTableId).datagrid('clearSelections');
+                    thisPtr.refresh();
+                });
+            //});
         }
     },
     removeJobClicked:function()
@@ -162,7 +166,7 @@ var JobPageView = Backbone.View.extend({
                     if(testV == "RUNNING")
                     {
                         canRemove = false;
-                        errorMessage = "Please cancel any running jobs before removing!"
+                        errorMessage = "Job is running and can't be removed!"
                     }
                 }
                 if(!canRemove) return;
