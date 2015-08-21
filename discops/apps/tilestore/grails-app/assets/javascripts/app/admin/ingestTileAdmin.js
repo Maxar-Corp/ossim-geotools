@@ -1,5 +1,6 @@
-"use strict";
+
 var AppIngestTileAdmin = (function () {
+    "use strict";
     var loadParams;
 
     var $ingestModalButton = $('#ingestModalButton');
@@ -51,7 +52,7 @@ var AppIngestTileAdmin = (function () {
         //http://localhost:8080/tilestore/wfs?request=getFeature&TypeName=tilestore:tile_cache_layer_info&outputFormat=json&filter=name=%27aaron%27
 
        // Get objClamp from appAdmin
-        console.log(AppOmarWfsAdmin.objImageClamp);
+        //console.log(AppOmarWfsAdmin.objImageClamp);
 
         $.ajax({
             url: "/tilestore/layerManager/getClampedBounds",
@@ -60,7 +61,7 @@ var AppIngestTileAdmin = (function () {
             data: AppOmarWfsAdmin.objImageClamp,
             // TODO: need to move this to a $promise
             success: function (data) {
-                console.log(data);
+                //console.log(data);
 
                 //console.log(data);
                 //$minIngestLevel.selectpicker('val', data.minLevel);
@@ -71,8 +72,8 @@ var AppIngestTileAdmin = (function () {
                 min = data.minLevel;
                 max = data.maxLevel;
 
-                console.log(data.minLevel);
-                console.log(data.maxLevel);
+                //console.log(data.minLevel);
+                //console.log(data.maxLevel);
 
                 $minIngestLevel.empty();
                 $maxIngestLevel.empty();
@@ -97,7 +98,7 @@ var AppIngestTileAdmin = (function () {
             },
             // TODO: need to move this to a $promise
             error: function(data){
-                console.log(data);
+                //console.log(data);
                 toastr.error(data.message, 'Error on obtaining clamp bounds.');
 
             }
@@ -126,7 +127,7 @@ var AppIngestTileAdmin = (function () {
         objIngestImage.minLevel = $minIngestLevel.val(); //$minIngestLevelSpin.spinbox('value');
         objIngestImage.maxLevel =  $maxIngestLevel.val(); //$maxIngestLevelSpin.spinbox('value');
 
-        console.log(objIngestImage);
+        //console.log(objIngestImage);
 
         //TODO: Refactor using promises...
         $.ajax({
@@ -140,7 +141,7 @@ var AppIngestTileAdmin = (function () {
 
             },
             error: function(data){
-                console.log(data);
+                //console.log(data);
                 toastr.error(data.message, 'Error on ingest');
 
             }
@@ -172,7 +173,7 @@ var AppIngestTileAdmin = (function () {
 
     $submitIngestImage.on('click', function(){
 
-        console.log('ingesting selected image...');
+        //console.log('ingesting selected image...');
         ingestImage();
 
     });
@@ -189,6 +190,6 @@ var AppIngestTileAdmin = (function () {
         setIngestBool: setIngestBool,
         getIngestBool: getIngestBool
 
-    }
+    };
 
 })();

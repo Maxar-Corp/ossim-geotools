@@ -1,6 +1,5 @@
-"use strict";
 var CutByFileClient = (function () {
-
+    "use strict";
     // Cache DOM elements
 
     // Upload Form DOM elements
@@ -24,8 +23,8 @@ var CutByFileClient = (function () {
 
     var cutFeature, // holds the polygons from the kml/shapefile cut files
         cutFeatureExtent, // holds the geometry extent of the cut feature polygons
-        removeFeature, // previously uploaded feature
-        progress // file upload progress percentage
+        //removeFeature, // previously uploaded feature
+        progress; // file upload progress percentage
 
     function addWktToMap(wktString){
 
@@ -35,7 +34,7 @@ var CutByFileClient = (function () {
         //console.log(cutFeature);
         //console.log(cutFeature.getGeometry().getExtent());
         cutFeatureExtent = cutFeature.getGeometry().getExtent();
-        console.log(cutFeatureExtent);
+        //console.log(cutFeatureExtent);
 
         if (AddLayerClient.aoiVector.getSource().getFeatures().length >= 1) {
             AddLayerClient.aoiVector.getSource().clear();
@@ -87,9 +86,9 @@ var CutByFileClient = (function () {
 
     function setSourceEpsgCutForm(){
 
-        console.log('select: ' + $sourceEpsgSelect.val());
+        //console.log('select: ' + $sourceEpsgSelect.val());
         $cutFormSourceEpsg.val($sourceEpsgSelect.val());
-        console.log('hidden: ' + $cutFormSourceEpsg.val());
+        //console.log('hidden: ' + $cutFormSourceEpsg.val());
 
     }
 
@@ -113,27 +112,27 @@ var CutByFileClient = (function () {
             //    $('#files').text('Successfully uploaded: ' + file.name);
             //});
 
-            console.log(data.result.wkt);
+            //console.log(data.result.wkt);
             addWktToMap(data.result.wkt);
 
             if(AppClient.map.getView().getResolution()> 1){
-                console.log('------------<AppClient.map.getView().getResolution()>-----------');
-                console.log(AppClient.map.getView().getResolution());
-                console.log('------------</AppClient.map.getView().getResolution()>----------');
+                //console.log('------------<AppClient.map.getView().getResolution()>-----------');
+                //console.log(AppClient.map.getView().getResolution());
+                //console.log('------------</AppClient.map.getView().getResolution()>----------');
                 toastr.success('The file was successfully uploaded to the server.  Use the "Create Product" button' +
                     ' to start the build process.', 'Success!');
             }
             else{
-                console.log('------------<AppClient.map.getView().getResolution()>-----------');
-                console.log(AppClient.map.getView().getResolution());
-                console.log('------------</AppClient.map.getView().getResolution()>----------');
+                //console.log('------------<AppClient.map.getView().getResolution()>-----------');
+                //console.log(AppClient.map.getView().getResolution());
+                //console.log('------------</AppClient.map.getView().getResolution()>----------');
                 toastr.warning('Please make sure you have set the proper projection for the upload file. Use the' +
                     ' "Upload Cut File" option under "Tools" to set the projection.', 'Warning!');
             }
 
         },
         error: function(data){
-            console.log(data);
+            //console.log(data);
             toastr.error(JSON.stringify(data.responseJSON.message),'Error');
         },
         progressall: function (e, data) {
@@ -180,10 +179,10 @@ var CutByFileClient = (function () {
             "geometry": $geometryPasteTextArea.val(),
             "sourceEpsg": $pasteFormEpsgSourceSelect.val(),
             "targetEpsg": AppClient.mapEpsg
-        }
-        console.log('---------pasteObj----------');
-        console.log(pasteObj);
-        console.log('---------------------------');
+        };
+        //console.log('---------pasteObj----------');
+        //console.log(pasteObj);
+        //console.log('---------------------------');
 
         $.ajax({
             url: urlConvertGeometry,
@@ -201,30 +200,30 @@ var CutByFileClient = (function () {
                 $pasteCutGeometryModal.modal('hide');
 
                 if(AppClient.map.getView().getResolution()> 1){
-                    console.log('------------<AppClient.map.getView().getResolution()>-----------');
-                    console.log(AppClient.map.getView().getResolution());
-                    console.log('------------</AppClient.map.getView().getResolution()>----------');
+                    //console.log('------------<AppClient.map.getView().getResolution()>-----------');
+                    //console.log(AppClient.map.getView().getResolution());
+                    //console.log('------------</AppClient.map.getView().getResolution()>----------');
+
+                    CreateProductClient.$createGp.removeClass("disabled");
+
+
+
                     toastr.success('The file was successfully uploaded to the server.  Use the "Create Product"' +
                         ' button' +
                         ' to start the build process.', 'Success!');
                 }
                 else{
-                    console.log('------------<AppClient.map.getView().getResolution()>-----------');
-                    console.log(AppClient.map.getView().getResolution());
-                    console.log('------------</AppClient.map.getView().getResolution()>----------');
+                    //console.log('------------<AppClient.map.getView().getResolution()>-----------');
+                    //console.log(AppClient.map.getView().getResolution());
+                    //console.log('------------</AppClient.map.getView().getResolution()>----------');
                     toastr.warning('Please make sure you have set the proper projection for the upload file. Use the' +
                         ' "Paste Geometry" option under "Tools" to set the projection.', 'Warning!');
                 }
 
-
-
-
-
-
             },
             error: function(data){
                 
-                console.log(data);
+                //console.log(data);
                 toastr.error("Error parsing geometry string. Please check the syntax and try again.",'Error');
 
             }
@@ -253,6 +252,6 @@ var CutByFileClient = (function () {
             //console.log(initParams);
 
         }
-    }
+    };
 
 })();

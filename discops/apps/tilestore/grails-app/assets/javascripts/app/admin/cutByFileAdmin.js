@@ -1,6 +1,6 @@
-"use strict";
-var CutByFileAdmin = (function () {
 
+var CutByFileAdmin = (function () {
+    "use strict";
     // Cache DOM elements
 
     var $ingestModalButton = $('#ingestModalButton');
@@ -25,8 +25,8 @@ var CutByFileAdmin = (function () {
 
     var cutFeature, // holds the polygons from the kml/shapefile cut files
         cutFeatureExtent, // holds the geometry extent of the cut feature polygons
-        removeFeature, // previously uploaded feature
-        progress // file upload progress percentage
+        //removeFeature, // previously uploaded feature
+        progress; // file upload progress percentage
 
     $cutFormTargetEpsg.val(AppAdmin.mapEpsg);  // grabs the EPSG code from the map element // #
 
@@ -38,8 +38,7 @@ var CutByFileAdmin = (function () {
         //console.log(cutFeature);
         //console.log(cutFeature.getGeometry().getExtent());
         cutFeatureExtent = cutFeature.getGeometry().getExtent();
-        console.log(cutFeatureExtent);
-
+        //console.log(cutFeatureExtent);
 
         // TODO: Use clearAOI() from drawFeatures.js
         //if (AppManageLayersAdmin.aoiVector.getSource().getFeatures().length >= 1) {
@@ -88,9 +87,9 @@ var CutByFileAdmin = (function () {
 
     function setSourceEpsgCutForm(){
 
-        console.log('select: ' + $sourceEpsgSelect.val());
+        //console.log('select: ' + $sourceEpsgSelect.val());
         $cutFormSourceEpsg.val($sourceEpsgSelect.val());
-        console.log('hidden: ' + $cutFormSourceEpsg.val());
+        //console.log('hidden: ' + $cutFormSourceEpsg.val());
 
     }
 
@@ -107,10 +106,10 @@ var CutByFileAdmin = (function () {
         dataType: 'json',
         //autoUpload: false,
         done: function (e, data) {
-            console.log('---fileupload (data)------');
-            console.log(data);
-            console.log('---------------------------');
-            console.log(data.result.wkt);
+            //console.log('---fileupload (data)------');
+            //console.log(data);
+            //console.log('---------------------------');
+            //console.log(data.result.wkt);
             addWktToMap(data.result.wkt);
             $.each(data.files, function (index, file) {
                 $('#files').text('Successfully uploaded: ' + file.name) ;
@@ -119,7 +118,7 @@ var CutByFileAdmin = (function () {
 
         },
         error: function(data){
-            console.log(data);
+            //console.log(data);
             toastr.error(JSON.stringify(data.responseJSON.message),'Error');
         },
         progressall: function (e, data) {
@@ -166,10 +165,10 @@ var CutByFileAdmin = (function () {
             "geometry": $geometryPasteTextArea.val(),
             "sourceEpsg": $pasteFormEpsgSourceSelect.val(),
             "targetEpsg":  AppAdmin.mapEpsg
-        }
-        console.log('---------pasteObj----------');
-        console.log(pasteObj);
-        console.log('---------------------------');
+        };
+        //console.log('---------pasteObj----------');
+        //console.log(pasteObj);
+        //console.log('---------------------------');
 
         $.ajax({
             url: urlConvertGeometry,
@@ -185,7 +184,7 @@ var CutByFileAdmin = (function () {
             },
             error: function(data){
                 
-                console.log(data);
+                //console.log(data);
                 toastr.error("Error parsing geometry string. Please check the syntax and try again.",'Error');
 
             }
@@ -214,6 +213,6 @@ var CutByFileAdmin = (function () {
             //console.log(initParams);
 
         }
-    }
+    };
 
 })();

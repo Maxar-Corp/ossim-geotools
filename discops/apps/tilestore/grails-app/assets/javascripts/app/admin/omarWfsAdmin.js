@@ -1,6 +1,6 @@
-"use strict";
-var AppOmarWfsAdmin = (function () {
 
+var AppOmarWfsAdmin = (function () {
+    "use strict";
     var loadParams;
     var $omarFeed = $('#omarFeed');
     var $omarImageList = $('#omarImageList');
@@ -12,8 +12,6 @@ var AppOmarWfsAdmin = (function () {
     var $paginationButtons = $('.paginationButtons');
     var filter;
     var filterDateType;
-
-    var previewBool = false;
 
     var previewFeatureVectorLayer, previewFeatureVectorSource, omarPreviewLayerId, omarPreviewLayer;
     var previewFeatureArray = [];
@@ -47,7 +45,7 @@ var AppOmarWfsAdmin = (function () {
         endDate: '',
         queryNone: false,
         offset: 0
-    }
+    };
     var queryRange = {
         start: '',
         end: '',
@@ -68,7 +66,7 @@ var AppOmarWfsAdmin = (function () {
 
     var $submitFilter = $('#submitFilter');
     var $startResult = $('#startResult');
-    var $endResult = $('#endResult')
+    var $endResult = $('#endResult');
 
     dateToday = moment().format('MM-DD-YYYY 00:00');
     dateTodayEnd = moment().format('MM-DD-YYYY 23:59');
@@ -124,8 +122,8 @@ var AppOmarWfsAdmin = (function () {
                 inStartDate = $customStartDateFilter.datepicker('getFormattedDate');
                 outStartDate = $customEndDateFilter.datepicker('getFormattedDate');
 
-                console.log(moment(inStartDate).format('YYYY-MM-DD'));
-                console.log(moment(outStartDate).format('YYYY-MM-DD'));
+                //console.log(moment(inStartDate).format('YYYY-MM-DD'));
+                //console.log(moment(outStartDate).format('YYYY-MM-DD'));
 
                 queryRange.start = moment(inStartDate).format('YYYY-MM-DD'); // = '05-12-2014';
                 queryRange.end = moment(outStartDate).format('YYYY-MM-DD'); // = '05-29-2015';
@@ -156,22 +154,22 @@ var AppOmarWfsAdmin = (function () {
     }
 
     function toCql(constraints){
-        var result = ""
+        var result = "";
 
-        var constraintToExpression
+        var constraintToExpression;
         if(constraints.startDate && constraints.endDate)
         {
             constraintToExpression = constraints.dateType + " between " + "'" + constraints.startDate + "'" +
                 " AND " +
                 "'" + constraints.endDate + "'";
 
-            if(result=="")
+            if(result === "")
             {
                 result = "(" + constraintToExpression + ")";
             }
             else
             {
-                result = result + " AND (" +constraintToExpression + ")"
+                result = result + " AND (" + constraintToExpression + ")";
             }
         }
          /*       else if(constraints.startDate)
@@ -201,31 +199,29 @@ var AppOmarWfsAdmin = (function () {
         */
         if(constraints.constrainToViewport)
         {
-            var constraintToExpression = "BBOX(" + constraints.geomType + "," + constraints.bbox + ")";
+            constraintToExpression = "BBOX(" + constraints.geomType + "," + constraints.bbox + ")";
 
-            if(result=="")
+            if(result === "")
             {
                 result = "(" + constraintToExpression + ")";
             }
             else
             {
-                result = result + " AND (" +constraintToExpression + ")"
+                result = result + " AND (" +constraintToExpression + ")";
             }
         }
 
-        return result
+        return result;
     }
 
     AppAdmin.mapOmar.on('moveend', function () {
 
         getWfsCards(filterOpts);
-        //console.log('map movend fired');
 
     });
 
     function getWfsCards(params){
 
-        //console.log('params.queryNone coming in is :' + params.queryNone);
         if ($('#acquisitionDateRadioLabel').radio('isChecked')){
             //console.log('acq. is checked');
             filterDateType = 'Acquisition';
@@ -236,17 +232,8 @@ var AppOmarWfsAdmin = (function () {
         }
 
         var dateType = params.dateType || 'ingest_date'; // default value
-        var startDate = params.startDate // || dateLast7Days; // default value
-        var endDate = params.endDate // ||  dateToday; // default value
-
-        //var queryNone;
-        //if (params.queryNone === false){
-        //    queryNone = false;
-        //}
-        //else {
-        //    queryNone = true;
-        //}
-        //console.log('queryNone is now set as:' + queryNone);
+        var startDate = params.startDate; // || dateLast7Days; // default value
+        var endDate = params.endDate; // ||  dateToday; // default value
 
         var offset = params.offset || 0;
         var sortByField = $sortByFieldSelect.selectlist('selectedItem').value || 'ingest_date';
@@ -256,7 +243,6 @@ var AppOmarWfsAdmin = (function () {
         var sortByFieldText = $sortByFieldSelect.selectlist('selectedItem').text;
         var sortByTypeText = $sortByTypeSelect.selectlist('selectedItem').text;
 
-        //console.log('queryNone after being called:');
         //console.log('offset --> ' + offset);
 
         cqlParams = {
@@ -269,10 +255,9 @@ var AppOmarWfsAdmin = (function () {
         };
 
         if ( !$('#constrainToViewportCheckbox').checkbox('isChecked') ){
-            //console.log('nope, it is not checked!!!!');
             cqlParams.constrainToViewport = false;
         }
-        console.log('cqlParams.constrainToViewPort', cqlParams.constrainToViewport);
+        //console.log('cqlParams.constrainToViewPort', cqlParams.constrainToViewport);
 
         if(typeof startDate != "undefined") cqlParams.startDate = startDate;
         if(typeof endDate != "undefined") cqlParams.endDate = endDate;
@@ -292,40 +277,14 @@ var AppOmarWfsAdmin = (function () {
             $imageFilter.html(" Sort field: " + sortByFieldText + ", Sort type: " + sortByTypeText);
         }
 
-            /*        if (queryNone === true){
-                //console.log('queryNone: ' + queryNone);
-                wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
-                    "=GetFeature&typeName=omar:raster_entry" +
-                    "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter="+ cqlFilter +
-                    "&sortBy=" + sortByField +
-                    ":" + sortByType;
-                wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
-                    "=GetFeature&typeName=omar:raster_entry" +
-                    "&offset=0&maxFeatures=25&outputFormat=json&filter=" + cqlFilter
-                    "&sortBy=" + sortByField +
-                    ":" + sortByType + "&resultType=hits";
-            }
-            else {
-            */
-            //console.log('else queryNone value: ' + queryNone);
             wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
                 "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter=" + cqlFilter +
-                //dateType +
-                //"+between+" +
-                //"'" + startDate + "'" +
-                //"+and+" +
-                //"'" + endDate + "'" +
                 "&sortBy=" + sortByField +
                 ":" + sortByType;
             wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
                 "&outputFormat=json&filter=" + cqlFilter +
-              //  dateType +
-              //  "+between+" +
-              //  "'" + startDate + "'" +
-              //  "+and+" +
-              //"'" + endDate + "'" +
                 "&sortBy=" + sortByField +
                 ":" + sortByType + "&resultType=hits";
         //}
@@ -408,7 +367,7 @@ var AppOmarWfsAdmin = (function () {
                     $resultsSet.hide();
                 }
             }
-        })
+        });
 
     }
 
@@ -425,7 +384,7 @@ var AppOmarWfsAdmin = (function () {
             $nextWfsImages.addClass("disabled");
         }
         else{
-            console.log('nope, counterEnd < imageCountTotal');
+            //console.log('nope, counterEnd < imageCountTotal');
         }
 
         //console.log('counterStart: ' + counterStart);
@@ -448,11 +407,11 @@ var AppOmarWfsAdmin = (function () {
             filterOpts.queryNone = true;
         }
 
-        console.log('Next Button => filter options below:');
-        console.log(filterOpts);
+        //console.log('Next Button => filter options below:');
+        //console.log(filterOpts);
         getWfsCards(filterOpts);
         $omarFeed.animate({
-            scrollTop: 0,
+            scrollTop: 0
         }, 'slow');
 
     }
@@ -463,7 +422,7 @@ var AppOmarWfsAdmin = (function () {
         counterStart = filterOpts.offset - 24;
         counterEnd = filterOpts.offset;
 
-        console.log(counterStart + ' ' + counterEnd);
+        //console.log(counterStart + ' ' + counterEnd);
 
         $startResult.html(counterStart);
         $endResult.html(counterEnd);
@@ -476,7 +435,7 @@ var AppOmarWfsAdmin = (function () {
             $prevWfsImages.removeClass("disabled");
         }
 
-        console.log('imageCountTotal: ' + imageCountTotal + ' offset: ' + (filterOpts.offset + 24));
+        //console.log('imageCountTotal: ' + imageCountTotal + ' offset: ' + (filterOpts.offset + 24));
         if(imageCountTotal >= (filterOpts.offset+ 25)) {
             $nextWfsImages.removeClass("disabled");
         }
@@ -486,13 +445,11 @@ var AppOmarWfsAdmin = (function () {
             filterOpts.queryNone = true;
         }
 
-        console.log('Next Button => filter options below:');
-        console.log(filterOpts);
-        getWfsCards(filterOpts);
-
+        //console.log('Next Button => filter options below:');
+        //console.log(filterOpts);
         getWfsCards(filterOpts);
         $omarFeed.animate({
-            scrollTop: 0,
+            scrollTop: 0
         }, 'slow');
 
     }
@@ -522,7 +479,7 @@ var AppOmarWfsAdmin = (function () {
         //console.log('dateLast6Months: ' + dateLast6Months);
 
         // reset the offset to 0
-        //filterOpts.offset = 0;
+        // filterOpts.offset = 0;
         resetPagination();
 
         var queryRange = getQueryType();
@@ -580,7 +537,7 @@ var AppOmarWfsAdmin = (function () {
     Handlebars.registerHelper("formatDate", function convertDate(date){
 
         if(date){
-            var inDate, outDate, options;
+            //var inDate, outDate, options;
 
             //inDate = new Date(date);
             //options = { year: '2-digit', month: 'numeric', day: 'numeric', hour12: 'true', hour: 'numeric', minute: 'numeric', second: 'numeric' }
@@ -648,16 +605,13 @@ var AppOmarWfsAdmin = (function () {
             });
             AppAdmin.mapOmar.addLayer(omarPreviewLayer);
 
-            // Need to move the omarPreviewLayer below the vector layers
-            //console.log(AppAdmin.mapOmar.getLayers().getArray().length);
-
             // Move the previewLayer below the aoiVectorLayer
             // Before:
-            //console.log(AppAdmin.mapTile.getLayers().getArray());
+            // console.log(AppAdmin.mapTile.getLayers().getArray());
             AppManageLayersAdmin.swapTopLayer(AppAdmin.mapOmar, 2 , 1);
             AppManageLayersAdmin.swapTopLayer(AppAdmin.mapTile, 2 , 1);
             // After:
-            //console.log(AppAdmin.mapTile.getLayers().getArray());
+            // console.log(AppAdmin.mapTile.getLayers().getArray());
 
         }
 
@@ -678,13 +632,9 @@ var AppOmarWfsAdmin = (function () {
             ])
         });
         //polyFeature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
-        //alert(AppAdmin.mapOmar.getView().getExtent());
         var extent = polyFeature.getGeometry().getExtent();
         AppAdmin.mapOmar.getView().fitExtent(extent, AppAdmin.mapOmar.getSize());
 
-        // This adds the polyFeature to a vectorlayer and displays it on the map.
-        // TODO: Use this in a function to run all of the OMAR images through it
-        //       and display their bounding box on the map.
         if (previewFeatureArray.length === 1) {
 
             previewFeatureVectorSource.clear();
@@ -758,55 +708,14 @@ var AppOmarWfsAdmin = (function () {
 
     }
 
-
     return {
         initialize: function (initParams) {
 
             loadParams = initParams;
             //console.log(loadParams);
 
-            // TODO: Add $ajax to a function that gets called on init
-            // Source retrieving WFS data in GeoJSON format using JSONP technique
-            //var vectorSource = new ol.source.ServerVector({
-            //    format: new ol.format.WFS({
-            //        featureNS: 'http://omar.ossim.org',
-            //        featureType: 'omar:raster_entry'
-            //    }),
-            //    loader: function(extent, resolution, projection) {
-            //        var url = "http://localhost:9999/omar/wfs?service=WFS&version=1.1.0&request" +
-            //            "=GetFeature&typeName=omar:raster_entry" +
-            //            "&maxFeatures=200&filter=" //+
-            //            //"bbox=" + extent.join(',');
-            //        //console.log(url);
-            //        $.ajax({
-            //            url: url//,
-            //            //dataType: 'jsonp'
-            //        })
-            //            .done(function(response) {
-            //                console.log(response);
-            //                vectorSource.addFeatures(vectorSource.readFeatures(response));
-            //            });
-            //    },
-            //    strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
-            //        maxZoom: 19
-            //    })),
-            //    projection: 'EPSG:3857'
-            //});
-            //
-            //// Vector layer
-            //var vectorLayer = new ol.layer.Vector({
-            //    source: vectorSource,
-            //    style: new ol.style.Style({
-            //        stroke: new ol.style.Stroke({
-            //            color: 'green',
-            //            width: 2
-            //        })
-            //    })
-            //});
-            //getWfsCards({}); // use defaults
-
         },
         previewLayer: previewLayer,
         objImageClamp: objImageClamp
-    }
+    };
 })();

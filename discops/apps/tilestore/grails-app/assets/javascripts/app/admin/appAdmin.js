@@ -1,5 +1,5 @@
-"use strict";
 var AppAdmin = (function () {
+    "use strict";
     var mapEpsg = 'EPSG:3857';
 
     // TODO: Cache jquery selectors.  Possibly use this solution:
@@ -21,7 +21,7 @@ var AppAdmin = (function () {
     var $createLayerName = $('#createLayerName');
     var $epsgCode = $('#epsgCode');
     var $resetCreateTile = $('#resetCreateTile');
-    var $createTileLayerForm = $("#createTileLayerForm");
+    //var $createTileLayerForm = $("#createTileLayerForm");
 
     var $navRenameLayer = $('#navRenameLayer');
     var $renameTileLayerModal = $('#renameTileLayerModal');
@@ -37,7 +37,7 @@ var AppAdmin = (function () {
     var $deleteLayerName = $('#deleteLayerName');
     var $submitDeleteLayer = $('#submitDeleteLayer');
 
-    var $viewLayersInfo = $('#viewLayersInfo')
+    var $viewLayersInfo = $('#viewLayersInfo');
     var $listLayersModal = $('#listLayersModal');
     var $layerTableInfo = $('#layerTableInfo');
     var $layersTable; // set in the info click callback (getLayersInfo())
@@ -153,14 +153,14 @@ var AppAdmin = (function () {
             var refreshMap = null;
             return function(e) {
                 if (refreshMap) {
-                    console.log('true');
+                    //console.log('true');
                     clearInterval(refreshMap);
                     refreshMap = null;
                     $mapTileInfo.html('');
                     $mapTileInfo.hide();
                 }
                 else {
-                    console.log('false');
+                    //console.log('false');
                     $mapTileInfo.html('Autorefresh Map On');
                     $mapTileInfo.show();
                     refreshMap = setInterval(function() {
@@ -168,7 +168,7 @@ var AppAdmin = (function () {
                         //console.log(params);
                         params.t = new Date().getMilliseconds();
                         initLayer.getSource().updateParams(params);
-                        console.log('refreshing!');
+                        //console.log('refreshing!');
                     }, 5000);
                 }
             };
@@ -210,10 +210,10 @@ var AppAdmin = (function () {
     }
 
     // The tile layer object
-    var objLayer = {}
+    var objLayer = {};
 
     $tileLayerSelect.on('change', function() {
-        console.log('select on change:' + $tileLayerSelect.val())
+        //console.log('select on change:' + $tileLayerSelect.val());
         switchCurrentLayer(initLayer, $tileLayerSelect.val());
     });
 
@@ -282,8 +282,8 @@ var AppAdmin = (function () {
 
                 // Puts new tile layer into dropdown list, and sets it as the active layer
                 var oldTileLayerName = $tileLayerSelect.val();
-                console.log(oldTileLayerName);
-                console.log(data);
+                //console.log(oldTileLayerName);
+                //console.log(data);
 
                 var newTileLayerName = data.name;
                 //console.log(newTileLayerName);
@@ -294,7 +294,7 @@ var AppAdmin = (function () {
                 $deleteTileLayer.append('<option value="' + newTileLayerName + '" selected="selected">' + newTileLayerName + '</option>');
                 $deleteTileLayer.selectpicker('refresh');
 
-                l.stop() // stop spinner from rotating
+                l.stop(); // stop spinner from rotating
 
                 // Close the modal if ajax request was successful
                 $createTileLayerModal.modal('hide');
@@ -313,15 +313,15 @@ var AppAdmin = (function () {
             else {
                 toastr.error(data.message, 'Error');
             }
-        };
+        }
 
         function errorHandlerCreate(data) {
 
-            l.stop() // stop spinner from rotating
+            l.stop(); // stop spinner from rotating
             // Handles error reporting from server
             toastr.error(data.responseJSON.message + ' Please choose' +
             ' another name and submit again.', 'Error');
-        };
+        }
 
         ajaxCreateLayer(objLayer).done(successHandlerCreate).fail(errorHandlerCreate);
 
@@ -395,15 +395,15 @@ var AppAdmin = (function () {
 
         // Grab this from a input box
         var newLayerName = $renameLayerName.val(); // Need to truncate to 50 characters
-        console.log(newLayerName);
+        //console.log(newLayerName);
 
         function successHandlerRename(data, textStatus, jqXHR) {
-            console.log(jqXHR.status);
-            console.log(textStatus);
+            //console.log(jqXHR.status);
+            //console.log(textStatus);
 
             if (jqXHR.status === 200) {
                 //console.log('We have 200!');
-                console.log(data);
+                //console.log(data);
 
                 // Done 04-20-15
                 //$select.find('[value=' + oldLayerName + ']').remove();
@@ -431,7 +431,7 @@ var AppAdmin = (function () {
                 toastr.success('Layer ' + oldLayerName + ' was renamed to ' + newLayerName, 'Success');
                 resetForm('rename');
 
-                l.stop() // stop spinner from rotating
+                l.stop(); // stop spinner from rotating
 
             }
             else {
@@ -440,13 +440,13 @@ var AppAdmin = (function () {
         }
 
         function errorHandlerRename(data) {
-            console.log(data);
-            l.stop() // stop spinner from rotating
+            //console.log(data);
+            l.stop(); // stop spinner from rotating
             $submitRenameLayer.removeClass('btn-success disabled').addClass('btn-primary');
             // Handles error reporting from server
             toastr.error(data.responseJSON.message + ' Rename failed' +
             ' choose another name and submit again.', 'Error');
-        };
+        }
 
         ajaxRenameLayer(oldLayerName, newLayerName).done(successHandlerRename).fail(errorHandlerRename);
 
@@ -498,7 +498,7 @@ var AppAdmin = (function () {
 
             if (jqXHR.status === 200) {
                 //console.log('We have 200!');
-                console.log(data);
+                //console.log(data);
                 //$select.find('[value=' + deleteLayerName + ']').remove();
                 //$select.selectpicker('refresh');
 
@@ -512,7 +512,7 @@ var AppAdmin = (function () {
                 $tileLayerSelect.selectpicker('refresh');
 
                 toastr.success('Layer ' + deleteLayerName + ' was deleted.', 'Success');
-                l.stop() // stop spinner from rotating
+                l.stop(); // stop spinner from rotating
                 $submitDeleteLayer.removeClass('btn-success disabled').addClass('btn-primary');
 
                 switchCurrentLayer(initLayer, $tileLayerSelect.val());
@@ -524,7 +524,7 @@ var AppAdmin = (function () {
         }
 
         function errorHandlerDelete(data) {
-            l.stop() // stop spinner from rotating
+            l.stop(); // stop spinner from rotating
             // Handles error reporting from server
             console.log(data);
             $submitDeleteLayer.removeClass('btn-success disabled').addClass('btn-primary');
@@ -595,7 +595,7 @@ var AppAdmin = (function () {
         "showMethod": "fadeIn",
         "hideMethod": "fadeOut",
         "timeOut": "10000"
-    }
+    };
 
     // End Layer Management ##############################################################
 
@@ -608,7 +608,7 @@ var AppAdmin = (function () {
             type: 'GET',
             dataType: 'json',
             success: function (data) {
-                console.log(data.rows);
+                //console.log(data.rows);
 
                 $layersTable = $('#layers_table').DataTable({
                     "data": data.rows,
@@ -619,8 +619,8 @@ var AppAdmin = (function () {
                         { data: 'minLevel'},
                         { data: 'maxLevel'},
                         { data: 'tileHeight'},
-                        { data: 'tileWidth'},
-                    ],
+                        { data: 'tileWidth'}
+                    ]
 
                 });
 
@@ -639,7 +639,7 @@ var AppAdmin = (function () {
         $tileLayerSelect.selectpicker('val', name);
 
         $layerTableInfo.removeClass('alert-info').addClass('alert-success');
-        $layerTableInfo.html('<strong>' + name + '</strong> is now the active tile layer.')
+        $layerTableInfo.html('<strong>' + name + '</strong> is now the active tile layer.');
 
     } );
 
@@ -649,7 +649,7 @@ var AppAdmin = (function () {
         $layerTableInfo.removeClass('alert-success').addClass('alert-info');
         $layerTableInfo.html('<strong>Click on any table row to set that layer as the active layer</strong>');
         $layersTable.destroy();
-    })
+    });
 
     return {
         initialize: function (initParams) {
@@ -675,7 +675,7 @@ var AppAdmin = (function () {
                 initLayer = new ol.layer.Tile( {
                     opacity: 1.0,
                     source: source,
-                    name: currentTileLayer,
+                    name: currentTileLayer
                 } );
                 //source.on('tileloadstart', function(event) {
                 //    //progress.addLoaded();

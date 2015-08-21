@@ -1,6 +1,5 @@
-"use strict";
 var CreateProductClient = (function () {
-
+    "use strict";
     // Cache all the DOM elements
 
     // Navbar DOM elements
@@ -67,37 +66,10 @@ var CreateProductClient = (function () {
 
     var jobId;
 
-    var output, outputWkt, formatWkt;
+    //var output, outputWkt, formatWkt;
 
     var urlProductExport;
     var urlLayerActualBounds;
-
-    //var aoiFeature = new ol.Feature();
-
-    // Use a ol.FeatureOverlay to store the AOI
-    //var aoiFeatureOverlay = new ol.FeatureOverlay();
-
-    //var aoiStyle = new ol.style.Style({
-    //    stroke: new ol.style.Stroke({
-    //        color: 'cyan',
-    //        width: 5
-    //    }),
-    //    fill: new ol.style.Fill({
-    //        color: 'rgba(0, 255, 255, 0.3)'
-    //    })
-    //});
-
-    //aoiFeatureOverlay.setStyle(aoiStyle);
-
-    //// A DragBox interaction used to pass the geometry to the aoiFeatureOverlay
-    //var dragBoxControl = new ol.interaction.DragBox({
-    //    condition: ol.events.condition.altShiftKeysOnly,
-    //    style: aoiStyle
-    //});
-
-    // Add the DragBox control upon app load.  The interaction is available
-    // by using the <ALT> and <SHIFT> key and defining a box
-    //AppClient.map.addInteraction(dragBoxControl);
 
     function createAoi(wkt){
 
@@ -121,9 +93,9 @@ var CreateProductClient = (function () {
             // TODO: Add $promise function for success
             success: function (data) {
 
-                console.log('----getActualBounds (data)------');
-                console.log(data);
-                console.log('---------------------------');
+                //console.log('----getActualBounds (data)------');
+                //console.log(data);
+                //console.log('---------------------------');
                 $aoiLod.html(data.minLevel + ' to ' + data.maxLevel);
 
                 var min = data.minLevel;
@@ -171,11 +143,7 @@ var CreateProductClient = (function () {
         ).done(function(){
                 product.aoi = wkt;
                 getMetrics();
-            })
-
-        //product.aoi = wkt;
-
-        //getMetrics();
+            });
 
     }
 
@@ -205,16 +173,16 @@ var CreateProductClient = (function () {
         }
         else if (val < megabyte){
 
-            result = myRound(val / kilobyte, 1000) + " Kb"
+            result = myRound(val / kilobyte, 1000) + " Kb";
         }
         else if (val < gigabyte){
 
-            result = myRound(val / megabyte, 1000) + " Mb"
+            result = myRound(val / megabyte, 1000) + " Mb";
 
         }
         else {
 
-            result = myRound(val / gigabyte, 1000) + " Gb"
+            result = myRound(val / gigabyte, 1000) + " Gb";
 
         }
         return result;
@@ -234,7 +202,7 @@ var CreateProductClient = (function () {
             "aoiEpsg": product.aoiEpsg,
             "minLevel": $productMinLevel.val(),
             "maxLevel": $productMaxLevel.val()
-        }
+        };
 
         //console.log(metricObj);
 
@@ -246,9 +214,9 @@ var CreateProductClient = (function () {
             // TODO: Add $promise function for success
             success: function (data) {
 
-                console.log('------estimate (data)------');
-                console.log(data);
-                console.log('---------------------------');
+                //console.log('------estimate (data)------');
+                //console.log(data);
+                //console.log('---------------------------');
 
                 if (data.numberOfTiles >= 1){
 
@@ -307,15 +275,19 @@ var CreateProductClient = (function () {
             }
         });
 
-
-
     }
 
-    $productFormElement.on("change", function(){
+    $productFormElement.on('change', function(){
 
         getMetrics();
 
-    })
+    });
+
+    $('#clearAoi').on('click', function(){
+
+        AddLayerClient.aoiVector.getSource().clear();
+
+    });
 
     return {
         initialize: function (initParams) {
@@ -340,7 +312,7 @@ var CreateProductClient = (function () {
 
                 product.layer = $tileLayerSelect.val();
                 product.properties.filename = $productName.val();
-                product.aoiEpsg = AppClient.mapEpsg //"EPSG:3857";
+                product.aoiEpsg = AppClient.mapEpsg;
                 product.minLevel = $productMinLevel.val();
                 product.maxLevel = $productMaxLevel.val();
                 product.outputEpsg = $productEpsgCode.val();
@@ -364,7 +336,7 @@ var CreateProductClient = (function () {
                         jobId = data.jobId;
 
                         function checkJobStatus(jobId) {
-                            console.log('checkJobStatus: ' + jobId);
+                            //console.log('checkJobStatus: ' + jobId);
                             $.ajax({
                                 url: "/tilestore/job/show?jobId=" + jobId,
                                 type: 'GET',
@@ -374,8 +346,8 @@ var CreateProductClient = (function () {
                                     // Make sure data is being returned.  If not the job has been terminated, and an
                                     // error needs to be returned.
                                     if (data && data.total > 0){
-                                        console.log('total: ' + data.total);
-                                        console.log(data.rows[0].status);
+                                        //console.log('total: ' + data.total);
+                                        //console.log(data.rows[0].status);
 
                                         // Product build 'Finished'
                                         if (data.rows[0].jobId === jobId && data.rows[0].status === 'FINISHED'){
@@ -436,7 +408,7 @@ var CreateProductClient = (function () {
 
                                 }
                             });
-                        };
+                        }
 
                         checkForProduct = setInterval(
 
@@ -476,7 +448,7 @@ var CreateProductClient = (function () {
 
             function fileDownload(downloadNumber){
 
-                console.log('filedownload jobNumber: ' + downloadNumber);
+                //console.log('filedownload jobNumber: ' + downloadNumber);
                 $.fileDownload("/tilestore/job/download?jobId=" + downloadNumber)
                     .done(function() {console.log('success!');})
                     .fail(function(){
@@ -490,7 +462,7 @@ var CreateProductClient = (function () {
 
             $(document).on("click", "button.fileDownload",function(){
 
-                console.log('your jobId is: ' + jobId);
+                //console.log('your jobId is: ' + jobId);
                 fileDownload(jobId);
 
             });
@@ -508,7 +480,11 @@ var CreateProductClient = (function () {
 
                 //aoiFeatureOverlay.removeFeature(aoiFeature);
                 //console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
-                AddLayerClient.aoiVector.getSource().clear();
+
+
+                //AddLayerClient.aoiVector.getSource().clear();
+
+
                 //console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
                 resetProductForm();
 
@@ -518,7 +494,7 @@ var CreateProductClient = (function () {
 
                 clearInterval(checkForProduct);
 
-                $productName.val('');;
+                $productName.val('');
 
                 $productMinLevel.empty();
                 $productMaxLevel.empty();
@@ -553,7 +529,7 @@ var CreateProductClient = (function () {
 
                 $createGp.addClass('disabled');
 
-                console.log('reset fired!');
+                //console.log('reset fired!');
 
             }
 
