@@ -1,5 +1,0 @@
-ProxyPass	/tilestore http://localhost:8080/tilestore
-ProxyPassReverse /tilesotre http://localhost:8080/tilestore
-
-ProxyPass       /omar http://localhost:9999/omar
-ProxyPassReverse /omar http://localhost:9999/omar
