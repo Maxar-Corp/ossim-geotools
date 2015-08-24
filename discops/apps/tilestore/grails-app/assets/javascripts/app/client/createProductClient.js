@@ -284,7 +284,7 @@ var CreateProductClient = (function () {
         getMetrics();
 
     });
-    
+
     $clearAoi.on('click', function(){
 
         $createGp.addClass("disabled");
