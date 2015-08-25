@@ -39,7 +39,8 @@ class TileCacheHibernate
    @Synchronized( "contextLock" )
    BasicDataSource getDataSource()
    {
-      applicationContext?.getBean( "dataSource" )
+      def result = applicationContext?.getBean( "dataSource" )
+      result
    }
 
    @Synchronized( "contextLock" )

@@ -1,34 +1,40 @@
-enum AccumuloTarget {
+enum HadoopTarget {
    CDH4, CDH5, HDP, GDAC
 }
 
-def accumuloTarget
+def hadoopTarget
 
+def accumuloVersion="1.6.1"
 def kettleVersion="5.3.0.0-213"
-println configurations
+
 switch(System.properties?.hadoopDist?.toLowerCase())
 {
    case "gdac":
       println "Building for GDAC distribution"
-      accumuloTarget = AccumuloTarget.GDAC
+      hadoopTarget = HadoopTarget.GDAC
       break
    case "cdh4":
       println "Building for CDH4 distribution"
-      accumuloTarget = AccumuloTarget.CDH4
+      hadoopTarget = HadoopTarget.CDH4
       break
    case "cdh5":
       println "Building for CDH5 distribution"
-      accumuloTarget = AccumuloTarget.CDH5
+      hadoopTarget = HadoopTarget.CDH5
       break
    case "hdp22":
       println "Building for HDP version 2.2 distribution"
-      accumuloTarget = AccumuloTarget.HDP
+      hadoopTarget = HadoopTarget.HDP
       break
    default:
       println "Defaulting to CDH4 dstribution"
-      accumuloTarget = AccumuloTarget.CDH4
+      hadoopTarget = HadoopTarget.CDH4
       break
 
+}
+
+if(System.properties?.accumuloVersion)
+{
+   accumuloVersion = System.properties?.accumuloVersion
 }
 
 if(System.properties?.kettleVersion)
@@ -63,23 +69,24 @@ def kettleDependencies = [
         */
 ]
 
-switch ( accumuloTarget )
+switch ( hadoopTarget )
 {
-   case AccumuloTarget.CDH4:
+   case HadoopTarget.CDH4:
       kettleDependencies << 'pentaho:pentaho-hadoop-shims-cdh47-mapred:5.2.0.0-209'
       break
-   case AccumuloTarget.CDH5:
+   case HadoopTarget.CDH5:
       //kettleDependencies << 'pentaho:pentaho-hadoop-shims-cdh51-mapred:5.2.0.1-218'
-      kettleDependencies << 'pentaho:pentaho-hadoop-shims-cdh52-mapred-5.3.0.0-213'
+    //  kettleDependencies << 'pentaho:pentaho-hadoop-shims-cdh52-mapred-5.3.0.0-213'
+      kettleDependencies << 'pentaho:pentaho-hadoop-shims-cdh54-mapred:5.4-SNAPSHOT'
 
       break
-   case AccumuloTarget.HDP:
+   case HadoopTarget.HDP:
 
       // kettleDependencies << 'pentaho:pentaho-hadoop-shims-hdp20-mapred:5.2-SNAPSHOT'
       kettleDependencies << 'pentaho:pentaho-hadoop-shims-hdp21-mapred:TRUNK-SNAPSHOT'
 
       break
-   case AccumuloTarget.GDAC:
+   case HadoopTarget.GDAC:
       kettleDependencies << 'pentaho:pentaho-hadoop-shims-mapr21-mapred:5.2-SNAPSHOT'
       //kettleDependencies << 'pentaho:pentaho-hadoop-shims-mapr21-mapred:5.2.0.0-152'
       break
@@ -101,16 +108,16 @@ allprojects {
    repositories {
       mavenLocal()
       maven {
-         switch ( accumuloTarget )
+         switch ( hadoopTarget )
          {
-            case AccumuloTarget.CDH4:
-            case AccumuloTarget.CDH5:
+            case HadoopTarget.CDH4:
+            case HadoopTarget.CDH5:
                url 'http://repository.cloudera.com/artifactory/cloudera-repos/'
                break
-            case AccumuloTarget.HDP:
+            case HadoopTarget.HDP:
                url 'http://repo.hortonworks.com/content/repositories/releases/'
                break
-            case AccumuloTarget.GDAC:
+            case HadoopTarget.GDAC:
                url 'https://proxy.missionfocus.com/nexus/content/groups/public'
                break
          }
@@ -146,7 +153,7 @@ allprojects {
       }
       // this is our local repository for goovy-swt
       maven {  url "${rootDir}/../groovy-swt/src/repository" }
-
+      maven{  url 'http://www.conjars.org/repo'}
    }
 }
 
@@ -291,34 +298,37 @@ project( ':kettle-libs' ) {
       compile 'org.hibernate:hibernate-validator:4.3.2.Final'
       compile group: 'groovy-swt', name:'groovy-swt', version: '0.8', classifier: "without-swt"
 
-      switch ( accumuloTarget )
+      switch ( hadoopTarget )
       {
-         case AccumuloTarget.CDH4:
+         case HadoopTarget.CDH4:
             compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.1'
             compile 'org.apache.zookeeper:zookeeper:3.4.5-cdh4.7.1'
-            compile ('org.apache.accumulo:accumulo-core:1.6.1') {
-               exclude module: 'zookeeper'
-            }
+//            compile ('org.apache.accumulo:accumulo-core:1.6.1') {
+//               exclude module: 'zookeeper'
+//            }
             //  compile 'pentaho:pentaho-hadoop-shims-cdh42-mapred:5.0.1-stable'
             break
-         case AccumuloTarget.CDH5:
-            compile 'org.apache.hadoop:hadoop-client:2.5.0-cdh5.2.4'
-            compile 'org.apache.accumulo:accumulo-core:1.6.1'
+         case HadoopTarget.CDH5:
+            compile 'org.apache.hadoop:hadoop-client:2.5.0-cdh5.3.2'
+            compile 'org.apache.zookeeper:zookeeper:3.4.5-cdh5.4.4'
+            //        compile ('org.apache.hadoop:hadoop-client:2.5.0-mr1-cdh5.4.2.1')
+//            compile 'org.apache.accumulo:accumulo-core:1.7.0'
             //compile 'pentaho:pentaho-hadoop-shims-cdh51-mapred:5.2.0.1-218'
             break
-         case AccumuloTarget.HDP:
+         case HadoopTarget.HDP:
             compile 'org.apache.accumulo:accumulo-core:1.6.1.2.2.0.0-2041'
             compile 'org.apache.hadoop:hadoop-client:2.6.0.2.2.0.0-2041'
             //compile 'pentaho:pentaho-hadoop-shims-hdp20-mapred:5.2-SNAPSHOT'
 
             break
-         case AccumuloTarget.GDAC:
+         case HadoopTarget.GDAC:
             compile 'org.imintel:semapp-java-client:0.26.0'
-            compile 'org.apache.accumulo:accumulo-core:1.6.1'
+//            compile 'org.apache.accumulo:accumulo-core:1.6.1'
             // compile 'pentaho:pentaho-hadoop-shims-mapr21-mapred:5.2-SNAPSHOT'
             break
       }
-
+      compile("org.apache.accumulo:accumulo-core:${accumuloVersion}")
+      compile("org.apache.accumulo:accumulo-trace:${accumuloVersion}")
    }
    install {
       repositories.mavenInstaller {
@@ -344,23 +354,23 @@ project( ':kettle-libs' ) {
           exclude (dependency("${it}"))
         }
 
-        switch ( accumuloTarget )
+        switch ( hadoopTarget )
         {
-          case AccumuloTarget.CDH4:
+          case HadoopTarget.CDH4:
             exclude (dependency('org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.1'))
             exclude (dependency('pentaho:pentaho-hadoop-shims-cdh42-mapred:5.0.1-stable'))
             break
-          case AccumuloTarget.CDH5:
+          case HadoopTarget.CDH5:
             exclude (dependency('org.apache.hadoop:hadoop-client:2.5.0-cdh5.2.4'))
             exclude (dependency('pentaho:pentaho-hadoop-shims-cdh51-mapred:5.2.0.1-218'))
             break
-          case AccumuloTarget.HDP:
+          case HadoopTarget.HDP:
             compile 'org.apache.accumulo:accumulo-core:1.6.1.2.2.0.0-2041'
             compile 'org.apache.hadoop:hadoop-client:2.6.0.2.2.0.0-2041'
             compile 'pentaho:pentaho-hadoop-shims-hdp20-mapred:5.2-SNAPSHOT'
 
             break
-          case AccumuloTarget.GDAC:
+          case HadoopTarget.GDAC:
             compile 'org.imintel:semapp-java-client:0.26.0'
             exclude (dependency('org.apache.accumulo:accumulo-core:1.6.1'))
             compile 'pentaho:pentaho-hadoop-shims-mapr21-mapred:5.2-SNAPSHOT'
@@ -397,6 +407,14 @@ project( ':kettle-plugins' ) {
    }
    dependencies{
       compile project(":kettle-libs")
+      switch ( hadoopTarget )
+      {
+         case HadoopTarget.CDH5:
+            compile "pentaho:pentaho-big-data-kettle-plugins-common-ui:6.0-SNAPSHOT"
+            compile "pentaho:pentaho-big-data-api-cluster:6.0-SNAPSHOT"
+            compile "pentaho:pentaho-big-data-api:6.0-SNAPSHOT"
+            break
+      }
    }
    install {
       repositories.mavenInstaller {
@@ -438,30 +456,36 @@ project( ':common-libs' ) {
       compile 'javax.media:jai_imageio:1.1'
       //compile 'org.apache.zookeeper:zookeeper:3.4.5'
 
-      switch ( accumuloTarget )
+      switch ( hadoopTarget )
       {
-         case AccumuloTarget.CDH4:
+         case HadoopTarget.CDH4:
             compile 'org.apache.zookeeper:zookeeper:3.4.5-cdh4.7.1'
             compile 'org.apache.hadoop:hadoop-client:2.0.0-cdh4.7.1'
-            compile ('org.apache.accumulo:accumulo-core:1.6.1') {
-               exclude module: 'zookeeper'
-            }
+//            compile ('org.apache.accumulo:accumulo-core:1.6.1') {
+//               exclude module: 'zookeeper'
+//            }
             break
-         case AccumuloTarget.CDH5:
-            compile 'org.apache.hadoop:hadoop-client:2.5.0-cdh5.2.4'
-            compile 'org.apache.accumulo:accumulo-core:1.6.1'
+         case HadoopTarget.CDH5:
+//            compile 'org.apache.hadoop:hadoop-client:2.5.0-cdh5.2.4'
+//            compile 'org.apache.accumulo:accumulo-core:1.6.1'
             compile 'org.apache.zookeeper:zookeeper:3.4.5-cdh5.3.2'
+            compile ('org.apache.hadoop:hadoop-client:2.6.0-cdh5.4.4'){
+
+            }
+//            compile 'org.apache.accumulo:accumulo-core:1.7.0'
             break
-         case AccumuloTarget.HDP:
+         case HadoopTarget.HDP:
             compile 'org.apache.accumulo:accumulo-core:1.6.1.2.2.0.0-2041'
             compile 'org.apache.hadoop:hadoop-client:2.6.0.2.2.0.0-2041'
             break
-         case AccumuloTarget.GDAC:
+         case HadoopTarget.GDAC:
             compile 'compile org.apache.zookeeper:zookeeper:3.4.5'
             compile 'org.imintel:semapp-java-client:0.26.0'
-            compile 'org.apache.accumulo:accumulo-core:1.6.1'
+//            compile 'org.apache.accumulo:accumulo-core:1.6.1'
             break
       }
+      compile("org.apache.accumulo:accumulo-core:${accumuloVersion}")
+      compile("org.apache.accumulo:accumulo-trace:${accumuloVersion}")
    }
    jar {
       baseName = "ossim-common-libs"

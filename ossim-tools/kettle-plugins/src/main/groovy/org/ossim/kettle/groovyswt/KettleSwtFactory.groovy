@@ -1,7 +1,10 @@
 package org.ossim.kettle.groovyswt
 
 import org.eclipse.swt.events.SelectionListener
-import org.pentaho.di.ui.core.namedcluster.NamedClusterWidget
+import org.ossim.kettle.common.NamedCluster
+
+//import org.pentaho.di.ui.core.namedcluster.NamedClusterWidget
+//import org.pentaho.big.data.plugins.common.ui.NamedClusterWidget
 
 import java.util.Map
 import org.codehaus.groovy.GroovyException
@@ -121,7 +124,8 @@ class KettleSwtFactory extends  AbstractSwtFactory
     def showLabel = attributes.remove("showLabel")
 
     if(attributes?.showLabel!=null) showLabel = attributes?.showLabel
-    result = new NamedClusterWidget(parent, showLabel)
+    //result = new NamedClusterWidget(parent, showLabel)
+    result = NamedCluster.namedClusterWidgetClass.newInstance([parent, showLabel] as Object[])
     if(selectionListener)
     {
       result.addSelectionListener(selectionListener)

@@ -24,6 +24,7 @@ switch(System.properties?.hadoopDist?.toLowerCase())
     case "cdh5":
         println "Building for CDH5 distribution"
         accumuloTarget = AccumuloTarget.CDH5
+      break
     case "hdp22":
         println "Building for HDP version 2.2 distribution"
         accumuloTarget = AccumuloTarget.HDP
