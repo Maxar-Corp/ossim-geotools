@@ -76,8 +76,10 @@ $(document).ready(function() {
 	});
 
 
-
 	<s2ui:initCheckboxes/>
+	var roleUserCheckbox = $("#ROLE_USER");
+	if(roleUserCheckbox) roleUserCheckbox.attr("checked",true);
+
 });
 </script>
 
