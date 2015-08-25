@@ -1,10 +1,13 @@
 package org.ossim.kettle.steps.tilestore
 
+import geoscript.geom.Bounds
 import geoscript.geom.Geometry
 import geoscript.geom.io.WktReader
+import geoscript.layer.TileLayer
 import geoscript.proj.Projection
 import groovy.sql.GroovyRowResult
 import groovy.sql.Sql
+import joms.geotools.tileapi.TileCachePyramid
 import joms.geotools.tileapi.accumulo.ImageTileKey
 import joms.geotools.tileapi.accumulo.TileCacheImageTile
 import joms.geotools.tileapi.hibernate.domain.TileCacheLayerInfo
@@ -58,7 +61,7 @@ class TileStoreIterator  extends BaseStep implements StepInterface
    private TileCacheLayerInfo layerInfo
    private def     sqlRows
    private Object[] currentInputRow
-
+   private Bounds tileAlignedBounds
    Boolean calculateTotalCount = true
 
    TileStoreIterator(StepMeta stepMeta, StepDataInterface stepDataInterface,
@@ -106,6 +109,7 @@ class TileStoreIterator  extends BaseStep implements StepInterface
          numberOfOutputFields = selectedRowMeta.size()
          columnOffset = data.outputRowMeta.size()-numberOfOutputFields
          sql = data.hibernate.cacheSql
+
       }
 
       if(numberOfOutputFields<1)
@@ -155,7 +159,11 @@ class TileStoreIterator  extends BaseStep implements StepInterface
             {
                whereConstraints.intersects = geom.toString()
                whereConstraints.intersectsSrid = layerInfo.epsgCode?.split(":")[-1]
+
             }
+
+            whereConstraints.minLevel = StepUtil.getFieldValueAsString(meta?.minLevel,currentInputRow,this)
+            whereConstraints.maxLevel = StepUtil.getFieldValueAsString(meta?.maxLevel,currentInputRow,this)
 
             whereClause = data?.tileCacheService.createWhereClause(whereConstraints)
             meta?.selectedFieldNames.each{field->
@@ -188,7 +196,22 @@ class TileStoreIterator  extends BaseStep implements StepInterface
                def queryCountResult = sql.firstRow(queryCount)
                summaryTotalTiles = queryCountResult.count
                calculateTotalCount = false
+               layerInfo = data.tileCacheService.getLayerInfoByName(layerName)
             }
+           // TileLayer layer = daoTileCacheService.newGeoscriptTileLayer(layerName)
+            //tileAlignedBounds = layer.tiles(geom.bounds, queryMinLevelRow.z).bounds
+
+            /// testing some local bounds
+           // String queryMinLevel = "select z from ${layerInfo.tileStoreTable} ${whereClause} ORDER BY z ASC".toString()
+           // String queryMaxLevel = "select z from ${layerInfo.tileStoreTable} ${whereClause} ORDER BY z DESC".toString()
+           // def queryMinLevelRow = sql.firstRow(queryMinLevel)
+           // def queryMaxLevelRow = sql.firstRow(queryMaxLevel)
+           // println "MIN LEVEL =============== ${queryMinLevelRow?.z}"
+           // println "Max LEVEL =============== ${queryMaxLevelRow?.z}"
+           // def daoTileCacheService = data.hibernate.applicationContext.getBean("tileCacheServiceDAO");
+           // TileLayer layer = daoTileCacheService.newGeoscriptTileLayer(layerName)
+           // tileAlignedBounds = layer.tiles(geom.bounds, queryMinLevelRow.z).bounds
+           // println "ALIGNED BOUNDS!!!!! ${tileAlignedBounds}"
          }
 
          // check to see if we need to reload the next sql batch

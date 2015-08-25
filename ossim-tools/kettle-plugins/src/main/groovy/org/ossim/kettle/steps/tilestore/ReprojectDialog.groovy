@@ -6,10 +6,17 @@ import org.eclipse.swt.widgets.Shell
 import org.eclipse.swt.widgets.TableItem
 import org.ossim.kettle.utilities.SwtUtilities
 import org.pentaho.di.core.database.DatabaseMeta
-import org.pentaho.di.core.namedcluster.model.NamedCluster
+//import org.pentaho.di.core.namedcluster.model.NamedCluster
+
+
 import org.pentaho.di.trans.TransMeta
 import org.pentaho.di.trans.step.BaseStepMeta
 import org.pentaho.di.ui.core.widget.ColumnInfo
+
+//import org.pentaho.big.data.api.cluster.NamedCluster;
+
+import org.ossim.kettle.common.NamedCluster
+
 
 /**
  * Created by gpotts on 7/6/15.
@@ -127,7 +134,7 @@ class ReprojectDialog extends TileStoreCommonDialog
    }
    private void ok()
    {
-      NamedCluster namedCluster =  swt.namedClusterWidgetId.selectedNamedCluster
+      def namedCluster =  swt.namedClusterWidgetId.selectedNamedCluster
 
       if(namedCluster)
       {
