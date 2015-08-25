@@ -8,6 +8,7 @@ var AppDrawFeaturesAdmin = (function () {
     var $mapOmarInfo = $('#mapOmarInfo');
     //var $ingestModalButton = $('#ingestModalButton');
     var $endCuts = $('#endCuts');
+    var $clearAoiButton = $('#clearAoiButton');
     var $ingestImageModal = $('#ingestImageModal');
 
     var aoiFeature = new ol.Feature();
@@ -173,14 +174,16 @@ var AppDrawFeaturesAdmin = (function () {
 
         if (AppManageLayersAdmin.aoiVector.getSource().getFeatures().length >= 1) {
             AppManageLayersAdmin.aoiVector.getSource().clear();
+            AppIngestTileAdmin.objIngestImage.aoi = "";
             //console.log(AppManageLayersAdmin.aoiVector.getSource().getFeatures().length);
         }
 
     }
 
-    $('#clearAoiButton').on('click', function(){
+    $clearAoiButton.on('click', function(){
 
         clearAoi();
+
 
     });
 
