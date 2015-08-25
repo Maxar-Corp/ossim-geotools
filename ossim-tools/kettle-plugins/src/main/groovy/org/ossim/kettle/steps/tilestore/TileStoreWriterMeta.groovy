@@ -15,8 +15,6 @@ import org.pentaho.di.core.database.DatabaseMeta
 import org.pentaho.di.core.exception.KettleException
 import org.pentaho.di.core.exception.KettleValueException
 import org.pentaho.di.core.exception.KettleXMLException
-import org.pentaho.di.core.namedcluster.NamedClusterManager
-import org.pentaho.di.core.namedcluster.model.NamedCluster
 import org.pentaho.di.core.row.RowMetaInterface
 import org.pentaho.di.core.row.ValueMeta
 import org.pentaho.di.core.row.ValueMetaInterface

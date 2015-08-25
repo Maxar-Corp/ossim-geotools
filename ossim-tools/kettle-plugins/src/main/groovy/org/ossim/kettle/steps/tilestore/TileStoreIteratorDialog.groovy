@@ -20,7 +20,9 @@ import org.ossim.kettle.utilities.SwtUtilities
 import org.ossim.omar.utilities.KettleUtilities
 import org.pentaho.di.core.Const
 import org.pentaho.di.core.database.DatabaseMeta
-import org.pentaho.di.core.namedcluster.model.NamedCluster
+//import org.pentaho.di.core.namedcluster.model.NamedCluster
+//import org.pentaho.big.data.api.cluster.NamedCluster;
+
 import org.pentaho.di.core.row.ValueMetaInterface
 import org.pentaho.di.trans.TransMeta
 import org.pentaho.di.trans.step.BaseStepMeta
@@ -28,7 +30,6 @@ import org.pentaho.di.trans.step.StepDialogInterface
 import org.pentaho.di.ui.core.database.dialog.DatabaseDialog
 import org.pentaho.di.ui.core.widget.ColumnInfo
 import org.pentaho.di.ui.trans.step.BaseStepDialog
-import org.pentaho.di.ui.core.namedcluster.NamedClusterWidget;
 
 /**
  * Created by gpotts on 5/14/15.
@@ -310,7 +311,7 @@ class TileStoreIteratorDialog  extends TileStoreCommonDialog
       input.minLevel = swt.minLevel.text?:""
       input.maxLevel = swt.maxLevel.text?:""
 
-      NamedCluster namedCluster =  swt.namedClusterWidgetId.selectedNamedCluster
+      def namedCluster =  swt.namedClusterWidgetId.selectedNamedCluster
 
       if(namedCluster)
       {

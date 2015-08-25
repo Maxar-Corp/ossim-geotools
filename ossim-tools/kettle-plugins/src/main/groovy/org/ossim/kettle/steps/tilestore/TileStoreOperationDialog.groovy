@@ -15,7 +15,9 @@ import org.ossim.kettle.utilities.SwtUtilities
 import org.ossim.omar.utilities.KettleUtilities
 import org.pentaho.di.core.Const
 import org.pentaho.di.core.database.DatabaseMeta
-import org.pentaho.di.core.namedcluster.model.NamedCluster
+//import org.pentaho.di.core.namedcluster.model.NamedCluster
+//import org.pentaho.big.data.api.cluster.NamedCluster;
+
 import org.pentaho.di.core.row.ValueMetaInterface
 import org.pentaho.di.trans.TransMeta
 import org.pentaho.di.trans.step.BaseStepMeta
@@ -402,7 +404,7 @@ class TileStoreOperationDialog extends BaseStepDialog implements
       }
 
       stepname = swt.stepName.text
-      NamedCluster namedCluster =  swt.namedClusterWidgetId.selectedNamedCluster
+      def namedCluster =  swt.namedClusterWidgetId.selectedNamedCluster
 
       if(namedCluster)
       {

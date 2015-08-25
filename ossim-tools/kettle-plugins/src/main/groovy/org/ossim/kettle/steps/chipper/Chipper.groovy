@@ -304,7 +304,7 @@ class Chipper extends BaseStep implements StepInterface
                      if(meta.passNullTiles)
                      {
                         resultArray << "NULL"
-                        result << (PlanarImage)null
+                        resultArray << (PlanarImage)null
                      }
                      //	resultArray << null
                   }
@@ -323,7 +323,7 @@ class Chipper extends BaseStep implements StepInterface
                         if(meta.passNullTiles)
                         {
                            resultArray << "NULL"
-                           result << (PlanarImage)null
+                           resultArray << (PlanarImage)null
                         }
                         //	resultArray << null
                      }
@@ -333,7 +333,7 @@ class Chipper extends BaseStep implements StepInterface
                   if(meta.passNullTiles)
                   {
                      resultArray << "NULL"
-                     result << (PlanarImage)null
+                     resultArray << (PlanarImage)null
                   }
                   break
                default:

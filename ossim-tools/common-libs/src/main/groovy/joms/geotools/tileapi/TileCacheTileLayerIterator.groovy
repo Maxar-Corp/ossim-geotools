@@ -15,8 +15,8 @@ import groovy.xml.MarkupBuilder
  */
 class TileCacheTileLayerIterator {
    TileLayer layer
-   int minLevel
-   int maxLevel
+   Integer minLevel
+   Integer maxLevel
    Bounds    bounds
 
    // gives us an aoi to clip all tiles to
@@ -29,6 +29,31 @@ class TileCacheTileLayerIterator {
    //private minLevelIndex
    //private maxLevelIndex
 
+   Bounds alignedGrid()
+   {
+      Bounds result
+      if(value)
+      {
+         def level = minLevel?:0
+         if(level != null)
+         {
+            if(bounds)
+            {
+               result = layer?.tiles(bounds, level)?.bounds
+            }
+            else
+            {
+               result = layer?.tiles(level)?.bounds
+            }
+         }
+         else
+         {
+
+         }
+      }
+
+      result
+   }
    void reset()
    {
       currentLevel = -1

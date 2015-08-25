@@ -8,7 +8,7 @@ gradle -DkettleVersion="5.3.0.0-213" -DhadoopDist=cdh4 clean build common-libs:i
 
 Copy to kettle distribution:
 
-gradle -DhadoopDist=cdh4 -DkettleVersion="5.3.0.0-213" clean build common-libs:install kettle-libs:install kettle-plugins:install app:install app:shadowJar copyToKettle -x test
+gradle -DhadoopDist=cdh4 -DaccumuloVersion="1.6.1" -DkettleVersion="5.3.0.0-213" clean build common-libs:install kettle-libs:install kettle-plugins:install app:install app:shadowJar copyToKettle -x test
 
 
 Command line examples.  If you are in this directory and built the tools then here are some examples of creating layers and ingesting data
