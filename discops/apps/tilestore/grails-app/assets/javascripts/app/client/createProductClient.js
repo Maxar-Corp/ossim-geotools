@@ -5,6 +5,8 @@ var CreateProductClient = (function () {
     // Navbar DOM elements
     var $tileLayerSelect = $('#tileLayerSelect');
     var $createGp = $('#createGp');
+    var $clearAoi = $('#clearAoi');
+
 
     // Product modal DOM elements
     var $exportProductModal = $('#exportProductModal');
@@ -283,8 +285,9 @@ var CreateProductClient = (function () {
 
     });
 
-    $('#clearAoi').on('click', function(){
+    $clearAoi.on('click', function(){
 
+        $createGp.addClass("disabled");
         AddLayerClient.aoiVector.getSource().clear();
 
     });
@@ -296,7 +299,7 @@ var CreateProductClient = (function () {
             urlLayerActualBounds = initParams.urlLayerActualBounds;
 
             $createGp.on("click", function () {
-                $createGp.addClass("disabled");
+                //$createGp.addClass("disabled");
 
                 // Open a modal dialog, and pass the aoiFeature geometry.
                 $exportProductModal.modal('show');
@@ -360,7 +363,6 @@ var CreateProductClient = (function () {
                                             $jobHeader.html('Product build complete!');
                                             l.stop();
 
-                                            // TODO: $buttons.hide();
                                             $prodcutButtons.hide();
                                             $downloadProduct.show();
 
@@ -478,13 +480,6 @@ var CreateProductClient = (function () {
             // Remove the AOI feature if the user closes the product modal window
             $exportProductModal.on('hidden.bs.modal', function (e) {
 
-                //aoiFeatureOverlay.removeFeature(aoiFeature);
-                //console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
-
-
-                //AddLayerClient.aoiVector.getSource().clear();
-
-
                 //console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
                 resetProductForm();
 
@@ -527,7 +522,7 @@ var CreateProductClient = (function () {
                 $aoiJobInfo.addClass('alert-info').removeClass('alert-success');
                 $jobHeader.html('Submitted Job Information:');
 
-                $createGp.addClass('disabled');
+                //$createGp.addClass('disabled');
 
                 //console.log('reset fired!');
 
@@ -538,8 +533,6 @@ var CreateProductClient = (function () {
             $('[data-toggle="tooltip"]').tooltip();
 
         },
-        //aoiStyle: aoiStyle,
-        //aoiFeatureOverlay: aoiFeatureOverlay,
         product: product,
         $createGp: $createGp,
         createAoi: createAoi,

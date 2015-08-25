@@ -38,6 +38,8 @@ var AppOmarWfsAdmin = (function () {
     var $dateRangeSelect = $('#dateRangeSelect');
     var $sortByFieldSelect = $('#sortByFieldSelect');
     var $sortByTypeSelect = $('#sortByTypeSelect');
+    var $acquisitionDateRadioLabel = $('#acquisitionDateRadioLabel');
+    var $constrainToViewportCheckbox = $('#constrainToViewportCheckbox');
     var dateToday, dateTodayEnd, dateYesterday, dateYesterdayEnd, dateLast7Days, dateThisMonth, dateLast3Months, dateLast6Months;
     var filterOpts = {
         dateType: '',
@@ -216,13 +218,21 @@ var AppOmarWfsAdmin = (function () {
 
     AppAdmin.mapOmar.on('moveend', function () {
 
-        getWfsCards(filterOpts);
+        // TODO: Add a check here to see if the getWfsCards
+        //       needs to fire based on the spatial query
+        //       checkbox value
+        if ($constrainToViewportCheckbox.checkbox('isChecked') ){
+            getWfsCards(filterOpts);
+        } else {
+            console.log('mapend firing without running firing getWfsCards');
+        }
+
 
     });
 
     function getWfsCards(params){
 
-        if ($('#acquisitionDateRadioLabel').radio('isChecked')){
+        if ($acquisitionDateRadioLabel.radio('isChecked')){
             //console.log('acq. is checked');
             filterDateType = 'Acquisition';
         }
@@ -254,7 +264,7 @@ var AppOmarWfsAdmin = (function () {
             "bbox": getSpatalQueryExtent()
         };
 
-        if ( !$('#constrainToViewportCheckbox').checkbox('isChecked') ){
+        if ( !$constrainToViewportCheckbox.checkbox('isChecked') ){
             cqlParams.constrainToViewport = false;
         }
         //console.log('cqlParams.constrainToViewPort', cqlParams.constrainToViewport);

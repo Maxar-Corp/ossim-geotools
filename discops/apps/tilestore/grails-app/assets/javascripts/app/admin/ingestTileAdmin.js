@@ -3,8 +3,8 @@ var AppIngestTileAdmin = (function () {
     "use strict";
     var loadParams;
 
+    var $ingestImageModal =  $('#ingestImageModal');
     var $ingestModalButton = $('#ingestModalButton');
-    var $ingestImageModal = $('#ingestImageModal');
     var $submitIngestImage = $('#submitIngestImage');
 
     var $minIngestLevel = $('#minIngestLevel');
@@ -46,10 +46,6 @@ var AppIngestTileAdmin = (function () {
     }
 
     function setIngestLevels(){
-
-        // WFS for tile layers
-        //http://localhost:8080/tilestore/wfs?request=getFeature&TypeName=tilestore:tile_cache_layer_info&outputFormat=json
-        //http://localhost:8080/tilestore/wfs?request=getFeature&TypeName=tilestore:tile_cache_layer_info&outputFormat=json&filter=name=%27aaron%27
 
        // Get objClamp from appAdmin
         //console.log(AppOmarWfsAdmin.objImageClamp);
@@ -104,22 +100,6 @@ var AppIngestTileAdmin = (function () {
             }
         });
 
-
-        // Replace HTML option/values on min/max levels dynamically generated
-        // from js
-        //console.log('min: ' + min);
-        //for (min; min < 23; min++) {
-        //    console.log('min: ' + min);
-        //    $minIngestLevel.append('<option value="' + min + '">' + min + '</option>');
-        //    //$minIngestLevel.selectpicker('refresh');
-        //}
-        //for (var i = 0; i < 23; i++) {
-        //    //console.log(i);
-        //    $maxIngestLevel.append('<option value="' + i + '">' + i + '</option>');
-        //    //$maxIngestLevel.selectpicker('val', '20');  // intial value for max level
-        //    //$maxIngestLevel.selectpicker('refresh');
-        //}
-        //console.log('hello!');
     }
 
     function ingestImage(){
@@ -147,7 +127,7 @@ var AppIngestTileAdmin = (function () {
             }
         });
 
-        $('#ingestImageModal').modal('hide');
+        $ingestImageModal.modal('hide');
 
     }
 
@@ -186,7 +166,6 @@ var AppIngestTileAdmin = (function () {
         objIngestImage: objIngestImage,
         $ingestModalButton: $ingestModalButton,
         ingestModalShow: ingestModalShow,
-        //ingestBool: ingestBool
         setIngestBool: setIngestBool,
         getIngestBool: getIngestBool
 
