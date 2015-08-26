@@ -15,7 +15,8 @@ class JobService
    def rabbitProducer
    def grailsApplication
    def columnNames = [
-           'id', 'jobId', 'jobDir', 'type', 'name', 'description', 'username', 'status', 'statusMessage', 'percentComplete', 'submitDate', 'startDate', 'endDate'
+           'id', 'jobId', 'jobDir', 'type', 'name', 'description', 'username', 'status', 'percentComplete', 'submitDate', 'startDate', 'endDate'
+ //          'id', 'jobId', 'jobDir', 'type', 'name', 'description', 'username', 'status', 'statusMessage', 'percentComplete', 'submitDate', 'startDate', 'endDate'
    ]
 
 
