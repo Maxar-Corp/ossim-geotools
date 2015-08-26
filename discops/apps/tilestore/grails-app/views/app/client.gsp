@@ -317,7 +317,8 @@
                                             <div id="productButtons">
                                                 <button id="submitAoi" type="button" class="btn btn-primary ladda-button"
                                                     data-style="zoom-in"><span class="ladda-label">Submit</span></button>
-                                                <button type="button" id="cancelAoi" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                <button type="button" id="cancelAoi" class="btn btn-default"
+                                                        data-dismiss="modal">Close</button>
                                             </div>
                                             <p id="downloadProduct"><i
                                                     class="fa fa-check fa-2x"></i>&nbsp;&nbsp;Ready for
