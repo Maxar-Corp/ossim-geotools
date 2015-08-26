@@ -16,12 +16,13 @@ var AppAdmin = (function () {
     var $minTileLevel = $('#minTileLevel');
     var $maxTileLevel = $('#maxTileLevel');
     var $navCreateLayer = $('#navCreateLayer');
+
     var $createTileLayerModal  = $('#createTileLayerModal');
+    var $createTileLayerForm = $('#createTileLayerForm');
     var $submitCreateLayer = $('#submitCreateLayer');
     var $createLayerName = $('#createLayerName');
     var $epsgCode = $('#epsgCode');
     var $resetCreateTile = $('#resetCreateTile');
-    //var $createTileLayerForm = $("#createTileLayerForm");
 
     var $navRenameLayer = $('#navRenameLayer');
     var $renameTileLayerModal = $('#renameTileLayerModal');
@@ -250,6 +251,14 @@ var AppAdmin = (function () {
             data: obj
         });
     }
+
+    $createTileLayerForm.on('invalid.bs.validator', function(){
+        $submitCreateLayer.addClass('disabled');
+    });
+
+    $createTileLayerForm.on('valid.bs.validator', function(){
+        $submitCreateLayer.removeClass('disabled');
+    });
 
     $submitCreateLayer.on('click', function () {
 
