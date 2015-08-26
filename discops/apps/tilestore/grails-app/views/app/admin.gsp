@@ -106,8 +106,7 @@
                         <li>
                             <form class="navbar-form">
                                 <div class="form-group">
-                                    <div class="input-group" id="tileLayerInputGroup" data-toggle="tooltip" data-placement="bottom"
-                                         title="Change the active tile layer">
+                                    <div class="input-group" id="tileLayerInputGroup">
                                         <div class="input-group-addon"><i class="fa fa-th"></i></div>
                                         <select id="tileLayerSelect"
                                                 class="form-control selectpicker show-tick" maxOptions="10"

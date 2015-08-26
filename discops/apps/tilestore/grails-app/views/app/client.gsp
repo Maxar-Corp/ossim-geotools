@@ -85,8 +85,7 @@
                                data-toggle="tooltip" data-placement="bottom"
                                title="Go to Jobs page"><i
                                     class="fa fa-tachometer"></i></a>
-                            <div class="input-group" id="tileLayerInputGroup" data-toggle="tooltip" data-placement="bottom"
-                                 title="Change the active tile layer">
+                            <div class="input-group" id="tileLayerInputGroup">
                                 <div class="input-group-addon"><i class="fa fa-th"></i></div>
                                 <select class="form-control selectpicker show-tick" id="tileLayerSelect">
                                 </select>
