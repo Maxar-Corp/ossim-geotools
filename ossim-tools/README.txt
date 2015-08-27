@@ -8,6 +8,12 @@ gradle -DkettleVersion="5.3.0.0-213" -DhadoopDist=cdh4 clean build common-libs:i
 
 Copy to kettle distribution:
 
+************* Other targets **************
+*** kettleVersion="5.3.0.0-213" 
+*** accumuloVersion="1.7.0" or "1.6.1" 
+*** hadoopDist="CDH5" or CDH5
+******************************************
+
 gradle -DhadoopDist=cdh4 -DaccumuloVersion="1.6.1" -DkettleVersion="5.3.0.0-213" clean build common-libs:install kettle-libs:install kettle-plugins:install app:install app:shadowJar copyToKettle -x test
 
 
