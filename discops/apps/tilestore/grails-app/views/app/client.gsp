@@ -85,8 +85,7 @@
                                data-toggle="tooltip" data-placement="bottom"
                                title="Go to Jobs page"><i
                                     class="fa fa-tachometer"></i></a>
-                            <div class="input-group" id="tileLayerInputGroup" data-toggle="tooltip" data-placement="bottom"
-                                 title="Change the active tile layer">
+                            <div class="input-group" id="tileLayerInputGroup">
                                 <div class="input-group-addon"><i class="fa fa-th"></i></div>
                                 <select class="form-control selectpicker show-tick" id="tileLayerSelect">
                                 </select>
@@ -317,7 +316,8 @@
                                             <div id="productButtons">
                                                 <button id="submitAoi" type="button" class="btn btn-primary ladda-button"
                                                     data-style="zoom-in"><span class="ladda-label">Submit</span></button>
-                                                <button type="button" id="cancelAoi" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                                <button type="button" id="cancelAoi" class="btn btn-default"
+                                                        data-dismiss="modal">Close</button>
                                             </div>
                                             <p id="downloadProduct"><i
                                                     class="fa fa-check fa-2x"></i>&nbsp;&nbsp;Ready for

@@ -218,9 +218,9 @@ var AppOmarWfsAdmin = (function () {
 
     AppAdmin.mapOmar.on('moveend', function () {
 
-        // TODO: Add a check here to see if the getWfsCards
-        //       needs to fire based on the spatial query
-        //       checkbox value
+        // Add a check here to see if the getWfsCards
+        // needs to fire based on the spatial query
+        // checkbox value
         if ($constrainToViewportCheckbox.checkbox('isChecked') ){
             getWfsCards(filterOpts);
         } else {

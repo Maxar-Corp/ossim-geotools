@@ -7,9 +7,9 @@ var CreateProductClient = (function () {
     var $createGp = $('#createGp');
     var $clearAoi = $('#clearAoi');
 
-
     // Product modal DOM elements
     var $exportProductModal = $('#exportProductModal');
+    var $productForm = $('#productForm');
     var $productFormElements = $('#productFormElements');
     var $productName = $('#productName');
     var $productType = $('#productType');
@@ -299,11 +299,18 @@ var CreateProductClient = (function () {
             urlLayerActualBounds = initParams.urlLayerActualBounds;
 
             $createGp.on("click", function () {
-                //$createGp.addClass("disabled");
 
                 // Open a modal dialog, and pass the aoiFeature geometry.
                 $exportProductModal.modal('show');
 
+            });
+
+            $productForm.on('invalid.bs.validator', function(){
+                $submitAoi.addClass('disabled');
+            });
+
+            $productForm.on('valid.bs.validator', function(){
+                $submitAoi.removeClass('disabled');
             });
 
             $submitAoi.on("click", function () {

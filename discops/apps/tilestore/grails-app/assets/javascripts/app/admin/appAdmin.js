@@ -16,20 +16,21 @@ var AppAdmin = (function () {
     var $minTileLevel = $('#minTileLevel');
     var $maxTileLevel = $('#maxTileLevel');
     var $navCreateLayer = $('#navCreateLayer');
+
     var $createTileLayerModal  = $('#createTileLayerModal');
+    var $createTileLayerForm = $('#createTileLayerForm');
     var $submitCreateLayer = $('#submitCreateLayer');
     var $createLayerName = $('#createLayerName');
     var $epsgCode = $('#epsgCode');
     var $resetCreateTile = $('#resetCreateTile');
-    //var $createTileLayerForm = $("#createTileLayerForm");
 
     var $navRenameLayer = $('#navRenameLayer');
     var $renameTileLayerModal = $('#renameTileLayerModal');
+    var $renameTileLayerForm = $('#renameTileLayerForm');
     var $renameTileLayer = $('#renameTileLayer');
     var $renameLayerName = $('#renameLayerName');
     var $submitRenameLayer = $('#submitRenameLayer');
     var $resetRenameTile = $('#resetRenameTile');
-    var $renameTileLayerForm = $("#renameTileLayerForm");
 
     var $deleteTileLayer = $('#deleteTileLayer');
     var $navDeleteLayer = $('#navDeleteLayer');
@@ -251,6 +252,14 @@ var AppAdmin = (function () {
         });
     }
 
+    $createTileLayerForm.on('invalid.bs.validator', function(){
+        $submitCreateLayer.addClass('disabled');
+    });
+
+    $createTileLayerForm.on('valid.bs.validator', function(){
+        $submitCreateLayer.removeClass('disabled');
+    });
+
     $submitCreateLayer.on('click', function () {
 
         // Prevent submits/multiple ajax requests
@@ -354,14 +363,6 @@ var AppAdmin = (function () {
         resetForm('create');
     });
 
-    //// Bind the list of tile layers to the select element one time only
-    //$navRenameLayer.one('click', function () {
-    //    //console.log(loadParams.tilestoreLayers);
-    //    //console.log(tileLayersArray);
-    //    //updateTileLayers(tileLayersArray,'#');
-    //    //getTileLayers(loadParams.tilestoreLayers, '#renameTileLayer');
-    //});
-
     $navRenameLayer.click(function () {
 
         $renameTileLayerModal.modal('show');
@@ -379,6 +380,14 @@ var AppAdmin = (function () {
             data: {'oldName': oldName, 'newName': newName}
         });
     }
+
+    $renameTileLayerForm.on('invalid.bs.validator', function(){
+        $submitRenameLayer.addClass('disabled');
+    });
+
+    $renameTileLayerForm.on('valid.bs.validator', function(){
+        $submitRenameLayer.removeClass('disabled');
+    });
 
     $submitRenameLayer.on('click', function () {
 
@@ -455,11 +464,6 @@ var AppAdmin = (function () {
     $resetRenameTile.on('click', function () {
         resetForm('rename');
     });
-
-    //// Binds the list of tile layers to the select element one time only.
-    //$navDeleteLayer.one('click', function () {
-    //    //getTileLayers(loadParams.tilestoreLayers, '#deleteTileLayer');
-    //});
 
     $navDeleteLayer.click(function () {
 
