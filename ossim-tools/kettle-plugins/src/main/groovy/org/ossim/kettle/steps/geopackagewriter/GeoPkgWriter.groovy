@@ -1,8 +1,16 @@
 package org.ossim.kettle.steps.geopackagewriter
 
 import geoscript.geom.Bounds
+import geoscript.geom.Geometry
+import geoscript.geom.Point
+import geoscript.layer.ImageTileLayer
+import geoscript.layer.TileCursor
+import geoscript.layer.TileLayer
 import geoscript.proj.Projection
 import joms.geotools.tileapi.BoundsUtil
+import joms.geotools.tileapi.TileCacheHints
+import joms.geotools.tileapi.TileCachePyramid
+import joms.geotools.tileapi.TileCacheTileLayer
 import joms.oms.GpkgWriter
 import joms.oms.ImageData
 import joms.oms.ossimImageData
@@ -51,7 +59,7 @@ class GeoPkgWriter extends BaseStep implements StepInterface
    HashMap    options = [:]
    Boolean    openedFile = false
    def        currentGroupId
-   private int minlevelIdx
+   private int minLevelIdx
    private int maxLevelIdx
    private int imageIdx
    private int levelIdx
@@ -60,6 +68,11 @@ class GeoPkgWriter extends BaseStep implements StepInterface
    private int groupIdIdx
    private int filenameIdx
    private int layerNameIdx
+   private int clipBoundsIdx
+   private int tileBoundsIdx
+   private Bounds clipBounds
+   private Bounds alignedClipBounds
+   private Bounds tileBounds
    private int epsgIdx
    private int writerModeIdx
 
@@ -79,7 +92,7 @@ class GeoPkgWriter extends BaseStep implements StepInterface
    {
       String epsg
       String writerMode
-      Integer minLevel
+      Integer minLevel=0
       Integer maxLevel
       String filenameString
       File f
@@ -90,9 +103,9 @@ class GeoPkgWriter extends BaseStep implements StepInterface
       options = [:]
       epsg      = r[epsgIdx]
 
-      if(minlevelIdx >=0)
+      if(minLevelIdx >=0)
       {
-         if(r[minlevelIdx]!=null) minLevel  = inputRowMeta.getInteger(r, minlevelIdx)
+         if(r[minLevelIdx]!=null) minLevel  = inputRowMeta.getInteger(r, minLevelIdx)
       }
       if(maxLevelIdx >= 0)
       {
@@ -124,6 +137,41 @@ class GeoPkgWriter extends BaseStep implements StepInterface
       else
       {
          options.append = "false"
+      }
+      clipBounds = null
+      if(clipBoundsIdx>=0)
+      {
+         // tile align
+         TileLayer tileLayer
+         Projection proj = new Projection(r[epsgIdx])
+         TileCachePyramid pyramid
+         if(r[clipBoundsIdx]&&(tileBoundsIdx>=0))
+         {
+            clipBounds = new Geometry(r[clipBoundsIdx]).bounds
+            HashMap params = [proj    : proj,
+                              bounds  : BoundsUtil.getDefaultBounds(proj),
+                              minLevel: minLevel,
+                              maxLevel: maxLevel]
+            pyramid = new TileCachePyramid(params)
+
+            pyramid.initializeGrids(new TileCacheHints())
+
+            tileLayer = new TileCacheTileLayer(pyramid: pyramid, bounds: BoundsUtil.getDefaultBounds(proj))
+
+            TileCursor tc = tileLayer.tiles(clipBounds, minLevel)
+
+            alignedClipBounds = tc.bounds
+         }
+         if(clipBounds)
+         {
+            options.clip_extents = "${clipBounds.minX},${clipBounds.minY},${clipBounds.maxX},${clipBounds.maxY}".toString()
+            options.clip_extents_align_to_grid = "true";
+
+         }
+
+         println "*"*30
+         println options
+         println "*"*30
       }
 
       openedFile = gpkgWriter?.openFile(options)
@@ -157,16 +205,18 @@ class GeoPkgWriter extends BaseStep implements StepInterface
          //               epsg:"3857",
          //               zoom_levels:"(${(0..20).collect(){it}.join(',')})".toString()]
 
+         tileBoundsIdx    =  getInputRowMeta().indexOfValue(meta.tileBoundsField)
          imageIdx         =  getInputRowMeta().indexOfValue(meta.tileImageField)
          levelIdx         =  getInputRowMeta().indexOfValue(meta.tileLevelField)
          rowIdx           =  getInputRowMeta().indexOfValue(meta.tileRowField)
          colIdx           =  getInputRowMeta().indexOfValue(meta.tileColField)
          groupIdIdx       =  getInputRowMeta().indexOfValue(meta.groupField)
+         clipBoundsIdx    =  getInputRowMeta().indexOfValue(meta.clipBoundsField)
 
          filenameIdx      =  getInputRowMeta().indexOfValue(meta.filenameField)
          layerNameIdx     =  getInputRowMeta().indexOfValue(meta.layerNameField)
          epsgIdx          =  getInputRowMeta().indexOfValue(meta.epsgCodeField)
-         minlevelIdx      =  getInputRowMeta().indexOfValue(meta.minLevelField)
+         minLevelIdx      =  getInputRowMeta().indexOfValue(meta.minLevelField)
          maxLevelIdx      =  getInputRowMeta().indexOfValue(meta.maxLevelField)
          imageConverter   =  inputRowMeta.getValueMeta(imageIdx) as OssimValueMetaBase
          if((imageIdx < 0)||(levelIdx < 0)||(rowIdx < 0)|| (colIdx < 0)||
@@ -185,6 +235,7 @@ class GeoPkgWriter extends BaseStep implements StepInterface
             groupId = r[groupIdIdx]
             currentGroupId = groupId
          }
+
          imageData = new ImageData()
          imageData.setOssimImageData(256, 256, 3, ossimScalarType.OSSIM_UINT8)
 
@@ -302,6 +353,14 @@ class GeoPkgWriter extends BaseStep implements StepInterface
                   imageData.makeBlank()
                   imageData.copyJava4ByteAlphaToOssimImageDataBuffer(byteDataBuffer.data, sampleModel.bandOffsets)
                   oIData.validate()
+                  if(clipBounds)
+                  {
+                     tileBounds  = new Geometry(r[tileBoundsIdx]).bounds
+                     Point tileMidPoint = new Point(tileBounds.minX+(tileBounds.width*0.5),
+                                                    tileBounds.minY + (tileBounds.height*0.5));
+                     colValue = (tileMidPoint.x-alignedClipBounds.minX)/tileBounds.width
+                     rowValue = (alignedClipBounds.maxY-tileMidPoint.y)/tileBounds.height
+                  }
                   if (!gpkgWriter.writeTile(imageData, level, rowValue, colValue))
                   {
                      // println "UNABLE TO WRITE TILE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"

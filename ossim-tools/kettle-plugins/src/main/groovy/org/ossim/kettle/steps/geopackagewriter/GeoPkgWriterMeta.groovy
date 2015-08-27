@@ -42,6 +42,7 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
    String tileRowField    = ""
    String tileColField    = ""
    String tileImageField  = ""
+   String tileBoundsField  = ""
    String groupField      = ""
    String filenameField   = ""
    String layerNameField  = ""
@@ -49,6 +50,7 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
    String minLevelField   = ""
    String maxLevelField   = ""
    String writerMode      = "mixed"
+   String clipBoundsField = ""
 
    String getXML() throws KettleValueException
    {
@@ -59,6 +61,7 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
       retval.append("    ").append(XMLHandler.addTagValue("tileRowField",   tileRowField?:""))
       retval.append("    ").append(XMLHandler.addTagValue("tileColField",   tileColField?:""))
       retval.append("    ").append(XMLHandler.addTagValue("tileImageField", tileImageField?:""))
+      retval.append("    ").append(XMLHandler.addTagValue("tileBoundsField", tileBoundsField?:""))
       retval.append("    ").append(XMLHandler.addTagValue("groupField",     groupField?:""))
       retval.append("    ").append(XMLHandler.addTagValue("filenameField",  filenameField?:""))
       retval.append("    ").append(XMLHandler.addTagValue("layerNameField", layerNameField?:""))
@@ -66,6 +69,7 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
       retval.append("    ").append(XMLHandler.addTagValue("minLevelField",  minLevelField?:""))
       retval.append("    ").append(XMLHandler.addTagValue("maxLevelField",  maxLevelField?:""))
       retval.append("    ").append(XMLHandler.addTagValue("writerMode",     writerMode?:"mixed"))
+      retval.append("    ").append(XMLHandler.addTagValue("clipBoundsField",  clipBoundsField?:""))
 
       return retval;
    }
@@ -86,18 +90,20 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
 
    void setDefault()
    {
-      tileLevelField = ""
-      tileRowField   = ""
-      tileColField   = ""
-      tileImageField = ""
-      groupField     = ""
-      filenameField  = ""
-      layerNameField = ""
-      epsgCodeField  = ""
-      minLevelField  = ""
-      maxLevelField  = ""
-      writerMode  = "mixed"
-      passInputFields      = true
+      tileLevelField  = ""
+      tileRowField    = ""
+      tileColField    = ""
+      tileImageField  = ""
+      tileBoundsField = ""
+      groupField      = ""
+      filenameField   = ""
+      layerNameField  = ""
+      epsgCodeField   = ""
+      minLevelField   = ""
+      maxLevelField   = ""
+      writerMode      = "mixed"
+      passInputFields = true
+      clipBoundsField = ""
    }
 
    void loadXML(Node stepnode, List<DatabaseMeta> databases, Map<String,Counter> counters)
@@ -112,6 +118,7 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
          tileRowField    = XMLHandler.getTagValue(stepnode, "tileRowField");
          tileColField    = XMLHandler.getTagValue(stepnode, "tileColField");
          tileImageField  = XMLHandler.getTagValue(stepnode, "tileImageField");
+         tileBoundsField = XMLHandler.getTagValue(stepnode, "tileBoundsField");
          groupField      = XMLHandler.getTagValue(stepnode, "groupField");
          filenameField   = XMLHandler.getTagValue(stepnode, "filenameField");
          layerNameField  = XMLHandler.getTagValue(stepnode, "layerNameField");
@@ -119,6 +126,7 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
          minLevelField   = XMLHandler.getTagValue(stepnode, "minLevelField");
          maxLevelField   = XMLHandler.getTagValue(stepnode, "maxLevelField");
          writerMode      = XMLHandler.getTagValue(stepnode, "writerMode")?:"mixed";
+         clipBoundsField   = XMLHandler.getTagValue(stepnode, "clipBoundsField");
 
 
          if(passInputFieldsString) passInputFields = passInputFieldsString.toBoolean()
@@ -139,6 +147,7 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
          tileRowField    = rep.getStepAttributeString(id_step, "tileRowField");
          tileColField    = rep.getStepAttributeString(id_step, "tileColField");
          tileImageField  = rep.getStepAttributeString(id_step, "tileImageField");
+         tileBoundsField  = rep.getStepAttributeString(id_step, "tileBoundsField");
          groupField      = rep.getStepAttributeString(id_step, "groupField");
          filenameField   = rep.getStepAttributeString(id_step, "filenameField");
          layerNameField  = rep.getStepAttributeString(id_step, "layerNameField");
@@ -146,6 +155,7 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
          minLevelField   = rep.getStepAttributeString(id_step, "minLevelField");
          maxLevelField   = rep.getStepAttributeString(id_step, "maxLevelField");
          writerMode      = rep.getStepAttributeString(id_step, "writerMode")?:"mixed";
+         clipBoundsField   = rep.getStepAttributeString(id_step, "clipBoundsField");
 
          if(passInputFieldsString) passInputFields = passInputFieldsString.toBoolean()
       }
@@ -173,6 +183,9 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
                  id_step, "tileImageField",
                  tileImageField) //$NON-NLS-1$
          rep.saveStepAttribute(id_transformation,
+                 id_step, "tileBopundsField",
+                 tileBoundsField) //$NON-NLS-1$
+         rep.saveStepAttribute(id_transformation,
                  id_step, "groupField",
                  groupField) //$NON-NLS-1$
          rep.saveStepAttribute(id_transformation,
@@ -193,6 +206,9 @@ class GeoPkgWriterMeta  extends BaseStepMeta implements StepMetaInterface
          rep.saveStepAttribute(id_transformation,
                  id_step, "writerMode",
                  writerMode) //$NON-NLS-1$
+         rep.saveStepAttribute(id_transformation,
+                 id_step, "clipBoundsField",
+                 clipBoundsField) //$NON-NLS-1$
       }
       catch(e)
       {
