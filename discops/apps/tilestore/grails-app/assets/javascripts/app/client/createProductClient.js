@@ -302,6 +302,11 @@ var CreateProductClient = (function () {
 
                 // Open a modal dialog, and pass the aoiFeature geometry.
                 $exportProductModal.modal('show');
+            });
+
+            $exportProductModal.on('shown.bs.modal', function () {
+                
+                $productName.focus();
 
             });
 
@@ -331,7 +336,7 @@ var CreateProductClient = (function () {
                     // Disable caching of AJAX responses */
                     cache: false
                 });
-
+                console.log('product', product);
                 $.ajax({
                     url: urlProductExport,
                     type: 'POST',
@@ -465,7 +470,7 @@ var CreateProductClient = (function () {
                             ' download', 'Product download Error');
                     });
                 $exportProductModal.modal('hide');
-                resetProductForm();
+                //resetProductForm();
 
             }
 
@@ -478,7 +483,6 @@ var CreateProductClient = (function () {
 
             $cancelAoi.on("click", function () {
 
-                //aoiFeatureOverlay.removeFeature(aoiFeature);
                 $createGp.removeClass("disabled");
                 resetProductForm();
 
@@ -498,8 +502,8 @@ var CreateProductClient = (function () {
 
                 $productName.val('');
 
-                $productMinLevel.empty();
-                $productMaxLevel.empty();
+                //$productMinLevel.empty();
+                //$productMaxLevel.empty();
 
                 $productType.selectpicker('val', 'EPSG:3857');
                 $productType.selectpicker('render');
