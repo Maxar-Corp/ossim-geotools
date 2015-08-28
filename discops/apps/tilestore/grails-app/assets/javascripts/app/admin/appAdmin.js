@@ -237,7 +237,7 @@ var AppAdmin = (function () {
         for (var i = 0; i < 23; i++) {
             //console.log(i);
             $maxTileLevel.append('<option value="' + i + '">' + i + '</option>');
-            $maxTileLevel.selectpicker('val', '20');  // intial value for max level
+            $maxTileLevel.selectpicker('val', '20');
             $maxTileLevel.selectpicker('refresh');
         }
 
@@ -558,17 +558,17 @@ var AppAdmin = (function () {
                 $maxTileLevel.selectpicker('val', '20');  // initial value for max level
                 $maxTileLevel.selectpicker('refresh');
             }
-            for (var i = 0; i < 23; i++) {
-                //console.log(i);
-                $minTileLevel.find('[value=' + i + ']').remove();
-                $minTileLevel.selectpicker('refresh');
-            }
-            for (var i = 0; i < 23; i++) {
-                //console.log(i);
-                $minTileLevel.append('<option value="' + i + '">' + i + '</option>');
-                $minTileLevel.selectpicker('val', '0');  // initial value for max level
-                $minTileLevel.selectpicker('refresh');
-            }
+            //for (var i = 0; i < 23; i++) {
+            //    //console.log(i);
+            //    $minTileLevel.find('[value=' + i + ']').remove();
+            //    $minTileLevel.selectpicker('refresh');
+            //}
+            //for (var i = 0; i < 23; i++) {
+            //    //console.log(i);
+            //    $minTileLevel.append('<option value="' + i + '">' + i + '</option>');
+            //    $minTileLevel.selectpicker('val', '0');  // initial value for max level
+            //    $minTileLevel.selectpicker('refresh');
+            //}
 
             $epsgCode.selectpicker('val', 'EPSG:3857');
             $select.selectpicker('render');
