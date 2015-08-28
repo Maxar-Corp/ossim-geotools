@@ -169,9 +169,11 @@ class GeoPkgWriter extends BaseStep implements StepInterface
 
          }
 
-         println "*"*30
-         println options
-         println "*"*30
+         if(layerNameIdx)
+         {
+            String  layerName = r[layerNameIdx]
+            if(layerName) options.tile_table_name = layerName
+         }
       }
 
       openedFile = gpkgWriter?.openFile(options)

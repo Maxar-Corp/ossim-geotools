@@ -264,7 +264,8 @@
                                                     <input id="productName" type="text"
                                                            pattern="^[A-Za-z](?:_?[A-Za-z0-9]+)*$"
                                                            maxlength="45"
-                                                           class="form-control" required>
+                                                           class="form-control" value="image"
+                                                           placeholder="image" autofocus>
                                                     <span class="help-block"><small><em>Start with alphabetic, up to 45
                                                     letters, numbers and underscores (case insensitive).  No spaces. <br>
                                                         (Do not add file extensions)</em></small></span>

@@ -13,6 +13,10 @@ var CreateProductClient = (function () {
     var $productFormElements = $('#productFormElements');
     var $productName = $('#productName');
     var $productType = $('#productType');
+    var minOrig;
+    var maxOrig;
+    var min;
+    var max;
     var $productMinLevel = $('#productMinTileLevel');
     var $productMaxLevel = $('#productMaxTileLevel');
     var $productEpsgCode = $('#productEpsgCode');
@@ -100,8 +104,13 @@ var CreateProductClient = (function () {
                 //console.log('---------------------------');
                 $aoiLod.html(data.minLevel + ' to ' + data.maxLevel);
 
-                var min = data.minLevel;
-                var max = data.maxLevel;
+                // *Orig stores the original min/max values so they can be used
+                // in the on change event for the product level dropdowns
+                minOrig = data.minLevel;
+                maxOrig = data.maxLevel;
+
+                min = data.minLevel;
+                max = data.maxLevel;
 
                 $productMinLevel.empty();
                 $productMaxLevel.empty();
@@ -298,6 +307,55 @@ var CreateProductClient = (function () {
             urlProductExport = initParams.urlProductExport;
             urlLayerActualBounds = initParams.urlLayerActualBounds;
 
+            $productMinLevel.on('change', function () {
+
+                // This function affects $prodMaxLevel <select> on the create product modal so that it is updated
+                // to reflect only the levels that are available after a $productMinLevel has
+                // been selected.  Restricts user from choosing a level lower than is available.
+
+                var maxProdLevel = $productMaxLevel.selectpicker('val');
+
+                for (var i = 0; i <= maxOrig; i++) {
+                    console.log('i', i);
+                    $productMaxLevel.find('[value=' + i + ']').remove();
+                    $productMaxLevel.selectpicker('refresh');
+                }
+                var counter = $productMinLevel.val();
+
+                for (counter; counter <= maxOrig; counter++) {
+                    console.log('counter', counter);
+                    $productMaxLevel.append('<option value="' + counter + '">' + counter + '</option>');
+                    $productMaxLevel.selectpicker('val', maxProdLevel);
+                    $productMaxLevel.selectpicker('refresh');
+                }
+
+            });
+
+            $productMaxLevel.on('change', function () {
+
+                // This function affects $prodMinLevel <select> on the create product modal so that it is updated
+                // to reflect only the levels that are available after a $productMaxLevel has
+                // been selected.  Restricts user from choosing a level higher than is available.
+
+                var minProdLevel = $productMinLevel.selectpicker('val');
+                var maxProdLevel = $productMaxLevel.selectpicker('val');
+
+                for (var i = 0; i <= max; i++) {
+                    console.log('i', i);
+                    $productMinLevel.find('[value=' + i + ']').remove();
+                    $productMinLevel.selectpicker('refresh');
+                }
+                var counter = minOrig;
+
+                for (counter; counter <= maxProdLevel; counter++) {
+                    console.log('counter', counter);
+                    $productMinLevel.append('<option value="' + counter + '">' + counter + '</option>');
+                    $productMinLevel.selectpicker('val', minProdLevel);
+                    $productMinLevel.selectpicker('refresh');
+                }
+
+            });
+
             $createGp.on("click", function () {
 
                 // Open a modal dialog, and pass the aoiFeature geometry.
@@ -305,12 +363,22 @@ var CreateProductClient = (function () {
 
             });
 
+            $exportProductModal.on('shown.bs.modal', function () {
+                
+                $productName.focus();
+
+            });
+
             $productForm.on('invalid.bs.validator', function(){
+
                 $submitAoi.addClass('disabled');
+
             });
 
             $productForm.on('valid.bs.validator', function(){
+
                 $submitAoi.removeClass('disabled');
+
             });
 
             $submitAoi.on("click", function () {
@@ -331,7 +399,7 @@ var CreateProductClient = (function () {
                     // Disable caching of AJAX responses */
                     cache: false
                 });
-
+                console.log('product', product);
                 $.ajax({
                     url: urlProductExport,
                     type: 'POST',
@@ -465,7 +533,7 @@ var CreateProductClient = (function () {
                             ' download', 'Product download Error');
                     });
                 $exportProductModal.modal('hide');
-                resetProductForm();
+                //resetProductForm();
 
             }
 
@@ -478,7 +546,6 @@ var CreateProductClient = (function () {
 
             $cancelAoi.on("click", function () {
 
-                //aoiFeatureOverlay.removeFeature(aoiFeature);
                 $createGp.removeClass("disabled");
                 resetProductForm();
 
@@ -498,8 +565,8 @@ var CreateProductClient = (function () {
 
                 $productName.val('');
 
-                $productMinLevel.empty();
-                $productMaxLevel.empty();
+                //$productMinLevel.empty();
+                //$productMaxLevel.empty();
 
                 $productType.selectpicker('val', 'EPSG:3857');
                 $productType.selectpicker('render');
@@ -534,8 +601,6 @@ var CreateProductClient = (function () {
                 //console.log('reset fired!');
 
             }
-
-            //AppClient.map.addOverlay(aoiFeatureOverlay);
 
             $('[data-toggle="tooltip"]').tooltip();
 
