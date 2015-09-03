@@ -67,7 +67,7 @@
                                    data-toggle="tooltip" data-placement="bottom"
                                    title="Go to the Export page"><i
                                         class="fa fa-cube"></i></a>
-                                <sec:ifAllGranted roles="ROLE_LAYER_ADMIN">
+                                <sec:ifAllGranted roles="ROLE_LAYER_ADMIN,ROLE_ADMIN">
                                     <a type="button" id="admin" href="${createLink(controller:'app', action:'admin')}"
                                        class="btn btn-primary"
                                        data-toggle="tooltip" data-placement="bottom"
