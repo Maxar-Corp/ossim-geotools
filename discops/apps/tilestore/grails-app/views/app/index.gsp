@@ -43,7 +43,7 @@
         <div class="container">
             <div class="row text-center">
             <div class="col-md-1"></div>
-            <sec:ifAllGranted roles="ROLE_LAYER_ADMIN">
+            <sec:ifAllGranted roles="ROLE_ADMIN,ROLE_LAYER_ADMIN">
                 <div class="col-md-3 well features">
                     <div class="fa fa-th fa-2x"></div>
                     <h3>Build Tiles</h3>
