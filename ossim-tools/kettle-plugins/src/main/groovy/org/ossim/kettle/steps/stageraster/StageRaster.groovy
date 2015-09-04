@@ -35,8 +35,8 @@ class StageRaster extends BaseStep implements StepInterface
 		meta = (StageRasterMeta) smi;
 		data = (StageRasterData) sdi;
 		
-		Object[] row = getRow();
-		if (row==null) 
+		Object[] r = getRow();
+		if (r==null)
 		{
 			setOutputDone()
 			return false
@@ -60,10 +60,10 @@ class StageRaster extends BaseStep implements StepInterface
 			entryFieldIdx = getInputRowMeta().indexOfValue(meta.entryFieldName)
    		if(entryFieldIdx >= 0 ) 
    		{
-   			entry = getInputRowMeta().getString(row,entryFieldIdx).toInteger();
+   			entry = getInputRowMeta().getString(r,entryFieldIdx).toInteger();
    		}
 		}
-		if(fileFiledIdx >= 0 ) filename = getInputRowMeta().getString(row,fileFiledIdx);
+		if(fileFiledIdx >= 0 ) filename = getInputRowMeta().getString(r,fileFiledIdx);
 		if(filename)
 		{
 			if(imageStager.open(filename))
@@ -132,14 +132,21 @@ class StageRaster extends BaseStep implements StepInterface
 		}
 		if(resultArray)
 		{
-		    Object[] outputRow = RowDataUtil.addRowData(row, 
-		    	                                          data.outputRowMeta.size()-(resultArray.size()), 
-		    	                                          resultArray as Object []);
-	        putRow(data.outputRowMeta, outputRow);
+			def outputRow = []
+			(0..<inputRowMeta.size()).each { Integer i ->
+				outputRow << r[i]
+			}
+			resultArray.each{outputRow<<it}
+			putRow(data.outputRowMeta, outputRow as Object[]);
+
+//			Object[] outputRow = RowDataUtil.addRowData(r,
+//		    	                                          data.outputRowMeta.size()-(resultArray.size()),
+//		    	                                          resultArray as Object []);
+//	        putRow(data.outputRowMeta, outputRow);
 		}
 		else
 		{
-	        putRow(data.outputRowMeta, row);
+	        putRow(data.outputRowMeta, r);
 		}
 
       	return true; // finished with this row, process the next row

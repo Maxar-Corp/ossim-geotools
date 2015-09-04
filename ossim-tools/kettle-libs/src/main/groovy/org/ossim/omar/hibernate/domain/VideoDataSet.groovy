@@ -136,4 +136,8 @@ class VideoDataSet
 
     result.toString()
   }
+  void forceEager()
+  {
+    videoFiles?.each{it.forceEager()}
+  }
 }

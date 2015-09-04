@@ -11,6 +11,8 @@
 //= require common/jquery.ui.widget.js
 //= require common/jquery.iframe-transport.js
 //= require common/jquery.fileupload.js
+//= require common/spin.js
+//= require common/ladda.min.js
 
 /* App specific libs */
 //= require client/addLayersClient.js

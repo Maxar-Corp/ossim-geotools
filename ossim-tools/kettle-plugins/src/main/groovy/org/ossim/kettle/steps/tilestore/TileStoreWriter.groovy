@@ -201,8 +201,13 @@ class TileStoreWriter extends BaseStep implements StepInterface
             data?.tileCacheService.writeTile(layerInfo,mergedTile)
 
             ++count
+
       }
       else {
+      }
+      if(meta.passInputFields)
+      {
+         putRow(inputRowMeta, r)
       }
       if ((linesRead%Const.ROWS_UPDATE)==0) logBasic("Linenr "+linesRead);  // Some basic logging every 5000 rows.
 

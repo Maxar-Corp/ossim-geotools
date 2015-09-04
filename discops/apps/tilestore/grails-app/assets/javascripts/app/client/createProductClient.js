@@ -1,17 +1,22 @@
-"use strict";
 var CreateProductClient = (function () {
-
+    "use strict";
     // Cache all the DOM elements
 
     // Navbar DOM elements
     var $tileLayerSelect = $('#tileLayerSelect');
     var $createGp = $('#createGp');
+    var $clearAoi = $('#clearAoi');
 
     // Product modal DOM elements
     var $exportProductModal = $('#exportProductModal');
+    var $productForm = $('#productForm');
     var $productFormElements = $('#productFormElements');
     var $productName = $('#productName');
     var $productType = $('#productType');
+    var minOrig;
+    var maxOrig;
+    var min;
+    var max;
     var $productMinLevel = $('#productMinTileLevel');
     var $productMaxLevel = $('#productMaxTileLevel');
     var $productEpsgCode = $('#productEpsgCode');
@@ -25,15 +30,15 @@ var CreateProductClient = (function () {
     var $aoiJobInfo = $('#aoiJobInfo');
     var $productStatus = $('#productStatus');
     var $prodcutProgress = $('#prodcutProgress');
+    var $prodcutButtons = $('#productButtons');
     var $jobHeader = $('#jobHeader');
     var $downloadProduct = $('#downloadProduct');
+    var $metricsSpinner =  $('.metricsSpinner');
+    var $productFormElement = $('.productFormElement');
 
     var $aoiJobId = $('#aoiJobId');
     var $submitAoi = $('#submitAoi');
     var $cancelAoi = $('#cancelAoi');
-
-    var $metricsSpinner =  $('.metricsSpinner');
-    var $productFormElement = $('.productFormElement');
 
     var $prodNumTiles = $('#prodNumTiles');
     var $prodJpgComp=  $('#prodJpgComp');
@@ -51,7 +56,6 @@ var CreateProductClient = (function () {
     var $prodMaxY = $('#prodMaxY');
     var $prodMinY = $('#prodMinY');
 
-
     var product = {
         type:"GeopackageExport",
         layer:"", // from layer selectlist
@@ -68,37 +72,10 @@ var CreateProductClient = (function () {
 
     var jobId;
 
-    var output, outputWkt, formatWkt;
+    //var output, outputWkt, formatWkt;
 
     var urlProductExport;
     var urlLayerActualBounds;
-
-    //var aoiFeature = new ol.Feature();
-
-    // Use a ol.FeatureOverlay to store the AOI
-    //var aoiFeatureOverlay = new ol.FeatureOverlay();
-
-    //var aoiStyle = new ol.style.Style({
-    //    stroke: new ol.style.Stroke({
-    //        color: 'cyan',
-    //        width: 5
-    //    }),
-    //    fill: new ol.style.Fill({
-    //        color: 'rgba(0, 255, 255, 0.3)'
-    //    })
-    //});
-
-    //aoiFeatureOverlay.setStyle(aoiStyle);
-
-    //// A DragBox interaction used to pass the geometry to the aoiFeatureOverlay
-    //var dragBoxControl = new ol.interaction.DragBox({
-    //    condition: ol.events.condition.altShiftKeysOnly,
-    //    style: aoiStyle
-    //});
-
-    // Add the DragBox control upon app load.  The interaction is available
-    // by using the <ALT> and <SHIFT> key and defining a box
-    //AppClient.map.addInteraction(dragBoxControl);
 
     function createAoi(wkt){
 
@@ -122,13 +99,18 @@ var CreateProductClient = (function () {
             // TODO: Add $promise function for success
             success: function (data) {
 
-                console.log('----getActualBounds (data)------');
-                console.log(data);
-                console.log('---------------------------');
+                //console.log('----getActualBounds (data)------');
+                //console.log(data);
+                //console.log('---------------------------');
                 $aoiLod.html(data.minLevel + ' to ' + data.maxLevel);
 
-                var min = data.minLevel;
-                var max = data.maxLevel;
+                // *Orig stores the original min/max values so they can be used
+                // in the on change event for the product level dropdowns
+                minOrig = data.minLevel;
+                maxOrig = data.maxLevel;
+
+                min = data.minLevel;
+                max = data.maxLevel;
 
                 $productMinLevel.empty();
                 $productMaxLevel.empty();
@@ -172,11 +154,7 @@ var CreateProductClient = (function () {
         ).done(function(){
                 product.aoi = wkt;
                 getMetrics();
-            })
-
-        //product.aoi = wkt;
-
-        //getMetrics();
+            });
 
     }
 
@@ -206,16 +184,16 @@ var CreateProductClient = (function () {
         }
         else if (val < megabyte){
 
-            result = myRound(val / kilobyte, 1000) + " Kb"
+            result = myRound(val / kilobyte, 1000) + " Kb";
         }
         else if (val < gigabyte){
 
-            result = myRound(val / megabyte, 1000) + " Mb"
+            result = myRound(val / megabyte, 1000) + " Mb";
 
         }
         else {
 
-            result = myRound(val / gigabyte, 1000) + " Gb"
+            result = myRound(val / gigabyte, 1000) + " Gb";
 
         }
         return result;
@@ -235,7 +213,7 @@ var CreateProductClient = (function () {
             "aoiEpsg": product.aoiEpsg,
             "minLevel": $productMinLevel.val(),
             "maxLevel": $productMaxLevel.val()
-        }
+        };
 
         //console.log(metricObj);
 
@@ -247,9 +225,9 @@ var CreateProductClient = (function () {
             // TODO: Add $promise function for success
             success: function (data) {
 
-                console.log('------estimate (data)------');
-                console.log(data);
-                console.log('---------------------------');
+                //console.log('------estimate (data)------');
+                //console.log(data);
+                //console.log('---------------------------');
 
                 if (data.numberOfTiles >= 1){
 
@@ -308,15 +286,20 @@ var CreateProductClient = (function () {
             }
         });
 
-
-
     }
 
-    $productFormElement.on("change", function(){
+    $productFormElement.on('change', function(){
 
         getMetrics();
 
-    })
+    });
+
+    $clearAoi.on('click', function(){
+
+        $createGp.addClass("disabled");
+        AddLayerClient.aoiVector.getSource().clear();
+
+    });
 
     return {
         initialize: function (initParams) {
@@ -324,29 +307,99 @@ var CreateProductClient = (function () {
             urlProductExport = initParams.urlProductExport;
             urlLayerActualBounds = initParams.urlLayerActualBounds;
 
+            $productMinLevel.on('change', function () {
+
+                // This function affects $prodMaxLevel <select> on the create product modal so that it is updated
+                // to reflect only the levels that are available after a $productMinLevel has
+                // been selected.  Restricts user from choosing a level lower than is available.
+
+                var maxProdLevel = $productMaxLevel.selectpicker('val');
+
+                for (var i = 0; i <= maxOrig; i++) {
+                    console.log('i', i);
+                    $productMaxLevel.find('[value=' + i + ']').remove();
+                    $productMaxLevel.selectpicker('refresh');
+                }
+                var counter = $productMinLevel.val();
+
+                for (counter; counter <= maxOrig; counter++) {
+                    console.log('counter', counter);
+                    $productMaxLevel.append('<option value="' + counter + '">' + counter + '</option>');
+                    $productMaxLevel.selectpicker('val', maxProdLevel);
+                    $productMaxLevel.selectpicker('refresh');
+                }
+
+            });
+
+            $productMaxLevel.on('change', function () {
+
+                // This function affects $prodMinLevel <select> on the create product modal so that it is updated
+                // to reflect only the levels that are available after a $productMaxLevel has
+                // been selected.  Restricts user from choosing a level higher than is available.
+
+                var minProdLevel = $productMinLevel.selectpicker('val');
+                var maxProdLevel = $productMaxLevel.selectpicker('val');
+
+                for (var i = 0; i <= max; i++) {
+                    console.log('i', i);
+                    $productMinLevel.find('[value=' + i + ']').remove();
+                    $productMinLevel.selectpicker('refresh');
+                }
+                var counter = minOrig;
+
+                for (counter; counter <= maxProdLevel; counter++) {
+                    console.log('counter', counter);
+                    $productMinLevel.append('<option value="' + counter + '">' + counter + '</option>');
+                    $productMinLevel.selectpicker('val', minProdLevel);
+                    $productMinLevel.selectpicker('refresh');
+                }
+
+            });
+
             $createGp.on("click", function () {
-                $createGp.addClass("disabled");
 
                 // Open a modal dialog, and pass the aoiFeature geometry.
                 $exportProductModal.modal('show');
 
             });
 
+            $exportProductModal.on('shown.bs.modal', function () {
+                
+                $productName.focus();
+
+            });
+
+            $productForm.on('invalid.bs.validator', function(){
+
+                $submitAoi.addClass('disabled');
+
+            });
+
+            $productForm.on('valid.bs.validator', function(){
+
+                $submitAoi.removeClass('disabled');
+
+            });
+
             $submitAoi.on("click", function () {
+
+                var l = Ladda.create(this);
+                l.start();
 
                 $prodcutProgress.show();
 
                 product.layer = $tileLayerSelect.val();
                 product.properties.filename = $productName.val();
-                product.aoiEpsg = AppClient.mapEpsg //"EPSG:3857";
+                product.aoiEpsg = AppClient.mapEpsg;
                 product.minLevel = $productMinLevel.val();
                 product.maxLevel = $productMaxLevel.val();
                 product.outputEpsg = $productEpsgCode.val();
 
-                //console.log('---------------product-------------');
-                //console.log(product);
-                //console.log('-----------------------------------');
-
+                $.ajaxSetup ({
+                    // Disable caching of AJAX responses */
+                    cache: false
+                });
+                console.log('product', product);
                 $.ajax({
                     url: urlProductExport,
                     type: 'POST',
@@ -361,7 +414,7 @@ var CreateProductClient = (function () {
                         jobId = data.jobId;
 
                         function checkJobStatus(jobId) {
-                            console.log('checkJobStatus: ' + jobId);
+                            //console.log('checkJobStatus: ' + jobId);
                             $.ajax({
                                 url: "/tilestore/job/show?jobId=" + jobId,
                                 type: 'GET',
@@ -371,8 +424,8 @@ var CreateProductClient = (function () {
                                     // Make sure data is being returned.  If not the job has been terminated, and an
                                     // error needs to be returned.
                                     if (data && data.total > 0){
-                                        console.log('total: ' + data.total);
-                                        console.log(data.rows[0].status);
+                                        //console.log('total: ' + data.total);
+                                        //console.log(data.rows[0].status);
 
                                         // Product build 'Finished'
                                         if (data.rows[0].jobId === jobId && data.rows[0].status === 'FINISHED'){
@@ -383,22 +436,26 @@ var CreateProductClient = (function () {
                                             $prodcutProgress.hide();
                                             $aoiJobInfo.removeClass('alert-warning').addClass('alert-success');
                                             $jobHeader.html('Product build complete!');
+                                            l.stop();
+
+                                            $prodcutButtons.hide();
                                             $downloadProduct.show();
 
                                         }
                                         // Product build 'READY'
                                         else if (data.rows[0].jobId === jobId && data.rows[0].status === 'READY'){
 
-                                            $productStatus.html('<i class="fa fa-cog fa-spin' +
-                                                ' fa-2x"></i>&nbsp;&nbsp;Product added to build queue.');
+                                            $productStatus.html('Product added to build queue...</br></br>');
+                                            $submitAoi.removeClass('btn-primary').addClass('btn-info');
 
                                         }
                                         // Product build 'RUNNING'
                                         else if (data.rows[0].jobId === jobId && data.rows[0].status === 'RUNNING'){
 
                                             $aoiJobInfo.removeClass('alert-info').addClass('alert-warning');
-                                            $productStatus.html('<i class="fa fa-cog fa-spin' +
-                                                ' fa-2x"></i>&nbsp;&nbsp;Product is being built. Please wait...');
+                                            $productStatus.html('Product is being built. Please wait...</br></br>');
+                                            $submitAoi.removeClass('btn-info').addClass('btn-warning');
+
 
                                         }
                                         // Product build 'FAILED'
@@ -428,7 +485,7 @@ var CreateProductClient = (function () {
 
                                 }
                             });
-                        };
+                        }
 
                         checkForProduct = setInterval(
 
@@ -468,7 +525,7 @@ var CreateProductClient = (function () {
 
             function fileDownload(downloadNumber){
 
-                console.log('filedownload jobNumber: ' + downloadNumber);
+                //console.log('filedownload jobNumber: ' + downloadNumber);
                 $.fileDownload("/tilestore/job/download?jobId=" + downloadNumber)
                     .done(function() {console.log('success!');})
                     .fail(function(){
@@ -476,20 +533,19 @@ var CreateProductClient = (function () {
                             ' download', 'Product download Error');
                     });
                 $exportProductModal.modal('hide');
-                resetProductForm();
+                //resetProductForm();
 
             }
 
             $(document).on("click", "button.fileDownload",function(){
 
-                console.log('your jobId is: ' + jobId);
+                //console.log('your jobId is: ' + jobId);
                 fileDownload(jobId);
 
             });
 
             $cancelAoi.on("click", function () {
 
-                //aoiFeatureOverlay.removeFeature(aoiFeature);
                 $createGp.removeClass("disabled");
                 resetProductForm();
 
@@ -498,9 +554,6 @@ var CreateProductClient = (function () {
             // Remove the AOI feature if the user closes the product modal window
             $exportProductModal.on('hidden.bs.modal', function (e) {
 
-                //aoiFeatureOverlay.removeFeature(aoiFeature);
-                //console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
-                AddLayerClient.aoiVector.getSource().clear();
                 //console.log(AddLayerClient.aoiVector.getSource().getFeatures().length);
                 resetProductForm();
 
@@ -510,10 +563,10 @@ var CreateProductClient = (function () {
 
                 clearInterval(checkForProduct);
 
-                $productName.val('');;
+                $productName.val('');
 
-                $productMinLevel.empty();
-$productMaxLevel.empty();
+                //$productMinLevel.empty();
+                //$productMaxLevel.empty();
 
                 $productType.selectpicker('val', 'EPSG:3857');
                 $productType.selectpicker('render');
@@ -521,28 +574,37 @@ $productMaxLevel.empty();
                 $prodcutEpsg.selectpicker('val', 'EPSG:3857');
                 $prodcutEpsg.selectpicker('render');
 
-                $aoiJobId.html("");
+                $aoiJobId.html('');
                 $aoiJobInfo.hide();
 
                 $productFormElements.show();
+                $prodcutButtons.show();
                 $downloadProduct.hide();
+
+                // Need an if...then here, because sometimes the submit button doesn't
+                // get added if the previous product job was small, and the server
+                // processed it before a status of 'running' was given
+                if ($submitAoi.hasClass('btn-info')){
+                    $submitAoi.removeClass('btn-info').addClass('btn-primary');
+                }
+                else if ($submitAoi.hasClass('btn-warning')) {
+                    $submitAoi.removeClass('btn-warning').addClass('btn-primary');
+                }
+
+                $productStatus.html('');
 
                 $aoiJobInfo.addClass('alert-info').removeClass('alert-success');
                 $jobHeader.html('Submitted Job Information:');
 
-                $createGp.addClass('disabled');
+                //$createGp.addClass('disabled');
 
-                console.log('reset fired!');
+                //console.log('reset fired!');
 
             }
-
-            //AppClient.map.addOverlay(aoiFeatureOverlay);
 
             $('[data-toggle="tooltip"]').tooltip();
 
         },
-        //aoiStyle: aoiStyle,
-        //aoiFeatureOverlay: aoiFeatureOverlay,
         product: product,
         $createGp: $createGp,
         createAoi: createAoi,

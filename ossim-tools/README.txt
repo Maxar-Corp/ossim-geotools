@@ -4,11 +4,17 @@ ___________________________________________________________________
 
 - Full build:  hadoopDist property can be cdh4,cdh5,hdp22,gdac 
 
-gradle -DhadoopDist=cdh4 clean build common-libs:install kettle-libs:install kettle-plugins:install app:install app:shadowJar -x test
+gradle -DkettleVersion="5.3.0.0-213" -DhadoopDist=cdh4 clean build common-libs:install kettle-libs:install kettle-plugins:install app:install app:shadowJar -x test
 
 Copy to kettle distribution:
 
-gradle clean build common-libs:install kettle-libs:install kettle-plugins:install app:install app:shadowJar copyToKettle -x test
+************* Other targets **************
+*** kettleVersion="5.3.0.0-213" 
+*** accumuloVersion="1.7.0" or "1.6.1" 
+*** hadoopDist="CDH5" or CDH5
+******************************************
+
+gradle -DhadoopDist=cdh4 -DaccumuloVersion="1.6.1" -DkettleVersion="5.3.0.0-213" clean build common-libs:install kettle-libs:install kettle-plugins:install app:install app:shadowJar copyToKettle -x test
 
 
 Command line examples.  If you are in this directory and built the tools then here are some examples of creating layers and ingesting data

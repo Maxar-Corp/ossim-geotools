@@ -16,7 +16,9 @@ import org.ossim.kettle.utilities.SwtUtilities
 import org.ossim.omar.utilities.KettleUtilities
 import org.pentaho.di.core.Const
 import org.pentaho.di.core.database.DatabaseMeta
-import org.pentaho.di.core.namedcluster.model.NamedCluster
+//import org.pentaho.di.core.namedcluster.model.NamedCluster
+//import org.pentaho.big.data.api.cluster.NamedCluster;
+
 import org.pentaho.di.core.row.ValueMetaInterface
 import org.pentaho.di.trans.TransMeta
 import org.pentaho.di.trans.step.BaseStepMeta
@@ -24,7 +26,6 @@ import org.pentaho.di.trans.step.StepDialogInterface
 import org.pentaho.di.ui.core.database.dialog.DatabaseDialog
 import org.pentaho.di.ui.core.widget.ColumnInfo
 import org.pentaho.di.ui.trans.step.BaseStepDialog
-import org.pentaho.di.ui.core.namedcluster.NamedClusterWidget;
 
 
 /**
@@ -87,6 +88,15 @@ class TileStoreWriterDialog extends BaseStepDialog implements
             text(id: "stepName", layoutData: "span,growx", text: stepname) {
                onEvent(type: 'Modify') { input.setChanged() }
             }
+            label Messages.getString("TileStoreCommonDialog.PassInputFields.Label")
+            checkBox(id: "passInputFields",
+                    text: "",
+                    selection: true,
+                    layoutData: "span, growx, wrap") {
+               onEvent(type: "Selection") {
+                  changed=true
+               }
+            }
          }
          composite(id:"connectionLayoutId", style:"none", layoutData:"span,growx") {
             migLayout(layoutConstraints: "inset 0", columnConstraints: "[][][][]")
@@ -109,7 +119,7 @@ class TileStoreWriterDialog extends BaseStepDialog implements
                      cid.setDatabaseMeta(databaseMeta);
                      cid.setModalDialog(true);
                      if (cid.open() != null) {
-                        input.setChanged()
+                        changed=true
                      }
                   }
                }
@@ -335,6 +345,8 @@ class TileStoreWriterDialog extends BaseStepDialog implements
    {
       databaseMeta = input.tileStoreCommon.databaseMeta
       swt.stepName.selectAll();
+      swt.passInputFields.selection = input.passInputFields
+
       if(databaseMeta?.name)
       {
          int idx = swt.connectionList.indexOf(databaseMeta.name);
@@ -406,7 +418,7 @@ class TileStoreWriterDialog extends BaseStepDialog implements
       }
 
       stepname = swt.stepName.text
-      NamedCluster namedCluster =  swt.namedClusterWidgetId.selectedNamedCluster
+      def namedCluster =  swt.namedClusterWidgetId.selectedNamedCluster
 
       if(namedCluster)
       {
@@ -442,6 +454,10 @@ class TileStoreWriterDialog extends BaseStepDialog implements
          def value = item.getText(2)
          input."${key}" = value
       }
+
+      input.passInputFields = swt.passInputFields.selection
+      input.setChanged(changed)
+
       dispose();
    }
 }

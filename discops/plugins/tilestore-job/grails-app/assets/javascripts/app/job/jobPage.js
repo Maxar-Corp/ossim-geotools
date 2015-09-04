@@ -5,6 +5,7 @@ var Job = Backbone.Model.extend({
         id:null,
         jobId: null,
         name: null,
+        description: null,
   		jobType: null,
         status: null,
         statusMessage: null,
@@ -19,7 +20,7 @@ var Job = Backbone.Model.extend({
     },
 
     parse:function(response){
-        alert("response = ");// + JSON.stringify(response) );
+//        alert("response = ");// + JSON.stringify(response) );
 
         var result = this.attributes;
 
@@ -68,6 +69,10 @@ var JobPageView = Backbone.View.extend({
         this.donwnloadJobId = "#downloadId";
         this.reloadId = "#reloadId";
         this.cancelJobId = "#cancelJobId";
+        this.confirmModal ='#confirmModal';
+        this.deleteRow = '#deleteRow';
+        this.errorModal = '#errorModal';
+        this.errorModalMessage = '#errorModalMessage';
         this.urls=params.urls;
         $(this.applyFilterButtonId).click($.proxy(this.refresh, this));
         $(this.resetButtonId).click($.proxy(this.resetFilter, this));
@@ -132,14 +137,18 @@ var JobPageView = Backbone.View.extend({
         {
             var thisPtr = this;
             var nRows = rows.length;
-            $(rows).each(function(idx,v){
-                $.post(thisPtr.urls.remove,{id:v.id},function(result){
-                })
-                    .complete(function(result){
-                        $(thisPtr.jobTableId).datagrid('clearSelections');
-                        thisPtr.refresh();
-                    })
+            var removeIdList = [];
+
+            $(rows).each(function(idx,v) {
+                removeIdList.push(v.id);
             });
+            $.post(thisPtr.urls.remove,{id:removeIdList.join(",")},function(result){
+            })
+                .complete(function(result){
+                    $(thisPtr.jobTableId).datagrid('clearSelections');
+                    thisPtr.refresh();
+                });
+            //});
         }
     },
     removeJobClicked:function()
@@ -157,7 +166,7 @@ var JobPageView = Backbone.View.extend({
                     if(testV == "RUNNING")
                     {
                         canRemove = false;
-                        errorMessage = "Please cancel any running jobs before removing!"
+                        errorMessage = "Job is running and can't be removed!"
                     }
                 }
                 if(!canRemove) return;
@@ -166,17 +175,27 @@ var JobPageView = Backbone.View.extend({
         if(canRemove)
         {
             var values = [];
-            $.messager.confirm('Confirm','Are you sure you want to remove and unregister this location?',function(r){
-                if(r)
-                {
+            //$.messager.confirm('Confirm','Are you sure you want to remove and unregister this location?', function(r){
+            //    if(r)
+            //    {
+            //
+            //        thisPtr.removeSelectedRows();
+            //    }
+            //});
 
-                    thisPtr.removeSelectedRows();
-                }
+            $(this.confirmModal).modal('show');
+
+            $(this.deleteRow).on('click', function(){
+                console.log('thisPtr = ', thisPtr);
+                thisPtr.removeSelectedRows();
             });
+
         }
         else
         {
-            $.messager.alert('Warning',errorMessage);
+            //$.messager.alert('Warning',errorMessage);
+            $(this.errorModal).modal('show');
+            $(this.errorModalMessage).html(errorMessage);
         }
      },
     resetFilter:function(){

@@ -25,6 +25,7 @@ case "cdh4":
 case "cdh5":
   println "Building for CDH5 distribution"
   accumuloTarget = AccumuloTarget.CDH5
+  break
 case "hdp22":
   println "Building for HDP version 2.2 distribution"
   accumuloTarget = AccumuloTarget.HDP
@@ -73,7 +74,8 @@ grails.project.dependency.resolution = {
     case AccumuloTarget.HDP:
       mavenRepo 'http://repo.hortonworks.com/content/repositories/releases/'
       break
-    case AccumuloTarget.CDH4:
+      case AccumuloTarget.CDH4:
+      case AccumuloTarget.CDH5:
       mavenRepo 'http://repository.cloudera.com/artifactory/cloudera-repos/'
       break
     case AccumuloTarget.GDAC:

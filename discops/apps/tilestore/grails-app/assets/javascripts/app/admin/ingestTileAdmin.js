@@ -1,9 +1,10 @@
-"use strict";
+
 var AppIngestTileAdmin = (function () {
+    "use strict";
     var loadParams;
 
+    var $ingestImageModal =  $('#ingestImageModal');
     var $ingestModalButton = $('#ingestModalButton');
-    var $ingestImageModal = $('#ingestImageModal');
     var $submitIngestImage = $('#submitIngestImage');
 
     var $minIngestLevel = $('#minIngestLevel');
@@ -46,12 +47,8 @@ var AppIngestTileAdmin = (function () {
 
     function setIngestLevels(){
 
-        // WFS for tile layers
-        //http://localhost:8080/tilestore/wfs?request=getFeature&TypeName=tilestore:tile_cache_layer_info&outputFormat=json
-        //http://localhost:8080/tilestore/wfs?request=getFeature&TypeName=tilestore:tile_cache_layer_info&outputFormat=json&filter=name=%27aaron%27
-
        // Get objClamp from appAdmin
-        console.log(AppOmarWfsAdmin.objImageClamp);
+        //console.log(AppOmarWfsAdmin.objImageClamp);
 
         $.ajax({
             url: "/tilestore/layerManager/getClampedBounds",
@@ -60,7 +57,8 @@ var AppIngestTileAdmin = (function () {
             data: AppOmarWfsAdmin.objImageClamp,
             // TODO: need to move this to a $promise
             success: function (data) {
-                console.log(data);
+                //console.log(data);
+
                 //console.log(data);
                 //$minIngestLevel.selectpicker('val', data.minLevel);
                 //$minIngestLevel.selectpicker('refresh');
@@ -70,8 +68,8 @@ var AppIngestTileAdmin = (function () {
                 min = data.minLevel;
                 max = data.maxLevel;
 
-                console.log(data.minLevel);
-                console.log(data.maxLevel);
+                //console.log(data.minLevel);
+                //console.log(data.maxLevel);
 
                 $minIngestLevel.empty();
                 $maxIngestLevel.empty();
@@ -93,50 +91,15 @@ var AppIngestTileAdmin = (function () {
                 //$minIngestLevel.val(min);
                 $maxIngestLevel.val(max);
 
-                // Removed data-initialize in HTML markup per: http://stackoverflow.com/a/27866575/4437795
-                //$minIngestLevelSpin.spinbox({
-                //    'value': data.minLevel,
-                //    'min': data.minLevel,
-                //    'max': data.maxLevel
-                //});
-                //$maxIngestLevelSpin.spinbox({
-                //    'value': data.maxLevel,
-                //    'min': data.minLevel,
-                //    'max': data.maxLevel
-                //});
-
-                //toastr.success('Clamp working', 'Success!'); // TODO: remove after testing...
             },
             // TODO: need to move this to a $promise
             error: function(data){
-                console.log(data);
+                //console.log(data);
                 toastr.error(data.message, 'Error on obtaining clamp bounds.');
 
             }
         });
 
-        //$minIngestLevel
-        //    .find('option')
-        //    .remove();
-        //$maxIngestLevel
-        //    .find('option')
-        //    .remove();
-
-        // Replace HTML option/values on min/max levels dynamically generated
-        // from js
-        //console.log('min: ' + min);
-        //for (min; min < 23; min++) {
-        //    console.log('min: ' + min);
-        //    $minIngestLevel.append('<option value="' + min + '">' + min + '</option>');
-        //    //$minIngestLevel.selectpicker('refresh');
-        //}
-        //for (var i = 0; i < 23; i++) {
-        //    //console.log(i);
-        //    $maxIngestLevel.append('<option value="' + i + '">' + i + '</option>');
-        //    //$maxIngestLevel.selectpicker('val', '20');  // intial value for max level
-        //    //$maxIngestLevel.selectpicker('refresh');
-        //}
-        //console.log('hello!');
     }
 
     function ingestImage(){
@@ -144,7 +107,7 @@ var AppIngestTileAdmin = (function () {
         objIngestImage.minLevel = $minIngestLevel.val(); //$minIngestLevelSpin.spinbox('value');
         objIngestImage.maxLevel =  $maxIngestLevel.val(); //$maxIngestLevelSpin.spinbox('value');
 
-        console.log(objIngestImage);
+        //console.log(objIngestImage);
 
         //TODO: Refactor using promises...
         $.ajax({
@@ -158,19 +121,19 @@ var AppIngestTileAdmin = (function () {
 
             },
             error: function(data){
-                console.log(data);
+                //console.log(data);
                 toastr.error(data.message, 'Error on ingest');
 
             }
         });
 
-        $('#ingestImageModal').modal('hide');
+        $ingestImageModal.modal('hide');
 
     }
 
     function ingestModalShow() {
 
-        console.log(ingestBool);
+        //console.log(ingestBool);
         if (ingestBool) {
             setIngestLevels();
             $ingestImageModal.modal('show');
@@ -190,7 +153,7 @@ var AppIngestTileAdmin = (function () {
 
     $submitIngestImage.on('click', function(){
 
-        console.log('ingesting selected image...');
+        //console.log('ingesting selected image...');
         ingestImage();
 
     });
@@ -203,10 +166,9 @@ var AppIngestTileAdmin = (function () {
         objIngestImage: objIngestImage,
         $ingestModalButton: $ingestModalButton,
         ingestModalShow: ingestModalShow,
-        //ingestBool: ingestBool
         setIngestBool: setIngestBool,
         getIngestBool: getIngestBool
 
-    }
+    };
 
 })();

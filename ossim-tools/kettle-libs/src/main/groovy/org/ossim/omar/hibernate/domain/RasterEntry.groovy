@@ -403,4 +403,8 @@ class RasterEntry
 
         result.toString()
     }
+    void forceEager()
+    {
+        rasterEntryFiles?.each{ it.forceEager()}
+    }
 }

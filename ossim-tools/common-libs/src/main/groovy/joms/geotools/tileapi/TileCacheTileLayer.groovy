@@ -1,8 +1,10 @@
 package joms.geotools.tileapi
 
+import geoscript.geom.Bounds
 import geoscript.layer.ImageTile
 import geoscript.layer.ImageTileLayer
 import geoscript.layer.Pyramid
+import geoscript.layer.TileCursor
 import groovy.transform.ToString
 
 /**
@@ -14,6 +16,26 @@ class TileCacheTileLayer  extends ImageTileLayer{
   Pyramid getPyramid()
   {
     pyramid
+  }
+  Bounds alignToGrid(Integer level, Bounds b)
+  {
+    HashMap result = [bounds:null, width:0, height:0]
+    TileCursor tc
+    if(b)
+    {
+      tc = tiles(b, level)
+      result.nCols = tc.width
+    }
+    else
+    {
+      tc = tiles(level)
+    }
+
+    result.bounds = tc.bounds
+    result.width  = tc.width
+    result.height  = tc.height
+
+    result
   }
   /**
    * Get a Tile

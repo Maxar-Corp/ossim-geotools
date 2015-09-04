@@ -44,6 +44,15 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
             text(id: "stepName", layoutData: "span,growx", text: stepname) {
                onEvent(type: 'Modify') { input.setChanged() }
             }
+            label Messages.getString("GeoPackageWriterDialog.PassInputFields.Label")
+            checkBox(id: "passInputFields",
+                    text: "",
+                    selection: true,
+                    layoutData: "span, growx, wrap") {
+               onEvent(type: "Selection") {
+                  changed=true
+               }
+            }
          }
          group(id: "tileGroupId", text: "Tile definitions", style: "none", layoutData: "span,growx") {
             migLayout(layoutConstraints: "insets 2, wrap 2", columnConstraints: "[] [grow]")
@@ -77,6 +86,15 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
             label "Tile Image"
             cCombo(id: "tileImageField",
                     items: SwtUtilities.previousStepFields(transMeta, stepname, [OssimValueMetaBase.TYPE_IMAGE, OssimValueMetaBase.TYPE_CLONABLE_IMAGE]),
+                    layoutData: "span,growx")
+                    {
+                       onEvent(type: 'Modify') {
+                          changed=true
+                       }
+                    }
+            label "Tile Bounds"
+            cCombo(id: "tileBoundsField",
+                    items: SwtUtilities.previousStepFields(transMeta, stepname, [OssimValueMetaBase.TYPE_GEOMETRY_2D]),
                     layoutData: "span,growx")
                     {
                        onEvent(type: 'Modify') {
@@ -143,6 +161,15 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
                           changed=true
                        }
                     }
+            label "Clip Bounds"
+            cCombo(id:"clipBoundsField",
+                    items:SwtUtilities.previousStepFields(transMeta, stepname, [OssimValueMetaBase.TYPE_GEOMETRY_2D]),
+                    layoutData:"span,growx")
+                    {
+                       onEvent(type:'Modify') {
+                          changed=true
+                       }
+                    }
             label "Writer Mode"
             cCombo(id:"writerMode",
                     items:["mixed", "jpeg", "png", "pnga"],
@@ -181,21 +208,22 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
    {
       swt.stepName.selectAll()
 
-      swt.tileLevelField.text = input.tileLevelField?:""
-      swt.tileRowField.text   = input.tileRowField?:""
-      swt.tileColField.text   = input.tileColField?:""
-      swt.tileImageField.text = input.tileImageField?:""
-      swt.groupField.text     = input.groupField?:""
-      swt.filenameField.text  = input.filenameField?:""
-      swt.layerNameField.text = input.layerNameField?:""
-      swt.epsgCodeField.text  = input.epsgCodeField?:""
-      swt.minLevelField.text  = input.minLevelField?:""
-      swt.maxLevelField.text  = input.maxLevelField?:""
-      swt.writerMode.text     = input.writerMode?:""
+      swt.tileLevelField.text  = input.tileLevelField?:""
+      swt.tileRowField.text    = input.tileRowField?:""
+      swt.tileColField.text    = input.tileColField?:""
+      swt.tileImageField.text  = input.tileImageField?:""
+      swt.tileBoundsField.text = input.tileBoundsField?:""
+      swt.groupField.text      = input.groupField?:""
+      swt.filenameField.text   = input.filenameField?:""
+      swt.layerNameField.text  = input.layerNameField?:""
+      swt.epsgCodeField.text   = input.epsgCodeField?:""
+      swt.minLevelField.text   = input.minLevelField?:""
+      swt.maxLevelField.text   = input.maxLevelField?:""
+      swt.writerMode.text      = input.writerMode?:""
+      swt.clipBoundsField.text = input.clipBoundsField?:""
    }
    private void cancel()
    {
-      stepname=null
       //input.setChanged(changed);
 
       dispose()
@@ -207,18 +235,21 @@ class GeoPkgWriterDialog extends BaseStepDialog implements
 
       input.setChanged(changed)
 
-      stepname                  = swt.stepName.text
-      input.tileLevelField = swt.tileLevelField.text
-      input.tileRowField   = swt.tileRowField.text
-      input.tileColField   = swt.tileColField.text
-      input.tileImageField = swt.tileImageField.text
-      input.groupField     = swt.groupField.text
-      input.filenameField  = swt.filenameField.text
-      input.layerNameField = swt.layerNameField.text
-      input.epsgCodeField  = swt.epsgCodeField.text
-      input.minLevelField  = swt.minLevelField.text
-      input.maxLevelField  = swt.maxLevelField.text
-      input.writerMode     = swt.writerMode.text
+      stepname              = swt.stepName.text
+      input.tileLevelField  = swt.tileLevelField.text
+      input.tileRowField    = swt.tileRowField.text
+      input.tileColField    = swt.tileColField.text
+      input.tileImageField  = swt.tileImageField.text
+      input.tileBoundsField = swt.tileBoundsField.text
+      input.groupField      = swt.groupField.text
+      input.filenameField   = swt.filenameField.text
+      input.layerNameField  = swt.layerNameField.text
+      input.epsgCodeField   = swt.epsgCodeField.text
+      input.minLevelField   = swt.minLevelField.text
+      input.maxLevelField   = swt.maxLevelField.text
+      input.writerMode      = swt.writerMode.text
+      input.clipBoundsField = swt.clipBoundsField.text
+
       dispose()
    }
 }

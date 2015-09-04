@@ -63,4 +63,9 @@ class VideoFile
 
         result.toString()
     }
+
+    void forceEager()
+    {
+
+    }
 }

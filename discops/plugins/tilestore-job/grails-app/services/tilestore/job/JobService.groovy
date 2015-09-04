@@ -15,7 +15,8 @@ class JobService
    def rabbitProducer
    def grailsApplication
    def columnNames = [
-           'id', 'jobId', 'jobDir', 'type', 'name', 'username', 'status', 'statusMessage', 'percentComplete', 'submitDate', 'startDate', 'endDate'
+           'id', 'jobId', 'jobDir', 'type', 'name', 'description', 'username', 'status', 'percentComplete', 'submitDate', 'startDate', 'endDate'
+ //          'id', 'jobId', 'jobDir', 'type', 'name', 'description', 'username', 'status', 'statusMessage', 'percentComplete', 'submitDate', 'startDate', 'endDate'
    ]
 
 
@@ -28,7 +29,7 @@ class JobService
       tempColumnNames.remove("jobDir")
       def columns = tempColumnNames?.collect {column->
          def property = ( column == 'id' ) ? domain?.identifier : domain?.getPersistentProperty( column )
-         def sortable = !(property?.name in ["type"])
+         def sortable = !(property?.name in ["type", "description"])
          [field: property?.name, type: property?.type, title: property?.naturalName, sortable: sortable]
       }
       columns.remove("jobDir")
@@ -51,6 +52,9 @@ class JobService
          Job.withTransaction{
             def job     = Job.findByJobId(jobId)
 
+            job.status = JobStatus.CANCELED
+            job.save(flush:true)
+          /*
             if(!job)
             {
                result.httpStatus = HttpStatus.NOT_FOUND
@@ -60,7 +64,9 @@ class JobService
             }
             jobCallback = job?.jobCallback
             jobStatus   = job?.status
+            */
          }
+         /*
          if(jobCallback)
          {
             if(jobStatus==JobStatus.RUNNING||jobStatus==JobStatus.CANCELED)
@@ -87,6 +93,7 @@ class JobService
             result.httpStatus = HttpStatus.BAD_REQUEST
             result.message="Job ${jobId} currently has no callback to allow for canceling"
          }
+         */
       }
       else
       {
@@ -140,8 +147,10 @@ class JobService
       }
       result.data = [total: total?:0, rows: rows?:[:]]
 
+
       result
    }
+
    def remove(RemoveJobCommand cmd)
    {
       def result = [status : HttpStatus.OK,
@@ -152,47 +161,56 @@ class JobService
       def jobDir
       def row
 
+      def idList = cmd.idList
+      def cleanUpJobArray = []
       try{
-         def session = grailsApplication.mainContext.sessionFactory.currentSession
+         //def session = grailsApplication.mainContext.sessionFactory.currentSession
 
-         Job.withTransaction {
-            if(cmd?.id != null) row = Job.findById(cmd.id);
-            else if(cmd?.jobId) row = Job.findByJobId(cmd.jobId);
+         idList?.each{id->
+            Job.withTransaction {
+               if(id instanceof Integer) row = Job.findById(id);
+               else row = Job.findByJobId(id);
 
-          //  println row
-            if(row)
-            {
-               jobArchive = row.getArchive()
-               jobDir = row.jobDir as File
-               if (!jobArchive?.exists()) {
-                  jobArchive = jobDir
+               //  println row
+               if(row)
+               {
+                  jobArchive = row.getArchive()
+                  jobDir = row.jobDir as File
+                  if (!jobArchive?.exists()) {
+                     jobArchive = jobDir
+                  }
+                  row.delete(flush:true)
+                  result.success = true;
+
+                  cleanUpJobArray << [jobArchive:jobArchive, jobDir:jobDir]
                }
-               row.delete(flush:true)
-               result.success = true;
             }
          }
       }
       catch(e)
       {
+         log.error(e)
          result.status = HttpStatus.BAD_REQUEST;
          result.message = "Exception: ${e.toString()}"
       }
       if(result.status == HttpStatus.OK)
       {
          try {
-            if (jobArchive?.exists()) {
-               if (jobArchive?.isDirectory()) {
-                  jobArchive?.deleteDir()
-               } else {
-                  jobArchive?.delete()
+            cleanUpJobArray.each{
+               if (it.jobArchive?.exists()) {
+                  if (it.jobArchive?.isDirectory()) {
+                     it.jobArchive?.deleteDir()
+                  } else {
+                     it.jobArchive?.delete()
+                  }
                }
-            }
-            if(jobDir?.exists())
-            {
-               if (jobDir?.isDirectory()) {
-                  jobDir?.deleteDir()
-               } else {
-                  jobDir?.delete()
+               if(it.jobDir?.exists())
+               {
+                  if (it.jobDir?.isDirectory()) {
+                     it.jobDir?.deleteDir()
+                  } else {
+                     it.jobDir?.delete()
+                  }
                }
             }
          }
@@ -477,7 +495,7 @@ class JobService
             catch(e)
             {
 
-               println "ERROR ============ ${e}"
+               //println "ERROR ============ ${e}"
                response.status = HttpStatus.BAD_REQUEST.value
                errorMessage = "ERROR: ${e}"
                response.contentType = "text/plain"

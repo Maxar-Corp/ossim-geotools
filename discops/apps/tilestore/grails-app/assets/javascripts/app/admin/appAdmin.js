@@ -1,5 +1,5 @@
-"use strict";
 var AppAdmin = (function () {
+    "use strict";
     var mapEpsg = 'EPSG:3857';
 
     // TODO: Cache jquery selectors.  Possibly use this solution:
@@ -16,26 +16,32 @@ var AppAdmin = (function () {
     var $minTileLevel = $('#minTileLevel');
     var $maxTileLevel = $('#maxTileLevel');
     var $navCreateLayer = $('#navCreateLayer');
+
     var $createTileLayerModal  = $('#createTileLayerModal');
+    var $createTileLayerForm = $('#createTileLayerForm');
     var $submitCreateLayer = $('#submitCreateLayer');
     var $createLayerName = $('#createLayerName');
     var $epsgCode = $('#epsgCode');
     var $resetCreateTile = $('#resetCreateTile');
-    var $createTileLayerForm = $("#createTileLayerForm");
 
     var $navRenameLayer = $('#navRenameLayer');
     var $renameTileLayerModal = $('#renameTileLayerModal');
+    var $renameTileLayerForm = $('#renameTileLayerForm');
     var $renameTileLayer = $('#renameTileLayer');
     var $renameLayerName = $('#renameLayerName');
     var $submitRenameLayer = $('#submitRenameLayer');
     var $resetRenameTile = $('#resetRenameTile');
-    var $renameTileLayerForm = $("#renameTileLayerForm");
 
     var $deleteTileLayer = $('#deleteTileLayer');
     var $navDeleteLayer = $('#navDeleteLayer');
     var $deleteTileLayerModal = $('#deleteTileLayerModal');
     var $deleteLayerName = $('#deleteLayerName');
     var $submitDeleteLayer = $('#submitDeleteLayer');
+
+    var $viewLayersInfo = $('#viewLayersInfo');
+    var $listLayersModal = $('#listLayersModal');
+    var $layerTableInfo = $('#layerTableInfo');
+    var $layersTable; // set in the info click callback (getLayersInfo())
 
     var $autoRefreshMapToggle = $('#autoRefreshMapToggle');
 
@@ -101,7 +107,7 @@ var AppAdmin = (function () {
         target: 'mapTile'
     });
 
-    // Add Zoom Slider
+    // Add Zoom Sliders
     var zoomsliderMapOmar = new ol.control.ZoomSlider();
     var zoomsliderMapTile = new ol.control.ZoomSlider();
     mapOmar.addControl(zoomsliderMapOmar);
@@ -148,14 +154,14 @@ var AppAdmin = (function () {
             var refreshMap = null;
             return function(e) {
                 if (refreshMap) {
-                    console.log('true');
+                    //console.log('true');
                     clearInterval(refreshMap);
                     refreshMap = null;
                     $mapTileInfo.html('');
                     $mapTileInfo.hide();
                 }
                 else {
-                    console.log('false');
+                    //console.log('false');
                     $mapTileInfo.html('Autorefresh Map On');
                     $mapTileInfo.show();
                     refreshMap = setInterval(function() {
@@ -163,7 +169,7 @@ var AppAdmin = (function () {
                         //console.log(params);
                         params.t = new Date().getMilliseconds();
                         initLayer.getSource().updateParams(params);
-                        console.log('refreshing!');
+                        //console.log('refreshing!');
                     }, 5000);
                 }
             };
@@ -195,7 +201,6 @@ var AppAdmin = (function () {
     function getTileLayers(params, elem) {
         var dfd = $.Deferred();
         $.each(params, function (index, tileCacheLayer) {
-            //var deffered = $.Deferred();
             $(elem).append($('<option>', {
                 value: tileCacheLayer.name,
                 text: tileCacheLayer.name
@@ -206,10 +211,10 @@ var AppAdmin = (function () {
     }
 
     // The tile layer object
-    var objLayer = {}
+    var objLayer = {};
 
     $tileLayerSelect.on('change', function() {
-        console.log('select on change:' + $tileLayerSelect.val())
+        //console.log('select on change:' + $tileLayerSelect.val());
         switchCurrentLayer(initLayer, $tileLayerSelect.val());
     });
 
@@ -232,7 +237,7 @@ var AppAdmin = (function () {
         for (var i = 0; i < 23; i++) {
             //console.log(i);
             $maxTileLevel.append('<option value="' + i + '">' + i + '</option>');
-            $maxTileLevel.selectpicker('val', '20');  // intial value for max level
+            $maxTileLevel.selectpicker('val', '20');
             $maxTileLevel.selectpicker('refresh');
         }
 
@@ -246,6 +251,14 @@ var AppAdmin = (function () {
             data: obj
         });
     }
+
+    $createTileLayerForm.on('invalid.bs.validator', function(){
+        $submitCreateLayer.addClass('disabled');
+    });
+
+    $createTileLayerForm.on('valid.bs.validator', function(){
+        $submitCreateLayer.removeClass('disabled');
+    });
 
     $submitCreateLayer.on('click', function () {
 
@@ -278,7 +291,8 @@ var AppAdmin = (function () {
 
                 // Puts new tile layer into dropdown list, and sets it as the active layer
                 var oldTileLayerName = $tileLayerSelect.val();
-                console.log(oldTileLayerName);
+                //console.log(oldTileLayerName);
+                //console.log(data);
 
                 var newTileLayerName = data.name;
                 //console.log(newTileLayerName);
@@ -289,7 +303,7 @@ var AppAdmin = (function () {
                 $deleteTileLayer.append('<option value="' + newTileLayerName + '" selected="selected">' + newTileLayerName + '</option>');
                 $deleteTileLayer.selectpicker('refresh');
 
-                l.stop() // stop spinner from rotating
+                l.stop(); // stop spinner from rotating
 
                 // Close the modal if ajax request was successful
                 $createTileLayerModal.modal('hide');
@@ -308,15 +322,15 @@ var AppAdmin = (function () {
             else {
                 toastr.error(data.message, 'Error');
             }
-        };
+        }
 
         function errorHandlerCreate(data) {
 
-            l.stop() // stop spinner from rotating
+            l.stop(); // stop spinner from rotating
             // Handles error reporting from server
             toastr.error(data.responseJSON.message + ' Please choose' +
             ' another name and submit again.', 'Error');
-        };
+        }
 
         ajaxCreateLayer(objLayer).done(successHandlerCreate).fail(errorHandlerCreate);
 
@@ -349,14 +363,6 @@ var AppAdmin = (function () {
         resetForm('create');
     });
 
-    // Bind the list of tile layers to the select element one time only
-    $navRenameLayer.one('click', function () {
-        //console.log(loadParams.tilestoreLayers);
-        //console.log(tileLayersArray);
-        //updateTileLayers(tileLayersArray,'#');
-        //getTileLayers(loadParams.tilestoreLayers, '#renameTileLayer');
-    });
-
     $navRenameLayer.click(function () {
 
         $renameTileLayerModal.modal('show');
@@ -375,6 +381,14 @@ var AppAdmin = (function () {
         });
     }
 
+    $renameTileLayerForm.on('invalid.bs.validator', function(){
+        $submitRenameLayer.addClass('disabled');
+    });
+
+    $renameTileLayerForm.on('valid.bs.validator', function(){
+        $submitRenameLayer.removeClass('disabled');
+    });
+
     $submitRenameLayer.on('click', function () {
 
         // Prevent submits/multiple ajax requests
@@ -390,15 +404,15 @@ var AppAdmin = (function () {
 
         // Grab this from a input box
         var newLayerName = $renameLayerName.val(); // Need to truncate to 50 characters
-        console.log(newLayerName);
+        //console.log(newLayerName);
 
         function successHandlerRename(data, textStatus, jqXHR) {
-            console.log(jqXHR.status);
-            console.log(textStatus);
+            //console.log(jqXHR.status);
+            //console.log(textStatus);
 
             if (jqXHR.status === 200) {
                 //console.log('We have 200!');
-                console.log(data);
+                //console.log(data);
 
                 // Done 04-20-15
                 //$select.find('[value=' + oldLayerName + ']').remove();
@@ -426,7 +440,7 @@ var AppAdmin = (function () {
                 toastr.success('Layer ' + oldLayerName + ' was renamed to ' + newLayerName, 'Success');
                 resetForm('rename');
 
-                l.stop() // stop spinner from rotating
+                l.stop(); // stop spinner from rotating
 
             }
             else {
@@ -435,13 +449,13 @@ var AppAdmin = (function () {
         }
 
         function errorHandlerRename(data) {
-            console.log(data);
-            l.stop() // stop spinner from rotating
+            //console.log(data);
+            l.stop(); // stop spinner from rotating
             $submitRenameLayer.removeClass('btn-success disabled').addClass('btn-primary');
             // Handles error reporting from server
             toastr.error(data.responseJSON.message + ' Rename failed' +
             ' choose another name and submit again.', 'Error');
-        };
+        }
 
         ajaxRenameLayer(oldLayerName, newLayerName).done(successHandlerRename).fail(errorHandlerRename);
 
@@ -449,11 +463,6 @@ var AppAdmin = (function () {
 
     $resetRenameTile.on('click', function () {
         resetForm('rename');
-    });
-
-    // Binds the list of tile layers to the select element one time only.
-    $navDeleteLayer.one('click', function () {
-        //getTileLayers(loadParams.tilestoreLayers, '#deleteTileLayer');
     });
 
     $navDeleteLayer.click(function () {
@@ -493,7 +502,7 @@ var AppAdmin = (function () {
 
             if (jqXHR.status === 200) {
                 //console.log('We have 200!');
-                console.log(data);
+                //console.log(data);
                 //$select.find('[value=' + deleteLayerName + ']').remove();
                 //$select.selectpicker('refresh');
 
@@ -507,7 +516,7 @@ var AppAdmin = (function () {
                 $tileLayerSelect.selectpicker('refresh');
 
                 toastr.success('Layer ' + deleteLayerName + ' was deleted.', 'Success');
-                l.stop() // stop spinner from rotating
+                l.stop(); // stop spinner from rotating
                 $submitDeleteLayer.removeClass('btn-success disabled').addClass('btn-primary');
 
                 switchCurrentLayer(initLayer, $tileLayerSelect.val());
@@ -519,7 +528,7 @@ var AppAdmin = (function () {
         }
 
         function errorHandlerDelete(data) {
-            l.stop() // stop spinner from rotating
+            l.stop(); // stop spinner from rotating
             // Handles error reporting from server
             console.log(data);
             $submitDeleteLayer.removeClass('btn-success disabled').addClass('btn-primary');
@@ -549,24 +558,24 @@ var AppAdmin = (function () {
                 $maxTileLevel.selectpicker('val', '20');  // initial value for max level
                 $maxTileLevel.selectpicker('refresh');
             }
-            for (var i = 0; i < 23; i++) {
-                //console.log(i);
-                $minTileLevel.find('[value=' + i + ']').remove();
-                $minTileLevel.selectpicker('refresh');
-            }
-            for (var i = 0; i < 23; i++) {
-                //console.log(i);
-                $minTileLevel.append('<option value="' + i + '">' + i + '</option>');
-                $minTileLevel.selectpicker('val', '0');  // initial value for max level
-                $minTileLevel.selectpicker('refresh');
-            }
+            //for (var i = 0; i < 23; i++) {
+            //    //console.log(i);
+            //    $minTileLevel.find('[value=' + i + ']').remove();
+            //    $minTileLevel.selectpicker('refresh');
+            //}
+            //for (var i = 0; i < 23; i++) {
+            //    //console.log(i);
+            //    $minTileLevel.append('<option value="' + i + '">' + i + '</option>');
+            //    $minTileLevel.selectpicker('val', '0');  // initial value for max level
+            //    $minTileLevel.selectpicker('refresh');
+            //}
 
             $epsgCode.selectpicker('val', 'EPSG:3857');
             $select.selectpicker('render');
             //$createTileLayerForm.trigger('reset');
             $submitCreateLayer.removeClass('btn-success disabled').addClass('btn-primary');
-            console.log('min: ' + $minTileLevel.val())
-            console.log('max: ' + $maxTileLevel.val());
+            //console.log('min: ' + $minTileLevel.val())
+            //console.log('max: ' + $maxTileLevel.val());
             $createLayerName.val(''); // IE9 work around
             //$minTileLevel.val('0');
             //$maxTileLevel.val('20');
@@ -590,16 +599,67 @@ var AppAdmin = (function () {
         "showMethod": "fadeIn",
         "hideMethod": "fadeOut",
         "timeOut": "10000"
-    }
+    };
 
     // End Layer Management ##############################################################
+
+    function getLayersInfo() {
+
+        $listLayersModal.modal('show');
+
+        $.ajax({
+            url: "/tilestore/layerManager/list",
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                //console.log(data.rows);
+
+                $layersTable = $('#layers_table').DataTable({
+                    "data": data.rows,
+                    "lengthMenu": [ 10, 20, 30],
+                    columns: [
+                        { data: 'name' },
+                        { data: 'epsgCode'},
+                        { data: 'minLevel'},
+                        { data: 'maxLevel'},
+                        { data: 'tileHeight'},
+                        { data: 'tileWidth'}
+                    ]
+
+                });
+
+            },
+            error: function (data) {
+                alert(data);
+            }
+
+        });
+    }
+
+    $('#layers_table tbody').on('click', 'tr', function () {
+        var name = $('td', this).eq(0).text();
+        //alert( 'You clicked on '+name+'\'s row' );
+        switchCurrentLayer(initLayer, name);
+        $tileLayerSelect.selectpicker('val', name);
+
+        $layerTableInfo.removeClass('alert-info').addClass('alert-success');
+        $layerTableInfo.html('<strong>' + name + '</strong> is now the active tile layer.');
+
+    } );
+
+    $viewLayersInfo.on('click', getLayersInfo);
+
+    $listLayersModal.on('hidden.bs.modal', function (e) {
+        $layerTableInfo.removeClass('alert-success').addClass('alert-info');
+        $layerTableInfo.html('<strong>Click on any table row to set that layer as the active layer</strong>');
+        $layersTable.destroy();
+    });
 
     return {
         initialize: function (initParams) {
 
             loadParams = initParams;
-            //tileLayersArray = loadParams.tiletilestoreLayers;
-            //console.log(loadParams);
+            //console.log(initParams);
 
             // Uses .done via a $.Deffered() to grab the value of the $tileLayerSelect
             // This is needed, because the select options are populated after the DOM is loaded.
@@ -619,7 +679,7 @@ var AppAdmin = (function () {
                 initLayer = new ol.layer.Tile( {
                     opacity: 1.0,
                     source: source,
-                    name: currentTileLayer,
+                    name: currentTileLayer
                 } );
                 //source.on('tileloadstart', function(event) {
                 //    //progress.addLoaded();

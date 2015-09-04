@@ -87,7 +87,8 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 	String tileIdNameMask     = "%l%/%r%/%c%"
 	String origin                = "BOTTOM_LEFT"
 	def tileGenerationOrder   = "LOWEST_TO_HIGHEST"
-	
+	Boolean tileOriginGlobal  = false
+
 	def outputFieldNames = [
 									tile_id:"tile_id",
 									tile_filenames:"tile_filenames",
@@ -110,6 +111,7 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 									tile_width:"tile_width",
 									tile_height:"tile_height",
 									tile_within:"tile_within",
+									summary_total_tiles:"summary_total_tiles",
 									summary_level_info:"summary_level_info",
 									summary_epsg_minx:"summary_epsg_minx",
 									summary_epsg_miny:"summary_epsg_miny",
@@ -154,6 +156,7 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 											tile_width:[type:ValueMetaInterface.TYPE_INTEGER],
 											tile_height:[type:ValueMetaInterface.TYPE_INTEGER],
 											tile_within:[type:ValueMetaInterface.TYPE_BOOLEAN],
+											summary_total_tiles:[type:ValueMetaInterface.TYPE_STRING],
 											summary_level_info:[type:ValueMetaInterface.TYPE_STRING],
 											summary_epsg_minx:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
 											summary_epsg_miny:[type:ValueMetaInterface.TYPE_NUMBER ,len:-1, precision:15, conversionMask:"##.##################;-##.##################"],
@@ -232,6 +235,8 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 	String getXML() throws KettleValueException
 	{
       def retval = new StringBuffer(400);
+
+		retval.append("    ").append(XMLHandler.addTagValue("tileOriginGlobal", tileOriginGlobal))
 		if(clampMinLevel!=null)
 		{
 			retval.append("    ").append(XMLHandler.addTagValue("clampMinLevel", clampMinLevel))
@@ -290,8 +295,6 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 	private void readData(Node stepnode, List<DatabaseMeta> databases)
 	throws KettleXMLException
 	{
-		this.setDefault();
-
 		def values       = stepnode
 		origin           = XMLHandler.getTagValue(values, "origin");
 		clampMinLevel = XMLHandler.getTagValue(values, "clampMinLevel");
@@ -299,6 +302,7 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 		crop      = XMLHandler.getTagValue(values, "crop");
 		cropEpsg  = XMLHandler.getTagValue(values, "cropEpsg");
 
+		String tileOriginGlobalString = XMLHandler.getTagValue(values, "tileOriginGlobal");
 		projectionType             = XMLHandler.getTagValue(values, "projectionType");
 		def tileIdNameMaskString   = XMLHandler.getTagValue(values, "tileIdNameMask");
 		inputEntryField            = XMLHandler.getTagValue(values, "inputEntryField");
@@ -309,6 +313,7 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
       def outputFieldNamesNode   = XMLHandler.getSubNode( values, "outputFieldNames" );
       tileGenerationOrder        = XMLHandler.getTagValue( values, "tileGenerationOrder");
 
+		if(tileOriginGlobalString) tileOriginGlobal = tileOriginGlobalString.toBoolean()
       if(!targetTileWidth) targetTileWidth = "256"
       if(!targetTileHeight) targetTileHeight = "256"
 
@@ -350,12 +355,14 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 
 		tileIdNameMask     = "%l%/%r%/%c%"
 		origin                = "LOWER_LEFT"
-		tileGenerationOrder   = "LOWEST_TO_HIGHEST"		
+		tileGenerationOrder   = "LOWEST_TO_HIGHEST"
+		tileOriginGlobal      = false
 	}
 	void readRep(Repository rep, ObjectId id_step, List<DatabaseMeta> databases, Map<String, Counter> counters) throws KettleException 
 	{
 		this.setDefault();
 
+		String tileOriginGlobalString = rep.getStepAttributeString(id_step, "tileOriginGlobal");
 		clampMinLevel       = rep.getStepAttributeString(id_step, "clampMinLevel");
 		clampMaxLevel       = rep.getStepAttributeString(id_step, "clampMaxLevel");
 		crop                = rep.getStepAttributeString(id_step, "crop");
@@ -371,6 +378,7 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 		def inputEntryFieldString     = rep.getStepAttributeString(id_step, "inputEntryField");
 		def selectedFieldNamesString  = rep.getStepAttributeString(id_step, "selectedFieldNames");
 
+		if(tileOriginGlobalString) tileOriginGlobal = tileOriginGlobalString.toBoolean()
       if(!targetTileWidth) targetTileWidth   = "256"
       if(!targetTileHeight) targetTileHeight = "256"
 
@@ -406,7 +414,11 @@ public class BasicTilingMeta extends BaseStepMeta implements StepMetaInterface
 //		println "SAVING WITH: ${projectionType},${projectionMinx},${projectionMiny},${projectionMaxx},${projectionMaxy}"
 		 try
 		 {
-		 	if(clampMinLevel != null)
+			 rep.saveStepAttribute(id_transformation,
+						id_step, "tileOriginGlobal",
+						tileOriginGlobal) //$NON-NLS-1$
+
+			 if(clampMinLevel != null)
 		 	{
 				rep.saveStepAttribute(id_transformation,
 									id_step, "clampMinLevel",

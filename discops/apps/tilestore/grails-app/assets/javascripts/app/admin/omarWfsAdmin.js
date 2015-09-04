@@ -1,6 +1,6 @@
-"use strict";
-var AppOmarWfsAdmin = (function () {
 
+var AppOmarWfsAdmin = (function () {
+    "use strict";
     var loadParams;
     var $omarFeed = $('#omarFeed');
     var $omarImageList = $('#omarImageList');
@@ -12,8 +12,6 @@ var AppOmarWfsAdmin = (function () {
     var $paginationButtons = $('.paginationButtons');
     var filter;
     var filterDateType;
-
-    var previewBool = false;
 
     var previewFeatureVectorLayer, previewFeatureVectorSource, omarPreviewLayerId, omarPreviewLayer;
     var previewFeatureArray = [];
@@ -40,6 +38,8 @@ var AppOmarWfsAdmin = (function () {
     var $dateRangeSelect = $('#dateRangeSelect');
     var $sortByFieldSelect = $('#sortByFieldSelect');
     var $sortByTypeSelect = $('#sortByTypeSelect');
+    var $acquisitionDateRadioLabel = $('#acquisitionDateRadioLabel');
+    var $constrainToViewportCheckbox = $('#constrainToViewportCheckbox');
     var dateToday, dateTodayEnd, dateYesterday, dateYesterdayEnd, dateLast7Days, dateThisMonth, dateLast3Months, dateLast6Months;
     var filterOpts = {
         dateType: '',
@@ -47,18 +47,28 @@ var AppOmarWfsAdmin = (function () {
         endDate: '',
         queryNone: false,
         offset: 0
-    }
+    };
     var queryRange = {
         start: '',
         end: '',
         none: true
     };
+    var cqlParams = {};
     var $customStartDateFilter = $('#customStartDateFilter');
     var $customEndDateFilter = $('#customEndDateFilter');
 
+    // Spatial filter variables
+    var mapOmarSpatialQueryExtent3857;
+    var mapOmarSpatialQueryExtent4326;
+
+    //var clustfeaturesArray = [];
+    //var clustLat, // cluster coordinate latitude
+    //    clustLon,  // cluster coordinate longitude
+    //    arrayItem; // item in cluster array
+
     var $submitFilter = $('#submitFilter');
     var $startResult = $('#startResult');
-    var $endResult = $('#endResult')
+    var $endResult = $('#endResult');
 
     dateToday = moment().format('MM-DD-YYYY 00:00');
     dateTodayEnd = moment().format('MM-DD-YYYY 23:59');
@@ -114,8 +124,8 @@ var AppOmarWfsAdmin = (function () {
                 inStartDate = $customStartDateFilter.datepicker('getFormattedDate');
                 outStartDate = $customEndDateFilter.datepicker('getFormattedDate');
 
-                console.log(moment(inStartDate).format('YYYY-MM-DD'));
-                console.log(moment(outStartDate).format('YYYY-MM-DD'));
+                //console.log(moment(inStartDate).format('YYYY-MM-DD'));
+                //console.log(moment(outStartDate).format('YYYY-MM-DD'));
 
                 queryRange.start = moment(inStartDate).format('YYYY-MM-DD'); // = '05-12-2014';
                 queryRange.end = moment(outStartDate).format('YYYY-MM-DD'); // = '05-29-2015';
@@ -138,10 +148,91 @@ var AppOmarWfsAdmin = (function () {
         $filterWfsModal.modal('show');
     });
 
+    function getSpatalQueryExtent() {
+        mapOmarSpatialQueryExtent3857 = AppAdmin.mapOmar.getView().calculateExtent(AppAdmin.mapOmar.getSize());
+        mapOmarSpatialQueryExtent4326 = ol.proj.transformExtent(mapOmarSpatialQueryExtent3857, "EPSG:3857",
+         "EPSG:4326");
+        return mapOmarSpatialQueryExtent4326;
+    }
+
+    function toCql(constraints){
+        var result = "";
+
+        var constraintToExpression;
+        if(constraints.startDate && constraints.endDate)
+        {
+            constraintToExpression = constraints.dateType + " between " + "'" + constraints.startDate + "'" +
+                " AND " +
+                "'" + constraints.endDate + "'";
+
+            if(result === "")
+            {
+                result = "(" + constraintToExpression + ")";
+            }
+            else
+            {
+                result = result + " AND (" + constraintToExpression + ")";
+            }
+        }
+         /*       else if(constraints.startDate)
+                {
+                    constraintToExpression = constraints.dateType + ">='" +constraints.startDate+"'";
+                    if(result=="")
+                    {
+                        result = "(" + constraintToExpression + ")";
+                    }
+                    else
+                    {
+                        result = result + " AND (" +constraintToExpression + ")"
+                    }
+                }
+                else if(constraints.endDate)
+                {
+                    constraintToExpression = constraints.dateType + "<='" +constraints.endDate+"'";
+                    if(result=="")
+                    {
+                        result = "(" + constraintToExpression + ")";
+                    }
+                    else
+                    {
+                        result = result + " AND (" +constraintToExpression + ")"
+                    }
+                }
+        */
+        if(constraints.constrainToViewport)
+        {
+            constraintToExpression = "BBOX(" + constraints.geomType + "," + constraints.bbox + ")";
+
+            if(result === "")
+            {
+                result = "(" + constraintToExpression + ")";
+            }
+            else
+            {
+                result = result + " AND (" +constraintToExpression + ")";
+            }
+        }
+
+        return result;
+    }
+
+    AppAdmin.mapOmar.on('moveend', function () {
+
+        // Add a check here to see if the getWfsCards
+        // needs to fire based on the spatial query
+        // checkbox value
+        if ($constrainToViewportCheckbox.checkbox('isChecked') ){
+            getWfsCards(filterOpts);
+        } else {
+            console.log('mapend firing without running firing getWfsCards');
+        }
+
+
+    });
+
     function getWfsCards(params){
 
-        //console.log('params.queryNone coming in is :' + params.queryNone);
-        if ($('#acquisitionDateRadioLabel').radio('isChecked')){
+        if ($acquisitionDateRadioLabel.radio('isChecked')){
             //console.log('acq. is checked');
             filterDateType = 'Acquisition';
         }
@@ -151,16 +242,8 @@ var AppOmarWfsAdmin = (function () {
         }
 
         var dateType = params.dateType || 'ingest_date'; // default value
-        var startDate = params.startDate // || dateLast7Days; // default value
-        var endDate = params.endDate // ||  dateToday; // default value
-        var queryNone;
-        if (params.queryNone === false){
-            queryNone = false;
-        }
-        else {
-            queryNone = true;
-        }
-        //console.log('queryNone is now set as:' + queryNone);
+        var startDate = params.startDate; // || dateLast7Days; // default value
+        var endDate = params.endDate; // ||  dateToday; // default value
 
         var offset = params.offset || 0;
         var sortByField = $sortByFieldSelect.selectlist('selectedItem').value || 'ingest_date';
@@ -170,8 +253,28 @@ var AppOmarWfsAdmin = (function () {
         var sortByFieldText = $sortByFieldSelect.selectlist('selectedItem').text;
         var sortByTypeText = $sortByTypeSelect.selectlist('selectedItem').text;
 
-        //console.log('queryNone after being called:');
         //console.log('offset --> ' + offset);
+
+        cqlParams = {
+            "dateType": dateType,
+            "constrainToViewport": true,
+            "startDate": null,
+            "endDate": null,
+            "geomType": "ground_geom",
+            "bbox": getSpatalQueryExtent()
+        };
+
+        if ( !$constrainToViewportCheckbox.checkbox('isChecked') ){
+            cqlParams.constrainToViewport = false;
+        }
+        //console.log('cqlParams.constrainToViewPort', cqlParams.constrainToViewport);
+
+        if(typeof startDate != "undefined") cqlParams.startDate = startDate;
+        if(typeof endDate != "undefined") cqlParams.endDate = endDate;
+
+        //console.log("cqlParams", cqlParams);
+
+        var cqlFilter = toCql(cqlParams);
 
         // Feedback on the UI for the current filter
         $imageFilterDate.html('Date = ' + filterDateType);
@@ -184,43 +287,17 @@ var AppOmarWfsAdmin = (function () {
             $imageFilter.html(" Sort field: " + sortByFieldText + ", Sort type: " + sortByTypeText);
         }
 
-
-        if (queryNone === true){
-            //console.log('queryNone: ' + queryNone);
             wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
-                "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter=" +
+                "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter=" + cqlFilter +
                 "&sortBy=" + sortByField +
                 ":" + sortByType;
             wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
                 "=GetFeature&typeName=omar:raster_entry" +
-                "&offset=0&maxFeatures=25&outputFormat=json&filter=" +
+                "&outputFormat=json&filter=" + cqlFilter +
                 "&sortBy=" + sortByField +
                 ":" + sortByType + "&resultType=hits";
-        }
-        else {
-            console.log('else queryNone value: ' + queryNone);
-            wfsCards = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
-                "=GetFeature&typeName=omar:raster_entry" +
-                "&offset="+ offset +"&maxFeatures=25&outputFormat=json&filter=" +
-                dateType +
-                "+between+" +
-                "'" + startDate + "'" +
-                "+and+" +
-                "'" + endDate + "'" +
-                "&sortBy=" + sortByField +
-                ":" + sortByType;
-            wfsCardsCount = loadParams.omarWfs + "?service=WFS&version=1.1.0&request" +
-                "=GetFeature&typeName=omar:raster_entry" +
-                "&outputFormat=json&filter=" +
-                dateType +
-                "+between+" +
-                "'" + startDate + "'" +
-                "+and+" +
-                "'" + endDate + "'" +
-                "&sortBy=" + sortByField +
-                ":" + sortByType + "&resultType=hits";
-        }
+        //}
 
         //console.log(wfsCards);
         //console.log(wfsCardsCount);
@@ -232,9 +309,42 @@ var AppOmarWfsAdmin = (function () {
 
             // TODO: Refactor using promises...
             success: function (images) {
+                //console.log('images.length', images.features.length);
 
-                //console.log(images);
-                //console.log(images.features.properties);
+                // ####################################    WIP   #####################################################
+                // This would provide feedback in the map using OL3's clustering functionality. However, at this time,
+                // the performance is not acceptable for this project.  Will revisit this as time permits.
+                //AppManageLayersAdmin.source.clear();
+                //AppManageLayersAdmin.clustfeaturesArray.length = 0;
+                //for (var i = 0; i < images.features.length; ++i){
+                //
+                //    clustLat = images.features[i].geometry.coordinates[0][0][0];
+                //    clustLon = images.features[i].geometry.coordinates[0][0][1];
+                //    //console.log('coords', clustLat + ', ' + clustLon);
+                //
+                //    arrayItem = new ol.Feature(new ol.geom.Point(ol.proj.transform([clustLat, clustLon], 'EPSG:4326', 'EPSG:3857')));
+                //    //console.log('arrayItem', arrayItem);
+                //
+                //    // Add clustfeatures to source
+                //    AppManageLayersAdmin.clustfeaturesArray.push(arrayItem);
+                //    //console.log(AppManageLayersAdmin.clustfeaturesArray);
+                //
+                //}
+                //
+                //AppManageLayersAdmin.source.addFeatures(AppManageLayersAdmin.clustfeaturesArray);
+                ////console.log('clustfeaturesArray.length', AppManageLayersAdmin.clustfeaturesArray.length);
+                //console.log('source.getFeatures', AppManageLayersAdmin.source.getFeatures());
+                //
+                //AppManageLayersAdmin.clusters.setSource(AppManageLayersAdmin.clusterSource);
+                //
+                //
+                //// TODO: Check to see if we are below zoom level 10.  If so, hide/remove the zoom layer and
+                ////       show the polygons for the footprints instead
+                //console.log('mapOmar Zoom Level', AppAdmin.mapOmar.getView().getZoom());
+                //console.log('--------getArray---------');
+                //console.log(AppAdmin.mapOmar.getLayers().getArray()); //[0].values_.name);
+                //console.log('--------------------------');
+                // ####################################    /WIP   ####################################################
 
                 // Clear the DOM before loading the wfs cards
                 $omarImageList.empty();
@@ -267,7 +377,7 @@ var AppOmarWfsAdmin = (function () {
                     $resultsSet.hide();
                 }
             }
-        })
+        });
 
     }
 
@@ -284,7 +394,7 @@ var AppOmarWfsAdmin = (function () {
             $nextWfsImages.addClass("disabled");
         }
         else{
-            console.log('nope, counterEnd < imageCountTotal');
+            //console.log('nope, counterEnd < imageCountTotal');
         }
 
         //console.log('counterStart: ' + counterStart);
@@ -307,11 +417,11 @@ var AppOmarWfsAdmin = (function () {
             filterOpts.queryNone = true;
         }
 
-        console.log('Next Button => filter options below:');
-        console.log(filterOpts);
+        //console.log('Next Button => filter options below:');
+        //console.log(filterOpts);
         getWfsCards(filterOpts);
         $omarFeed.animate({
-            scrollTop: 0,
+            scrollTop: 0
         }, 'slow');
 
     }
@@ -322,7 +432,7 @@ var AppOmarWfsAdmin = (function () {
         counterStart = filterOpts.offset - 24;
         counterEnd = filterOpts.offset;
 
-        console.log(counterStart + ' ' + counterEnd);
+        //console.log(counterStart + ' ' + counterEnd);
 
         $startResult.html(counterStart);
         $endResult.html(counterEnd);
@@ -335,7 +445,7 @@ var AppOmarWfsAdmin = (function () {
             $prevWfsImages.removeClass("disabled");
         }
 
-        console.log('imageCountTotal: ' + imageCountTotal + ' offset: ' + (filterOpts.offset + 24));
+        //console.log('imageCountTotal: ' + imageCountTotal + ' offset: ' + (filterOpts.offset + 24));
         if(imageCountTotal >= (filterOpts.offset+ 25)) {
             $nextWfsImages.removeClass("disabled");
         }
@@ -345,13 +455,11 @@ var AppOmarWfsAdmin = (function () {
             filterOpts.queryNone = true;
         }
 
-        console.log('Next Button => filter options below:');
-        console.log(filterOpts);
-        getWfsCards(filterOpts);
-
+        //console.log('Next Button => filter options below:');
+        //console.log(filterOpts);
         getWfsCards(filterOpts);
         $omarFeed.animate({
-            scrollTop: 0,
+            scrollTop: 0
         }, 'slow');
 
     }
@@ -381,24 +489,24 @@ var AppOmarWfsAdmin = (function () {
         //console.log('dateLast6Months: ' + dateLast6Months);
 
         // reset the offset to 0
-        //filterOpts.offset = 0;
+        // filterOpts.offset = 0;
         resetPagination();
 
         var queryRange = getQueryType();
-        console.log(queryRange.none);
+        //console.log(queryRange.none);
 
         if ($dateRangeSelect.selectlist('selectedItem').value === 'none') {
 
-            console.log('none firing!');
+            //console.log('none firing!');
             filterOpts.queryNone = true;
-            console.log(filterOpts.queryNone);
+            //console.log(filterOpts.queryNone);
 
         }
         else {
 
-            console.log('we need to filter');
+            //console.log('we need to filter');
             filterOpts.queryNone = false;
-            console.log(filterOpts.queryNone);
+            //console.log(filterOpts.queryNone);
 
         }
 
@@ -439,7 +547,7 @@ var AppOmarWfsAdmin = (function () {
     Handlebars.registerHelper("formatDate", function convertDate(date){
 
         if(date){
-            var inDate, outDate, options;
+            //var inDate, outDate, options;
 
             //inDate = new Date(date);
             //options = { year: '2-digit', month: 'numeric', day: 'numeric', hour12: 'true', hour: 'numeric', minute: 'numeric', second: 'numeric' }
@@ -482,7 +590,7 @@ var AppOmarWfsAdmin = (function () {
         });
 
         omarPreviewLayerId = obj.properties.id;
-        console.log(omarPreviewLayerId);
+        //console.log(omarPreviewLayerId);
         if(omarPreviewLayer){
             console.log('omarPreviewLayer true');
             omarPreviewLayer.getSource().updateParams({'LAYERS': omarPreviewLayerId});
@@ -507,16 +615,13 @@ var AppOmarWfsAdmin = (function () {
             });
             AppAdmin.mapOmar.addLayer(omarPreviewLayer);
 
-            // Need to move the omarPreviewLayer below the vector layers
-            //console.log(AppAdmin.mapOmar.getLayers().getArray().length);
-
             // Move the previewLayer below the aoiVectorLayer
             // Before:
-            console.log(AppAdmin.mapTile.getLayers().getArray());
+            // console.log(AppAdmin.mapTile.getLayers().getArray());
             AppManageLayersAdmin.swapTopLayer(AppAdmin.mapOmar, 2 , 1);
             AppManageLayersAdmin.swapTopLayer(AppAdmin.mapTile, 2 , 1);
             // After:
-            console.log(AppAdmin.mapTile.getLayers().getArray());
+            // console.log(AppAdmin.mapTile.getLayers().getArray());
 
         }
 
@@ -537,13 +642,9 @@ var AppOmarWfsAdmin = (function () {
             ])
         });
         //polyFeature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
-
         var extent = polyFeature.getGeometry().getExtent();
         AppAdmin.mapOmar.getView().fitExtent(extent, AppAdmin.mapOmar.getSize());
 
-        // This adds the polyFeature to a vectorlayer and displays it on the map.
-        // TODO: Use this in a function to run all of the OMAR images through it
-        //       and display their bounding box on the map.
         if (previewFeatureArray.length === 1) {
 
             previewFeatureVectorSource.clear();
@@ -567,8 +668,6 @@ var AppOmarWfsAdmin = (function () {
                 features: previewFeatureArray
             });
 
-            // TODO: Move this out of the click on the image card, and put it in the appAddLayers
-            //       file so that it is always the top layer rendered.
             previewFeatureVectorLayer = new ol.layer.Vector({
                 source: previewFeatureVectorSource,
                 style: (function() {
@@ -602,7 +701,6 @@ var AppOmarWfsAdmin = (function () {
 
             AppAdmin.mapTile.addLayer(previewFeatureVectorLayer);
 
-
         }
 
         // This sets the ingest clamping obj from the image
@@ -616,11 +714,9 @@ var AppOmarWfsAdmin = (function () {
         // Image properties
         AppIngestTileAdmin.objIngestImage.input.filename = obj.properties.filename;
         AppIngestTileAdmin.objIngestImage.input.entry = obj.properties.entry_id;
-
         //console.log(AppIngestTileAdmin.objIngestImage);
 
     }
-
 
     return {
         initialize: function (initParams) {
@@ -628,54 +724,8 @@ var AppOmarWfsAdmin = (function () {
             loadParams = initParams;
             //console.log(loadParams);
 
-            // TODO: Add $ajax to a function that gets called on init
-            // Source retrieving WFS data in GeoJSON format using JSONP technique
-            //var vectorSource = new ol.source.ServerVector({
-            //    format: new ol.format.WFS({
-            //        featureNS: 'http://omar.ossim.org',
-            //        featureType: 'omar:raster_entry'
-            //    }),
-            //    loader: function(extent, resolution, projection) {
-            //        var url = "http://localhost:9999/omar/wfs?service=WFS&version=1.1.0&request" +
-            //            "=GetFeature&typeName=omar:raster_entry" +
-            //            "&maxFeatures=200&filter=" //+
-            //            //"bbox=" + extent.join(',');
-            //        //console.log(url);
-            //        $.ajax({
-            //            url: url//,
-            //            //dataType: 'jsonp'
-            //        })
-            //            .done(function(response) {
-            //                console.log(response);
-            //                vectorSource.addFeatures(vectorSource.readFeatures(response));
-            //            });
-            //    },
-            //    strategy: ol.loadingstrategy.createTile(new ol.tilegrid.XYZ({
-            //        maxZoom: 19
-            //    })),
-            //    projection: 'EPSG:3857'
-            //});
-            //
-            //// Vector layer
-            //var vectorLayer = new ol.layer.Vector({
-            //    source: vectorSource,
-            //    style: new ol.style.Style({
-            //        stroke: new ol.style.Stroke({
-            //            color: 'green',
-            //            width: 2
-            //        })
-            //    })
-            //});
-            getWfsCards({}); // use defaults
-
         },
         previewLayer: previewLayer,
         objImageClamp: objImageClamp
-    }
+    };
 })();
-
-//var wfsUrl = "http://omar.ossim.org/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=20&outputFormat=geojson&filter=file_type='tiff'";
-//var wfsUrl = "http://omar.ossim.org/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=200&outputFormat=geojson&filter=sensor_id='VIIRS'";
-//var wfsUrl = "http://localhost:9999/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=50&outputFormat=geojson&filter=" + filterName + filterRangeLow + "'"+ filter + "'";
-//var wfsUrl = "http://localhost:9999/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=50&outputFormat=geojson&filter=acquisition_date>='2003-01-23'+and+acquisition_date<='2003-01-24'";
-//var wfsUrl = "http://localhost:9999/omar/wfs?service=wfs&version=1.1.0&request=getFeature&typeName=omar:raster_entry&maxFeatures=50&outputFormat=geojson&filter=" + filterName + filterRangeLow + filterLow + '+and+' + filterName + filterRangeHigh + filterHigh;

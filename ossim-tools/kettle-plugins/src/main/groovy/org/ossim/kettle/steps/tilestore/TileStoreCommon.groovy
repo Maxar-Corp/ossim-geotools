@@ -1,14 +1,16 @@
 package org.ossim.kettle.steps.tilestore
 
 import org.apache.commons.lang.StringUtils
+import org.ossim.kettle.common.NamedCluster
 import org.pentaho.di.core.Const
 import org.pentaho.di.core.Counter
 import org.pentaho.di.core.database.DatabaseMeta
 import org.pentaho.di.core.exception.KettleException
 import org.pentaho.di.core.exception.KettleValueException
 import org.pentaho.di.core.exception.KettleXMLException
-import org.pentaho.di.core.namedcluster.NamedClusterManager
-import org.pentaho.di.core.namedcluster.model.NamedCluster
+//import org.pentaho.di.core.namedcluster.NamedClusterManager
+//import org.pentaho.di.core.namedcluster.model.NamedCluster
+//import org.pentaho.big.data.api.cluster.NamedCluster;
 import org.pentaho.di.core.xml.XMLHandler
 import org.pentaho.di.repository.ObjectId
 import org.pentaho.di.repository.Repository
@@ -21,6 +23,8 @@ import org.w3c.dom.Node
 class TileStoreCommon
 {
    private def encr = new org.pentaho.di.core.encryption.Encr()
+
+   def namedClusterManager = NamedCluster.namedClusterManagerClass?.getInstance()
 
    DatabaseMeta databaseMeta
    /** NamedCluster name to pull zookeeper hosts/port from */
@@ -50,11 +54,11 @@ class TileStoreCommon
          }
 
          // load from system first, then fall back to copy stored with job (AbstractMeta)
-         NamedCluster nc = null;
+         def nc = null;
          if ( rep != null && !StringUtils.isEmpty( this.clusterName ) &&
-                 NamedClusterManager.getInstance().contains( this.clusterName, rep.getMetaStore() ) ) {
+                 namedClusterManager.contains( this.clusterName, rep.getMetaStore() ) ) {
             // pull config from NamedCluster
-            nc = NamedClusterManager.getInstance().read( this.clusterName, rep.getMetaStore() );
+            nc = namedClusterManager.read( this.clusterName, rep.getMetaStore() );
          }
          if ( nc != null ) {
             this.zookeeperHosts = nc.zooKeeperHost
@@ -94,9 +98,9 @@ class TileStoreCommon
       result.append("    ").append(XMLHandler.addTagValue( "clusterName", clusterName?:"" ) ); //$NON-NLS-1$ //$NON-NLS-2$
       try {
          if ( repository != null && clusterName  &&
-                 NamedClusterManager.getInstance().contains( clusterName, repository.getMetaStore() ) ) {
+                 namedClusterManager.contains( clusterName, repository.getMetaStore() ) ) {
             // pull config from NamedCluster
-            NamedCluster nc = NamedClusterManager.getInstance().read( clusterName, repository.getMetaStore() );
+            def nc = namedClusterManager.read( clusterName, repository.getMetaStore() );
             zookeeperHosts = nc.zooKeeperHost
             zookeeperPort = nc.zooKeeperPort
          }
@@ -132,10 +136,10 @@ class TileStoreCommon
       try
       {
          if ( (clusterName!=null ) &&
-                 NamedClusterManager.getInstance().contains( clusterName, rep.getMetaStore() ) )
+                 namedClusterManager.contains( clusterName, rep.getMetaStore() ) )
          {
             // pull config from NamedCluster
-            NamedCluster nc = NamedClusterManager.getInstance().read( clusterName, rep.getMetaStore() );
+            def nc = namedClusterManager.read( clusterName, rep.getMetaStore() );
             zookeeperHosts  = nc.zooKeeperHost
             zookeeperPort   = nc.zooKeeperPort
          }

@@ -1,13 +1,14 @@
-"use strict";
-var AppDrawFeaturesAdmin = (function () {
 
+var AppDrawFeaturesAdmin = (function () {
+    "use strict";
     var loadParams, outputWkt, formatWkt, drawInteractionFree, drawInteractionRect;
     var $drawRectangle = $('#drawRectangle');
     var $drawPolygon = $('#drawPolygon');
     var $tileLayerSelect = $('#tileLayerSelect');
     var $mapOmarInfo = $('#mapOmarInfo');
-    var $ingestModalButton = $('#ingestModalButton');
+    //var $ingestModalButton = $('#ingestModalButton');
     var $endCuts = $('#endCuts');
+    var $clearAoiButton = $('#clearAoiButton');
     var $ingestImageModal = $('#ingestImageModal');
 
     var aoiFeature = new ol.Feature();
@@ -27,19 +28,19 @@ var AppDrawFeaturesAdmin = (function () {
 
         // Clear the draw/cut interactions if they exist
         if (drawInteractionFree || drawInteractionRect){
-            console.log('drawinteractions present...removing existing interactions');
+            //console.log('drawinteractions present...removing existing interactions');
             AppAdmin.mapOmar.removeInteraction(drawInteractionFree);
             AppAdmin.mapOmar.removeInteraction(drawInteractionRect);
         }
         else{
-            console.log('drawinteractions NOT present...');
+            //console.log('drawinteractions NOT present...');
         }
 
         if (value === 'Polygon') {
 
             // Create the freehand poly cut tool if it doesn't exist
             if (!drawInteractionFree){
-                console.log('!drawInteractionFree');
+                //console.log('!drawInteractionFree');
                 drawInteractionFree = new ol.interaction.Draw({
                     source: AppManageLayersAdmin.aoiSource,
                     type: (value)
@@ -63,7 +64,7 @@ var AppDrawFeaturesAdmin = (function () {
 
             // Create the rectangle cut tool if it doesn't exist
             if(!drawInteractionRect){
-                console.log('!drawInteractionRect');
+                //console.log('!drawInteractionRect');
                 drawInteractionRect = new ol.interaction.DragBox({
                     style: AppManageLayersAdmin.aoiStyle
                 });
@@ -109,8 +110,8 @@ var AppDrawFeaturesAdmin = (function () {
         formatWkt = new ol.format.WKT();
         outputWkt = formatWkt.writeGeometry(geom);
 
-        console.log(outputWkt);
-        console.log($tileLayerSelect.val());
+        //console.log(outputWkt);
+        //console.log($tileLayerSelect.val());
 
         AppIngestTileAdmin.objIngestImage.aoi = outputWkt;
 
@@ -121,7 +122,7 @@ var AppDrawFeaturesAdmin = (function () {
     }
 
     function addAoiFeatureRectangle(){
-        console.log(AppManageLayersAdmin.aoiVector.getSource().getFeatures().length);
+        //console.log(AppManageLayersAdmin.aoiVector.getSource().getFeatures().length);
 
         //if (AppManageLayersAdmin.aoiVector.getSource().getFeatures().length >= 1) {
         //    AppManageLayersAdmin.aoiVector.getSource().clear();
@@ -136,7 +137,7 @@ var AppDrawFeaturesAdmin = (function () {
         formatWkt = new ol.format.WKT();
         outputWkt = formatWkt.writeGeometry(drawInteractionRect.getGeometry());
 
-        console.log(outputWkt);
+        //console.log(outputWkt);
 
         aoiFeature.setGeometry(output);
         AppManageLayersAdmin.aoiVector.getSource().addFeature(aoiFeature);
@@ -173,14 +174,16 @@ var AppDrawFeaturesAdmin = (function () {
 
         if (AppManageLayersAdmin.aoiVector.getSource().getFeatures().length >= 1) {
             AppManageLayersAdmin.aoiVector.getSource().clear();
-            console.log(AppManageLayersAdmin.aoiVector.getSource().getFeatures().length);
+            AppIngestTileAdmin.objIngestImage.aoi = "";
+            //console.log(AppManageLayersAdmin.aoiVector.getSource().getFeatures().length);
         }
 
     }
 
-    $('#clearAoiButton').on('click', function(){
+    $clearAoiButton.on('click', function(){
 
         clearAoi();
+
 
     });
 

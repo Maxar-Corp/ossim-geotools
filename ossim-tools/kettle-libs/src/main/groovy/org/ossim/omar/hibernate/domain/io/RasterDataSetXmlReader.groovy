@@ -1,5 +1,6 @@
 package org.ossim.omar.hibernate.domain.io
 
+import org.apache.commons.codec.digest.DigestUtils
 import org.ossim.omar.hibernate.domain.RasterDataSet
 
 
@@ -11,8 +12,7 @@ class RasterDataSetXmlReader
     def rasterDataSet  = dataSet
     // if a dataSet is passed in let's make sure that the children are
     // loaded and ready for testing.  Do a simple for each to force a load
-    dataSet?.rasterEntries?.each{rasterEntry->rasterEntry.rasterEntryFiles.each{}}
-    dataSet?.rasterFiles?.each{}
+    dataSet?.forceEager()
     if(!rasterDataSet)
     {
       rasterDataSet = new RasterDataSet();
@@ -39,11 +39,18 @@ class RasterDataSetXmlReader
     }
     for (def rasterEntryNode in node.rasterEntries.RasterEntry )
     {
-      def searchKey   = rasterEntryNode.entryId
-      def foundEntry  = rasterDataSet.rasterEntries.find{it.entryId == searchKey}
+     // println "-------------------------------- ${rasterEntryNode.filename}"
+      def filename    = mainFile
+
+     // println "*************************${filename}***************************"
+      def searchKey   = DigestUtils.sha256Hex("${rasterEntryNode.entryId}-${filename}".toString())//rasterEntryNode.indexId
+     // println "SEARCH KEY ========================= ${searchKey}"
+      def foundEntry  = rasterDataSet.rasterEntries.find{it.indexId == searchKey}
       def rasterEntry = RasterEntryXmlReader.initRasterEntry(rasterEntryNode,foundEntry, hints)
 
-      if(mainFile)
+     // println "FOUND RASTER ENTRY?????????????????? ${foundEntry}"
+
+      if(mainFile&&!foundEntry)
       {
         rasterEntry.filename = mainFile
       }

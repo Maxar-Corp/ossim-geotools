@@ -74,4 +74,13 @@ class RasterDataSet
         
         result.toString()
     }
+    def forceEager()
+    {
+        rasterFiles.each{
+          it.forceEager()
+        };
+        rasterEntries.each{
+          it.forceEager()
+        }
+    }
 }

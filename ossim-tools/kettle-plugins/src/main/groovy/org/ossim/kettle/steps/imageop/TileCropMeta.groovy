@@ -34,6 +34,8 @@ import org.w3c.dom.Node
 )
 class TileCropMeta  extends BaseStepMeta implements StepMetaInterface
 {
+   Boolean passNullTiles  = true
+   Boolean passEmptyTiles = true
    String aoiField
    String tileAoiField
    String tileField
@@ -42,6 +44,8 @@ class TileCropMeta  extends BaseStepMeta implements StepMetaInterface
    {
       def retval = new StringBuffer(400);
 
+      retval.append("    ").append(XMLHandler.addTagValue("passEmptyTiles",     passEmptyTiles))
+      retval.append("    ").append(XMLHandler.addTagValue("passNullTiles",     passNullTiles))
       retval.append("    ").append(XMLHandler.addTagValue("aoiField", aoiField?:""))
       retval.append("    ").append(XMLHandler.addTagValue("tileAoiField", tileAoiField?:""))
       retval.append("    ").append(XMLHandler.addTagValue("tileField", tileField?:""))
@@ -71,6 +75,8 @@ class TileCropMeta  extends BaseStepMeta implements StepMetaInterface
       aoiField = ""
       tileAoiField = ""
       tileField = ""
+      passNullTiles = true
+      passEmptyTiles = true
       //outputTileField = ""
       //overwriteInputTile = false
       //passInputTileToOutput = false
@@ -83,13 +89,19 @@ class TileCropMeta  extends BaseStepMeta implements StepMetaInterface
 
       try
       {
+         def passEmptyTilesString = XMLHandler.getTagValue(stepnode, "passEmptyTiles");
+         def passNullTilesString = XMLHandler.getTagValue(stepnode, "passNullTiles");
          aoiField     = XMLHandler.getTagValue(stepnode, "aoiField");
          tileAoiField = XMLHandler.getTagValue(stepnode, "tileAoiField");
          tileField    = XMLHandler.getTagValue(stepnode, "tileField");
+
+         if(passEmptyTilesString) passEmptyTiles = passEmptyTilesString.toBoolean()
+         if(passNullTilesString) passNullTiles = passNullTilesString.toBoolean()
+
       }
       catch (e)
       {
-
+         logError(e.toString())
       }
    }
 
@@ -98,13 +110,18 @@ class TileCropMeta  extends BaseStepMeta implements StepMetaInterface
       this.setDefault();
       try
       {
+         String passEmptyTilesString    = rep.getStepAttributeString(id_step, "passEmptyTiles");
+         String passNullTilesString     = rep.getStepAttributeString(id_step, "passNullTiles");
          aoiField      = rep.getStepAttributeString(id_step, "aoiField");
          tileAoiField  = rep.getStepAttributeString(id_step, "tileAoiField");
          tileField     = rep.getStepAttributeString(id_step, "tileField");
+
+         if(passEmptyTilesString) passEmptyTiles = passEmptyTilesString.toBoolean()
+         if(passNullTilesString) passNullTiles   = passNullTilesString.toBoolean()
       }
       catch (e)
       {
-
+        logError(e.toString())
       }
    }
 
@@ -112,6 +129,12 @@ class TileCropMeta  extends BaseStepMeta implements StepMetaInterface
    {
       try
       {
+         rep.saveStepAttribute(id_transformation,
+                 id_step, "passNullTiles",
+                 passNullTiles) //$NON-NLS-1$
+         rep.saveStepAttribute(id_transformation,
+                 id_step, "passEmptyTiles",
+                 passEmptyTiles) //$NON-NLS-1$
          rep.saveStepAttribute(id_transformation,
                  id_step, "aoiField",
                  aoiField) //$NON-NLS-1$

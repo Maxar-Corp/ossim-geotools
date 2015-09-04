@@ -43,7 +43,7 @@
         <div class="container">
             <div class="row text-center">
             <div class="col-md-1"></div>
-            <sec:ifAllGranted roles="ROLE_LAYER_ADMIN">
+            <sec:ifAnyGranted roles="ROLE_ADMIN,ROLE_LAYER_ADMIN">
                 <div class="col-md-3 well features">
                     <div class="fa fa-th fa-2x"></div>
                     <h3>Build Tiles</h3>
@@ -51,7 +51,7 @@
                     .</p>
                     <g:link action="admin" class="btn btn-primary" role="button">View</g:link>
                 </div>
-            </sec:ifAllGranted>
+            </sec:ifAnyGranted>
             <div class="col-md-1"></div>
             <sec:ifAllGranted roles="ROLE_ADMIN">
                 <div class="col-md-3 well features">
@@ -80,7 +80,7 @@
             <div class="col-md-3"></div>
             <div class="col-md-3 well features">
                 <div class="fa fa-cube fa-2x"></div>
-                <h3 href="client/client.html">Export Tiles</h3>
+                <h3>Export Tiles</h3>
                 <p>Use the Viewer to export tile server data to a geopackages for offline use in external applications
                 .</p>
                 <g:link action="client" class="btn btn-primary" role="button">View</g:link>
@@ -88,7 +88,7 @@
             <div class="col-md-1"></div>
             <div class="col-md-3 well features">
                 <div class="fa fa-tachometer fa-2x"></div>
-                <h3 href="client/client.html">Job Status</h3>
+                <h3>Job Status</h3>
                 <p>View current server jobs for creating tile layers and geopackages.</p>
                 <br>
                 <g:link controller="job" action="" class="btn btn-primary" role="button">View</g:link>
