@@ -67,13 +67,13 @@
                                    data-toggle="tooltip" data-placement="bottom"
                                    title="Go to the Export page"><i
                                         class="fa fa-cube"></i></a>
-                                <sec:ifAllGranted roles="ROLE_LAYER_ADMIN,ROLE_ADMIN">
+                                <sec:ifAnyGranted roles="ROLE_LAYER_ADMIN,ROLE_ADMIN">
                                     <a type="button" id="admin" href="${createLink(controller:'app', action:'admin')}"
                                        class="btn btn-primary"
                                        data-toggle="tooltip" data-placement="bottom"
                                        title="Go to the Build page"><i
                                             class="fa fa-th"></i></a>
-                                </sec:ifAllGranted>
+                                </sec:ifAnyGranted>
                                 <sec:ifAllGranted roles="ROLE_ADMIN">
                                     <a type="button" id="disk" href="${createLink(controller:"diskCache")}"
                                        class="btn btn-default"
