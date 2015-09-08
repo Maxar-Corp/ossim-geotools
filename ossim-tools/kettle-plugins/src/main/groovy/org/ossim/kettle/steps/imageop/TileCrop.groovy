@@ -129,27 +129,38 @@ class TileCrop extends BaseStep implements StepInterface
                {
                   BufferedImage bufferedImage = image.asBufferedImage
                   Envelope env = tileGeometry.envelopeInternal
-                  //Geometry intersectGeometry = tileGeometry.intersection(aoiGeometry)
+                  Geometry intersectGeometry = tileGeometry.intersection(aoiGeometry)
 
-                  if(aoiGeometry instanceof GeometryCollection)
+                  if(intersectGeometry instanceof GeometryCollection)
+              //       if(aoiGeometry instanceof GeometryCollection)
                   {
-                     GeometryCollection geomCollection = aoiGeometry as GeometryCollection
+                    // GeometryCollection geomCollection = aoiGeometry as GeometryCollection
+                     GeometryCollection geomCollection = intersectGeometry as GeometryCollection
                      Integer i = 0
 
-                     def imageResult = bufferedImage
+                     def imageResult = cloneEmptyImage(bufferedImage)
+                     def originalImage = bufferedImage
                      for(i=0;i<geomCollection.numGeometries;++i)
                      {
                         // now crop the image
                         Geometry g = geomCollection.getGeometryN(i)
 
-                        imageResult = cropImage(imageResult, env, geoscript.geom.Geometry.wrap(g))
+                        def tempImageResult = cropImage(originalImage, env, geoscript.geom.Geometry.wrap(g))
+                        Graphics g2d = imageResult.graphics
+
+                        if(tempImageResult) g2d.drawImage(tempImageResult, 0,0, null)
+
+                        g2d.dispose()
+
                      }
+
                      image = imageResult
                   }
                   else
                   {
-                     //image = cropImage(bufferedImage, env, geoscript.geom.Geometry.wrap(intersectGeometry))
-                     image = cropImage(bufferedImage, env, geoscript.geom.Geometry.wrap(aoiGeometry))
+
+                     image = cropImage(bufferedImage, env, geoscript.geom.Geometry.wrap(intersectGeometry))
+                     //image = cropImage(bufferedImage, env, geoscript.geom.Geometry.wrap(aoiGeometry))
                   }
                }
                else
@@ -176,6 +187,7 @@ class TileCrop extends BaseStep implements StepInterface
       }
       else if(meta.passNullTiles)
       {
+         r[tileFieldIdx] = null
          putRow(data.outputRowMeta, r);
       }
 

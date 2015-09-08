@@ -164,9 +164,16 @@ class TileStoreWriter extends BaseStep implements StepInterface
          {
             case "partial":
             case "full":
-               ByteArrayOutputStream out = new ByteArrayOutputStream()
-               ImageIO.write(image, "tiff", out)
-               tileData = out.toByteArray()
+               if(image)
+               {
+                  ByteArrayOutputStream out = new ByteArrayOutputStream()
+                  ImageIO.write(image, "tiff", out)
+                  tileData = out.toByteArray()
+               }
+               else
+               {
+                  tileData = null
+               }
                break
             default:
                tileData = null
