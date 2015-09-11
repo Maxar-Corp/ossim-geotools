@@ -377,7 +377,7 @@ class RasterEntryXmlReader
                      }
                      break;
                   case "elevation_angle":
-                     if ( value && (value != "nan") &&(rasterEntry.grazingAngle!=null))
+                     if ( value && (value != "nan") &&(rasterEntry.grazingAngle==null))
                      {
                         rasterEntry.grazingAngle = value as Double
                      }
