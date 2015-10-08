@@ -186,6 +186,9 @@ class RasterEntry
     @Column(name="keep_forever", nullable=true)
     Boolean keepForever
 
+    @Column(name="keep_forever", nullable=true)
+    Boolean crossesDateline
+
 
   @Column(name="ground_geom", columnDefinition="Geometry", nullable=false)
   @Type(type = "org.hibernatespatial.GeometryUserType")
