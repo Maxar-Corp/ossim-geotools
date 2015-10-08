@@ -58,6 +58,7 @@ class RasterEntryXmlReader
       if(rasterEntryNode?.cloudCover?.text()) rasterEntry.cloudCover = rasterEntryNode?.cloudCover.toDouble()
       if(rasterEntryNode?.styleId?.text()) rasterEntry.styleId = rasterEntryNode?.styleId.toBigInteger()
       if(rasterEntryNode?.keepForever?.text()) rasterEntry.keepForever = rasterEntryNode?.keepForever.toBoolean()
+      if(rasterEntryNode?.crossesDateline?.text()) rasterEntry.crossesDateline = rasterEntryNode?.crossesDateline.toBoolean()
       if(rasterEntryNode?.releaseId?.text()) rasterEntry.releaseId = rasterEntryNode?.releaseId.toBigInteger()
       if(rasterEntryNode?.fileType) rasterEntry.fileType = rasterEntryNode?.fileType
       if(rasterEntryNode?.className) rasterEntry.className = rasterEntryNode?.className
@@ -236,9 +237,9 @@ class RasterEntryXmlReader
                switch ( name.toLowerCase() )
                {
                   case "filename":
-                     if ( value  )
+                     if ( value && !rasterEntry.filename)
                      {
-                        rasterEntry.filename = value
+                        rasterEntry.filename = value as File
                      }
                      break
                   case "imageid":
@@ -513,6 +514,18 @@ class RasterEntryXmlReader
                         }
                      }
                      break;
+                  case "crossesdateline":
+                     if(value)
+                     {
+                        try{
+                           rasterEntry.crossesDateline = value.toBoolean()
+                        }
+                        catch(e)
+                        {
+
+                        }
+                     }
+                     break
                   default:
                      if(hints?.isSet(XmlIoHints.STORE_META|XmlIoHints.COLLAPSE_META))
                      {
