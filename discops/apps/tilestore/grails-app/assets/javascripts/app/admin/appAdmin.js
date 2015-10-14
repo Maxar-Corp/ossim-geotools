@@ -330,6 +330,10 @@ var AppAdmin = (function () {
             // Handles error reporting from server
             toastr.error(data.responseJSON.message + ' Please choose' +
             ' another name and submit again.', 'Error');
+
+            $submitCreateLayer.removeClass('btn-success disabled').addClass('btn-primary');
+
+            // resetForm('create');
         }
 
         ajaxCreateLayer(objLayer).done(successHandlerCreate).fail(errorHandlerCreate);

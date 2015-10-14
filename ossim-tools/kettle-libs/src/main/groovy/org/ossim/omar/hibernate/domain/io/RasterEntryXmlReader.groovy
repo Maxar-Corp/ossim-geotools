@@ -82,7 +82,7 @@ class RasterEntryXmlReader
       rasterEntry.groundGeom = initGroundGeom( rasterEntryNode?.groundGeom )
 
       rasterEntry.acquisitionDate = initAcquisitionDate( rasterEntryNode )
-
+     /*
       if ( rasterEntry.groundGeom && !rasterEntry.tiePointSet )
       {
          def groundGeom = rasterEntry?.groundGeom.geom
@@ -104,7 +104,7 @@ class RasterEntryXmlReader
             rasterEntry.tiePointSet += "</coordinates></Ground></TiePointSet>"
          }
       }
-
+       */
       for ( def rasterEntryFileNode in rasterEntryNode.fileObjects?.RasterEntryFile )
       {
          def obj = rasterEntry?.rasterEntryFiles?.find { it.name == rasterEntryFileNode?.name?.text() }

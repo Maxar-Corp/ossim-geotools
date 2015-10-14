@@ -1,5 +1,7 @@
 package org.ossim.omar.hibernate.domain
 
+import com.vividsolutions.jts.geom.MultiPolygon
+
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
@@ -186,7 +188,7 @@ class RasterEntry
     @Column(name="keep_forever", nullable=true)
     Boolean keepForever
 
-    @Column(name="keep_forever", nullable=true)
+    @Column(name="crosses_dateline", nullable=true)
     Boolean crossesDateline
 
 
@@ -338,6 +340,10 @@ class RasterEntry
                 result.append(rasterEntryFile.xml)
             }
             result.append("</fileObjects>")
+        }
+        if((gsdX!=null)&&(gsdY!=null))
+        {
+            result.append("<gsd unit='meters' dx='${gsdX}' dy='${gsdY}'/>".toString())
         }
         result.append(entryId?"<entryId>${entryId}</entryId>":"")
         result.append(excludePolicy?"<excludePolicy>${excludePolicy}</excludePolicy>":"")
