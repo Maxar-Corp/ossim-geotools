@@ -64,7 +64,9 @@ var AppClient = (function () {
                     console.log('Not connected.\n Verify Network.');
                 }
                 else if (jqXHR.status == 404) {
-                    console.log('Requested page not found. [404] ' + urlLayerActualBounds);
+                    toastr.error("Can't zoom to first tile.  No tiles found for layer!");
+
+                    // console.log('Requested page not found. [404] ' + urlLayerActualBounds);
                 }
                 else if (jqXHR.status == 500) {
                     console.log('Internal Server Error [500].');

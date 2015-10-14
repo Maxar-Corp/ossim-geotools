@@ -26,7 +26,7 @@ var CreateProductClient = (function () {
     var gpkgInputTileLayer;
 
     var checkForProduct;
-
+    var currentAoi = "";
     var $aoiJobInfo = $('#aoiJobInfo');
     var $productStatus = $('#productStatus');
     var $prodcutProgress = $('#prodcutProgress');
@@ -77,8 +77,7 @@ var CreateProductClient = (function () {
     var urlProductExport;
     var urlLayerActualBounds;
 
-    function createAoi(wkt){
-
+    function validateExport(){
         $createGp.removeClass('disabled');
         $aoiJobInfo.hide();
         gpkgInputTileLayer = $tileLayerSelect.val();
@@ -92,70 +91,76 @@ var CreateProductClient = (function () {
 
         $.when(
             $.ajax({
-            url: urlLayerActualBounds,
-            type: 'POST',
-            data: {"layer": gpkgInputTileLayer, "aoi": wkt, "aoiEpsg":  AppClient.mapEpsg},
-            dataType: 'json',
-            // TODO: Add $promise function for success
-            success: function (data) {
+                url: urlLayerActualBounds,
+                type: 'POST',
+                data: {"layer": gpkgInputTileLayer, "aoi": currentAoi, "aoiEpsg":  AppClient.mapEpsg},
+                dataType: 'json',
+                // TODO: Add $promise function for success
+                success: function (data) {
 
-                //console.log('----getActualBounds (data)------');
-                //console.log(data);
-                //console.log('---------------------------');
-                $aoiLod.html(data.minLevel + ' to ' + data.maxLevel);
+                    //console.log('----getActualBounds (data)------');
+                    //console.log(data);
+                    //console.log('---------------------------');
+                    $aoiLod.html(data.minLevel + ' to ' + data.maxLevel);
 
-                // *Orig stores the original min/max values so they can be used
-                // in the on change event for the product level dropdowns
-                minOrig = data.minLevel;
-                maxOrig = data.maxLevel;
+                    // *Orig stores the original min/max values so they can be used
+                    // in the on change event for the product level dropdowns
+                    minOrig = data.minLevel;
+                    maxOrig = data.maxLevel;
 
-                min = data.minLevel;
-                max = data.maxLevel;
+                    min = data.minLevel;
+                    max = data.maxLevel;
 
-                $productMinLevel.empty();
-                $productMaxLevel.empty();
+                    $productMinLevel.empty();
+                    $productMaxLevel.empty();
 
-                for (min; min <= max; min++) {
-                    //console.log('min: ' + min);
-                    $productMinLevel.append('<option value="' + min + '">' + min + '</option>');
-                    $productMaxLevel.append('<option value="' + min + '">' + min + '</option>');
-                    $productMinLevel.selectpicker('refresh');
-                    $productMaxLevel.selectpicker('val', data.maxLevel);
-                    $productMaxLevel.selectpicker('refresh');
+                    for (min; min <= max; min++) {
+                        //console.log('min: ' + min);
+                        $productMinLevel.append('<option value="' + min + '">' + min + '</option>');
+                        $productMaxLevel.append('<option value="' + min + '">' + min + '</option>');
+                        $productMinLevel.selectpicker('refresh');
+                        $productMaxLevel.selectpicker('val', data.maxLevel);
+                        $productMaxLevel.selectpicker('refresh');
 
-                }
+                    }
 
-            },
-            // TODO: Add $promise function for error
-            error: function (jqXHR, exception) {
-                if (jqXHR.status === 0) {
-                    console.log('Not connected.\n Verify Network.');
+                },
+                // TODO: Add $promise function for error
+                error: function (jqXHR, exception) {
+                    if (jqXHR.status === 0) {
+                        console.log('Not connected.\n Verify Network.');
+                    }
+                    else if (jqXHR.status == 404) {
+                        console.log('Requested page not found. [404] ' + urlLayerActualBounds);
+                    }
+                    else if (jqXHR.status == 500) {
+                        console.log('Internal Server Error [500].');
+                    }
+                    else if (exception === 'parsererror') {
+                        console.log('Requested JSON parse failed.');
+                    }
+                    else if (exception === 'timeout') {
+                        console.log('Time out error.');
+                    }
+                    else if (exception === 'abort') {
+                        console.log('Ajax request aborted.');
+                    }
+                    else {
+                        console.log('Uncaught Error.\n' + jqXHR.responseText);
+                    }
                 }
-                else if (jqXHR.status == 404) {
-                    console.log('Requested page not found. [404] ' + urlLayerActualBounds);
-                }
-                else if (jqXHR.status == 500) {
-                    console.log('Internal Server Error [500].');
-                }
-                else if (exception === 'parsererror') {
-                    console.log('Requested JSON parse failed.');
-                }
-                else if (exception === 'timeout') {
-                    console.log('Time out error.');
-                }
-                else if (exception === 'abort') {
-                    console.log('Ajax request aborted.');
-                }
-                else {
-                    console.log('Uncaught Error.\n' + jqXHR.responseText);
-                }
-            }
-        })
+            })
         ).done(function(){
-                product.aoi = wkt;
+                product.aoi = currentAoi;
                 getMetrics();
             });
 
+    }
+    function createAoi(wkt){
+
+        currentAoi = wkt;
+
+        validateExport();
     }
 
     function addCommas(intNum) {
@@ -298,6 +303,14 @@ var CreateProductClient = (function () {
 
         $createGp.addClass("disabled");
         AddLayerClient.aoiVector.getSource().clear();
+
+    });
+
+    $tileLayerSelect.on('change', function() {
+
+        validateExport();
+        // console.log('select on change --------------:' + $tileLayerSelect.val());
+        // switchCurrentLayer(initLayer, $tileLayerSelect.val());
 
     });
 

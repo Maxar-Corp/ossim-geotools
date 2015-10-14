@@ -440,7 +440,7 @@ class LayerManagerService implements InitializingBean
             {
                def tileList = daoTileCacheService.getTilesMetaWithinConstraints(layerInfo, [offset: 0, maxRows: 1, orderBy: "Z+D"])
                HashMap tempResult = tileList[0]
-               if (tempResult.bounds)
+               if (tempResult?.bounds)
                {
                   Geometry g = GeoScript.wrap(tempResult.bounds)
 
@@ -466,7 +466,10 @@ class LayerManagerService implements InitializingBean
                   tempResult.maxy = b.maxY
                   tempResult.epsg = layerInfo.epsgCode
                }
-
+               else
+               {
+                  result.status = HttpStatus.NOT_FOUND
+               }
                result.data = tempResult
             }
          }
