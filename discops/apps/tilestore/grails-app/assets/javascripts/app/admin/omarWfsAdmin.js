@@ -594,6 +594,7 @@ var AppOmarWfsAdmin = (function () {
         if(omarPreviewLayer){
             console.log('omarPreviewLayer true');
             omarPreviewLayer.getSource().updateParams({'LAYERS': omarPreviewLayerId});
+            console.log('GOT SOURCE');
         }
         else {
             //console.log('no omarPreviewLayer');
@@ -624,26 +625,63 @@ var AppOmarWfsAdmin = (function () {
             // console.log(AppAdmin.mapTile.getLayers().getArray());
 
         }
+        var polyFeature = null;
+        if(obj.geometry.type == "MultiPolygon")
+        {
+            var arrayOfPolygons = [];
+            for(var eachPolygon = 0; eachPolygon <obj.geometry.coordinates.length;++eachPolygon)
+            {
+                var polygon = obj.geometry.coordinates[eachPolygon];
+                for(var idx = 0; idx < polygon.length;++idx)
+                {
+                    var poly = [];
+                    var ring = polygon[idx];
 
-        var coord1 = ol.proj.transform(obj.geometry.coordinates[0][0], 'EPSG:4326', 'EPSG:3857');
-        var coord2 = ol.proj.transform(obj.geometry.coordinates[0][1], 'EPSG:4326', 'EPSG:3857');
-        var coord3 = ol.proj.transform(obj.geometry.coordinates[0][2], 'EPSG:4326', 'EPSG:3857');
-        var coord4 = ol.proj.transform(obj.geometry.coordinates[0][3], 'EPSG:4326', 'EPSG:3857');
+                    for (var idx2 = 0; idx2 < ring.length; ++idx2)
+                    {
+                        poly.push(ol.proj.transform(ring[idx2], 'EPSG:4326', 'EPSG:3857'));
+                    }
 
-        var polyFeature = new ol.Feature({
-            geometry: new ol.geom.Polygon([
-                [
-                    [coord1[0], coord1[1]],
-                    [coord2[0], coord2[1]],
-                    [coord3[0], coord3[1]],
-                    [coord4[0], coord4[1]],
-                    [coord1[0], coord1[1]]
-                ]
-            ])
-        });
-        //polyFeature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
-        var extent = polyFeature.getGeometry().getExtent();
-        AppAdmin.mapOmar.getView().fitExtent(extent, AppAdmin.mapOmar.getSize());
+                    arrayOfPolygons.push(
+                        poly
+                    );
+                }
+            }
+
+            if(arrayOfPolygons.length)
+            {
+                polyFeature = new ol.Feature({geometry: new ol.geom.MultiPolygon([arrayOfPolygons])});
+            }
+        }
+        else
+        {
+            var rings = [];
+            for(var ringIdx = 0; ringIdx < obj.geometry.coordinates.length;++ringIdx)
+            {
+                var points = [];
+                var coordinates = obj.geometry.coordinates[ringIdx];
+                for(var eachCoord = 0; eachCoord < coordinates.length;++eachCoord)
+                {
+                    points.push(ol.proj.transform(coordinates[eachCoord], 'EPSG:4326', 'EPSG:3857'));
+                }
+
+                rings.push(points);
+            }
+
+            if(rings.length>0)
+            {
+                polyFeature = new ol.Feature({
+                    geometry: new ol.geom.Polygon(
+                        rings)
+                });
+            }
+        }
+        var extent = null;
+        if(polyFeature!=null)
+        {
+             extent = polyFeature.getGeometry().getExtent();
+            AppAdmin.mapOmar.getView().fitExtent(extent, AppAdmin.mapOmar.getSize());
+        }
 
         if (previewFeatureArray.length === 1) {
 
