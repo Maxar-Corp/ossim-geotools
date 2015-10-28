@@ -105,19 +105,20 @@ class TileCacheApp
       }
       File dbConfig = new File(options.'db-config')
       def rootNode = new XmlSlurper().parse(dbConfig)
+
       if(dbConfig.exists())
       {
          if(rootNode)
          {
             def hibernateOptions = [
-                    driverClassName:rootNode.postgres.driverClassName,
-                    username:rootNode.postgres.username,
-                    password:rootNode.postgres.password,
-                    url:rootNode.postgres.url,
-                    accumuloInstanceName:rootNode.accumulo.instanceName,
-                    accumuloPassword:rootNode.accumulo.password,
-                    accumuloUsername:rootNode.accumulo.username,
-                    accumuloZooServers:rootNode.accumulo.zooServers]
+                    driverClassName:rootNode.postgres.driverClassName.toString(),
+                    username:rootNode.postgres.username.toString(),
+                    password:rootNode.postgres.password.toString(),
+                    url:rootNode.postgres.url.toString(),
+                    accumuloInstanceName:rootNode.accumulo.instanceName.toString(),
+                    accumuloPassword:rootNode.accumulo.password.toString(),
+                    accumuloUsername:rootNode.accumulo.username.toString(),
+                    accumuloZooServers:rootNode.accumulo.zooServers.toString()]
 
             def hibernate=new TileCacheHibernate()
             hibernate.initialize(hibernateOptions)
