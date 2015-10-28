@@ -1,29 +1,23 @@
 package joms.geotools.tileapi.app
 
-import groovy.json.JsonSlurper
+import joms.geotools.tileapi.TwoWayPasswordEncoder
 import joms.geotools.tileapi.hibernate.TileCacheHibernate
-import org.springframework.amqp.rabbit.core.RabbitAdmin
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory
-import org.springframework.amqp.rabbit.connection.ConnectionFactory
-import org.springframework.amqp.core.TopicExchange
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.amqp.core.Queue
-import org.springframework.amqp.core.AmqpTemplate
-import org.springframework.amqp.core.AmqpAdmin
-import org.springframework.amqp.core.BindingBuilder
 import groovy.json.JsonSlurper
-import groovy.json.JsonBuilder
 
 /**
  * Created by gpotts on 2/25/15.
  */
-class TileCacheRabbitJob {
+class TileCacheRabbitIngest
+{
   def tileCacheAppConfig
 
   static void main(String[] args) {
-    TileCacheRabbitJob tileCacheApp = new TileCacheRabbitJob()
+    TileCacheRabbitIngest tileCacheApp = new TileCacheRabbitIngest()
 
 
     tileCacheApp.run(args)
@@ -36,7 +30,7 @@ class TileCacheRabbitJob {
     cli.with {
       h longOpt: 'help', argName: "help", 'Show usage information'
       _ longOpt: 'db-config', args: 1, argName: 'dbConfig', 'Postgres and accumulo definitions accumulo definitions'
-      _ longOpt: 'queue', args: 1, argName: "queue", 'Name of the queue.  Default is omar.job.tilecache'
+      _ longOpt: 'queue', args: 1, argName: "queue", 'Name of the queue.  Default is omar.tilestore.ingest'
       _ longOpt: 'host', args: 1, argName: "host", 'hostname where the queue resides.  Default is localhost'
       _ longOpt: 'port', args: 1, argName: "port", 'port where the queue resides.  Default is 5672'
       _ longOpt: 'username', args: 1, argName: "username", 'username that has read write privileges'
@@ -48,7 +42,7 @@ class TileCacheRabbitJob {
   }
 
   boolean initializeParameters(String[] args) {
-    tileCacheAppConfig = [queue   : "omar.job.tilecache",
+    tileCacheAppConfig = [queue   : "omar.tilestore.ingest",
                           host    : "localhost",
                           port    : 5672,
                           username: "omar",
@@ -64,14 +58,14 @@ class TileCacheRabbitJob {
     if (dbConfig.exists()) {
       if (rootNode) {
         def hibernateOptions = [
-                driverClassName     : rootNode.postgres.driverClassName,
-                username            : rootNode.postgres.username,
-                password            : rootNode.postgres.password,
-                url                 : rootNode.postgres.url,
-                accumuloInstanceName: rootNode.accumulo.instanceName,
-                accumuloPassword    : rootNode.accumulo.password,
-                accumuloUsername    : rootNode.accumulo.username,
-                accumuloZooServers  : rootNode.accumulo.zooServers]
+                driverClassName     : rootNode.postgres.driverClassName.toString(),
+                username            : rootNode.postgres.username.toString(),
+                password            : rootNode.postgres.password.toString(),
+                url                 : rootNode.postgres.url.toString(),
+                accumuloInstanceName: rootNode.accumulo.instanceName.toString(),
+                accumuloPassword    : rootNode.accumulo.password.toString(),
+                accumuloUsername    : rootNode.accumulo.username.toString(),
+                accumuloZooServers  : rootNode.accumulo.zooServers.toString()]
 
         def hibernate = new TileCacheHibernate()
         hibernate.initialize(hibernateOptions)
@@ -95,7 +89,7 @@ class TileCacheRabbitJob {
       tileCacheAppConfig.username = options.username
     }
     if (options.password) {
-      tileCacheAppConfig.password = options.password
+      tileCacheAppConfig.password = TwoWayPasswordEncoder.decryptPasswordOptionallyEncrypted(options.password)
     }
 
     true
