@@ -93,7 +93,6 @@ switch ( hadoopTarget )
 }
 
 
-def JOMS_VERSION = "1.8.19"
 allprojects {
    //Put instructions for all projects
    apply plugin: 'java'
@@ -432,7 +431,7 @@ project( ':common-libs' ) {
       compile 'org.codehaus.gpars:gpars:1.2.1'
      // compile 'org.geotools:gt-imagemosaic-jdbc:13.0'
       compile 'org.geoscript:geoscript-groovy:1.5.0'
-      compile "org.ossim:joms:${JOMS_VERSION}"
+      compile "org.ossim:joms:${System.getenv( 'OSSIM_VERSION' )}"
       compile 'com.github.davidmoten:geo:0.6.10'
       compile 'org.postgresql:postgresql:9.3-1100-jdbc4'
       compile 'org.hibernate:hibernate-core:3.6.10.Final'
@@ -525,10 +524,10 @@ project( ':app' ) {
    shadowJar {
       zip64 true
       baseName "ossim-app-all"
-      //exclude "META-INF/services/javax.imageio.spi.*"
+      exclude "META-INF/services/javax.imageio.spi.*"
       //minimizeJar true
       mergeServiceFiles{
-         // exclude "META-INF/services/javax.imageio.spi.*"
+          exclude "META-INF/services/javax.imageio.spi.*"
       }
       mergeGroovyExtensionModules()
       mergeServiceFiles( 'META-INF/spring.schema' )
