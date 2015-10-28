@@ -1,6 +1,7 @@
 package joms.geotools.tileapi.hibernate
 
 import groovy.sql.Sql
+import joms.geotools.tileapi.TwoWayPasswordEncoder
 import org.apache.commons.dbcp.BasicDataSource
 import org.geotools.factory.Hints
 import org.springframework.core.io.ByteArrayResource
@@ -169,7 +170,7 @@ http://www.springframework.org/schema/context/spring-context.xsd">
 
           <bean id="accumuloApi" class="joms.geotools.tileapi.accumulo.AccumuloApi" destroy-method="close">
               <property name="username" value="${map.accumuloUsername ?: 'root'}"/>
-              <property name="password" value="${map.accumuloPassword ?: 'root'}"/>
+              <property name="password" value="${TwoWayPasswordEncoder.decryptPasswordOptionallyEncrypted(map?.accumuloPassword?.toString()) ?: 'root'}"/>
               <property name="instanceName" value="${map.accumuloInstanceName ?: 'accumulo'}"/>
               <property name="zooServers" value="${map.accumuloZooServers?:""}"/>
           </bean>
@@ -177,7 +178,7 @@ http://www.springframework.org/schema/context/spring-context.xsd">
               <property name="driverClassName" value="${map.driverClass ?: map.driverClassName}"/>
               <property name="url" value="${map.url}"/>
               <property name="username" value="${map.username}"/>
-              <property name="password" value="${map.password}"/>
+              <property name="password" value="${TwoWayPasswordEncoder.decryptPasswordOptionallyEncrypted(map.password)}"/>
               <property name="maxActive" value="100"/>
               <property name="maxIdle" value="30"/>
               <property name="maxWait" value="16000"/>
