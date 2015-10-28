@@ -39,7 +39,7 @@ import javax.annotation.Resource
 class TileCacheServiceDAO implements InitializingBean, DisposableBean, ApplicationContextAware
 {
 
-  @Resource( name = "sessionFactory" )
+  @Resource(name = "sessionFactory")
   @Autowired
   SessionFactory sessionFactory
   AccumuloApi accumuloApi
@@ -53,6 +53,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   {
     "tiles_${layerInfo.id}"
   }
+
   void setApplicationContext(ApplicationContext applicationContext) throws BeansException
   {
     this.applicationContext = applicationContext;
@@ -60,10 +61,10 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
 
   void afterPropertiesSet()
   {
-    layerInfoTableDAO = applicationContext?.getBean( "tileCacheLayerInfoDAO" )
-    accumuloApi = applicationContext?.getBean( "accumuloApi" )
+    layerInfoTableDAO = applicationContext?.getBean("tileCacheLayerInfoDAO")
+    accumuloApi = applicationContext?.getBean("accumuloApi")
     sqlSession = sessionFactory.openSession()
-    sql = new Sql( sqlSession.connection() )
+    sql = new Sql(sqlSession.connection())
   }
 
   void destroy()
@@ -76,7 +77,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   {
     def result
 
-    result = sql.connection.metaData.getTables( null, null, table, null )
+    result = sql.connection.metaData.getTables(null, null, table, null)
 
 
     result?.first()
@@ -87,45 +88,47 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     TileCachePyramid result
 
     TileCacheLayerInfo layerInfo = this.getLayerInfoByName(layer)
-    if(layerInfo) result = this.newPyramidGivenLayerInfo(layerInfo)
+    if (layerInfo) result = this.newPyramidGivenLayerInfo(layerInfo)
     result
   }
+
   TileCachePyramid newPyramidGivenLayerInfo(TileCacheLayerInfo layerInfo)
   {
     TileCachePyramid result
-    if(layerInfo)
+    if (layerInfo)
     {
-      Projection proj = new Projection( layerInfo.epsgCode )
-      Bounds b = BoundsUtil.getDefaultBounds( proj )
+      Projection proj = new Projection(layerInfo.epsgCode)
+      Bounds b = BoundsUtil.getDefaultBounds(proj)
       //(layerInfo.epsgCode.toLowerCase() == 'epsg:3857') ? new Bounds(-20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244, 'epsg:3857') : proj.bounds
-      Bounds clipBounds = new Bounds( layerInfo.bounds.envelopeInternal )
-      result = new TileCachePyramid( bounds: b,
+      Bounds clipBounds = new Bounds(layerInfo.bounds.envelopeInternal)
+      result = new TileCachePyramid(bounds: b,
               clippedBounds: clipBounds,
               proj: proj,
               origin: Pyramid.Origin.TOP_LEFT,
               tileWidth: layerInfo.tileWidth,
               tileHeight: layerInfo.tileHeight,
-              minLevel:layerInfo.minLevel,
-              maxLevel:layerInfo.maxLevel
+              minLevel: layerInfo.minLevel,
+              maxLevel: layerInfo.maxLevel
       )
       // for geoscript we always need the 0 level defined
       // we will clamp in the layer
-      result.initializeGrids( 0, layerInfo.maxLevel)//layerInfo.minLevel, layerInfo.maxLevel )
+      result.initializeGrids(0, layerInfo.maxLevel)//layerInfo.minLevel, layerInfo.maxLevel )
     }
     result
   }
+
   AccumuloTileLayer newGeoscriptTileLayer(TileCacheLayerInfo layerInfo)
   {
     AccumuloTileLayer result
-    if ( layerInfo )
+    if (layerInfo)
     {
       TileCachePyramid pyramid = this.newPyramidGivenLayerInfo(layerInfo)
-      result = new AccumuloTileLayer( tileCacheService: this,
-          layerInfo: layerInfo,
-          bounds: pyramid.bounds,
-          proj: pyramid.proj,
-          name: layerInfo.name,
-          pyramid: pyramid )
+      result = new AccumuloTileLayer(tileCacheService: this,
+              layerInfo: layerInfo,
+              bounds: pyramid.bounds,
+              proj: pyramid.proj,
+              name: layerInfo.name,
+              pyramid: pyramid)
       //  }
     }
 
@@ -134,7 +137,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
 
   AccumuloTileLayer newGeoscriptTileLayer(String layerName)
   {
-    newGeoscriptTileLayer( getLayerInfoByName( layerName ) )
+    newGeoscriptTileLayer(getLayerInfoByName(layerName))
   }
 
 
@@ -149,54 +152,54 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     //println "LAYER ==== ${layer}"
     try
     {
-      if ( layer && tileCacheSupport.openImage( input ) )
+      if (layer && tileCacheSupport.openImage(input))
       {
         int entry = 0
         int numberOfEntries = tileCacheSupport.getNumberOfEntries()
 
         //println "N ENTRIES ==== ${numberOfEntries}"
         //println resolutions
-        for ( entry = 0; entry < numberOfEntries; ++entry )
+        for (entry = 0; entry < numberOfEntries; ++entry)
         {
 
           int[] minLevel = [0] as int[]
           int[] maxLevel = [0] as int[]
-          boolean needToStretch = tileCacheSupport.getBitDepth( entry ) > 8
+          boolean needToStretch = tileCacheSupport.getBitDepth(entry) > 8
           //println "NEED TO STRETCH============ ${needToStretch}"
-          int numberOfResolutionLevels = tileCacheSupport.getNumberOfResolutionLevels( entry )
-          double gsd = tileCacheSupport.getDegreesPerPixel( entry )
-          joms.oms.Envelope envelope = tileCacheSupport.getEnvelope( entry )
-          Bounds bounds = new Bounds( envelope.minX, envelope.minY, envelope.maxX, envelope.maxY )
+          int numberOfResolutionLevels = tileCacheSupport.getNumberOfResolutionLevels(entry)
+          double gsd = tileCacheSupport.getDegreesPerPixel(entry)
+          joms.oms.Envelope envelope = tileCacheSupport.getEnvelope(entry)
+          Bounds bounds = new Bounds(envelope.minX, envelope.minY, envelope.maxX, envelope.maxY)
 
-          AccumuloTileLayer tileLayer = newGeoscriptTileLayer( layer )
+          AccumuloTileLayer tileLayer = newGeoscriptTileLayer(layer)
           double[] resolutions = tileLayer.pyramid.grids*.yResolution as double[]
 
-          def intersections = tileLayer.pyramid.findIntersections( tileCacheSupport, entry, clipOptions )
+          def intersections = tileLayer.pyramid.findIntersections(tileCacheSupport, entry, clipOptions)
 
-          if ( intersections )
+          if (intersections)
           {
             // for the poly cutter in ossim it is a list of tuples
             // of the form ((<lat>,<lon>),......(<lat>,<lon>))
             def clipPolyLatLonKeyWord = intersections.clippedGeometryLatLon.points.collect {
               "(${it.y},${it.x})"
-            }.join( "," )
-            OssimImageTileRenderer tileRenderer = new OssimImageTileRenderer( input, entry,
-                [cut_width: layer.tileWidth.toString(),
-                    cut_height: layer.tileHeight.toString(),
-                    hist_op: needToStretch ? "auto-minmax" : "none",
-                    clip_poly_lat_lon: "(${clipPolyLatLonKeyWord})".toString()] )
-            TileCacheTileGenerator generator = new TileCacheTileGenerator( verbose: true,
-                tileLayer: tileLayer,
-                tileRenderer: tileRenderer,
-                startZoom: intersections.minLevel,
-                endZoom: intersections.maxLevel,
-                bounds: intersections.clippedBounds )//bounds)
+            }.join(",")
+            OssimImageTileRenderer tileRenderer = new OssimImageTileRenderer(input, entry,
+                    [cut_width : layer.tileWidth.toString(),
+                     cut_height: layer.tileHeight.toString(),
+                     hist_op   : needToStretch ? "auto-minmax" : "none",
+                     clip_poly_lat_lon: "(${clipPolyLatLonKeyWord})".toString()])
+            TileCacheTileGenerator generator = new TileCacheTileGenerator(verbose: true,
+                    tileLayer: tileLayer,
+                    tileRenderer: tileRenderer,
+                    startZoom: intersections.minLevel,
+                    endZoom: intersections.maxLevel,
+                    bounds: intersections.clippedBounds)//bounds)
             result << generator
           }
         }
       }
     }
-    catch ( def e )
+    catch (def e)
     {
       e.printStackTrace()
     }
@@ -208,13 +211,13 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
 
   TileCacheTileGenerator[] getTileGenerators(String layer, String input, def clipOptions = [:])
   {
-    getTileGenerators( getLayerInfoByName( layer ), input, clipOptions )
+    getTileGenerators(getLayerInfoByName(layer), input, clipOptions)
   }
 
   @Transactional
   private void createTileStore(String target, Integer srid)
   {
-    if(!tableExists(target))
+    if (!tableExists(target))
     {
       // def tempSession = sessionFactory.openSession()
       // Sql sql = new Sql(tempSession.connection())
@@ -229,7 +232,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
         SELECT create_index_if_not_exists('${target}', 'bounds_idx', 'USING GIST(bounds)');
         SELECT create_index_if_not_exists('${target}', 'res_idx', '(res)');
     """.toString()
-      sql.execute( sqlString )
+      sql.execute(sqlString)
     }
   }
 //        SELECT create_index_if_not_exists('${target}', 'hash_id_idx', '(hash_id)');
@@ -237,20 +240,19 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   @Transactional
   void renameLayer(String oldName, String newName) throws Exception
   {
-    TileCacheLayerInfo layer = layerInfoTableDAO.findByName( oldName )
-    if ( layer )
+    TileCacheLayerInfo layer = layerInfoTableDAO.findByName(oldName)
+    if (layer)
     {
       def oldTileStore = layer.tileStoreTable
       //String defaultTileStore ="${tableNamePrefix}${newName.toLowerCase()}_tiles"
       //layer.tileStoreTable = defaultTileStore
       layer.name = newName
-      layerInfoTableDAO.update( layer )
+      layerInfoTableDAO.update(layer)
       //sql.execute( "ALTER TABLE ${oldTileStore} RENAME TO ${defaultTileStore}".toString() );
       //accumuloApi.renameTable( oldTileStore, defaultTileStore )
-    }
-    else
+    } else
     {
-      throw new Exception( "Layer ${oldName} not found" )
+      throw new Exception("Layer ${oldName} not found")
     }
   }
 
@@ -260,42 +262,40 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
 
     String defaultTileStore
 
-    if(layerInfo.id != null)
+    if (layerInfo.id != null)
     {
       defaultTileStore = this.getDefaultTileStoreTableName(layerInfo)
     }
 
-    TileCacheLayerInfo layer = layerInfoTableDAO.findByName( layerInfo.name )
+    TileCacheLayerInfo layer = layerInfoTableDAO.findByName(layerInfo.name)
 
     //println "TABLE ${defaultTileStore} Exists???? ${tableExists(defaultTileStore)}"
-    if ( layer )
+    if (layer)
     {
-      layer.copyNonNullValues( layerInfo )
+      layer.copyNonNullValues(layerInfo)
 
       // rename not supported here
-      if ( layerInfo.name == layer.name )
+      if (layerInfo.name == layer.name)
       {
-        layerInfoTableDAO.update( layer )
+        layerInfoTableDAO.update(layer)
       }
-      if ( layer.tileStoreTable && !tableExists( layer.tileStoreTable ) )
+      if (layer.tileStoreTable && !tableExists(layer.tileStoreTable))
       {
-        createTileStore( layer.tileStoreTable )
+        createTileStore(layer.tileStoreTable)
       }
-    }
-    else
+    } else
     {
-      if(!layerInfo.tileStoreTable) layerInfo.tileStoreTable = defaultTileStore
+      if (!layerInfo.tileStoreTable) layerInfo.tileStoreTable = defaultTileStore
       // creating a new layer
-      if(layerInfo.id!=null)
+      if (layerInfo.id != null)
       {
         layerInfo.tileStoreTable = defaultTileStore
         layerInfoTableDAO.save(layerInfo)
-      }
-      else
+      } else
       {
         layerInfo = layerInfoTableDAO.save(layerInfo)
 
-        if(layerInfo.id!=null)
+        if (layerInfo.id != null)
         {
           layerInfo.tileStoreTable = getDefaultTileStoreTableName(layerInfo)
           layerInfoTableDAO.update(layerInfo)
@@ -303,53 +303,53 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
       }
       layer = layerInfo
     }
-    if(layerInfo.tileStoreTable != null)
+    if (layerInfo.tileStoreTable != null)
     {
-      Integer srid = layerInfo?.epsgCode?.split( ':' )[-1]?.toInteger()
-      createTileStore( layerInfo.tileStoreTable, srid )
-      accumuloApi.createTable( layerInfo.tileStoreTable )
+      Integer srid = layerInfo?.epsgCode?.split(':')[-1]?.toInteger()
+      createTileStore(layerInfo.tileStoreTable, srid)
+      accumuloApi.createTable(layerInfo.tileStoreTable)
     }
     layer
   }
 
   @Transactional
   TileCacheLayerInfo createOrUpdateLayer(String name,
-                                         Bounds bounds = new Projection( "EPSG:4326" ).bounds,
+                                         Bounds bounds = new Projection("EPSG:4326").bounds,
                                          String epsgCode = "EPSG:4326",
                                          int tileWidth = 256,
                                          int tileHeight = 256,
                                          int minLevel = 0,
                                          int maxLevel = 24)
   {
-    createOrUpdateLayer( new TileCacheLayerInfo( name: name,
-        bounds: bounds.polygon.g,
-        epsgCode: epsgCode ?: "EPSG:${bounds.proj.epsg}",
-        tileHeight: tileHeight,
-        tileWidth: tileWidth,
-        minLevel: minLevel,
-        maxLevel: maxLevel )
+    createOrUpdateLayer(new TileCacheLayerInfo(name: name,
+            bounds: bounds.polygon.g,
+            epsgCode: epsgCode ?: "EPSG:${bounds.proj.epsg}",
+            tileHeight: tileHeight,
+            tileWidth: tileWidth,
+            minLevel: minLevel,
+            maxLevel: maxLevel)
     )
   }
 
   @Transactional
   void deleteLayer(String name)
   {
-    TileCacheLayerInfo layer = layerInfoTableDAO.findByName( name )
-    if ( layer )
+    TileCacheLayerInfo layer = layerInfoTableDAO.findByName(name)
+    if (layer)
     {
-      if ( tableExists( layer.tileStoreTable ) )
+      if (tableExists(layer.tileStoreTable))
       {
-        sql.execute( "DROP TABLE ${layer.tileStoreTable};".toString() )
+        sql.execute("DROP TABLE ${layer.tileStoreTable};".toString())
       }
-      accumuloApi.deleteTable( layer.tileStoreTable )
-      layerInfoTableDAO.delete( layer )
+      accumuloApi.deleteTable(layer.tileStoreTable)
+      layerInfoTableDAO.delete(layer)
     }
   }
 
   @Transactional
   TileCacheLayerInfo getLayerInfoByName(String name)
   {
-    layerInfoTableDAO.findByName( name )
+    layerInfoTableDAO.findByName(name)
   }
 
   @Transactional
@@ -362,30 +362,28 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   {
     String result = ""
 
-    if(constraints)
+    if (constraints)
     {
 
-      if(constraints.orderBy)
+      if (constraints.orderBy)
       {
         def tempOrderBySplit
 
-         if(constraints.orderBy.contains("+"))
-         {
-            tempOrderBySplit  = constraints.orderBy.split("\\+")
-         }
-         else if(constraints.orderBy.contains(":"))
-         {
-            tempOrderBySplit = constraints.orderBy.split(":")
-         }
-         else
-         {
-            tempOrderBySplit = [orderBy]
-         }
-        result  = "ORDER BY ${tempOrderBySplit[0]}"
-
-        if(tempOrderBySplit.size() > 1)
+        if (constraints.orderBy.contains("+"))
         {
-          switch(tempOrderBySplit[-1].toLowerCase())
+          tempOrderBySplit = constraints.orderBy.split("\\+")
+        } else if (constraints.orderBy.contains(":"))
+        {
+          tempOrderBySplit = constraints.orderBy.split(":")
+        } else
+        {
+          tempOrderBySplit = [orderBy]
+        }
+        result = "ORDER BY ${tempOrderBySplit[0]}"
+
+        if (tempOrderBySplit.size() > 1)
+        {
+          switch (tempOrderBySplit[-1].toLowerCase())
           {
             case "d":
               result += " DESC"
@@ -402,95 +400,91 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
 
     result
   }
+
   String createWhereClause(def constraints)
   {
     def result = ""
-    if ( constraints )
+    if (constraints)
     {
       def conjunction = " AND "
 
       def whereClause = ""
 
-      if ( constraints.intersects )
+      if (constraints.intersects)
       {
-        if ( whereClause )
+        if (whereClause)
         {
           whereClause += conjunction
         }
-         if(constraints.intersectsSrid!=null)
-         {
-            whereClause += "(ST_Intersects(ST_GeometryFromText('${constraints.intersects}',${constraints.intersectsSrid}),bounds))"
-         }
-         else
-         {
-            whereClause += "(ST_Intersects(ST_GeometryFromText('${constraints.intersects}'),bounds))"
-         }
+        if (constraints.intersectsSrid != null)
+        {
+          whereClause += "(ST_Intersects(ST_GeometryFromText('${constraints.intersects}',${constraints.intersectsSrid}),bounds))"
+        } else
+        {
+          whereClause += "(ST_Intersects(ST_GeometryFromText('${constraints.intersects}'),bounds))"
+        }
       }
-      if ( constraints.afterDate && constraints.beforeDate )
+      if (constraints.afterDate && constraints.beforeDate)
       {
-        if ( whereClause )
+        if (whereClause)
         {
           whereClause += conjunction
         }
-        whereClause += "(modified_date BETWEEN '${DateUtil.formatTimezone( constraints.afterDate )}' AND '${DateUtil.formatTimezone( constraints.beforeDate )}')"
+        whereClause += "(modified_date BETWEEN '${DateUtil.formatTimezone(constraints.afterDate)}' AND '${DateUtil.formatTimezone(constraints.beforeDate)}')"
 
-      }
-      else if ( constraints.afterDate )
+      } else if (constraints.afterDate)
       {
-        if ( whereClause )
+        if (whereClause)
         {
           whereClause += conjunction
         }
-        whereClause += "(modified_date > '${DateUtil.formatTimezone( constraints.afterDate )}')"
-      }
-      else if ( constraints.beforeDate )
+        whereClause += "(modified_date > '${DateUtil.formatTimezone(constraints.afterDate)}')"
+      } else if (constraints.beforeDate)
       {
-        if ( whereClause )
+        if (whereClause)
         {
           whereClause += conjunction
         }
-        whereClause += "(modified_date < '${DateUtil.formatTimezone( constraints.beforeDate )}')"
+        whereClause += "(modified_date < '${DateUtil.formatTimezone(constraints.beforeDate)}')"
       }
-      if ( constraints.z != null )
+      if (constraints.z != null)
       {
-        if ( whereClause )
+        if (whereClause)
         {
           whereClause += conjunction
         }
         whereClause += "(z = ${constraints.z})"
       }
-      if ( constraints.x != null )
+      if (constraints.x != null)
       {
-        if ( whereClause )
+        if (whereClause)
         {
           whereClause += conjunction
         }
         whereClause += "(x = ${constraints.x})"
       }
-      if ( constraints.y != null )
+      if (constraints.y != null)
       {
-        if ( whereClause )
+        if (whereClause)
         {
           whereClause += conjunction
         }
         whereClause += "(y = ${constraints.y})"
       }
-      if((constraints.minLevel!=null)||(constraints.maxLevel!=null))
+      if ((constraints.minLevel != null) || (constraints.maxLevel != null))
       {
-        if(whereClause)
+        if (whereClause)
         {
           whereClause += conjunction
         }
 
-        if((constraints.minLevel!=null)&&(constraints.maxLevel!=null))
+        if ((constraints.minLevel != null) && (constraints.maxLevel != null))
         {
           whereClause += "((z >= ${constraints.minLevel}) AND (z<=${constraints.maxLevel}))"
-        }
-        else if(constraints.minLevel!=null)
+        } else if (constraints.minLevel != null)
         {
           whereClause += "(z >= ${constraints.minLevel})"
-        }
-        else
+        } else
         {
           whereClause += "(z <= ${constraints.maxLevel})"
         }
@@ -520,17 +514,16 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   def getHashIdsWithinConstraint(TileCacheLayerInfo layer, HashMap constraints)
   {
     def result = []
-    def queryString = "select hash_id from ${layer.tileStoreTable} ${createWhereClause( constraints )}".toString()
+    def queryString = "select hash_id from ${layer.tileStoreTable} ${createWhereClause(constraints)}".toString()
 
-    if ( constraints.offset && constraints.maxRows )
+    if (constraints.offset && constraints.maxRows)
     {
-      sql.eachRow( queryString, constraints.offset, constraints.maxRows ) { row ->
+      sql.eachRow(queryString, constraints.offset, constraints.maxRows) { row ->
         result << row.hash_id
       }
-    }
-    else
+    } else
     {
-      sql.eachRow( queryString ) { row ->
+      sql.eachRow(queryString) { row ->
         result << row.hash_id
       }
     }
@@ -541,47 +534,46 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   def getTilesWithinConstraint(TileCacheLayerInfo layer, HashMap constraints = [:])
   {
     def result = []
-    def queryString = "select * from ${layer?.tileStoreTable} ${createWhereClause( constraints )}".toString()
+    def queryString = "select * from ${layer?.tileStoreTable} ${createWhereClause(constraints)}".toString()
     def metaRows = [:]
     def hashIds = []
 
-    if ( !layer )
+    if (!layer)
     {
       return result
     }
-    if ( (constraints.offset!=null) && (constraints.maxRows!=null) )
+    if ((constraints.offset != null) && (constraints.maxRows != null))
     {
-      sql.eachRow( queryString, constraints.offset, constraints.maxRows ) { row ->
-        metaRows."${row.hash_id}" = new TileCacheTileTableTemplate().bindSql( row )
-        hashIds << new ImageTileKey( rowId: row.hash_id )
+      sql.eachRow(queryString, constraints.offset, constraints.maxRows) { row ->
+        metaRows."${row.hash_id}" = new TileCacheTileTableTemplate().bindSql(row)
+        hashIds << new ImageTileKey(rowId: row.hash_id)
+      }
+    } else
+    {
+      sql.eachRow(queryString) { row ->
+        metaRows."${row.hash_id}" = new TileCacheTileTableTemplate().bindSql(row)
+        hashIds << new ImageTileKey(rowId: row.hash_id)
       }
     }
-    else
-    {
-      sql.eachRow( queryString ) { row ->
-        metaRows."${row.hash_id}" = new TileCacheTileTableTemplate().bindSql( row )
-        hashIds << new ImageTileKey( rowId: row.hash_id )
-      }
-    }
-    if ( hashIds )
+    if (hashIds)
     {
 
-      def tiles = accumuloApi.getTiles( layer.tileStoreTable, hashIds as ImageTileKey[] )
+      def tiles = accumuloApi.getTiles(layer.tileStoreTable, hashIds as ImageTileKey[])
       tiles.each { k, v ->
 
         TileCacheImageTile tile = v as TileCacheImageTile
         def row = metaRows."${k}"
-        if ( row )
+        if (row)
         {
           tile.x = row.x
           tile.y = row.y
           tile.z = row.z
           tile.res = row.res
-          if ( metaRows.modified_date )
+          if (metaRows.modified_date)
           {
             tile.modifiedDate = row.modifiedDate
           }
-          tile.bounds = new Bounds( row.bounds.envelopeInternal )//new WKTReader().read(meta.bounds.toString())
+          tile.bounds = new Bounds(row.bounds.envelopeInternal)//new WKTReader().read(meta.bounds.toString())
 
           result << tile
         }
@@ -590,32 +582,32 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
     }
     result
   }
+
   @Transactional
   def getTilesMetaWithinConstraints(TileCacheLayerInfo layer, HashMap constraints)
   {
     def result = []
     String whereClause = createWhereClause(constraints)
-    String orderBy     = createOrderByClause(constraints)
+    String orderBy = createOrderByClause(constraints)
     def queryString = "select * from ${layer?.tileStoreTable} ${whereClause} ${orderBy}".toString()
     def metaRows = [:]
 //    def hashIds = []
 
-    if ( !layer )
+    if (!layer)
     {
       return result
     }
-    if ( (constraints.offset!=null) && (constraints.maxRows!=null) )
+    if ((constraints.offset != null) && (constraints.maxRows != null))
     {
-      sql.eachRow( queryString, constraints.offset, constraints.maxRows ) { row ->
-        result << new TileCacheTileTableTemplate().bindSql( row ).toMap()
- //       hashIds << new ImageTileKey( rowId: row.hash_id )
+      sql.eachRow(queryString, constraints.offset, constraints.maxRows) { row ->
+        result << new TileCacheTileTableTemplate().bindSql(row).toMap()
+        //       hashIds << new ImageTileKey( rowId: row.hash_id )
       }
-    }
-    else
+    } else
     {
-      sql.eachRow( queryString ) { row ->
-        result << new TileCacheTileTableTemplate().bindSql( row ).toMap()
- //       hashIds << new ImageTileKey( rowId: row.hash_id )
+      sql.eachRow(queryString) { row ->
+        result << new TileCacheTileTableTemplate().bindSql(row).toMap()
+        //       hashIds << new ImageTileKey( rowId: row.hash_id )
       }
     }
     result
@@ -625,16 +617,16 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   def getActualLayerBounds(TileCacheLayerInfo info, HashMap constraints = [:])
   {
     def result = [minx: 0.0,
-        miny: 0.0,
-        maxx: 0.0,
-        maxy: 0.0,
-        minLevel: -1,
-        maxLevel: -1]
-    if ( info )
+                  miny: 0.0,
+                  maxx: 0.0,
+                  maxy: 0.0,
+                  minLevel: -1,
+                  maxLevel: -1]
+    if (info)
     {
-      String queryString = "select ST_xmin(ST_Extent(bounds)) as minx, ST_ymin(ST_Extent(bounds)) as miny, ST_xmax(ST_Extent(bounds)) as maxx, ST_ymax(ST_Extent(bounds)) as maxy, min(z) as min_level, max(z) as max_level from ${info.tileStoreTable} ${createWhereClause( constraints )}".toString()
-      sql.eachRow( queryString ) { row ->
-        if ( row.minx != null )
+      String queryString = "select ST_xmin(ST_Extent(bounds)) as minx, ST_ymin(ST_Extent(bounds)) as miny, ST_xmax(ST_Extent(bounds)) as maxx, ST_ymax(ST_Extent(bounds)) as maxy, min(z) as min_level, max(z) as max_level from ${info.tileStoreTable} ${createWhereClause(constraints)}".toString()
+      sql.eachRow(queryString) { row ->
+        if (row.minx != null)
         {
           result.minx = row.minx
           result.miny = row.miny
@@ -647,7 +639,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
 
       // if we have an intersection invoved in the selection then we must crop the bounds
       //
-      if(constraints?.intersects)
+      if (constraints?.intersects)
       {
         Bounds bounds = new WktReader().read(constraints?.intersects)?.bounds
         Bounds fullBounds = new Bounds(result.minx, result.miny, result.maxx, result.maxy)
@@ -668,37 +660,36 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   @Transactional
   def getActualLayerBounds(String name, HashMap constraints = [:])
   {
-    getActualLayerBounds( getLayerInfoByName( name ), constraints )
+    getActualLayerBounds(getLayerInfoByName(name), constraints)
   }
 
   @Transactional
   long getTilesWithinContraints(String layerName, HashMap constraints = [:])
   {
-    getTilesWithinConstraint( getLayerInfoByName( layerName ), constraints )
+    getTilesWithinConstraint(getLayerInfoByName(layerName), constraints)
   }
 
   @Transactional
   def getTilesMetaWithinContraints(TileCacheLayerInfo layer, HashMap constraints = [:])
   {
     def result = []
-    def queryString = "select * from ${layer?.tileStoreTable} ${createWhereClause( constraints )}".toString()
+    def queryString = "select * from ${layer?.tileStoreTable} ${createWhereClause(constraints)}".toString()
     def metaRows = [:]
     def hashIds = []
 
-    if ( !layer )
+    if (!layer)
     {
       return result
     }
-    if ( constraints.offset && constraints.maxRows )
+    if (constraints.offset && constraints.maxRows)
     {
-      sql.eachRow( queryString, constraints.offset, constraints.maxRows ) { row ->
-        result << new TileCacheTileTableTemplate().bindSql( row )
+      sql.eachRow(queryString, constraints.offset, constraints.maxRows) { row ->
+        result << new TileCacheTileTableTemplate().bindSql(row)
       }
-    }
-    else
+    } else
     {
-      sql.eachRow( queryString ) { row ->
-        result << new TileCacheTileTableTemplate().bindSql( row )
+      sql.eachRow(queryString) { row ->
+        result << new TileCacheTileTableTemplate().bindSql(row)
       }
     }
     result
@@ -707,7 +698,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   @Transactional
   def getTilesMetaWithinContraints(String layerName, HashMap constraints = [:])
   {
-    getTilesMetaWithinContraints( getLayerInfoByName( layerName ), constraints )
+    getTilesMetaWithinContraints(getLayerInfoByName(layerName), constraints)
   }
 
   @Transactional
@@ -715,10 +706,10 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   {
     String table = layer?.tileStoreTable
     def count = 0
-    if ( table )
+    if (table)
     {
-      def queryString = "select count(hash_id) as count from ${table} ${createWhereClause( constraints )}".toString()
-      def result = sql.firstRow( queryString )
+      def queryString = "select count(hash_id) as count from ${table} ${createWhereClause(constraints)}".toString()
+      def result = sql.firstRow(queryString)
 
       count = result.count
     }
@@ -729,7 +720,7 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   @Transactional
   long getTileCountWithinConstraint(String layerName, HashMap constraints = [:])
   {
-    getTileCountWithinConstraint( getLayerInfoByName( layerName ), constraints )
+    getTileCountWithinConstraint(getLayerInfoByName(layerName), constraints)
   }
 
   @Transactional
@@ -738,24 +729,23 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
 
     String table = layer.tileStoreTable
     Integer srid = layer?.epsgCode?.split(':')[-1]?.toInteger()
-    def result = sql.firstRow( "select * from ${table} where hash_id = '${tile.key.hashId}'".toString() )
+    def result = sql.firstRow("select * from ${table} where hash_id = '${tile.key.hashId}'".toString())
 
-    if ( !result )
+    if (!result)
     {
       sql.executeInsert """
         insert into ${table} (hash_id,res,x,y,z,modified_date, bounds) values (
           '${tile.hashId}', ${tile.res}, ${tile.x}, ${tile.y}, ${tile.z}, '${tile.modifiedDate}', 
           ST_GeometryFromText('${tile.bounds.polygon.g.toString()}', ${srid}))
       """.toString()
-    }
-    else
+    } else
     {
       sql.executeUpdate "update ${table} set modified_date = '${tile.modifiedDate}' where hash_id='${tile.hashId}'".toString()
     }
 
-    if ( tile.data )
+    if (tile.data)
     {
-      accumuloApi.writeTile( table, tile )
+      accumuloApi.writeTile(table, tile)
     }
   }
 
@@ -763,33 +753,32 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   def getMetaByKey(TileCacheLayerInfo layer, ImageTileKey key)
   {
     String table = layer.tileStoreTable
-    def row = sql.firstRow( "select * from ${table} where hash_id = '${key.rowId}'".toString() )
+    def row = sql.firstRow("select * from ${table} where hash_id = '${key.rowId}'".toString())
     TileCacheTileTableTemplate result = new TileCacheTileTableTemplate()
 
-    result.bindRow( row )
+    result.bindRow(row)
   }
 
   @Transactional
   def getTileByMeta(TileCacheLayerInfo layer, def meta)
   {
-    ImageTileKey key = new ImageTileKey( [rowId: meta.hashId] )
+    ImageTileKey key = new ImageTileKey([rowId: meta.hashId])
 
-    TileCacheImageTile tile = accumuloApi.getTile( layer.tileStoreTable, key ) as TileCacheImageTile
+    TileCacheImageTile tile = accumuloApi.getTile(layer.tileStoreTable, key) as TileCacheImageTile
 
-    if ( meta )
+    if (meta)
     {
       tile.x = meta.x
       tile.y = meta.y
       tile.z = meta.z
       tile.res = meta.res
-      if ( meta.modifiedDate )
+      if (meta.modifiedDate)
       {
         tile.modifiedDate = meta.modifiedDate
       }
-      tile.bounds = new Bounds( meta?.bounds?.envelopeInternal )//new WKTReader().read(meta.bounds.toString())
+      tile.bounds = new Bounds(meta?.bounds?.envelopeInternal)//new WKTReader().read(meta.bounds.toString())
 
-    }
-    else
+    } else
     {
       tile = null
     }
@@ -802,22 +791,22 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   {
     String table = layer.tileStoreTable
     TileCacheImageTile result
-    def meta = sql.firstRow( "select hash_id, x, y, z, res, modified_date, st_astext(bounds) as bounds from ${table} where hash_id = '${key.rowId}'".toString() )
-    if ( meta )
+    def meta = sql.firstRow("select hash_id, x, y, z, res, modified_date, st_astext(bounds) as bounds from ${table} where hash_id = '${key.rowId}'".toString())
+    if (meta)
     {
-      result = accumuloApi.getTile( table, key )
-      if ( result )
+      result = accumuloApi.getTile(table, key)
+      if (result)
       {
         result.x = meta.x?.toLong()
         result.y = meta.y?.toLong()
         result.z = meta.z?.toLong()
         result.res = meta.res?.toDouble()
-        if ( meta.modified_date )
+        if (meta.modified_date)
         {
-          result.modifiedDate = new Date( meta.modified_date.time )
+          result.modifiedDate = new Date(meta.modified_date.time)
         }
-        Geometry wktResult = new WKTReader().read( meta.bounds.toString() )
-        result.bounds = new Bounds( wktResult.envelopeInternal )//new WKTReader().read(meta.bounds.toString())
+        Geometry wktResult = new WKTReader().read(meta.bounds.toString())
+        result.bounds = new Bounds(wktResult.envelopeInternal)//new WKTReader().read(meta.bounds.toString())
       }
     }
 
@@ -828,6 +817,63 @@ class TileCacheServiceDAO implements InitializingBean, DisposableBean, Applicati
   @Transactional
   def getTileDataByKey(TileCacheLayerInfo layer, ImageTileKey key)
   {
-    accumuloApi.getTile( layer.tileStoreTable, key )?.data
+    accumuloApi.getTile(layer.tileStoreTable, key)?.data
+  }
+
+
+  @Transactional
+  def updateJob(HashMap fields)
+  {
+    def tempSession = sessionFactory.openSession()
+    def tempSql = new Sql(tempSession?.connection())
+
+    try
+    {
+      if (fields.jobId)
+      {
+        def updateFields = fields.inject([]) { result, entry ->
+          switch (entry.key)
+          {
+            case "percentComplete":
+              result << "percent_complete=${entry.value}"
+              break
+            case "startDate":
+              result << "start_date='${entry.value}'"
+              break
+            case "endDate":
+              result << "end_date='${entry.value}'"
+              break
+            case "status":
+              result << "status='${entry.value}'"
+              break
+            case "statusMessage":
+              result << "status_message='${entry.value}'"
+              break
+            case "jobDir":
+              result << "job_dir='${entry.value}'"
+              break
+            case "username":
+              result << "username='${entry.value}'"
+              break
+            case "description":
+              result << "description='${entry.value}'"
+              break
+          }
+          result
+        }
+        if (updateFields)
+        {
+          String updateString = updateFields.join(",")
+          String finalString = "update job set ${updateString} where job_id='${fields.jobId}'".toString()
+          tempSql.executeUpdate finalString
+        }
+      }
+    }
+    catch (e)
+    {
+      println e
+    }
+    tempSql.close()
+    tempSession.close()
   }
 }

@@ -1,5 +1,6 @@
 package joms.geotools.tileapi.accumulo
 
+import joms.geotools.tileapi.TwoWayPasswordEncoder
 import org.apache.accumulo.core.Constants
 import org.apache.accumulo.core.client.BatchScanner
 import org.apache.accumulo.core.client.BatchWriter
@@ -67,7 +68,7 @@ class AccumuloApi implements InitializingBean
       //String zooServers = "accumulo.radiantblue.local"
       instance = new ZooKeeperInstance(instanceName, zooServers);
       //Connector conn
-      connector = instance.getConnector(username, new PasswordToken(password));
+      connector = instance.getConnector(username, new PasswordToken(TwoWayPasswordEncoder.decryptPasswordOptionallyEncrypted(password)));
       //conn = inst.getConnector("root", new PasswordToken("hadoop"));
 
     }
